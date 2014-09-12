@@ -1,0 +1,19 @@
+Neuer Forum-Eintrag auf $_SERVER["HTTP_HOST"] am: date(d. m Y)
+
+Es wurde ein neuer Beitrag im Forum auf $_SERVER["HTTP_HOST"] zum  Thema $text['Title'] - $text['Topic'] geschrieben.
+
+ersten 200 Zeichen des Eintrages:
+-------------------------------------------------------------------------
+substr(nl2br($text['Text']),0,200) ...
+-------------------------------------------------------------------------
+
+Geschrieben von: $text['Autor'] 
+
+Den gesamten Eintrag finden Sie im oben genannten Thema auf der PSOP-Homepage
+
+
+-----------------------------------
+      !!!   ACHTUNG   !!!
+-----------------------------------
+Sie erhalten bis zu ihrem nächsten Login keine weiteren Benachrichtigungen über neue Foren-Einträge!
+(Um ein überlaufen des Mailpostfachs zu vermeiden)

@@ -1,0 +1,12 @@
+<?php
+
+/* ---------------------------------------
+    DATENBANK-VERBINDUNGS-DATEN
+--------------------------------------- */
+$DBUSER 		= "homecontrol";
+$DBPASS 		= "PASSWD";
+$DBNAME 		= "homecontrol";
+$DBHOST 		= "localhost";
+
+
+?>

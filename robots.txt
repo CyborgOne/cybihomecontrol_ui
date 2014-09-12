@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /
+Disallow: /classes/
+Disallow: /config/
+Disallow: /errors/
+Disallow: /functions/
+Disallow: /includes/
+Disallow: /pics/
+Disallow: /scripts/
+Disallow: /templates/
+Allow: /index.php
