@@ -27,14 +27,14 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
     $scDbTable  = new DbTable($_SESSION['config']->DBCONNECT,
                            'homecontrol_cron', 
-	                    array(  "name", "beschreibung", "montag", "dienstag", "mittwoch", "donnerstag", "freitag", "samstag", "sonntag", "stunde", "minute") , 
-                           "Name, Beschreibung, Mo, Di, Mi, Do, Fr, Sa, So, Std, Min",
+	                    array(  "name",  "montag", "dienstag", "mittwoch", "donnerstag", "freitag", "samstag", "sonntag", "stunde", "minute") , 
+                           "Name,  Mo, Di, Mi, Do, Fr, Sa, So, Std, Min",
 			       "",
 			       "montag, dienstag, mittwoch, donnerstag, freitag, samstag, sonntag, stunde, minute",
 			       "");
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
-
+    
 
     $spc->show();
 
@@ -50,7 +50,11 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 // --------------------------------------------------
 //  Bearbeiten-Maske
 // --------------------------------------------------
-    $updateMask = $scDbTable->getUpdateMask();
+    if(isset($_REQUEST["DbTableUpdate".$scDbTable->TABLENAME])){
+        $scDbTable->doUpdate();
+    }
+
+    $updateMask = $scDbTable->getUpdateAllMask();
     $updateMask->show(); 
 
     $spc->setHeight(10);
@@ -70,7 +74,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 //  Zuordnungen
 // --------------------------------------------------
 
-    if( isset($_REQUEST['SelectedcronToEdit']) ){
+    if( isset($_REQUEST['SelectedcronToEdit']) && $_REQUEST['SelectedcronToEdit']>0 ){
       $_SESSION['SelectedcronToEdit'] = $_REQUEST['SelectedcronToEdit'];
     }
 
@@ -105,15 +109,18 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
         $scItemsDbTable  = new DbTable($_SESSION['config']->DBCONNECT,
                                        'homecontrol_cron_items', 
 	                                array("config_id", "art_id", "zimmer_id", "etagen_id", "on_off", "cron_id" ) , 
-                                       "Objekt, Objekt-Art, Zimmer, Etage, An/Aus",
+                                       "Objekt, Objekt-Art, Zimmer, Etage, An/Aus, CRON_ID",
                                        "cron_id=".$_SESSION['SelectedcronToEdit'],
                                        "config_id DESC, zimmer_id DESC, etagen_id DESC",
                                        "cron_id=".$_SESSION['SelectedcronToEdit']);
 
-        $scItemsDbTable->setReadOnlyCols(array("id"));
+        $scItemsDbTable->setReadOnlyCols(array("id", "cron_id"));
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
-
+        
+        if(isset($_REQUEST["DbTableUpdate".$scItemsDbTable->TABLENAME])){
+            $scItemsDbTable->doUpdate();
+        }
 
 // Neuer Eintrag
         if(isset($_REQUEST['InsertIntoDBhomecontrol_cron_items']) && $_REQUEST['InsertIntoDBhomecontrol_cron_items']=="Speichern"){
@@ -135,7 +142,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
 
         $rZuordnung = $table->createRow();
-        $rZuordnung->setAttribute(0, $scItemsDbTable->getUpdateMask());
+        $rZuordnung->setAttribute(0, $scItemsDbTable->getUpdateAllMask());
         $rZuordnung->setSpawnAll(true);
         $table->addRow($rZuordnung);
 
@@ -148,6 +155,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
     $form->add($table);
     $form->add($newItemBtn);
+    $form->add(new Line());
     
     $form->show();
 
@@ -190,7 +198,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     // Aktuelle Uhrzeit muss übereinstimmen
     $whereStmtCurrCron .= " and stunde=" .$currentStd ." and minute=" .$currentMin;
 
-    echo "<br>".$whereStmtCurrCron."<br>";
+// echo "<br>".$whereStmtCurrCron."<br>";
     
     $currentCronDbTable  = new DbTable($_SESSION['config']->DBCONNECT,
                            'homecontrol_cron', 
@@ -201,6 +209,8 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 			       $whereStmtCurrCron);
 
     $currentCronDbTable->setBorder(0);
+    
+// -----------------    
 
     $ttlCurrent = new Title("Aktuelle Jobs");
     

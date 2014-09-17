@@ -64,7 +64,7 @@ class ShortcutSidebar extends Object{
     $row = $configDb->getRow(1);
 
     if($row != null){
-      if($status==off && isFunk2Need($row->getNamedAttribute("control_art"))){
+      if($status=="off" && isFunk2Need($row->getNamedAttribute("control_art"))){
         return $row->getNamedAttribute("funk_id2");
       } else {
         return $row->getNamedAttribute("funk_id");

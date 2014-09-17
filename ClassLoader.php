@@ -44,11 +44,11 @@ class ClassLoader{
         if( is_file($this->PATH  ."/" .$eintrag) && strpos($eintrag, '.php')>0 ){
           $file = $this->PATH  ."/" .$eintrag;
           $cnt = count($reloadArray);
-		  $changeDate = getlastmod($file);
+	//	  $changeDate = getlastmod($file);
 		    
-          if ($changeDate > $file_last_modified){	
-		    $this->LASTCHANGE = $changeDate;
-		  }
+//          if ($changeDate > $file_last_modified){	
+//		    $this->LASTCHANGE = $changeDate;
+//		  }
 
           $className = substr(basename($file), 0, strlen(basename($file)) -4 );
           if(! class_exists( $className )  ){

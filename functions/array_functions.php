@@ -22,12 +22,12 @@
     
     function existsKeyInArray($wert, $array, $absolute=true ){
       //Prüft ob Wert im übergebenen Array vorkommt
-      if(count($array)>0){
+      if(count($array)<=0){
         return false;
       }
 
       foreach ($array as $key=>$value){
-	 if ($absolute && $key == $wert){
+	    if ($absolute && $key == $wert){
 	      return true;
 		       
         } else if (!$absolute && strpos($key, $wert)>0){
