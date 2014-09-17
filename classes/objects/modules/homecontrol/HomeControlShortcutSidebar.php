@@ -153,7 +153,9 @@ class ShortcutSidebar extends Object{
          $this->SHORTCUTS_ROW_COLOR_LAST = $this->SHORTCUTS_ROW_COLOR1;
       }
 
-      $this->SHORTCUTS_TOOLTIP .= "<tr style=\"background-color:" .$this->SHORTCUTS_ROW_COLOR_LAST .";\"><td>" .$this->getConfigName($id) ."</td><td>" .($status=="on"? $this->ON_LABEL : $this->OFF_LABEL) ."</td></tr>";
+      $this->SHORTCUTS_TOOLTIP .= "<tr style=\"background-color:" .$this->SHORTCUTS_ROW_COLOR_LAST .";\"><td>" 
+                                 ."<font size='2'>".$this->getConfigName($id) ."</font></td><td><font size='2'>" .($status=="on"? $this->ON_LABEL : $this->OFF_LABEL) 
+                                 ."</font></td></tr>";
     }
   }
 
@@ -268,7 +270,7 @@ class ShortcutSidebar extends Object{
 
         $this->SHORTCUTS_TOOLTIP .= "</table> <a href='" .$this->SHORTCUTS_URL_COMMAND ."'>" 
                                  ."<center><div align='center' style='display:table-cell; height:40px;width:100px;vertical-align:middle;background-color:green'>"
-                                   ."aktivieren" 
+                                 ."<font size='4' color='#deffde'><b>aktivieren</b></font>" 
                                  ."</div></center>"
                                  ."</a>";
 
