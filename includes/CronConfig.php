@@ -162,60 +162,6 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
 
 // ------------------------------------------------
-
-    $currentDayNumber =  date('w', strtotime('today'));
-    $currentStd =  date('G', strtotime('now')) + $_SESSION['config']->PUBLICVARS['timezoneadditional'];
-    $currentMin =  date('i', strtotime('now'));
-    $currentDayName = "weekDay";
-    
-    switch($currentDayNumber){
-        case 0:
-           $currentDayName = "Sonntag";
-           break;
-        case 1:
-           $currentDayName = "Montag";
-           break;
-        case 2:
-           $currentDayName = "Dienstag";
-           break;
-        case 3:
-           $currentDayName = "Mittwoch";
-           break;
-        case 4:
-           $currentDayName = "Donnerstag";
-           break;
-        case 5:
-           $currentDayName = "Freitag";
-           break;
-        case 6:
-           $currentDayName = "Samstag";
-           break;
-    }
-
-    // Aktueller Wochentag muss übereinstimmen
-    $whereStmtCurrCron = strtolower($currentDayName)."='J'";
-    
-    // Aktuelle Uhrzeit muss übereinstimmen
-    $whereStmtCurrCron .= " and stunde=" .$currentStd ." and minute=" .$currentMin;
-
-// echo "<br>".$whereStmtCurrCron."<br>";
-    
-    $currentCronDbTable  = new DbTable($_SESSION['config']->DBCONNECT,
-                           'homecontrol_cron', 
-	                    array(  "name", "beschreibung") , 
-                           "Name, Beschreibung, Mo, Di, Mi, Do, Fr, Sa, So, Std, Min",
-			       "",
-			       "montag, dienstag, mittwoch, donnerstag, freitag, samstag, sonntag, stunde, minute",
-			       $whereStmtCurrCron);
-
-    $currentCronDbTable->setBorder(0);
-    
-// -----------------    
-
-    $ttlCurrent = new Title("Aktuelle Jobs");
-    
-    $ttlCurrent->show();
-    $currentCronDbTable->show();
 }
 
 
