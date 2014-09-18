@@ -76,7 +76,7 @@
        $MainPanel->setStyle("padding-left","4px");
        $MainPanel->setStyle("padding-right","4px");
 
-       $cont = new DivByInclude($_SESSION['mainpage'], true);
+       $cont = new DivByInclude($_SESSION['mainpage'], false);
        $cont->setWidth("630");
        $cont->setStyle("overflow-x","hidden");
 
