@@ -151,17 +151,18 @@ class DbRow extends Object{
   
 
   function insertIntoDB(){
-    $COLNAMESTRING = "";
+  	$COLNAMESTRING = "";
+  	
     if(count($this->COLNAMES)>0){
     	$chk=0;
-	foreach($this->COLNAMES as $cn){
-         if($chk>0){
-  	    $COLNAMESTRING .= ", ";
-         }
-         $COLNAMESTRING .= $cn;
-   
-         $chk++;
-       }
+		foreach($this->COLNAMES as $cn){
+	      if($chk>0){
+	 	    $COLNAMESTRING .= ", ";
+	      }
+	      $COLNAMESTRING .= $cn;
+	    
+	      $chk++;
+	    }
     } 
 	
 	if(strlen($COLNAMESTRING)==0){
@@ -204,42 +205,16 @@ class DbRow extends Object{
   }
 
   function updateDB(){
-    if(count($this->COLNAMES)==0){
-	return;
-    }
-    $COLNAMESTRING = "";
-    if(count($this->COLNAMES)>0){
-    	$chk=0;
-	foreach($this->COLNAMES as $cn){
-         if($chk>0){
-  	    $COLNAMESTRING .= ", ";
-         }
-         $COLNAMESTRING .= $cn;
-   
-         $chk++;
-       }
-    } 
-	
-    if(strlen($COLNAMESTRING)==0){
-      return;
-    }
-
-    $stmnt = "SELECT " .$COLNAMESTRING ." FROM " .$this->TABLENAME ." LIMIT 1 ";  
-    $resultColCheck = $_SESSION['config']->DBCONNECT->executeQuery($stmnt);
-
+	if(count($this->COLNAMES)==0){
+		return;
+	}
+  	
     $sql = "UPDATE ".$this->TABLENAME." SET ";
 	
 	for($i=0;$i<count($this->COLNAMES);$i++){
 		if($this->COLNAMES[$i] != "id"){
-                if(strlen($this->getAttribute($i))>0 ){
-  		    $sql .= $this->COLNAMES[$i] ." = '" .$this->getAttribute($i) ."' ";
-  		  } else {
-                  if (mysql_field_type($resultColCheck, $i) == "int"){
-                    $sql .= $this->COLNAMES[$i] ." = null ";
-                  } else {
-                    $sql .= $this->COLNAMES[$i] ." = '' ";
-	           }          
-                }
+		  $sql .= $this->COLNAMES[$i] ." = '" .$this->getAttribute($i) ."' ";
+  		  
 		  if($i+1<count($this->COLNAMES)){
 			$sql .= ", ";
 		  }
@@ -247,7 +222,7 @@ class DbRow extends Object{
 	}	
 	
 	$sql .= " WHERE id = ".$this->getNamedAttribute("id");
-
+	
 	$_SESSION['config']->DBCONNECT->executeQuery($sql);
   }
 

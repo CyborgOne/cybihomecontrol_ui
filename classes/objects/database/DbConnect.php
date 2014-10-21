@@ -51,17 +51,17 @@ class DbConnect
 
 
   function connect($host,$user,$pass,$dbname){ //baut die verbindung auf
-     $this->db_link = @mysql_pconnect($host,$user,$pass) or die ("Datenbankverbindung nicht mÃÂÃÂÃÂÃÂ¶glich!");
+     $this->db_link = @mysql_pconnect($host,$user,$pass) or die ("Datenbankverbindung nicht moeglich! (" .$user ."/" .$pass ."/" .$host .")");
      $this->selectDatabase($dbname);
   }
 
 
   function selectDatabase($dbname){  // wÃÂÃÂÃÂÃÂ¤hlt die datenbank
 
-	if(isset($_SESSION['config']) && isset($_SESSION['config']->CURRENTUSER) && $_SESSION['config']->CURRENTUSER->STATUS == "admin"){
-		@mysql_select_db($dbname) or die ("Datenbank *" .$dbname ."* konnte nicht ausgewÃÂÃÂÃÂÃÂ¤hlt werden!");
-	} else {
-        @mysql_select_db($dbname) or die ("Fehler beim auswÃÂÃÂÃÂÃÂ¤hlen der Datenbank!");
+    if(isset($_SESSION['config']) && isset($_SESSION['config']->CURRENTUSER) && $_SESSION['config']->CURRENTUSER->STATUS == "admin"){
+        @mysql_select_db($dbname) or die ("Datenbank *" .$dbname ."* konnte nicht ausgewaehlt werden!");
+    } else {
+        @mysql_select_db($dbname) or die ("Fehler beim auswaehlen der Datenbank!");
     }
 
   }
