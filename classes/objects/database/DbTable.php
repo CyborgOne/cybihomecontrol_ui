@@ -511,7 +511,7 @@ class DbTable extends Object
     }
 	        
     debugOutput( $stmt."<br>" );
-
+    
     $result = $this->DBCONNECT->executeQuery($stmt);
    
     if ($result){
