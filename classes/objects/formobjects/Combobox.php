@@ -80,6 +80,18 @@ class Combobox extends Object {
 
     $isselected=false;
 
+    if ( strlen($this->getNullValue())>0 || count($this->CBARRAY)==0 ){
+	    echo "  <option value='' ";
+        
+        if( '' == $this->DEFAULT ){
+            echo "selected";
+    	    $isselected="true";
+        }
+        
+        echo ">".$this->getNullValue()."</option>";
+          
+	}
+    
     foreach($this->CBARRAY as $KEY=>$VALUE){
       $t = ltrim($KEY);   // fÃÂÃÂÃÂÃÂ¼hrende und abschlieÃÂÃÂÃÂÃÂende Leerzeichen entfernen
       $t = htmlspecialchars( $t, ENT_QUOTES );   // Sonderzeichen austauschen
@@ -98,17 +110,6 @@ class Combobox extends Object {
        echo ">" .$VALUE ."</option>";  
     }
     
-    if ( strlen($this->getNullValue())>0 || count($this->CBARRAY)==0 ){
-	    echo "  <option value='' ";
-        
-        if( '' == $this->DEFAULT ){
-            echo "selected";
-    	    $isselected="true";
-        }
-        
-        echo ">".$this->getNullValue()."</option>";
-          
-	}
 
     echo " </select > ";
   

@@ -113,7 +113,7 @@ class HomeControlTerm extends Object {
 
 
     function show(){
-        $t = new Text($this->getDescription());
+        $t = new Text($this->getDescription(),2);
         $t->show();
     }
 
