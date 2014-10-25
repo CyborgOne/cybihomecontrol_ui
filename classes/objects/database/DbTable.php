@@ -2081,6 +2081,9 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 	}
 
 	function getNewEntryButtonName($postFix=""){
+              if($postFix==""){
+                $postFix=$this->TABLENAME;
+              }
 		return "dbTableNew".$postFix;
 	}
 

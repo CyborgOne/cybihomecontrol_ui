@@ -74,24 +74,27 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     //  Zuordnungen
     // --------------------------------------------------
 
-    if (isset($_REQUEST['SelectedcronToEdit']) && $_REQUEST['SelectedcronToEdit'] >
-        0) {
-        $_SESSION['SelectedcronToEdit'] = $_REQUEST['SelectedcronToEdit'];
+    if (isset($_REQUEST['SelectedCronToEdit'])) {
+        $_SESSION['SelectedCronToEdit'] = $_REQUEST['SelectedCronToEdit'];
+    }
+
+    if (isset($_REQUEST['SelectedCronItemToEdit'])) {
+        $_SESSION['SelectedCronItemToEdit'] = $_REQUEST['SelectedCronItemToEdit'];
     }
 
     $table = new Table(array("", ""));
     $table->setWidth(640);
 
     $rTitle = $table->createRow();
-    $rTitle->setAttribute(0, new Title("Zuordnungen bearbeiten"));
+    $rTitle->setAttribute(0, new Title("Schaltgruppe bearbeiten"));
     $rTitle->setSpawnAll(true);
     $table->addRow($rTitle);
 
     $table->addSpacer(0, 10);
 
     $cobSelect = new ComboBoxBySql($_SESSION['config']->DBCONNECT,
-        "SELECT id, name FROM homecontrol_cron ORDER BY name", "SelectedcronToEdit",
-        isset($_SESSION['SelectedcronToEdit']) ? $_SESSION['SelectedcronToEdit'] : "",
+        "SELECT id, name FROM homecontrol_cron ORDER BY name", "SelectedCronToEdit",
+        isset($_SESSION['SelectedCronToEdit']) ? $_SESSION['SelectedCronToEdit'] : "",
         "id", "name", " ");
     $cobSelect->setDirectSelect(true);
 
@@ -108,14 +111,14 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
     // Zuordnung ausgewählt
 
-    if (isset($_SESSION['SelectedcronToEdit']) && strlen($_SESSION['SelectedcronToEdit']) >
+    if (isset($_SESSION['SelectedCronToEdit']) && strlen($_SESSION['SelectedCronToEdit']) >
         0) {
 
         $scItemsDbTable = new DbTable($_SESSION['config']->DBCONNECT,
             'homecontrol_cron_items', array("id", "config_id", "art_id", "zimmer_id",
             "etagen_id", "on_off", "cron_id"),
-            "ID, Objekt, Objekt-Art, Zimmer, Etage, An/Aus, CRON_ID", "cron_id=" . $_SESSION['SelectedcronToEdit'],
-            "config_id DESC, zimmer_id DESC, etagen_id DESC", "cron_id=" . $_SESSION['SelectedcronToEdit']);
+            "ID, Objekt, Objekt-Art, Zimmer, Etage, An/Aus, CRON_ID", "cron_id=" . $_SESSION['SelectedCronToEdit'],
+            "config_id DESC, zimmer_id DESC, etagen_id DESC", "cron_id=" . $_SESSION['SelectedCronToEdit']);
 
         $scItemsDbTable->setReadOnlyCols(array("id", "cron_id"));
         $scItemsDbTable->setDeleteInUpdate(true);
@@ -153,18 +156,18 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 
         $newItemBtn = $scItemsDbTable->getNewEntryButton("Neuen Eintrag",
-            "_Sensor_items");
+            "_Cron_items");
         $rZuordnung = $table->createRow();
         $rZuordnung->setAttribute(0, $newItemBtn);
         $rZuordnung->setSpawnAll(true);
         $table->addRow($rZuordnung);
 
 
-        // --------------------------------------------------
-        //  Bedingungen
-        // --------------------------------------------------
+               $table->addSpacer(1, 30);
 
-        $table->addSpacer(1, 30);
+// --------------------------------------------------
+//  Bedingungen
+// --------------------------------------------------
 
         $r2Title = $table->createRow();
         $r2Title->setAttribute(0, new Title("Bedingungen bearbeiten"));
@@ -172,10 +175,10 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $table->addRow($r2Title);
 
 
-        $sqlSensorItems = "SELECT id, id id2 FROM homecontrol_sensor_items WHERE sensor_id=" .
-            $_SESSION['SelectedSensorToEdit'];
-        $cobSelectItems = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sqlSensorItems,
-            "SelectedSensorItemToEdit", isset($_SESSION['SelectedSensorItemToEdit']) ? $_SESSION['SelectedSensorItemToEdit'] :
+        $sqlCronItems = "SELECT id, id id2 FROM homecontrol_cron_items WHERE cron_id=" .
+            $_SESSION['SelectedCronToEdit'];
+        $cobSelectItems = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sqlCronItems,
+            "SelectedCronItemToEdit", isset($_SESSION['SelectedCronItemToEdit']) ? $_SESSION['SelectedCronItemToEdit'] :
             "", "id", "id2", " ");
         $cobSelectItems->setDirectSelect(true);
 
@@ -185,15 +188,14 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $r2Auswahl->setAttribute(1, $cobSelectItems);
         $table->addRow($r2Auswahl);
 
-
-        if (isset($_SESSION['SelectedSensorItemToEdit']) && strlen($_SESSION['SelectedSensorItemToEdit']) >
+        if (isset($_SESSION['SelectedCronItemToEdit']) && strlen($_SESSION['SelectedCronItemToEdit']) >
             0) {
             $termDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_term',
-                array("id", "trigger_id", "trigger_type", "config_id", "term_type", "sensor_id",
+                array("id", "trigger_id", "trigger_type", "config_id", "term_type", "Cron_id",
                 "min", "std", "value", "termcondition", "status", "montag", "dienstag",
                 "mittwoch", "donnerstag", "freitag", "samstag", "sonntag", "order_nr", "and_or"),
-                "", "", "order_nr", "trigger_id=" . $_SESSION['SelectedcronToEdit'] .
-                " AND trigger_subid=" . $_SESSION['SelectedSensorItemToEdit'] .
+                "", "", "order_nr", "trigger_id=" . $_SESSION['SelectedCronToEdit'] .
+                " AND trigger_subid=" . $_SESSION['SelectedCronItemToEdit'] .
                 " AND trigger_type=2");
 
             $termDbTable->setReadOnlyCols(array("id"));
@@ -201,18 +203,46 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             $termDbTable->setHeaderEnabled(true);
 
 
-            $rTermZuordnung = $table->createRow();
-            $rTermZuordnung->setAttribute(0, $termDbTable->getUpdateMask());
-            $rTermZuordnung->setSpawnAll(true);
-            $table->addRow($rTermZuordnung);
+            $table->addSpacer(0, 10);
 
 
-            $newItemBtn = $termDbTable->getNewEntryButton("Neuen Eintrag", "_Sensor_items");
+
+            // Neuer Eintrag
+            if (isset($_REQUEST['InsertIntoDBhomecontrol_term']) && $_REQUEST['InsertIntoDBhomecontrol_term'] ==
+                "Speichern") {
+
+                $termDbTable->doInsert();
+                $termDbTable->refresh();
+
+            } else if (isset($_REQUEST[$termDbTable->getNewEntryButtonName()])) {
+                    $termDbTable->setBorder(0);
+                    $insMsk = $termDbTable->getInsertMask();
+                    $hdnFld = $insMsk->getAttribute(1);
+                    if ($hdnFld instanceof Hiddenfield) {
+                        $insMsk->setAttribute(1, new Hiddenfield($termDbTable->getNewEntryButtonName(), "-"));
+                    }
+                    $rNew = $table->createRow();
+                    $rNew->setAttribute(0, $insMsk);
+                    $rNew->setSpawnAll(true);
+                    $table->addRow($rNew);
+                    $table->addSpacer(0,20);
+            }
+
+            $termCount=0;
+            foreach( $termDbTable->ROWS as $r ){
+                $term = new HomeControlTerm($r, $termCount>0);
+                $rTermZuordnung = $table->createRow();
+                $rTermZuordnung->setAttribute(0, $term);
+                $rTermZuordnung->setSpawnAll(true);
+                $table->addRow($rTermZuordnung);
+                $termCount++;
+            }
+
+            $newItemBtn = $termDbTable->getNewEntryButton("Neuen Eintrag");
             $rZuordnung = $table->createRow();
             $rZuordnung->setAttribute(0, $newItemBtn);
             $rZuordnung->setSpawnAll(true);
             $table->addRow($rZuordnung);
-
 
             $table->addSpacer(1, 30);
         }

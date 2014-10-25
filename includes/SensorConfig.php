@@ -38,7 +38,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     // --------------------------------------------------
     //  Neuer Eintrag
     // --------------------------------------------------
-    if (isset($_REQUEST['dbTableNew'])) {
+    if (isset($_REQUEST[$scDbTable->getNewEntryButtonName()])) {
         $scDbTable->showInsertMask();
     }
 
@@ -123,16 +123,20 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             $scItemsDbTable->refresh();
 
         } else
-            if (isset($_REQUEST['dbTableNew_Sensor_items'])) {
+            if (isset($_REQUEST[$scItemsDbTable->getNewEntryButtonName()])) {
 
                 $scItemsDbTable->setBorder(0);
                 $insMsk = $scItemsDbTable->getInsertMask();
                 $hdnFld = $insMsk->getAttribute(1);
                 if ($hdnFld instanceof Hiddenfield) {
-                    $insMsk->setAttribute(1, new Hiddenfield("dbTableNew_Sensor_items", "-"));
+                    $insMsk->setAttribute(1, new Hiddenfield($scItemsDbTable->getNewEntryButtonName(), "-"));
                 }
-                $insMsk->show();
 
+                $rNew = $table->createRow();
+                $rNew->setAttribute(0, $insMsk);
+                $rNew->setSpawnAll(true);
+                $table->addRow($rNew);
+                $table->addSpacer(0,20);
             }
 
         $rZuordnung = $table->createRow();
@@ -142,8 +146,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $table->addSpacer(0, 10);
 
-        $newItemBtn = $scItemsDbTable->getNewEntryButton("Neuen Eintrag",
-            "_Sensor_items");
+        $newItemBtn = $scItemsDbTable->getNewEntryButton("Neuen Eintrag");
         $rZuordnung = $table->createRow();
         $rZuordnung->setAttribute(0, $newItemBtn);
         $rZuordnung->setSpawnAll(true);
@@ -151,12 +154,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $table->addSpacer(1, 30);
 
-
-        // --------------------------------------------------
-        //  Bedingungen
-        // --------------------------------------------------
-
-        $table->addSpacer(1, 30);
+// --------------------------------------------------
+//  Bedingungen
+// --------------------------------------------------
 
         $r2Title = $table->createRow();
         $r2Title->setAttribute(0, new Title("Bedingungen bearbeiten"));
@@ -194,6 +194,29 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
             $table->addSpacer(0, 10);
 
+
+
+            // Neuer Eintrag
+            if (isset($_REQUEST['InsertIntoDBhomecontrol_term']) && $_REQUEST['InsertIntoDBhomecontrol_term'] ==
+                "Speichern") {
+
+                $termDbTable->doInsert();
+                $termDbTable->refresh();
+
+            } else if (isset($_REQUEST[$termDbTable->getNewEntryButtonName()])) {
+                    $termDbTable->setBorder(0);
+                    $insMsk = $termDbTable->getInsertMask();
+                    $hdnFld = $insMsk->getAttribute(1);
+                    if ($hdnFld instanceof Hiddenfield) {
+                        $insMsk->setAttribute(1, new Hiddenfield($termDbTable->getNewEntryButtonName(), "-"));
+                    }
+                    $rNew = $table->createRow();
+                    $rNew->setAttribute(0, $insMsk);
+                    $rNew->setSpawnAll(true);
+                    $table->addRow($rNew);
+                    $table->addSpacer(0,20);
+            }
+
             $termCount=0;
             foreach( $termDbTable->ROWS as $r ){
                 $term = new HomeControlTerm($r, $termCount>0);
@@ -204,7 +227,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
                 $termCount++;
             }
 
-            $newItemBtn = $termDbTable->getNewEntryButton("Neuen Eintrag", "_Sensor_items");
+            $newItemBtn = $termDbTable->getNewEntryButton("Neuen Eintrag");
             $rZuordnung = $table->createRow();
             $rZuordnung->setAttribute(0, $newItemBtn);
             $rZuordnung->setSpawnAll(true);
@@ -212,7 +235,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
             $table->addSpacer(1, 30);
         }
-
     }
 
 
