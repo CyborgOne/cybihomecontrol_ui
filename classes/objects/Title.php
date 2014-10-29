@@ -8,7 +8,7 @@ class Title extends Object{
   var $FILTER;
   var $FONTTYPE;
 
-  function Title( $text, $b=0, $size=0, $bold=false, $italic=false, $under=false, $filter=true){
+  function Title( $text, $b=0, $size=4, $bold=false, $italic=false, $under=false, $filter=true){
     $this->TEXT = $text;
     $this->setAlign("center");
     $this->BORDER = $b;

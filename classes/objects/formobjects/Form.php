@@ -24,6 +24,13 @@ class Form  extends Object{
      $this->DEFAULTOBJECT = "";
   }
 
+  function setAction($a){
+    $this->ACTION = $a;
+  }
+
+  function getAction(){
+    return $this->ACTION;
+  }
 
   function setParam($p){
      $this->PARAMS = $p;	

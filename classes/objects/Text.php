@@ -5,7 +5,7 @@ class Text extends Object {
   public $TEXT;
   public $FILTER;
 
-  function Text($t, $s=1, $b=false, $i=false, $u=false, $f=true){
+  function Text($t, $s=2, $b=false, $i=false, $u=false, $f=true){
      $this->NAME = "Text";
      $this->border = 0;
      

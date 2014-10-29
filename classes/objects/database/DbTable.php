@@ -1297,7 +1297,7 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
       } 
       
 	  $div = new Div();
-	  $div->setWidth(120);
+	  $div->setWidth(140);
 	  $div->setOverflow("visible");
 
       //bearbeiten Link
@@ -1309,7 +1309,7 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 	  $btnDel = new Link($_SERVER['SCRIPT_NAME']."?" ."delete".$rowId.$this->TABLENAME."=entfernen", "entfernen");
 	  $btnDel->setValidate(false);
       if($this->isDeleteInUpdate() ){
-      	$tmpTxt = new Text("&nbsp;|&nbsp;");
+      	$tmpTxt = new Text("&nbsp; ");
       	$tmpTxt->setFilter(false);
       	
 		$div->add($tmpTxt);   

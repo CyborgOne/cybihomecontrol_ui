@@ -11,6 +11,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $USERSTATUS = new UserStatus($USR, -1, -1);
 
     $tbl = new Table(array(""));
+    $tbl->setWidth(600);
     $tbl->setAlign("center");
     $r = $tbl->createRow();
     $r->setAttribute(0, $USERSTATUS);
@@ -21,7 +22,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 } else {
 
-    $spc = new Spacer(20);
+    $spc = new Spacer(10);
     $ln = new Line();
 
     $scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_sensor',
@@ -29,7 +30,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
-
+    $scDbTable->setWidth(600);
 
     $spc->show();
 
@@ -54,11 +55,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $newBtn = $scDbTable->getNewEntryButton();
     $newBtn->show();
 
-    $spc->show();
-    $ln->show();
-
-    $spc->setHeight(20);
-    $spc->show();
 
 
     // --------------------------------------------------
@@ -75,15 +71,17 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     }
 
     $table = new Table(array("", ""));
-    $table->setWidth(640);
+    $table->setColSizes(array(150));
+    $table->setWidth(600);
+  $table->addSpacer(1, 10);
 
     $rTitle = $table->createRow();
     $rTitle->setAttribute(0, new Title("Schaltgruppe bearbeiten"));
     $rTitle->setSpawnAll(true);
     $table->addRow($rTitle);
 
-    $table->addSpacer(0, 10);
-
+    $table->addSpacer(0,5);
+    
     $cobSelect = new ComboBoxBySql($_SESSION['config']->DBCONNECT,
         "SELECT id, name FROM homecontrol_sensor ORDER BY name", "SelectedSensorToEdit",
         isset($_SESSION['SelectedSensorToEdit']) ? $_SESSION['SelectedSensorToEdit'] :
@@ -91,12 +89,15 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $cobSelect->setDirectSelect(true);
 
     $rAuswahl = $table->createRow();
-    $rAuswahl->setColSizes(array(120));
     $rAuswahl->setAttribute(0, new Text("Sensor auswaehlen: "));
-    $rAuswahl->setAttribute(1, $cobSelect);
     $table->addRow($rAuswahl);
 
-    $table->addSpacer(0, 20);
+    $rAuswahl = $table->createRow();
+    $rAuswahl->setAttribute(0, $cobSelect);
+    $table->addRow($rAuswahl);
+
+
+    $table->addSpacer(0, 10);
 
     $form = new Form();
 
@@ -136,7 +137,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
                 $rNew->setAttribute(0, $insMsk);
                 $rNew->setSpawnAll(true);
                 $table->addRow($rNew);
-                $table->addSpacer(0,20);
+                $table->addSpacer(0,10);
             }
 
         $rZuordnung = $table->createRow();
@@ -152,7 +153,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $rZuordnung->setSpawnAll(true);
         $table->addRow($rZuordnung);
 
-        $table->addSpacer(1, 30);
+        $table->addSpacer(1, 10);
 
 // --------------------------------------------------
 //  Bedingungen
@@ -162,6 +163,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $r2Title->setAttribute(0, new Title("Bedingungen bearbeiten"));
         $r2Title->setSpawnAll(true);
         $table->addRow($r2Title);
+        $table->addSpacer(0,5);
 
 
         $sqlSensorItems = "SELECT id, id id2 FROM homecontrol_sensor_items WHERE sensor_id=" .
@@ -172,10 +174,16 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $cobSelectItems->setDirectSelect(true);
 
         $r2Auswahl = $table->createRow();
-        $r2Auswahl->setColSizes(array(120));
+        $r2Auswahl->setSpawnAll(true);
         $r2Auswahl->setAttribute(0, new Text("Schaltgruppe auswaehlen: "));
-        $r2Auswahl->setAttribute(1, $cobSelectItems);
         $table->addRow($r2Auswahl);
+
+        $r2Auswahl = $table->createRow();
+        $r2Auswahl->setSpawnAll(true);
+        $r2Auswahl->setAttribute(0, $cobSelectItems);
+        $table->addRow($r2Auswahl);
+
+        $table->addSpacer(0, 10);
 
         if (isset($_SESSION['SelectedSensorItemToEdit']) && strlen($_SESSION['SelectedSensorItemToEdit']) >
             0) {
@@ -194,40 +202,36 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
             $table->addSpacer(0, 10);
 
+            if (isset($_REQUEST[$termDbTable->getNewEntryButtonName()])) {
+                $hcTermCreator = new HomeControlTermCreator($termDbTable->getNewEntryButtonName()."="
+                                                           .$_REQUEST[$termDbTable->getNewEntryButtonName()]);
 
-
-            // Neuer Eintrag
-            if (isset($_REQUEST['InsertIntoDBhomecontrol_term']) && $_REQUEST['InsertIntoDBhomecontrol_term'] ==
-                "Speichern") {
-
-                $termDbTable->doInsert();
-                $termDbTable->refresh();
-
-            } else if (isset($_REQUEST[$termDbTable->getNewEntryButtonName()])) {
-                    $termDbTable->setBorder(0);
-                    $insMsk = $termDbTable->getInsertMask();
-                    $hdnFld = $insMsk->getAttribute(1);
-                    if ($hdnFld instanceof Hiddenfield) {
-                        $insMsk->setAttribute(1, new Hiddenfield($termDbTable->getNewEntryButtonName(), "-"));
-                    }
-                    $rNew = $table->createRow();
-                    $rNew->setAttribute(0, $insMsk);
-                    $rNew->setSpawnAll(true);
-                    $table->addRow($rNew);
-                    $table->addSpacer(0,20);
+                $rNew = $table->createRow();
+                $rNew->setAlign("center");
+                $rNew->setAttribute(0, $hcTermCreator);
+                $rNew->setSpawnAll(true);
+                $table->addRow($rNew);
+                $table->addSpacer(0, 20);
             }
+                    
+            $c1 = $_SESSION['config']->COLORS['Tabelle_Hintergrund_1'];
+            $c2 = $_SESSION['config']->COLORS['Tabelle_Hintergrund_2'];
 
             $termCount=0;
+            $termDbTable->refresh();
             foreach( $termDbTable->ROWS as $r ){
-                $term = new HomeControlTerm($r, $termCount>0);
+                $term = new HomeControlTerm($r, $termCount>0, true);
                 $rTermZuordnung = $table->createRow();
                 $rTermZuordnung->setAttribute(0, $term);
                 $rTermZuordnung->setSpawnAll(true);
+                $rTermZuordnung->setBackgroundColor($termCount%2==0?$c1:$c2);
                 $table->addRow($rTermZuordnung);
                 $termCount++;
             }
 
-            $newItemBtn = $termDbTable->getNewEntryButton("Neuen Eintrag");
+            $table->addSpacer(0, 10);
+
+            $newItemBtn = $termDbTable->getNewEntryButton();
             $rZuordnung = $table->createRow();
             $rZuordnung->setAttribute(0, $newItemBtn);
             $rZuordnung->setSpawnAll(true);

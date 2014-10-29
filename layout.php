@@ -88,7 +88,7 @@
        }
        $cont->setStyle("padding-left","4px");
        $cont->setStyle("padding-right","4px");
-       $cont->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_1']);
+       $cont->setBackgroundColor($_SESSION['config']->COLORS['main_background']);
 
 
        $cont2 = new DivByInclude("includes/ShortcutSidebar.php", false);
@@ -118,8 +118,8 @@
 
        $MainPanel->add($tbl);
  
-	$contentLayoutRow = $layoutTable->createRow();
-	$contentLayoutRow->setAttribute(0, $MainPanel);
+       $contentLayoutRow = $layoutTable->createRow();
+	   $contentLayoutRow->setAttribute(0, $MainPanel);
        $layoutTable->addRow($contentLayoutRow);
         
    /* --------------------------------- */
@@ -133,19 +133,19 @@
        $footMenuDiv->setWidth(790);
        $footMenuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
        $footMenuDiv->setBorder(0);
-	$footMenuDiv->setAlign("center");
+	   $footMenuDiv->setAlign("center");
 
-	$footMenu = new DbMenu("Fussmenue");
+	   $footMenu = new DbMenu("Fussmenue");
        $footMenu->setHeight(14);
-	$footMenu->setMenuType("horizontal");
+	   $footMenu->setMenuType("horizontal");
        $footMenu->setAlign("center");
        $footMenu->setFontsize(1);
 
        $footMenuDiv->add($footMenu);
  
-	$fussLayoutRow = $layoutTable->createRow();
-	$fussLayoutRow->setAttribute(0,$footMenuDiv);
-	$layoutTable->addRow($fussLayoutRow);
+       $fussLayoutRow = $layoutTable->createRow();
+       $fussLayoutRow->setAttribute(0,$footMenuDiv);
+       $layoutTable->addRow($fussLayoutRow);
 
     /* --------------------------------- */ 
     

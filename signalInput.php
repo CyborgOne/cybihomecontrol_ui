@@ -34,7 +34,7 @@ echo "
 </html>
 ";
 
-$sql = "UPDATE homecontrol_sensor SET lastSignal=" ." WHERE id=" . $sensorId;
+$sql = "UPDATE homecontrol_sensor SET lastSignal=" .time() ." WHERE id=" . $sensorId;
 
 $result = mysql_query($sql);
 

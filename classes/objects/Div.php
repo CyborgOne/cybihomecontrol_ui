@@ -12,11 +12,11 @@ Class Div extends Object {
   /**
   *  DIV Konstruktor 
   */
-  function Div($id=""){
+  function Div($id="", $width="99%", $height=0){
     $this->OBJECTS = array();
     $this->setOverflow("auto");  //hidden, visible, scroll
-    $this->setWidth("99%");
-    $this->setHeight(0);
+    $this->setWidth($width);
+    $this->setHeight($height);
     $this->setBorder(0);
     $this->setAlign("left");
     $this->setVAlign("top");

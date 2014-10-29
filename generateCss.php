@@ -23,7 +23,6 @@ echo "
 {
  font-family: Arial;
  horizontal-align:left;
- vertical-align:top;
 }
 
 
@@ -31,7 +30,7 @@ textarea
 {
   font-style:normal;
   font-weight:normal;  
-  font-size: 10px;
+  font-size: 12px;
 }
 
 iframe
@@ -51,7 +50,7 @@ input
 {
   font-style:normal;
   font-weight:normal;  
-  font-size: 10px;
+  font-size: 12px;
 }
 
 
@@ -59,7 +58,7 @@ select
 {
   font-style:normal;
   font-weight:normal;  
-  font-size: 10px;	
+  font-size: 12px;	
 }
 
   
@@ -174,7 +173,7 @@ div
 a
 {
   text-decoration:none;
-  font-size: 11px;
+  
 }
 
 a:link 
