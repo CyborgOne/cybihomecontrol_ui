@@ -25,36 +25,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $spc = new Spacer(10);
     $ln = new Line();
 
-    $scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_sensor',
-        array("id", "name", "beschreibung"), "ID, Name, Beschreibung", "", "name", "");
-
-    $scDbTable->setDeleteInUpdate(true);
-    $scDbTable->setHeaderEnabled(true);
-    $scDbTable->setWidth(600);
-
-    $spc->show();
-
-    $scDbTable->setBorder(0);
-
-    // --------------------------------------------------
-    //  Neuer Eintrag
-    // --------------------------------------------------
-    if (isset($_REQUEST[$scDbTable->getNewEntryButtonName()])) {
-        $scDbTable->showInsertMask();
-    }
-
-    // --------------------------------------------------
-    //  Bearbeiten-Maske
-    // --------------------------------------------------
-    $updateMask = $scDbTable->getUpdateMask();
-    $updateMask->show();
-
-    $spc->setHeight(10);
-    $spc->show();
-
-    $newBtn = $scDbTable->getNewEntryButton();
-    $newBtn->show();
-
 
 
     // --------------------------------------------------
@@ -73,10 +43,10 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $table = new Table(array("", ""));
     $table->setColSizes(array(150));
     $table->setWidth(600);
-  $table->addSpacer(1, 10);
+    $table->addSpacer(1, 10);
 
     $rTitle = $table->createRow();
-    $rTitle->setAttribute(0, new Title("Schaltgruppe bearbeiten"));
+    $rTitle->setAttribute(0, new Title("Sensor Einstellung bearbeiten"));
     $rTitle->setSpawnAll(true);
     $table->addRow($rTitle);
 
@@ -198,6 +168,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             $termDbTable->setReadOnlyCols(array("id"));
             $termDbTable->setDeleteInUpdate(true);
             $termDbTable->setHeaderEnabled(true);
+            
 
 
             $table->addSpacer(0, 10);
@@ -222,6 +193,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             foreach( $termDbTable->ROWS as $r ){
                 $term = new HomeControlTerm($r, $termCount>0, true);
                 $rTermZuordnung = $table->createRow();
+                $rTermZuordnung->setStyle("padding","5px 5px");
                 $rTermZuordnung->setAttribute(0, $term);
                 $rTermZuordnung->setSpawnAll(true);
                 $rTermZuordnung->setBackgroundColor($termCount%2==0?$c1:$c2);
@@ -245,7 +217,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $form->add($table);
 
     $form->show();
-
 }
 
 ?>
