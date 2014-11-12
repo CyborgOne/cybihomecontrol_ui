@@ -39,7 +39,7 @@ class HomeControlMap extends Object{
       $mask->addRow($rZimmer);
 
       $rArt = $mask->createRow();
-      $rArt->setAttribute( 0, "Geräte-Art: " );
+      $rArt->setAttribute( 0, "Geraete-Art: " );
       $rArt->setAttribute( 1, new ComboBox( "Art", getComboArrayBySql("SELECT id, name FROM homecontrol_art")) );
       $rArt->addSpan(1,2);
       $mask->addRow($rArt);
@@ -157,7 +157,7 @@ class HomeControlMap extends Object{
       $mask->addRow($rZimmer);
 
       $r4 = $mask->createRow();
-      $r4->setAttribute( 0, "Geräte-Art: " );
+      $r4->setAttribute( 0, "Geraete-Art: " );
       $r4->setAttribute( 1, new ComboBox( "Art", getComboArrayBySql("SELECT id, name FROM homecontrol_art"), $r->getNamedAttribute("control_art")) );
       $r4->addSpan(1,2);
       $mask->addRow($r4);
@@ -418,8 +418,15 @@ class HomeControlMap extends Object{
     
   }
 
-
   function showMap($dbTable){
+     $map = $this->getMap($dbTable);
+     $map->show();
+  }
+
+
+  function getMap($dbTable){
+    $dv = new Div();
+    
     $bgTbl = new Table( array("") );
     $bgTbl->setOnClick("Coords()");
     $bgTbl->setWidth("600");
@@ -433,17 +440,16 @@ class HomeControlMap extends Object{
     $rowImg->setPadding("4px");
 
     $bgTbl->addRow($rowImg);
-    $bgTbl->show();
-
+    $dv->add($bgTbl);
     
     for ($i=1;  $i<=$dbTable->getRowCount(); $i++){
       $currConfigRow = $dbTable->getRow($i);
 
       $ctrlItem = new HomeControlItem( $currConfigRow , $this->EDITMODE );
-      $ctrlItem->show();
+      $dv->add($ctrlItem);
     }
-
-    return $dbTable;
+    
+    return $dv;
   }
 
   function showMobileView(){
@@ -659,7 +665,7 @@ echo "Layout-Art: " .$this->LAYOUT_ART ."<br>";
       ";
     }
 
-
+    
     $this->showMap($dbTable);
 
     $this->postHandleControlEdit($dbTable);

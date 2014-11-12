@@ -205,7 +205,7 @@ class DbMenu  extends Object {
     	      
 			$ftx = $txt[$rcnt]->getFonttype();
 			      
-            if($row['text'] == $_SESSION['MENU_PARENT'] || $row['text'] == $this->getLabelByRunlink($_SESSION['runLink'])){
+            if($row['name'] == $_SESSION['MENU_PARENT'] || $row['name'] == $this->getLabelByRunlink($_SESSION['runLink'])){
               $ftx->setColor($_SESSION['config']->COLORS['hover']);                  #
 			  $ftx->setBold(true);
             } else {
@@ -298,11 +298,6 @@ class DbMenu  extends Object {
 		$spacer->setFonttype($this->getFonttype());
         $rowCtr = mysql_num_rows($menuArray);      
         
-        $spImg = new Image("pics/transparentpixel.gif");
-        $spImg->setWidth(20);
-        $spImg->setHeight(1);
-		$spImg->setGenerated(false);
-        
 		$ctr=0; //prÃÂÃÂÃÂÃÂ¼fvariable zum Rows mitzÃÂÃÂÃÂÃÂ¤hlen
 		
 		while($row = mysql_fetch_array($menuArray)){
@@ -318,7 +313,7 @@ class DbMenu  extends Object {
 			$div->add($lSpacer);
 		  
 		  // Link	
-	      	$txt = new Text(" ".$row['text']);
+	      	$txt = new Text($row['text']);
 	        $txt->setFonttype($this->getFonttype());
 		  
 		    if(ltrim($txt->getText()) == $_SESSION['MENU_PARENT'] || ltrim($txt->getText()) == $this->getLabelByRunlink($_SESSION['runLink'])){
@@ -332,11 +327,13 @@ class DbMenu  extends Object {
 	        
 	        $div->add($l);
             
-            if(! (get_class($this->SPACER) == "Text" && $this->SPACER->getText() == "&nbsp|&nbsp;") ){
-	          if($ctr<$rowCtr){
-	            $div->add($spImg);	
+            //if(! (get_class($this->SPACER) == "Text" && $this->SPACER->getText() == "&nbsp|&nbsp;") ){
+	          if($ctr==($rowCtr-1)){
+     		    $lSpacer = new Link($lnk ,$spacer, false, $row['target'] );
+			    $lSpacer->setToolTip($row['tooltip']);
+			    $div->add($lSpacer);	
 			  }
-			}
+			//}
 	      }
 	      $ctr++; //prÃÂÃÂÃÂÃÂ¼fvariable zum Rows mitzÃÂÃÂÃÂÃÂ¤hlen
 	    }

@@ -19,7 +19,6 @@ class HomeControlTerm extends Object {
         $this->CONTROL_ID  = $homeControlId;
     }
 
-
     function getTriggerId() {
         return $this->TERM_ROW->getNamedAttribute('trigger_id');
     }

@@ -18,10 +18,9 @@
     
     // ------------------------------
 
-    $timeAdditional = 2;  // Der Wert müsste eigentlich aus der PageConfig Tabelle geholt werden
 
     $currentDayNumber =  date('w', strtotime('today'));
-    $currentStd =  date('G', strtotime('now')) + $timeAdditional;
+    $currentStd =  date('G', strtotime('now'));
     if($currentStd>23){
         $currentStd = $currentStd-24;
         $currentDayNumber=$currentDayNumber+1;

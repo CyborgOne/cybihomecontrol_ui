@@ -11,7 +11,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $USERSTATUS = new UserStatus($USR, -1, -1);
 
     $tbl = new Table(array(""));
-    $tbl->setWidth(600);
     $tbl->setAlign("center");
     $r = $tbl->createRow();
     $r->setAttribute(0, $USERSTATUS);
@@ -42,7 +41,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
     $table = new Table(array("", ""));
     $table->setColSizes(array(150));
-    $table->setWidth(600);
     $table->addSpacer(1, 10);
 
     $rTitle = $table->createRow();
@@ -85,6 +83,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $scItemsDbTable->setReadOnlyCols(array("id"));
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
+        $scItemsDbTable->setWidth("100%");
 
         // Neuer Eintrag
         if (isset($_REQUEST['InsertIntoDBhomecontrol_sensor_items']) && $_REQUEST['InsertIntoDBhomecontrol_sensor_items'] ==
@@ -168,7 +167,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             $termDbTable->setReadOnlyCols(array("id"));
             $termDbTable->setDeleteInUpdate(true);
             $termDbTable->setHeaderEnabled(true);
-            
+            $termDbTable->setWidth("100%");
 
 
             $table->addSpacer(0, 10);

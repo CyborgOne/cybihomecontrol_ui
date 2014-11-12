@@ -34,7 +34,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 			       "");
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
-
+    $scDbTable->setWidth("100%");
 
     $spc->show();
 
@@ -43,7 +43,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 // --------------------------------------------------
 //  Neuer Eintrag
 // --------------------------------------------------
-    if(isset($_REQUEST['dbTableNew']) ) {      
+    if(isset($_REQUEST['dbTableNew']) ) {    
       $scDbTable->showInsertMask();
     }
 
@@ -75,7 +75,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     }
 
     $table = new Table(array("",""));
-    $table->setWidth(640);
+    $table->setWidth("100%");
 
     $rTitle = $table->createRow();
     $rTitle->setAttribute(0, new Title("Zuordnungen bearbeiten"));
@@ -113,7 +113,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
         $scItemsDbTable->setReadOnlyCols(array("id"));
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
-
+        $scItemsDbTable->setWidth("100%");
 
 // Neuer Eintrag
         if(isset($_REQUEST['InsertIntoDBhomecontrol_shortcut_items']) && $_REQUEST['InsertIntoDBhomecontrol_shortcut_items']=="Speichern"){

@@ -268,8 +268,8 @@ class HomeControlItem extends Object {
 
   function show(){
       if( $this->EDIT_MODE ){
-        echo "<a href=\"?editControl=" .$this->ID ."\" style=\"position:absolute; left:" .$this->X ."px; top:" .$this->Y ."px; width:".$this->CONTROL_IMAGE_WIDTH."px; height:".$this->CONTROL_IMAGE_HEIGHT."px;\">";
-        echo $this->getControlArtIconSrc();  
+        echo "<a href=\"?editControl=" .$this->ID ."\" style=\"position:absolute; left:" .$this->X ."px; top:" .($this->Y+$_SESSION['additionalLayoutHeight']) ."px; width:".$this->CONTROL_IMAGE_WIDTH."px; height:".$this->CONTROL_IMAGE_HEIGHT."px;\">";
+        echo $this->getControlArtIconSrc(false);  
         echo "</a>";
 
       } else {

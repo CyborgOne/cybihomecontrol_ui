@@ -72,7 +72,7 @@
 	 }
 	  
    } elseif(!isset($_SESSION['MENU_PARENT'])){
-   	 $_SESSION['MENU_PARENT'] = "Treffpunkt";
+   	 $_SESSION['MENU_PARENT'] = "Steuerung";
    }
 
    $run = "";

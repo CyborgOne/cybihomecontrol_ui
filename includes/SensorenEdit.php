@@ -23,12 +23,15 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 } else {
 
+    $spc = new Spacer(20); 
+    $ln  = new Line();
+
     $scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_sensor',
         array("id", "name", "beschreibung"), "ID, Name, Beschreibung", "", "name", "");
 
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
-    $scDbTable->setWidth(600);
+    $scDbTable->setWidth("100%");
 
     $spc->show();
 

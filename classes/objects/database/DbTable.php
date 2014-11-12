@@ -1010,7 +1010,7 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
        $this->doDelete();
 
 	$tNames = 	$this->COLNAMES;
-	$tNames[count($tNames)] = "Aktion";
+	$tNames[count($tNames)] = " ";
 
 	$table = new Table($tNames);
 	$table->setBorder(0);
@@ -1179,9 +1179,10 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
   	$tNames   =   $this->LABELS;
     $colNames =   $this->COLNAMES;
     array_push($colNames, "Aktion");
-    array_push($tNames, "Aktion");
+    array_push($tNames, " ");
 
 	$table = new Table($tNames);
+
     $table->setHeadEnabled($this->HEAD_ENABLED);
     if($this->isDeleteInUpdate()){
          $this->doDeleteFromUpdatemask();
@@ -1235,7 +1236,8 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
     $bgCtr = 1;
     for ( $ir=1;  $ir<=count($this->ROWS);  $ir++ ){
       $r = $table->createRow();
-	       
+      $r->setStyle("padding","5px 5px");
+
   	   
        $r->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_'.$bgCtr]);
        
@@ -1393,6 +1395,8 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 	$bgCtr = 1;   
     for ( $ir=1;  $ir<=count($this->ROWS);  $ir++ ){
  	   $r = $table->createRow();
+       $r->setStyle("padding","5px 5px");
+
        $rowId = $this->ROWS[$ir]->getAttribute(count($this->COLNAMES));
   	   
        $r->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_'.$bgCtr]);

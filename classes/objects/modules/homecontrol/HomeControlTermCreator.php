@@ -113,7 +113,7 @@ class HomeControlTermCreator extends Object {
                          "SELECT value, name FROM homecontrol_condition ", 
                          "condition");
         $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor ", "sensor");
-        $wertTxt   = new Textfield("value");
+        $wertTxt   = new Textfield("value","",9,9);
         
         $t = new Table(array("","","","","",""));
         $r = $t->createRow();

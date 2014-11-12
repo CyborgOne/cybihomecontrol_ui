@@ -246,8 +246,7 @@ class ShortcutSidebar extends Object{
     }
 
     $dvSc = new Div();
-    $dvSc->setWidth(130);
-    $dvSc->setHeight(370);
+    $dvSc->setWidth("100%");
 
     $title = new Title("Shortcuts");
 
@@ -259,7 +258,7 @@ class ShortcutSidebar extends Object{
 
     foreach ( $this->SHORTCUTS_DB->ROWS as $shortcutRow ){
       $this->SHORTCUTS_URL_COMMAND = "/?switchShortcut=";
-      $this->SHORTCUTS_TOOLTIP = "<table cellspacing=0 cellpadding=0>";
+      $this->SHORTCUTS_TOOLTIP = "<table width='100%' cellspacing=0 cellpadding=0>";
 
       $this->prepareShortcutSwitchLink( $shortcutRow->getNamedAttribute("id") );
 
@@ -269,15 +268,18 @@ class ShortcutSidebar extends Object{
 
 
         $this->SHORTCUTS_TOOLTIP .= "</table> <a href='" .$this->SHORTCUTS_URL_COMMAND ."'>" 
-                                 ."<center><div align='center' style='display:table-cell; height:40px;width:100px;vertical-align:middle;background-color:green'>"
+                                 ."<center><div align='center' style='display:table-cell; height:40px;width:100%;vertical-align:middle;background-color:green'>"
                                  ."<font size='4' color='#deffde'><b>aktivieren</b></font>" 
                                  ."</div></center>"
                                  ."</a>";
 
-        $txtShortcut = new Text($shortcutRow->getNamedAttribute("name"), 3, true);
-        $txtShortcut->setTooltip($this->SHORTCUTS_TOOLTIP);
+        //$txtShortcut = new Text($shortcutRow->getNamedAttribute("name"), 3, true);
+        //$txtShortcut->setTooltip($this->SHORTCUTS_TOOLTIP);
         
-        $dvSc->add($txtShortcut);
+        $spn = new Span($shortcutRow->getNamedAttribute("name"), $shortcutRow->getNamedAttribute("name"));
+        $spn->add(new Text($this->SHORTCUTS_TOOLTIP,null,false,false,false,false));
+        
+        $dvSc->add($spn);
         $dvSc->add($spc);
 
       } else {

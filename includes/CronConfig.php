@@ -34,7 +34,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         "");
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
-
+    $scDbTable->setWidth("100%");
 
     $spc->show();
 
@@ -83,7 +83,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     }
 
     $table = new Table(array("", ""));
-    $table->setWidth(640);
+    $table->setWidth("100%");
 
     $rTitle = $table->createRow();
     $rTitle->setAttribute(0, new Title("Schaltgruppe bearbeiten"));
@@ -123,7 +123,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $scItemsDbTable->setReadOnlyCols(array("id", "cron_id"));
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
-
+        $scItemsDbTable->setWidth("100%");
         if (isset($_REQUEST["DbTableUpdate" . $scItemsDbTable->TABLENAME])) {
             $scItemsDbTable->doUpdate();
         }
@@ -201,7 +201,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             $termDbTable->setReadOnlyCols(array("id"));
             $termDbTable->setDeleteInUpdate(true);
             $termDbTable->setHeaderEnabled(true);
-
+            $termDbTable->setWidth("100%");
 
             $table->addSpacer(0, 10);
 

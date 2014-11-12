@@ -61,9 +61,9 @@ class Span extends Container{
 	*/   
    function getOpenlinkString(){
    	  if(strlen($this->LOGACTIVE_HIDDEN_NAME)>0){
-        return "<a href='#' onClick=\"makeVisible('" .$this->NAME ."');changeFieldValue(".$this->LOGACTIVE_HIDDEN_NAME.", " .$this->NAME .");\" id='" .$this->NAME ."_link' title='" .$this->TITLE ."'>" .$this->TITLE ."</a>";
+        return "<a href='#' onClick=\"makeVisible('" .$this->NAME ."');changeFieldValue(".$this->LOGACTIVE_HIDDEN_NAME.", " .$this->NAME .");\" id='" .$this->NAME ."_link' title='" .$this->TITLE ."'><font size='4'>" .$this->TITLE ."</font></a>";
 	  } else {
-        return "<a href='#' onClick=\"makeVisible('" .$this->NAME ."');\" id='" .$this->NAME ."_link' title='" .$this->TITLE ."'>" .$this->TITLE ."</a>";
+        return "<a href='#' onClick=\"makeVisible('" .$this->NAME ."');\" id='" .$this->NAME ."_link' title='" .$this->TITLE ."'><font size='4'>" .$this->TITLE ."</font></a>";
 	  }
    }
 
@@ -74,9 +74,9 @@ class Span extends Container{
 	*/   
    function getNoHideOpenlinkString(){
   	  if(strlen($this->LOGACTIVE_HIDDEN_NAME)>0){
-        return "<a href='#' onClick=\"makeVisibleWithoutLink('" .$this->NAME ."');changeFieldValue('".$this->LOGACTIVE_HIDDEN_NAME."', '" .$this->NAME ."');\" id='" .$this->NAME ."_link' title='" .$this->TITLE ."'>" .$this->TITLE ."</a>";
+        return "<a href='#' onClick=\"makeVisibleWithoutLink('" .$this->NAME ."');changeFieldValue('".$this->LOGACTIVE_HIDDEN_NAME."', '" .$this->NAME ."');\" id='" .$this->NAME ."_link' title='" .$this->TITLE ."'><font size='4'>" .$this->TITLE ."</font></a>";
 	  } else {
-        return "<a href='#' onClick=\"makeVisibleWithoutLink('" .$this->NAME ."');\" id='" .$this->NAME ."_link' title='" .$this->TITLE ."'>" .$this->TITLE ."</a>";
+        return "<a href='#' onClick=\"makeVisibleWithoutLink('" .$this->NAME ."');\" id='" .$this->NAME ."_link' title='" .$this->TITLE ."'><font size='4'>" .$this->TITLE ."</font></a>";
 	  }	
    }
 
@@ -108,10 +108,28 @@ class Span extends Container{
 	 	echo $this->getOpenlinkString();
 	 }
 	 
-	 echo "    <span id='" .$this->NAME ."_toggle' style='display:";
+	 echo "<span id='" .$this->NAME ."_toggle' style='display:";
      echo "none";	
 
 	 echo ";'><center>";
+     
+	 if($this->isLinkactive() && !$this->isVisible()){
+
+		         
+	     echo "<a href='#' onClick=\"makeVisible('" .$this->NAME ."');\" >
+                <div align='left'>";
+                  
+	     $t = new Text($this->NAME, 4, true);
+         $t->show();
+                          
+         echo "  </div>
+                 <div align='right'>
+                   <font size='2'>[schliessen]</font>
+			     </div>
+               </a>
+         ";
+     }
+
 	 if(count($this->OBJECTS)>0){
 		 foreach($this->OBJECTS as $obj){
 	       if(method_exists($obj, "show")){  
@@ -121,14 +139,6 @@ class Span extends Container{
 	 }
      
      echo "</center>";
-
-	 if($this->isLinkactive() && !$this->isVisible()){
-	     echo "
-		       <div align='right'>  
-		         <a href='#' onClick=\"makeVisible('" .$this->NAME ."');\"><font size='2'>[schlieÃÂÃÂÃÂÃÂen]</font></a>
-			   </div>
-         ";
-     }
 	          
      echo "
 	       </span>

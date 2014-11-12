@@ -299,7 +299,11 @@ Class DivByInclude extends Div {
        $tx->show();  
    	}
     
-    
+    if( $this->getObjectCount() > 0){
+      foreach($this->OBJECTS as $obj)	{
+	    $obj->show();
+      }
+    }
 //--------------	
     include($this->FILE);	
 //--------------    
