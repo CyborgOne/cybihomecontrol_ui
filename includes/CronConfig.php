@@ -191,7 +191,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         if (isset($_SESSION['SelectedCronItemToEdit']) && strlen($_SESSION['SelectedCronItemToEdit']) >
             0) {
             $termDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_term',
-                array("id", "trigger_id", "trigger_type", "config_id", "term_type", "Cron_id",
+                array("id", "trigger_id", "trigger_type", "config_id", "term_type", "cron_id",
                 "min", "std", "value", "termcondition", "status", "montag", "dienstag",
                 "mittwoch", "donnerstag", "freitag", "samstag", "sonntag", "order_nr", "and_or"),
                 "", "", "order_nr", "trigger_id=" . $_SESSION['SelectedCronToEdit'] .
