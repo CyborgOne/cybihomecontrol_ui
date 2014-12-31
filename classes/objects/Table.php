@@ -63,10 +63,30 @@ class Table extends Object {
      $this->DESIGNHEIGHT = $Hoehe_Quelle;
 
      $this->HEAD_ENABLED = true;
+     $this->addDefaultHeaderToTable();
   }
   
+  function addDefaultHeaderToTable(){
+    if(count($this->COLNAMES)>=0 && $this->HEADER_ENABLED && isset($this->COLNAMES[0]) && strlen($this->COLNAMES[0])>0){
+      $rX = $this->getRow(0);
+      if(! ($rX!=null && $rX->getAttribute(0) instanceof Title && $rX->getAttribute(0)->getText()==$this->COLNAMES[0])){
+        $rH = $this->createRow();
+        for ( $i=0;  $i < count($this->COLNAMES);  $i++ ){
+          $t = new Title($this->COLNAMES[$i]);
+          $t->setAlign("left");
+		  $rH->setAttribute($i, $t);
+        }
+        $this->addRow($rH);
+      }
+    }
+  }
   
-  
+  function removeDefaultHeaderFromTable(){
+    $rH = $this->getRow(0);
+    if($rH!=null && $rH->getAttribute(0) instanceof Title && $rH->getAttribute(0)->getText()==$this->COLNAMES[0]){
+      array_splice ($this->ROWS, 0, 1, array());
+    }
+  }
   
   
   
@@ -103,9 +123,15 @@ class Table extends Object {
 
   function setHeadEnabled($b){
      if($b == true){
-       $this->HEADER_ENABLED = true;
+       if(!$this->HEADER_ENABLED){
+         $this->HEADER_ENABLED = true;
+         $this->addDefaultHeaderToTable();
+       }
      } else {
-       $this->HEADER_ENABLED = false;
+       if($this->HEADER_ENABLED){
+         $this->HEADER_ENABLED = false;
+         $this->removeDefaultHeaderFromTable();
+       }
      }
   }
 
@@ -315,7 +341,8 @@ class Table extends Object {
       //---------------------------------------------------
       // HEADER ANZEIGEN
       //---------------------------------------------------
-  	  if(count($this->COLNAMES)>=0 && $this->HEADER_ENABLED && isset($this->COLNAMES[0]) && strlen($this->COLNAMES[0])>0){
+  	  /*
+        if(count($this->COLNAMES)>=0 && $this->HEADER_ENABLED && isset($this->COLNAMES[0]) && strlen($this->COLNAMES[0])>0){
          echo "
 				 <tr>
 			  ";
@@ -352,7 +379,7 @@ class Table extends Object {
 	       echo "
 		   		    </tr>
            ";
-      }
+      }*/
       //---------------------------------------------------
       
       

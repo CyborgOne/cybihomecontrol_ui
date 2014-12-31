@@ -1171,10 +1171,6 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
   
   
   function  getUpdateMask(){
-    if(isset($_REQUEST["showUpdateMask".$this->TABLENAME]) && strlen($_REQUEST["showUpdateMask".$this->TABLENAME]) > 0){
-		return $this->getSingleUpdateMask($_REQUEST["showUpdateMask".$this->TABLENAME]);
-	}
-  	
   	
   	$tNames   =   $this->LABELS;
     $colNames =   $this->COLNAMES;
@@ -1183,7 +1179,18 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 
 	$table = new Table($tNames);
 
+    if(isset($_REQUEST["showUpdateMask".$this->TABLENAME]) && strlen($_REQUEST["showUpdateMask".$this->TABLENAME]) > 0){
+        $r = $table->createRow();
+        $r->setSpawnAll(true);
+        $r->setAttribute(0, $this->getSingleUpdateMask($_REQUEST["showUpdateMask".$this->TABLENAME]));
+        $rX = $table->getRow(0);
+        $table->setRow(0,$r);
+        $table->addRow($rX);
+        $table->addSpacer(0,15);
+	}
+
     $table->setHeadEnabled($this->HEAD_ENABLED);
+    
     if($this->isDeleteInUpdate()){
          $this->doDeleteFromUpdatemask();
 
@@ -1536,13 +1543,15 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
      $fts = array($f1, $f2);
 
      $title = new Title("Bearbeite Eintrag");
-     $title->show();
 
      $table = new Table(array("",""));
      $table->setHeadEnabled(false);
      $table->setBorder(0);
      $table->setFontTypes($fts);
 
+     $rT = $table->createRow();
+     $rT->setAttribute(0, $title);
+     $table->addRow($rT);
 
       $chk=0;
       $stmnt = "SELECT ";

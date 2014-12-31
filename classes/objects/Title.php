@@ -35,6 +35,14 @@ class Title extends Object{
      $this->FILTER = $f;
   }
 
+  function getText(){
+     return $this->TEXT;
+  }
+
+  function setText($t){
+     $this->TEXT = $t;
+  }
+
 
 
 
