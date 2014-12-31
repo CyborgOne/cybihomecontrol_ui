@@ -137,7 +137,10 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
           $insMsk->show();
 
         }
-
+    
+        if (isset($_REQUEST["DbTableUpdate" . $scItemsDbTable->TABLENAME])) {
+            $scItemsDbTable->doUpdate();
+        }
 
         $rZuordnung = $table->createRow();
         $rZuordnung->setAttribute(0, $scItemsDbTable->getUpdateMask());

@@ -43,13 +43,20 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 // --------------------------------------------------
 //  Neuer Eintrag
 // --------------------------------------------------
-    if(isset($_REQUEST['dbTableNew']) ) {    
+    if(isset($_REQUEST['dbTableNewhomecontrol_shortcut']) ) {    
       $scDbTable->showInsertMask();
+    }
+    if(isset($_REQUEST['InsertIntoDBhomecontrol_shortcut']) && $_REQUEST['InsertIntoDBhomecontrol_shortcut']=="Speichern"){
+       $scDbTable->doInsert();
     }
 
 // --------------------------------------------------
 //  Bearbeiten-Maske
 // --------------------------------------------------
+    if (isset($_REQUEST["DbTableUpdate" . $scDbTable->TABLENAME])) {
+      $scDbTable->doUpdate();
+    }
+    
     $updateMask = $scDbTable->getUpdateMask();
     $updateMask->show(); 
 
@@ -121,7 +128,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
             $scItemsDbTable->doInsert();
             $scItemsDbTable->refresh();
 
-        } else if(isset($_REQUEST['dbTableNew_Shortcut_items']) ) {      
+        } else if(isset($_REQUEST['dbTableNewhomecontrol_shortcut_items']) ) {      
 
           $scItemsDbTable->setBorder(0);
           $insMsk = $scItemsDbTable->getInsertMask();
@@ -129,11 +136,18 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
           if($hdnFld instanceof Hiddenfield){
             $insMsk->setAttribute(1, new Hiddenfield("dbTableNew_Shortcut_items", "-"));
           }
-          $insMsk->show();
-
+          
+ 
+          $rx = $table->createRow();
+          $rx->setAttribute(0, $insMsk );
+          $rx->setSpawnAll(true);
+          $table->addRow($rx);
         }
 
-
+        if (isset($_REQUEST["DbTableUpdate" . $scItemsDbTable->TABLENAME])) {
+            $scItemsDbTable->doUpdate();
+        }
+        
         $rZuordnung = $table->createRow();
         $rZuordnung->setAttribute(0, $scItemsDbTable->getUpdateMask());
         $rZuordnung->setSpawnAll(true);
@@ -144,7 +158,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
     }
 
-    $newItemBtn = $scDbTable->getNewEntryButton("Neuen Eintrag", "_Shortcut_items");
+    $newItemBtn = $scItemsDbTable->getNewEntryButton();
 
     $form->add($table);
     $form->add($newItemBtn);
