@@ -81,6 +81,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             "config_id DESC, zimmer_id DESC, etagen_id DESC", "sensor_id=" . $_SESSION['SelectedSensorToEdit']);
 
         $scItemsDbTable->setReadOnlyCols(array("id"));
+        $scItemsDbTable->setNoInsertCols(array("id"));
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
         $scItemsDbTable->setWidth("100%");
@@ -137,9 +138,10 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $sqlSensorItems = "SELECT id, id id2 FROM homecontrol_sensor_items WHERE sensor_id=" .
             $_SESSION['SelectedSensorToEdit'];
+            
         $cobSelectItems = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sqlSensorItems,
-            "SelectedSensorItemToEdit", isset($_SESSION['SelectedSensorItemToEdit']) ? $_SESSION['SelectedSensorItemToEdit'] :
-            "", "id", "id2", " ");
+            "SelectedSensorItemToEdit", 
+            isset($_SESSION['SelectedSensorItemToEdit']) ? $_SESSION['SelectedSensorItemToEdit'] : "", 0, 1, " ");
         $cobSelectItems->setDirectSelect(true);
 
         $r2Auswahl = $table->createRow();
@@ -165,6 +167,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
                 " AND trigger_type=1");
 
             $termDbTable->setReadOnlyCols(array("id"));
+            $termDbTable->setNoInsertCols(array("id"));
             $termDbTable->setDeleteInUpdate(true);
             $termDbTable->setHeaderEnabled(true);
             $termDbTable->setWidth("100%");

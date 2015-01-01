@@ -35,6 +35,8 @@ class Table extends Object {
  * @param $columnNames   array of Strings in dem die Spaltennamen angegeben werden
  */
   function Table($columnNames){
+     $this->setFonttype(new FontType());
+
      $this->NAME = "Table";
      $this->XPOS = "";
      $this->YPOS = "";
@@ -305,12 +307,9 @@ class Table extends Object {
         echo " WIDTH='" .$w ."' ";
       }
 
-     
-  
       if(strlen($this->HEIGHT) > 0){
           echo " HEIGHT='" .$this->HEIGHT ."' ";
       }
-
 
 
       if($this->BORDER >= 0){
@@ -333,55 +332,12 @@ class Table extends Object {
 
 
       if(strlen($this->ONCLICK)>0){
-	 echo " onclick=\"" .$this->ONCLICK ."\" ";
+	    echo " onclick=\"" .$this->ONCLICK ."\" ";
       }
  
     	echo ">
 		";
-      //---------------------------------------------------
-      // HEADER ANZEIGEN
-      //---------------------------------------------------
-  	  /*
-        if(count($this->COLNAMES)>=0 && $this->HEADER_ENABLED && isset($this->COLNAMES[0]) && strlen($this->COLNAMES[0])>0){
-         echo "
-				 <tr>
-			  ";
-         for ( $i=0;  $i < count($this->COLNAMES);  $i++ ){
-	          echo "
-			         <th ";
-   
-
-        if(count($this->ALIGNMENTS)>0){
-          if(  isset($this->ALIGNMENTS[$i]) && strlen($this->ALIGNMENTS[$i])>0  ){
-			 echo " align='".$this->ALIGNMENTS[$i]."' ";
-		  }
-        } else {
-		  if(isset($this->ALIGN) && strlen($this->ALIGN)>0){
-			echo " align='".$this->ALIGN."' ";
-		  } else {
-			echo " align='left' ";
-		  }
-		}
-	
-        
-        if( strlen($this->VALIGN)>0){
-			echo " valign='".$this->VALIGN."' ";
-		}
-
-		if(isset($this->COLSIZES[$i]) && strlen($this->COLSIZES[$i])>0){
-		  echo " width='" .$this->COLSIZES[$i] ."' ";
-        }
-
- 			  
-			  echo " >" .$this->COLNAMES[$i] ."</th>";
-
-         }
-	       echo "
-		   		    </tr>
-           ";
-      }*/
-      //---------------------------------------------------
-      
+    
       
       $bgCtr = 1;
       

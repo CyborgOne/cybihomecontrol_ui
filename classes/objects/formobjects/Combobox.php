@@ -107,7 +107,7 @@ class Combobox extends Object {
 	    $isselected="true";
       }
  
-       echo ">" .$VALUE ."</option>";  
+       echo ">&nbsp;" .$VALUE ."&nbsp;</option>";  
     }
     
 
@@ -146,11 +146,11 @@ class ComboBoxBySql extends ComboBox {
      // ARRAY FÃÂÃÂÃÂÃÂR CB-LISTE AUFBAUEN
      if(mysql_num_fields($result) >= 2){
        while ($row = mysql_fetch_array($result)){ 
-	  $array[$row[$valFN]] = $row[$txtFN] ;
+	     $array[$row[$valFN]] = $row[$txtFN] ;
        }
      } else if (mysql_num_fields($result)==1){
        while ($row = mysql_fetch_array($result)){ 
-	  $array[$row[$valFN]] = $row[$valFN] ;
+	     $array[$row[$valFN]] = $row[$valFN] ;
        }
      } 
 

@@ -1,209 +1,227 @@
 <?php
+
 /**
  * @filename layout.php
  * @author  Daniel Scheidler
  * @copyright Oktober 2012
  */
 
-  $detect = new Mobile_Detect();
-  $_SESSION['additionalLayoutHeight'] = 0;
+$detect = new Mobile_Detect();
+$_SESSION['additionalLayoutHeight'] = 195;
 
-  if ($detect->isMobile()) {
+if ($detect->isMobile()) {
     if ($detect->is('iOS')) {
-      // iOS
-      include("layout_apple.php");
-      exit();
+        // iOS
+        include ("layout_apple.php");
+        exit();
     }
-    
+
     if ($detect->isTablet()) {
-      // Tablet
-      include("layout_tablet.php");
-      exit();
+        // Tablet
+        include ("layout_tablet.php");
+        exit();
     }
-	
+
     // Any other mobile device.
-    include("layout_mobile.php");
+    include ("layout_mobile.php");
     exit();
-  }
+}
 
-	$topSpaceTable = new Table(array(""));
-	$topSpaceTable->show();	
+$topSpaceTable = new Table(array(""));
+$topSpaceTable->show();
 
-	$layoutTable = new Table(array(""));
-	$layoutTable->setWidth(800);
+$layoutTable = new Table(array(""));
+$layoutTable->setWidth(800);
 
-	$layoutTable->setAlign("left");
-	$layoutTable->setBORDER(0);
-    $layoutTable->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
+if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] ==
+    "Einstellungen" && isset($_SESSION['runLink']) && $_SESSION['runLink'] == "homeconfig") {
+    $layoutTable->setAlign("left");
+} else {
+    $layoutTable->setAlign("center");
+}
+$layoutTable->setBORDER(0);
+$layoutTable->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
 
-	$layoutTable->setSpacing(0);
-	$layoutTable->setPadding(0);	
-	
-	
-    /* ------------------------------------
-      HAUPT-MENU
-    ------------------------------------ */    
- 
-       $menuDiv = new Div();
-       $menuDiv->setWidth(790);
-       $menuDiv->setBorder(0);    
-       $menuDiv->setOverflow("visible");
-       $menuDiv->setAlign("center");
-	   $menuDiv->setStyle("padding-left","2px");
-       $menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
-
-       $spc = new Text(" | ");
-       $menu = new DbMenu("Kopfmenue");
-       $menu->setAlign("center");
-       $menu->setFontsize(4);
-       $menu->setMenuType("horizontal");
-      
-       $menuDiv->add($menu);
-    
-       $contentLayoutRow1 = $layoutTable->createRow();
-       $contentLayoutRow1->setAttribute(0, $menuDiv);
-       $layoutTable->addRow($contentLayoutRow1);
-
-    /* --------------------------------- */
+$layoutTable->setSpacing(0);
+$layoutTable->setPadding(0);
 
 
-    /* ------------------------------------
-      HAUPTPANEL
-    ------------------------------------ */ 
-       $mainWidth = 610;
-       
-       if(isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT']=="Einstellungen"){
-           $mainWidth = 804;        
-       }
-        
-       $MainPanel = new Div();
-       $MainPanel->setBackgroundColor( $_SESSION['config']->COLORS['panel_background']);
-       $MainPanel->setBorder(0);
-       $MainPanel->setStyle("padding","5px 5px");
-       
 
-       $cont = new DivByInclude($_SESSION['mainpage'], false);
-       $cont->setWidth($mainWidth);
-       $cont->setStyle("overflow-x","hidden");
+/* ------------------------------------
+BANNER
+------------------------------------ */
+$banner = new Image("pics/Banner.png",-1,-1,800);
+$banner->setGenerated(false);
+$contentLayoutRow1 = $layoutTable->createRow();
+$contentLayoutRow1->setAlign("left");
+$contentLayoutRow1->setAttribute(0, $banner);
+$contentLayoutRow1->setStyle("padding", "10px");
+$layoutTable->addRow($contentLayoutRow1);
 
-       if($_SESSION['runLink']=="homeconfig"){
-         $cont->setStyle("overflow-y", "visible");
-       } else {
-         $cont->setStyle("overflow-y", "auto");
-       }
-       $cont->setStyle("padding","5px 5px");
 
-       $cont->setBackgroundColor($_SESSION['config']->COLORS['main_background']);
+/* ------------------------------------
+HAUPT-MENU
+------------------------------------ */
 
-       // Kopftexte und Nachrichten-Prüfung werden in DivByInclude  verwaltet
-       if(isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT'])>0){
-            $sql  = "SELECT * FROM menu WHERE parent='" .$_SESSION['MENU_PARENT'] ."'";
-            $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sql);
-            $menuHeight=0;
-                                    
-            if(mysql_numrows($rslt)>0){
-               $menuHeight = 50;                                
-               $_SESSION['additionalLayoutHeight'] = $_SESSION['additionalLayoutHeight'] + $menuHeight;
+$menuDiv = new Div();
+$menuDiv->setWidth(790);
+$menuDiv->setBorder(0);
+$menuDiv->setOverflow("visible");
+$menuDiv->setAlign("center");
+$menuDiv->setStyle("padding-left", "2px");
+$menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
 
-               $menuDiv = new Div();
-               $menuDiv->setWidth("99%");
-               $menuDiv->setHeight($menuHeight);
-               $menuDiv->setBorder(0);    
-               $menuDiv->setAlign("left");
-        	   $menuDiv->setStyle("padding","0px 0px");
-               $menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
-        
-               $menu = new DbMenu("Hauptmenue");
-               $menu->setAlign("center");
-               $menu->setFontsize(3);
-               $menu->setMenuType("horizontal");
-              
-               $menuDiv->add(new Line(1,6));
-               $menuDiv->add($menu);
-               $menuDiv->add(new Line(1,6));
-               
-               $cont->add($menuDiv);
-            }
-       }
-       
-       if(isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT']=="Steuerung"){
-           $cont2 = new DivByInclude("includes/ShortcutSidebar.php", false);
-           $cont2->setWidth("180");
-           $cont2->setHeight("100%");
-           $cont2->setStyle("padding-left","8px");
-           $cont2->setStyle("padding-right","2px");
-           $cont2->setStyle("overflow-x","hidden");
-           $cont2->setStyle("overflow-y","auto");
-           $cont2->setBorder(0);  
-           $cont2->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_2']);
-    
-           $spcr = new Div();
-           $spcr->setWidth(0);
-           $spcr->setHeight(400);
-    
-           $tbl = new Table(array("","",""));
-           $tbl->setBorder(2);
-           $tbl->setColSizes(array("650", "1", "150"));
-           $tbl->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_1']);
+$spc = new Text(" | ");
+$menu = new DbMenu("Kopfmenue");
+$menu->setAlign("center");
+$menu->setFontsize(4);
+$menu->setMenuType("horizontal");
 
-           $rMain = $tbl->createRow();
-           $rMain->setAttribute(0,$cont);     
-           $rMain->setAttribute(1,$spcr);     
-           $rMain->setAttribute(2,$cont2);     
-           $tbl->addRow($rMain);
-    
-           $MainPanel->add($tbl);
-       } else {
-           $tbl = new Table(array(""));
-           $tbl->setBorder(2);
-           $tbl->setColSizes(array("800"));
-           $tbl->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_1']);
-    
-           $rMain = $tbl->createRow();
-           $rMain->setAttribute(0,$cont);     
-           $tbl->addRow($rMain);
-           
-           $MainPanel->add($tbl);
-       }
-       
-       $contentLayoutRow = $layoutTable->createRow();
-	   $contentLayoutRow->setAttribute(0, $MainPanel);
-       $layoutTable->addRow($contentLayoutRow);
-        
-   /* --------------------------------- */
-    
+$menuDiv->add($menu);
 
-    /* ------------------------------------
-      FUSS-MENU 
-    ------------------------------------ */
- 
-       $footMenuDiv = new Div();
-       $footMenuDiv->setWidth(800);
-       $footMenuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
-       $footMenuDiv->setBorder(0);
-	   $footMenuDiv->setAlign("center");
+$layoutTable->addSpacer(0,15);
+$contentLayoutRow1 = $layoutTable->createRow();
+$contentLayoutRow1->setAttribute(0, $menuDiv);
+$layoutTable->addRow($contentLayoutRow1);
 
-	   $footMenu = new DbMenu("Fussmenue");
-       $footMenu->setHeight(14);
-	   $footMenu->setMenuType("horizontal");
-       $footMenu->setAlign("center");
-       $footMenu->setFontsize(1);
+/* --------------------------------- */
 
-       $footMenuDiv->add($footMenu);
- 
-       $fussLayoutRow = $layoutTable->createRow();
-       $fussLayoutRow->setAttribute(0,$footMenuDiv);
-       $layoutTable->addRow($fussLayoutRow);
 
-    /* --------------------------------- */ 
-    
+/* ------------------------------------
+HAUPTPANEL
+------------------------------------ */
+$mainWidth = 610;
 
-    $layoutTable->show();
+if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] ==
+    "Einstellungen") {
+    $mainWidth = 804;
+}
 
-    $arduinoFrame = new IFrame($_SESSION['config'], "arduinoSwitch", -1, -1, 1, 1, 0);
-    $arduinoFrame->show();
+$MainPanel = new Div();
+$MainPanel->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
+$MainPanel->setBorder(0);
+$MainPanel->setStyle("padding", "5px 5px");
 
-    
-	
-	
+
+$cont = new DivByInclude($_SESSION['mainpage'], false);
+$cont->setWidth($mainWidth);
+$cont->setStyle("overflow-x", "hidden");
+
+if ($_SESSION['runLink'] == "homeconfig") {
+    $cont->setStyle("overflow-y", "visible");
+} else {
+    $cont->setStyle("overflow-y", "auto");
+}
+$cont->setStyle("padding", "5px 5px");
+
+$cont->setBackgroundColor($_SESSION['config']->COLORS['main_background']);
+
+// Kopftexte und Nachrichten-Prüfung werden in DivByInclude  verwaltet
+if (isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT']) > 0) {
+    $sql = "SELECT * FROM menu WHERE parent='" . $_SESSION['MENU_PARENT'] . "'";
+    $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sql);
+    $menuHeight = 0;
+
+    if (mysql_numrows($rslt) > 0) {
+        $menuHeight = 50;
+        $_SESSION['additionalLayoutHeight'] = $_SESSION['additionalLayoutHeight'] + $menuHeight;
+
+        $menuDiv = new Div();
+        $menuDiv->setWidth("99%");
+        $menuDiv->setHeight($menuHeight);
+        $menuDiv->setBorder(0);
+        $menuDiv->setAlign("left");
+        $menuDiv->setStyle("padding", "0px 0px");
+ //       $menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
+
+        $menu = new DbMenu("Hauptmenue");
+        $menu->setAlign("center");
+        $menu->setFontsize(3);
+        $menu->setMenuType("horizontal");
+
+        $menuDiv->add(new Line(1, 6));
+        $menuDiv->add($menu);
+        $menuDiv->add(new Line(1, 6));
+
+        $cont->add($menuDiv);
+    }
+}
+
+if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] == "Steuerung") {
+    $cont2 = new DivByInclude("includes/ShortcutSidebar.php", false);
+    $cont2->setWidth("180");
+    $cont2->setHeight("100%");
+    $cont2->setStyle("padding-left", "8px");
+    $cont2->setStyle("padding-right", "2px");
+    $cont2->setStyle("overflow-x", "hidden");
+    $cont2->setStyle("overflow-y", "auto");
+    $cont2->setBorder(0);
+    $cont2->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_2']);
+
+    $spcr = new Div();
+    $spcr->setWidth(0);
+    $spcr->setHeight(400);
+
+    $tbl = new Table(array("", "", ""));
+    $tbl->setBorder(2);
+    $tbl->setColSizes(array("650", "1", "150"));
+    $tbl->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_1']);
+
+    $rMain = $tbl->createRow();
+    $rMain->setAttribute(0, $cont);
+    $rMain->setAttribute(1, $spcr);
+    $rMain->setAttribute(2, $cont2);
+    $tbl->addRow($rMain);
+
+    $MainPanel->add($tbl);
+} else {
+    $tbl = new Table(array(""));
+    $tbl->setBorder(2);
+    $tbl->setColSizes(array("800"));
+    $tbl->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_1']);
+
+    $rMain = $tbl->createRow();
+    $rMain->setAttribute(0, $cont);
+    $tbl->addRow($rMain);
+
+    $MainPanel->add($tbl);
+}
+
+$contentLayoutRow = $layoutTable->createRow();
+$contentLayoutRow->setAttribute(0, $MainPanel);
+$layoutTable->addRow($contentLayoutRow);
+
+/* --------------------------------- */
+
+
+/* ------------------------------------
+FUSS-MENU 
+------------------------------------ */
+
+$footMenuDiv = new Div();
+$footMenuDiv->setWidth(800);
+$footMenuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
+$footMenuDiv->setBorder(0);
+$footMenuDiv->setAlign("center");
+
+$footMenu = new DbMenu("Fussmenue");
+$footMenu->setHeight(14);
+$footMenu->setMenuType("horizontal");
+$footMenu->setAlign("center");
+$footMenu->setFontsize(1);
+
+$footMenuDiv->add($footMenu);
+
+$fussLayoutRow = $layoutTable->createRow();
+$fussLayoutRow->setAttribute(0, $footMenuDiv);
+$layoutTable->addRow($fussLayoutRow);
+
+/* --------------------------------- */
+
+
+$layoutTable->show();
+
+$arduinoFrame = new IFrame($_SESSION['config'], "arduinoSwitch", -1, -1, 1, 1, 0);
+$arduinoFrame->show();
+
 ?>

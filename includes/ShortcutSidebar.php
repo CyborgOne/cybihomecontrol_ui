@@ -1,6 +1,6 @@
 <?PHP
 
-  $sidebar = new ShortcutSidebar();
+  $sidebar = new ShortcutSidebar("DESKTOP");
   $sidebar->show();
 
 ?>

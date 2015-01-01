@@ -197,7 +197,9 @@ class DbTable extends Object
 	$this->refresh();
   }
 
-
+  function setDefaults($d){
+    $this->DEFAULTS = $d;
+  }
 //----------------------------------------------------------------------
 
 
@@ -1082,6 +1084,7 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
          } else {
 	 	
 	 	   $tbl = new Table($this->COLNAMES);
+           $tbl->setStyle("background-color","#ff5555");
 	 	   $dataRow = $this->getRowById($this->ROWS[$ir]->getNamedAttribute("id"));
 	 	 
 		   $r1 = $tbl->createRow();
@@ -1095,6 +1098,7 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 
 		   $r = $tbl->createRow();
 	       $c = 0;
+
 	 	   foreach($this->COLNAMES as $colname){
 		     $r->setAttribute($c,  new Title($colname));
 			 $c++;
@@ -1609,7 +1613,7 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 				}
 			  
 			  } else if (mysql_field_type($result, $i) == "blob"){
-	            $o = new TextArea($fieldName.$rowId, $val, 120, 10);
+	            $o = new TextArea($fieldName.$rowId, $val, 80, 10);
 	            $o->setTextEditor(true);
                 
 			  } else if (mysql_field_type($result, $i) == "date"){
@@ -1794,7 +1798,9 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 	 	
 	 	$tbl = new Table($this->COLNAMES);
 	 	$dataRow = $this->getRowById($this->ROWS[$ir]->getNamedAttribute("id"));
-	 	
+        $tbl->setStyle("background-color","#ee9999");
+        $tbl->setStyle("padding","5px");
+
 		$r1 = $tbl->createRow();
 	 	$r1->setSpawnAll(true);
 	 	

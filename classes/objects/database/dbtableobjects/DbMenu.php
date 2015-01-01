@@ -297,6 +297,7 @@ class DbMenu  extends Object {
 		$spacer = $this->SPACER;
 		$spacer->setFonttype($this->getFonttype());
         $rowCtr = mysql_num_rows($menuArray);      
+        $entryCount = mysql_num_rows($menuArray);
         
 		$ctr=0; //prÃÂÃÂÃÂÃÂ¼fvariable zum Rows mitzÃÂÃÂÃÂÃÂ¤hlen
 		
@@ -307,11 +308,11 @@ class DbMenu  extends Object {
             if(strlen($row['parent'])>0 && !strpos($lnk, "menuParent") ){
                 $lnk .= "&menuParent=" .$row['parent'];
             } 
-
-		    $lSpacer = new Link($lnk ,$spacer, false, $row['target'] );
-			$lSpacer->setToolTip($row['tooltip']);
-			$div->add($lSpacer);
-		  
+            if($ctr!=0 && $ctr!=($entryCount)){
+    		    $lSpacer = new Link($lnk ,$spacer, false, $row['target'] );
+    			$lSpacer->setToolTip($row['tooltip']);
+    			$div->add($lSpacer);
+		    }
 		  // Link	
 	      	$txt = new Text($row['text']);
 	        $txt->setFonttype($this->getFonttype());
@@ -326,14 +327,7 @@ class DbMenu  extends Object {
 	        $l->setToolTip($row['tooltip']);
 	        
 	        $div->add($l);
-            
-            //if(! (get_class($this->SPACER) == "Text" && $this->SPACER->getText() == "&nbsp|&nbsp;") ){
-	          if($ctr==($rowCtr-1)){
-     		    $lSpacer = new Link($lnk ,$spacer, false, $row['target'] );
-			    $lSpacer->setToolTip($row['tooltip']);
-			    $div->add($lSpacer);	
-			  }
-			//}
+           
 	      }
 	      $ctr++; //prÃÂÃÂÃÂÃÂ¼fvariable zum Rows mitzÃÂÃÂÃÂÃÂ¤hlen
 	    }

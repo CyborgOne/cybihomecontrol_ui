@@ -95,8 +95,8 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $cobSelect->setDirectSelect(true);
 
     $rAuswahl = $table->createRow();
-    $rAuswahl->setColSizes(array(120));
-    $rAuswahl->setAttribute(0, new Text("Shortcut auswählen: "));
+    $rAuswahl->setColSizes(array(150));
+    $rAuswahl->setAttribute(0, new Text("Shortcut auswaehlen: "));
     $rAuswahl->setAttribute(1, $cobSelect);
     $table->addRow($rAuswahl);
 
@@ -155,13 +155,13 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
         $table->addSpacer(0,10);
 
-
+        $newItemBtn = $scItemsDbTable->getNewEntryButton();
+        $form->add($table);
+        $form->add($newItemBtn);
+    } else {
+        $form->add($table);
     }
 
-    $newItemBtn = $scItemsDbTable->getNewEntryButton();
-
-    $form->add($table);
-    $form->add($newItemBtn);
     
     $form->show();
 

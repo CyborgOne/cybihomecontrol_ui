@@ -23,6 +23,8 @@ class Row extends Object {
 
 
   function Row($colNamesArray){
+    $this->setFonttype(new FontType());
+
     $this->ROW = array();
     $this->BACKGROUNDS = array();
     $this->setColNames($colNamesArray);
@@ -33,6 +35,7 @@ class Row extends Object {
     $this->SPACING = 0;
     $this->setStyle("background-repeat", "repeat-all");
     $this->SPAN = array(); 
+    $this->STYLEATTRS = array();
   }
   
   
@@ -107,6 +110,7 @@ class Row extends Object {
   }
 
   function setAlign($algn){
+     $this->setStyle("horizontal-align", $this->ALIGN);
      $this->ALIGN = $algn;
      $this->ALIGNMENTS = null;
   }
@@ -277,7 +281,9 @@ class Row extends Object {
 //            $this->setStyle("height", $this->HEIGHT);
             echo " height='" .$this->HEIGHT ."' ";
         }
-
+        if(strlen($this->getAlign())>0){
+            " align='".$this->getAlign()."' ";
+        }
     }
     
     echo $this->showStyles();

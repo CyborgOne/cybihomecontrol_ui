@@ -116,6 +116,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
             "config_id DESC, zimmer_id DESC, etagen_id DESC", "cron_id=" . $_SESSION['SelectedCronToEdit']);
 
         $scItemsDbTable->setReadOnlyCols(array("id"));
+        $scItemsDbTable->setNoInsertCols(array("id"));
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
         $scItemsDbTable->setWidth("100%");
@@ -149,13 +150,13 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
         $table->addSpacer(0,10);
 
-
+        $newItemBtn = $scItemsDbTable->getNewEntryButton();
+        $form->add($table);
+        $form->add($newItemBtn);
+    } else {
+        $form->add($table);
     }
-
-    $newItemBtn = $scItemsDbTable->getNewEntryButton();
-
-    $form->add($table);
-    $form->add($newItemBtn);
+    
     
     $form->show();
 

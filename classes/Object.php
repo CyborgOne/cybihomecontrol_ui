@@ -242,6 +242,10 @@ class Object extends Style {
   function setBackgroundColor($color){
 	$this->setStyle("background-color", $color);
   }
+    
+  function getBackgroundColor($color){
+	$this->getStyle("background-color");
+  }
   
   
   
@@ -280,7 +284,7 @@ class Style {
   public   $BORDER;
   
   
-  function aStyle(){
+  function Style(){
 	 $STYLEATTRS = array();
   }
   

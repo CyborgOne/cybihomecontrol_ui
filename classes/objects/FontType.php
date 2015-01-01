@@ -17,6 +17,7 @@ class FontType extends Object {
      $this->setBold($bold);
      $this->setitalic($italic);
      $this->setunderline($underline);
+     $STYLEATTRS = array();
   }
 
 
