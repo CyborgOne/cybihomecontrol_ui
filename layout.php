@@ -74,7 +74,7 @@ $menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
 $spc = new Text(" | ");
 $menu = new DbMenu("Kopfmenue");
 $menu->setAlign("center");
-$menu->setFontsize(4);
+$menu->setFontsize(5);
 $menu->setMenuType("horizontal");
 
 $menuDiv->add($menu);

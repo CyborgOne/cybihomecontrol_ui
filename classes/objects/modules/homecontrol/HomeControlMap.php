@@ -360,7 +360,7 @@ class HomeControlMap extends Object {
 
             if (!(isset($_REQUEST['Name']) && isset($_REQUEST['FunkId']) && isset($_REQUEST['Art']))) {
 
-                $mask = $this->getInsertMask($_REQUEST['X'], $_REQUEST['Y']);
+                $mask = $this->getInsertMask($_REQUEST['X'], $_REQUEST['Y']-$_SESSION['additionalLayoutHeight']);
                 $mask->show();
 
                 $dv = new Div();

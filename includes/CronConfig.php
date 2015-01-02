@@ -96,7 +96,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
     $rAuswahl = $table->createRow();
     $rAuswahl->setColSizes(array(120));
-    $rAuswahl->setAttribute(0, new Text("Cron auswaehlen: "));
+    $rAuswahl->setAttribute(0, new Text("Job auswaehlen: "));
     $rAuswahl->setAttribute(1, $cobSelect);
     $table->addRow($rAuswahl);
 

@@ -103,6 +103,20 @@ class ShortcutSidebar extends Object {
         }
     }
 
+    
+    function getShortcutImageString($configId, $width=50){
+        $ret = "";
+        $configDb = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
+            array("*"), "", "", "", "id=" .$configId);
+        
+        if($configDb->getRow(1)!=null){
+          $itm = new HomeControlItem($configDb->getRow(1));
+          $ret = "<img src='" .$itm->getIconPath() ."' width='".$width."'>";
+        }
+        
+        return $ret;        
+    }
+
 
     /**
      * Wenn ID nicht schon enthalten ist, Einstellungs-Werte übernehmen
@@ -122,12 +136,12 @@ class ShortcutSidebar extends Object {
             
             if($this->LAYOUT_ART == $this->LAYOUT_ART_MOBILE){
                 $this->SHORTCUTS_TOOLTIP .= "<tr style=\"background-color:" . $this->
-                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" . "<font size='6em'>" . $this->
-                    getConfigName($id) . "</font></td><td><font size='6em'>" . ($status == "on" ? $this->
+                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" .$this->getShortcutImageString($id) . "</td><td>" . "<font size='7em'>" . $this->
+                    getConfigName($id) . "</font></td><td><font size='7em'>" . ($status == "on" ? $this->
                     ON_LABEL : $this->OFF_LABEL) . "</font></td></tr>";
             } else {
                 $this->SHORTCUTS_TOOLTIP .= "<tr style=\"background-color:" . $this->
-                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" . "<font size='2'>" . $this->
+                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" .$this->getShortcutImageString($id,15) . "</td><td>" . "<font size='2'>" . $this->
                     getConfigName($id) . "</font></td><td><font size='2'>" . ($status == "on" ? $this->
                     ON_LABEL : $this->OFF_LABEL) . "</font></td></tr>";
                 
@@ -303,9 +317,8 @@ class ShortcutSidebar extends Object {
 
                 $spn = new Span($shortcutRow->getNamedAttribute("name"), $shortcutRow->
                     getNamedAttribute("name"));
-                $spn->setFontsize(7);
-                $spn->add(new Text($this->SHORTCUTS_TOOLTIP, null, false, false, false, false));
-
+                $spn->add(new Text($this->SHORTCUTS_TOOLTIP, 6, false, false, false, false));
+                $spn->setFontsize(8);
                 $dvSc->add($spn);
                 $dvSc->add($spc);
 
