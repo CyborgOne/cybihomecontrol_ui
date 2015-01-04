@@ -8,6 +8,10 @@ if (!isset($_REQUEST['sensorId'])) {
 
 $SHORTCUTS_URL_COMMAND = "";
 $sensorId = $_REQUEST['sensorId'];
+if(strlen($sensorId)<=0){
+    return;
+}
+
 
 $link = mysql_connect($DBHOST, $DBUSER, $DBPASS);
 if (!$link) {
@@ -23,9 +27,10 @@ echo "
   <body>
 ";
 
-$SHORTCUTS_URL_COMMAND = prepareSensorSwitchLink($sensorId);
-echo $SHORTCUTS_URL_COMMAND . "</br>";
-$contents = file_get_contents("http://localhost/?switchShortcut=" . $SHORTCUTS_URL_COMMAND);
+
+$SENSOR_URL_COMMAND = prepareSensorSwitchLink($sensorId);
+echo $SENSOR_URL_COMMAND . "</br>";
+$contents = file_get_contents("http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND);
 
 echo "Sensor Signal: " . $sensorId . "</br>";
 
@@ -34,8 +39,12 @@ echo "
 </html>
 ";
 
-$sql = "UPDATE homecontrol_sensor SET lastSignal=" .time() ." WHERE id=" . $sensorId;
+if(isset($_REQUEST['sensorWert']) && strlen($_REQUEST['sensorWert'])>0){
+  $sql = "UPDATE homecontrol_sensor SET lastValue=" .$_REQUEST['sensorWert'] ." WHERE id=" . $sensorId;
+  $result = mysql_query($sql);
+}
 
+$sql = "UPDATE homecontrol_sensor SET lastSignal=" .time() ." WHERE id=" . $sensorId;
 $result = mysql_query($sql);
 
 mysql_close($link);

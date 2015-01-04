@@ -66,6 +66,7 @@ class Table extends Object {
 
      $this->HEAD_ENABLED = true;
      $this->addDefaultHeaderToTable();
+     $this->setFonttype(new FontType());
   }
   
   function addDefaultHeaderToTable(){
