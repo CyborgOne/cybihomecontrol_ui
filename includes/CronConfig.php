@@ -55,7 +55,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
         $scDbTable->doUpdate();
     }
 
-    $updateMask = $scDbTable->getUpdateMask();
+    $updateMask = $scDbTable->getUpdateAllMask();
     $updateMask->show(); 
 
     $spc->setHeight(10);
@@ -144,7 +144,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
         }
 
         $rZuordnung = $table->createRow();
-        $rZuordnung->setAttribute(0, $scItemsDbTable->getUpdateMask());
+        $rZuordnung->setAttribute(0, $scItemsDbTable->getUpdateAllMask());
         $rZuordnung->setSpawnAll(true);
         $table->addRow($rZuordnung);
 

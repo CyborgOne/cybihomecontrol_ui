@@ -174,7 +174,7 @@ class DbMenu  extends Object {
                     $lnk .= "&menuParent=" .$row['parent'];
                 } 
 			    $lSpacer = new Link($lnk ,$this->SPACER, false, $row['target'] );
-				$lSpacer->setToolTip($row['tooltip']);
+				//$lSpacer->setToolTip($row['tooltip']);
 	        }  	
 	      	
         
@@ -187,7 +187,7 @@ class DbMenu  extends Object {
             } 
 	        $l = new Link($lnk, $txt[$rcnt], false, $row['target']);
 	        $l->setStyleclass("menulink");
-	        $l->setToolTip($row['tooltip']);
+	       // $l->setToolTip($row['tooltip']);
 
 
 	        
@@ -310,7 +310,7 @@ class DbMenu  extends Object {
             } 
             if($ctr!=0 && $ctr!=($entryCount)){
     		    $lSpacer = new Link($lnk ,$spacer, false, $row['target'] );
-    			$lSpacer->setToolTip($row['tooltip']);
+    			//$lSpacer->setToolTip($row['tooltip']);
     			$div->add($lSpacer);
 		    }
 		  // Link	
@@ -324,7 +324,7 @@ class DbMenu  extends Object {
             
 			$l = new Link($lnk ,$txt, false, $row['target'] );
 			$l->setStyleclass("menulink");
-	        $l->setToolTip($row['tooltip']);
+	        //$l->setToolTip($row['tooltip']);
 	        
 	        $div->add($l);
            

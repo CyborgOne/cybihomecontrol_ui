@@ -822,7 +822,6 @@ function getDefaultValue($string, $id){
 				
 			  } else if (mysql_field_type($result, $i) == "blob"){
 	            $o = new TextArea($fieldName, $val, 120, 10);
-	            $o->setTextEditor(true);
                 
 			  } else if (mysql_field_type($result, $i) == "date"){
 	            $o = new DateTextfield($fieldName, $val);
@@ -1434,15 +1433,18 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 			$fieldLen = $maxLen;
 		 }
 
-		 // Wenn DbCombo definiert wurde wird die Combobox zur Spalte angezeigt
-         if($this->isDbComboSet($this->TABLENAME, $fieldName)){
+        $lookups   = getLookupWerte($_SESSION['config']->DBCONNECT, $this->TABLENAME, $fieldName);
+        if(mysql_num_rows($lookups)>0){
+	      $t = new LookupCombo($_SESSION['config']->DBCONNECT, $fieldName.$rowId, $this->TABLENAME, $fieldName, $row->getNamedAttribute($fieldName));
+	    } else if($this->isDbComboSet($this->TABLENAME, $fieldName)){
+	       // Wenn DbCombo definiert wurde wird die Combobox zur Spalte angezeigt
          	//Wenn die Combobox noch nicht erzeugt wurde, erzeugen.
 		   if(! (isset($dbComboArrays[$this->TABLENAME.$colNames[$ia]])) ){
 		     $dbComboArrays[$this->TABLENAME.$colNames[$ia]] = getDbComboArray($this->TABLENAME, $colNames[$ia], $this->ROWS[$ir]);
 	       }
-      
+
 	       $dbCombo = $dbComboArrays[$this->TABLENAME.$colNames[$ia]];
-	       
+
 		   if(count($dbCombo)>0) {
 		   	 $default = $row->getAttribute($ia);
 		   	 if(! existsKeyInArray($default, $dbCombo)){
@@ -1452,11 +1454,10 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
            }   
 
          } else {
-         	
-          		   
+
   	       if (mysql_field_type($result, $ia) == "blob"){
                 $t = new TextArea($fieldName.$rowId,$row->getNamedAttribute($colNames[$ia]), round(165/count($this->COLNAMES),0), 4);
-                $t->setTextEditor(true);
+
 			  } else if (strpos(mysql_field_flags($result, $ia), "enum")>0){
 			  	$ev = $this->getEnumValues($fieldName);
 			  	
@@ -1704,41 +1705,32 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 
 	  	$ev = $this->getEnumValues($fieldName);
 
+        if($chk>0){
+          $sql .=", ";
+        }
         if( isset($_REQUEST[$x]) && strlen($_REQUEST[$x])>0){
-          if($chk>0){
-            $sql .=", ";
-          }
-          
-          
-          if(strlen($_REQUEST[$x])==0){
-			$sql .= $fieldName ." = null ";
-		  } else {
-		    $sql .= $fieldName ." = '" .str_replace("'", "''", $_REQUEST[$x]) ."' ";
-          }
-          
+		  $sql .= $fieldName ." = '" .str_replace("'", "''", $_REQUEST[$x]) ."' ";
           $chk++;
         } elseif(count($ev)==2 && (in_array('J', $ev) && in_array('N', $ev)) ){
 		  //Checkbox braucht Sonderbehandlung, da bei Wert=N  kein Wert übergeben wird!
-          if($chk>0){
-            $sql .=",";
-          }
-
           $sql .= $fieldName ." = 'N' ";
           $chk++;
-
+		} else if(strlen($_REQUEST[$x])==0){
+		  $sql .= $fieldName ." = null ";
+          $chk++;
 		}
       } 
-
+      
       if($chk>0){
         $sql = "UPDATE " .$this->TABLENAME ." SET " .$sql;
-        $sql = $sql ." WHERE id = " .$rowId;
-        
+        $sql = $sql .", ".$this->DEFAULTS ." WHERE id = " .$rowId;
+
         $this->DBCONNECT->executeQuery($sql);
         
         $updateDo = true;
         if(!isset($_REQUEST['UpdateAllMaskIsActive'])){
           if(! isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK']!="OK")){        	
-	        $e = new Message("Speichern", "änderungen erfolgreich gespeichert");
+	        $e = new Message("Speichern", "Erfolgreich gespeichert");
 	        $_REQUEST['saveOK'] = "OK";
 	      }
 		  $this->refresh();
@@ -1749,14 +1741,14 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
  
     if($updateDo){
       if(! isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK']!="OK")){
-	     $e = new Message("Speichern", "änderungen erfolgreich gespeichert");
+	     $e = new Message("Speichern", "Erfolgreich gespeichert");
 	     $_REQUEST['saveOK'] = "OK";
 	  }
       $this->refresh();
       return true;
     } else {
       if(! isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK']!="OK")){
-	  	$e = new Message("Speichern", "Keine änderungen zu speichern");
+	  	$e = new Message("Speichern", "Nichts zu speichern");
 	  	$_REQUEST['saveOK'] = "OK";
 	  }
       return false;
@@ -1790,7 +1782,7 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
           $statement = "DELETE FROM " .$this->TABLENAME ." WHERE id = " .$rowId ." ";
           $result = $this->DBCONNECT->executeQuery($statement);  
 	
-          $e = new Message("entfernen", "entfernen erfolgreich ");
+          $e = new Message("entfernen", "Entfernen erfolgreich ");
           $this->refresh();
           $ret = true;
 
@@ -1833,7 +1825,7 @@ TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray(
 	 	   $rbtn = $tbl->createRow();
 	 	   $rbtn->setSpawnAll(true);
 	 	
-	       $btnOk = new Button("RowDeleteCommited", "wirklich entfernen");
+	       $btnOk = new Button("RowDeleteCommited", "Wirklich entfernen");
 	       $btnCancle = new Button("Abbrechen", "Abbrechen", "location='" .$_SERVER['SCRIPT_NAME'] ."'");
 	       $div = new Div();
 		   $div->add($btnOk);

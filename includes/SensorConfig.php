@@ -111,7 +111,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             }
 
         $rZuordnung = $table->createRow();
-        $rZuordnung->setAttribute(0, $scItemsDbTable->getUpdateMask());
+        $rZuordnung->setAttribute(0, $scItemsDbTable->getUpdateAllMask());
         $rZuordnung->setSpawnAll(true);
         $table->addRow($rZuordnung);
 

@@ -1,8 +1,8 @@
 <?PHP
 
 class ShortcutSidebar extends Object {
-    public  $LAYOUT_ART_DESKTOP = "DESKTOP";
-    public  $LAYOUT_ART_MOBILE = "MOBILE";
+    public $LAYOUT_ART_DESKTOP = "DESKTOP";
+    public $LAYOUT_ART_MOBILE = "MOBILE";
 
     private $LAYOUT_ART;
     private $SHORTCUTS_DB;
@@ -103,18 +103,18 @@ class ShortcutSidebar extends Object {
         }
     }
 
-    
-    function getShortcutImageString($configId, $width=50){
+
+    function getShortcutImageString($configId, $width = 50) {
         $ret = "";
         $configDb = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
-            array("*"), "", "", "", "id=" .$configId);
-        
-        if($configDb->getRow(1)!=null){
-          $itm = new HomeControlItem($configDb->getRow(1));
-          $ret = "<img src='" .$itm->getIconPath() ."' width='".$width."'>";
+            array("*"), "", "", "", "id=" . $configId);
+
+        if ($configDb->getRow(1) != null) {
+            $itm = new HomeControlItem($configDb->getRow(1), false);
+            $ret = "<img src='" . $itm->getIconPath() . "' width='" . $width . "'>";
         }
-        
-        return $ret;        
+
+        return $ret;
     }
 
 
@@ -133,18 +133,20 @@ class ShortcutSidebar extends Object {
             } else {
                 $this->SHORTCUTS_ROW_COLOR_LAST = $this->SHORTCUTS_ROW_COLOR1;
             }
-            
-            if($this->LAYOUT_ART == $this->LAYOUT_ART_MOBILE){
+
+            if ($this->LAYOUT_ART == $this->LAYOUT_ART_MOBILE) {
                 $this->SHORTCUTS_TOOLTIP .= "<tr style=\"background-color:" . $this->
-                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" .$this->getShortcutImageString($id) . "</td><td>" . "<font size='7em'>" . $this->
-                    getConfigName($id) . "</font></td><td><font size='7em'>" . ($status == "on" ? $this->
-                    ON_LABEL : $this->OFF_LABEL) . "</font></td></tr>";
+                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" . $this->getShortcutImageString($id) .
+                    "</td><td>" . "<font size='7em'>" . $this->getConfigName($id) .
+                    "</font></td><td><font size='7em'>" . ($status == "on" ? $this->ON_LABEL : $this->
+                    OFF_LABEL) . "</font></td></tr>";
             } else {
                 $this->SHORTCUTS_TOOLTIP .= "<tr style=\"background-color:" . $this->
-                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" .$this->getShortcutImageString($id,15) . "</td><td>" . "<font size='2'>" . $this->
-                    getConfigName($id) . "</font></td><td><font size='2'>" . ($status == "on" ? $this->
-                    ON_LABEL : $this->OFF_LABEL) . "</font></td></tr>";
-                
+                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" . $this->getShortcutImageString($id, 15) .
+                    "</td><td>" . "<font size='2'>" . $this->getConfigName($id) .
+                    "</font></td><td><font size='2'>" . ($status == "on" ? $this->ON_LABEL : $this->
+                    OFF_LABEL) . "</font></td></tr>";
+
             }
         }
     }
@@ -215,7 +217,7 @@ class ShortcutSidebar extends Object {
      * Unterstriche werden rausgefiltert. Diese werden verwendet um das vorkommen einzelner IDs sauber zu prüfen.
      */
     function show() {
-        if($this->LAYOUT_ART == $this->LAYOUT_ART_MOBILE){
+        if ($this->LAYOUT_ART == $this->LAYOUT_ART_MOBILE) {
             $this->showMobile();
             return;
         }
@@ -223,7 +225,7 @@ class ShortcutSidebar extends Object {
             3) {
             $this->executeShortcutURL($_REQUEST['switchShortcut']);
         }
-        
+
         $dvSc = new Div();
         $dvSc->setWidth("100%");
 
@@ -287,7 +289,7 @@ class ShortcutSidebar extends Object {
         $dvSc = new Div();
         $dvSc->setWidth("100%");
 
-        $title = new Title("Shortcuts",0,"10em");
+        $title = new Title("Shortcuts", 0, "10em");
 
         $spc = new Line();
 
@@ -307,8 +309,9 @@ class ShortcutSidebar extends Object {
                     SHORTCUTS_URL_COMMAND);
 
 
-                $this->SHORTCUTS_TOOLTIP .= "</table><br> <br><a href='" . $this->SHORTCUTS_URL_COMMAND .
-                    "' >" . "<center><div align='center' style='display:table-cell; padding:20px 30px;width:100%;vertical-align:middle;background-color:green'>" .
+                $this->SHORTCUTS_TOOLTIP .= "</table><br> <br><a href='" . $this->
+                    SHORTCUTS_URL_COMMAND . "' >" .
+                    "<center><div align='center' style='display:table-cell; padding:20px 30px;width:100%;vertical-align:middle;background-color:green'>" .
                     "<font size='8em' color='#deffde'><b>aktivieren</b></font>" . "</div></center>" .
                     "</a><br><br>";
 

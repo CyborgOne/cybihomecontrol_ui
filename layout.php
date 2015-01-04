@@ -34,7 +34,8 @@ $layoutTable = new Table(array(""));
 $layoutTable->setWidth(800);
 
 if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] ==
-    "Einstellungen" && isset($_SESSION['runLink']) && $_SESSION['runLink'] == "homeconfig") {
+    "Einstellungen" && isset($_SESSION['runLink']) && $_SESSION['runLink'] ==
+    "homeconfig") {
     $layoutTable->setAlign("left");
 } else {
     $layoutTable->setAlign("center");
@@ -46,11 +47,10 @@ $layoutTable->setSpacing(0);
 $layoutTable->setPadding(0);
 
 
-
 /* ------------------------------------
 BANNER
 ------------------------------------ */
-$banner = new Image("pics/Banner.png",-1,-1,800);
+$banner = new Image("pics/Banner.png", -1, -1, 800);
 $banner->setGenerated(false);
 $contentLayoutRow1 = $layoutTable->createRow();
 $contentLayoutRow1->setAlign("left");
@@ -79,7 +79,7 @@ $menu->setMenuType("horizontal");
 
 $menuDiv->add($menu);
 
-$layoutTable->addSpacer(0,15);
+$layoutTable->addSpacer(0, 15);
 $contentLayoutRow1 = $layoutTable->createRow();
 $contentLayoutRow1->setAttribute(0, $menuDiv);
 $layoutTable->addRow($contentLayoutRow1);
@@ -132,7 +132,7 @@ if (isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT']) > 0) {
         $menuDiv->setBorder(0);
         $menuDiv->setAlign("left");
         $menuDiv->setStyle("padding", "0px 0px");
- //       $menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
+        //       $menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
 
         $menu = new DbMenu("Hauptmenue");
         $menu->setAlign("center");

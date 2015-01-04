@@ -47,7 +47,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     // --------------------------------------------------
     //  Bearbeiten-Maske
     // --------------------------------------------------
-    $updateMask = $scDbTable->getUpdateMask();
+    $updateMask = $scDbTable->getUpdateAllMask();
     $updateMask->show();
 
     $spc->setHeight(10);
