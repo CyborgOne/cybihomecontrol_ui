@@ -9,9 +9,17 @@ class HomeControlTermCreator extends Object {
     private $TYPE_ZEIT             = 3;
     private $TYPE_WOCHENTAG        = 4;
     
-    function HomeControlTermCreator($additionalUrlParams=""){
+    private $TRIGGER_ID            = 0;
+    private $TRIGGER_SUBID         = 0;
+    private $TRIGGER_TYPE          = 0;
+
+    function HomeControlTermCreator($triggerId, $triggerSubid, $triggerType, $additionalUrlParams=""){
         $this->URL_PARAMS = $additionalUrlParams;
 
+        $this->TRIGGER_ID = $triggerId;
+        $this->TRIGGER_SUBID = $triggerSubid;
+        $this->TRIGGER_TYPE = $triggerType;
+        
         $this->checkRequests();
         
         $this->checkSensorWertTermCreatorMask();
@@ -148,18 +156,20 @@ class HomeControlTermCreator extends Object {
      * TODO: REQUEST und SESSION-Variablen als Parameter
      */
     private function checkSensorWertTermCreatorMask($insert=true){
-        if (strlen($_REQUEST['saveCreateSensorWertTerm'])>0 
+        if (isset($_REQUEST['saveCreateSensorWertTerm']) && strlen($_REQUEST['saveCreateSensorWertTerm'])>0 
           && strlen($_REQUEST['sensor'])>0 && strlen($_REQUEST['value'])>0 && strlen($_REQUEST['condition'])>0 ){
             $orderNr = 1;
             $andOr    = "and";            
             
             $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, value, termcondition, sensor_id, order_nr, and_or) " 
-                        ."VALUES (" .$_SESSION['SelectedSensorToEdit'] .", " .$_SESSION['SelectedSensorItemToEdit'] .", 1, 1" 
+                        ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 1" 
                         .", '" .$_REQUEST['value'] ."', '" .$_REQUEST['condition'] ."', " .$_REQUEST['sensor'] .", " .$orderNr .", '" .$andOr ."' )";
             if($insert){                        
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
+              $this->TYPE = null;
+              $_REQUEST['saveCreateSensorWertTerm'] = null;
             }
-            $this->TYPE = null;
+
             return false;
         }
         return true;
@@ -210,18 +220,20 @@ class HomeControlTermCreator extends Object {
      * TODO: REQUEST und SESSION-Variablen als Parameter
      */
     private function checkSensorStatusTermCreatorMask($insert=true){
-        if (strlen($_REQUEST['saveCreateSensorStatusTerm'])>0 
+        if (isset($_REQUEST['saveCreateSensorStatusTerm']) && strlen($_REQUEST['saveCreateSensorStatusTerm'])>0 
           && strlen($_REQUEST['status'])>0 && strlen($_REQUEST['sensor'])>0  ){
             $orderNr = 1;
             $andOr    = "and";            
             
             $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, status, sensor_id, order_nr, and_or) " 
-                        ."VALUES (" .$_SESSION['SelectedSensorToEdit'] .", " .$_SESSION['SelectedSensorItemToEdit'] .", 1, 2, '" 
+                        ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 2, '" 
                         .$_REQUEST['status'] ."', " .$_REQUEST['sensor'] .", " .$orderNr .", '" .$andOr ."' )";
             if($insert){                        
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
+              $this->TYPE = null;
+              $_REQUEST['saveCreateSensorStatusTerm'] = null;
             }
-            $this->TYPE = null;
+
             return false;
         }
         return true;
@@ -278,18 +290,19 @@ class HomeControlTermCreator extends Object {
      * TODO: REQUEST und SESSION-Variablen als Parameter
      */
     private function checkTimeTermCreatorMask($insert=true){
-        if (strlen($_REQUEST['saveCreateTimeTerm'])>0 
+        if (isset($_REQUEST['saveCreateTimeTerm']) && strlen($_REQUEST['saveCreateTimeTerm'])>0 
           && strlen($_REQUEST['stunde'])>0 && strlen($_REQUEST['minute'])>0 && strlen($_REQUEST['condition'])>0 ){
             $orderNr = 1;
             $andOr    = "and";            
             
             $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, min, std, termcondition, order_nr, and_or) " 
-                        ."VALUES (" .$_SESSION['SelectedSensorToEdit'] .", " .$_SESSION['SelectedSensorItemToEdit'] .", 1, 3, " 
+                        ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 3, " 
                         .$_REQUEST['minute'] .", " .$_REQUEST['stunde'] .", '" .$_REQUEST['condition'] ."', " .$orderNr .", '" .$andOr ."' )";
             if($insert){                        
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
+              $this->TYPE = null;
+              $_REQUEST['saveCreateTimeTerm'] = null;
             }
-            $this->TYPE = null;
             return false;
         }
         return true;
@@ -357,7 +370,7 @@ class HomeControlTermCreator extends Object {
      * TODO: REQUEST und SESSION-Variablen als Parameter
      */
     private function checkWochentagTermCreatorMask($insert=true){
-        if (strlen($_REQUEST['saveCreateWochentagTerm'])>0 
+        if (isset($_REQUEST['saveCreateWochentagTerm']) && strlen($_REQUEST['saveCreateWochentagTerm'])>0 
           && ( strlen($_REQUEST['montag'])>0 || 
                strlen($_REQUEST['dienstag'])>0 || 
                strlen($_REQUEST['mittwoch'])>0 || 
@@ -369,13 +382,14 @@ class HomeControlTermCreator extends Object {
             $andOr    = "and";            
             
             $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, montag, dienstag, mittwoch, donnerstag, freitag, samstag, sonntag, order_nr, and_or) " 
-                        ."VALUES (" .$_SESSION['SelectedSensorToEdit'] .", " .$_SESSION['SelectedSensorItemToEdit'] .", 1, 4"
+                        ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 4"
                         .", '".$_REQUEST['montag'] ."', '" .$_REQUEST['dienstag'] ."', '" .$_REQUEST['mittwoch'] ."', '" .$_REQUEST['donnerstag'] 
                         ."', '" .$_REQUEST['freitag']  ."', '" .$_REQUEST['samstag'] ."', '" .$_REQUEST['sonntag'] ."', " .$orderNr .", '" .$andOr ."' )";
             if($insert){                        
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
+              $this->TYPE = null;
+              $_REQUEST['saveCreateWochentagTerm'] = null;
             }
-            $this->TYPE = null;
             return false;
         }
         return true;

@@ -282,7 +282,7 @@ class HomeControlTermEditor extends Object {
      * TODO: REQUEST und SESSION-Variablen als Parameter
      */
     private function checkWochentagTermEditorMask($update=true){
-          if ( strlen($_REQUEST['saveEditWochentagTerm'])>0 
+          if ( isset($_REQUEST['saveEditWochentagTerm']) && strlen($_REQUEST['saveEditWochentagTerm'])>0 
           && ( strlen($_REQUEST['montag'])>0 || 
                strlen($_REQUEST['dienstag'])>0 || 
                strlen($_REQUEST['mittwoch'])>0 || 

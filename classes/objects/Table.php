@@ -212,7 +212,7 @@ class Table extends Object {
 
 
   function getRow($index){
-  	if($index > $this->getRowcount()){
+  	if($index > $this->getRowcount() || $this->getRowcount()==0){
 		return null;
 	}
 	return $this->ROWS[$index];

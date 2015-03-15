@@ -156,8 +156,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $table->addSpacer(0, 10);
 
-        if (isset($_SESSION['SelectedSensorItemToEdit']) && strlen($_SESSION['SelectedSensorItemToEdit']) >
-            0) {
+        if (isset($_SESSION['SelectedSensorItemToEdit'])) {
             $termDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_term',
                 array("id", "trigger_id", "trigger_type", "config_id", "term_type", "sensor_id",
                 "min", "std", "value", "termcondition", "status", "montag", "dienstag",
@@ -176,8 +175,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             $table->addSpacer(0, 10);
 
             if (isset($_REQUEST[$termDbTable->getNewEntryButtonName()])) {
-                $hcTermCreator = new HomeControlTermCreator($termDbTable->getNewEntryButtonName()."="
-                                                           .$_REQUEST[$termDbTable->getNewEntryButtonName()]);
+                $addUrl = $termDbTable->getNewEntryButtonName()."=".$_REQUEST[$termDbTable->getNewEntryButtonName()];
+                $hcTermCreator = new HomeControlTermCreator($_SESSION['SelectedSensorToEdit'], 
+                                           $_SESSION['SelectedSensorItemToEdit'], 1, $addUrl);
 
                 $rNew = $table->createRow();
                 $rNew->setAlign("center");
@@ -202,17 +202,16 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
                 $table->addRow($rTermZuordnung);
                 $termCount++;
             }
-
             $table->addSpacer(0, 10);
-
             $newItemBtn = $termDbTable->getNewEntryButton();
             $rZuordnung = $table->createRow();
             $rZuordnung->setAttribute(0, $newItemBtn);
             $rZuordnung->setSpawnAll(true);
             $table->addRow($rZuordnung);
-
-            $table->addSpacer(1, 30);
         }
+
+        
+        $table->addSpacer(1, 30);
     }
 
 

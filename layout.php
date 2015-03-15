@@ -33,9 +33,9 @@ $topSpaceTable->show();
 $layoutTable = new Table(array(""));
 $layoutTable->setWidth(800);
 
-if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] ==
-    "Einstellungen" && isset($_SESSION['runLink']) && $_SESSION['runLink'] ==
-    "homeconfig") {
+if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] !=
+    "Steuerung" && isset($_SESSION['runLink']) && $_SESSION['runLink'] !=
+    "start") {
     $layoutTable->setAlign("left");
 } else {
     $layoutTable->setAlign("center");
@@ -92,8 +92,9 @@ HAUPTPANEL
 ------------------------------------ */
 $mainWidth = 610;
 
-if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] ==
-    "Einstellungen") {
+if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] !=
+    "Steuerung" && isset($_SESSION['runLink']) && $_SESSION['runLink'] !=
+    "start") {
     $mainWidth = 804;
 }
 

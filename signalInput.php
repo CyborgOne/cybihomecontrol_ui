@@ -1,4 +1,5 @@
 <?PHP
+
 include ("config/dbConnect.php");
 include ("functions/homecontrol_functions.php");
 
@@ -8,7 +9,7 @@ if (!isset($_REQUEST['sensorId'])) {
 
 $SHORTCUTS_URL_COMMAND = "";
 $sensorId = $_REQUEST['sensorId'];
-if(strlen($sensorId)<=0){
+if (strlen($sensorId) <= 0) {
     return;
 }
 
@@ -39,25 +40,25 @@ echo "
 </html>
 ";
 
-if(isset($_REQUEST['sensorWert']) && strlen($_REQUEST['sensorWert'])>0){
-  $sql = "UPDATE homecontrol_sensor SET lastValue=" .$_REQUEST['sensorWert'] ." WHERE id=" . $sensorId;
-  $result = mysql_query($sql);
+if (isset($_REQUEST['sensorWert']) && strlen($_REQUEST['sensorWert']) > 0) {
+    $sql = "UPDATE homecontrol_sensor SET lastValue=" . $_REQUEST['sensorWert'] .
+        " WHERE id=" . $sensorId;
+    $result = mysql_query($sql);
 }
 
-$sql = "UPDATE homecontrol_sensor SET lastSignal=" .time() ." WHERE id=" . $sensorId;
+$sql = "UPDATE homecontrol_sensor SET lastSignal=" . time() . " WHERE id=" . $sensorId;
 $result = mysql_query($sql);
 
 mysql_close($link);
 
 
-function prepareSensorSwitchLink($sensorId)
-{
+function prepareSensorSwitchLink($sensorId) {
     // Zuerst alle Config-IDs, Dann alle Zimmer und zum Schluss die Etagen bearbeiten.
     // Durch die Methode addShortcutCommandItem($id, $status) wird gewährleistet dass jede ID nur einmal pro Vorgang geschaltet wird.
     $SHORTCUTS_URL_COMMAND = "";
 
     $sql = "SELECT id, sensor_id, config_id, art_id, zimmer_id, etagen_id, funkwahl, on_off " .
-        "FROM homecontrol_sensor_items " . "WHERE sensor_id=" . $sensorId ." " .
+        "FROM homecontrol_sensor_items " . "WHERE sensor_id=" . $sensorId . " " .
         "ORDER BY config_id DESC , zimmer_id DESC , etagen_id DESC ";
 
     $result = mysql_query($sql);
@@ -87,9 +88,9 @@ function prepareSensorSwitchLink($sensorId)
                 $whereStmt = $whereStmt . " etage=" . $row["etagen_id"];
             }
 
-            $sqlConfig = "SELECT id, funk_id, funk_id2 FROM homecontrol_config " .
-                "WHERE " . $whereStmt;
-                
+            $sqlConfig = "SELECT id, funk_id, funk_id2 FROM homecontrol_config " . "WHERE " .
+                $whereStmt;
+
 
             $resultConfig = mysql_query($sqlConfig);
             while ($rowConfig = mysql_fetch_array($resultConfig)) {
@@ -97,26 +98,25 @@ function prepareSensorSwitchLink($sensorId)
             }
         }
     }
-    
+
     return $SHORTCUTS_URL_COMMAND;
 }
 
 /**
  * Wenn ID nicht schon enthalten ist, Einstellungs-Werte übernehmen
  */
-function addShortcutCommandItem($id, $status, $command){
+function addShortcutCommandItem($id, $status, $command) {
     $funkId = getConfigFunkId($id, $status);
 
-    if (!strpos($command, $funkId . "-") && strlen($funkId) > 0 &&
-        strlen($status) > 1) {
+    if (!strpos($command, $funkId . "-") && strlen($funkId) > 0 && strlen($status) >
+        1) {
         $command .= $funkId . "-" . $status . ";";
     }
     return $command;
 }
 
 
-function getConfigFunkId($id, $status)
-{
+function getConfigFunkId($id, $status) {
 
     $sqlConfig = "SELECT id, funk_id, funk_id2, control_art FROM homecontrol_config WHERE id=" .
         $id;
