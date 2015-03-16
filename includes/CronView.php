@@ -21,8 +21,8 @@
         
     $o .= $weekDays[$dayOfWeek];
     for ($iO=1;$iO<7;$iO++){
-      $weekIndex = ($dayOfWeek+$iO)<=6?($dayOfWeek+$iO):($dayOfWeek+$iO)-7;
-      $o .= ",".$weekDays[$weekIndex]; 
+      $weekDayIndex = ($dayOfWeek+$iO)<=6?($dayOfWeek+$iO):($dayOfWeek+$iO)-7;
+      $o .= ",".$weekDays[$weekDayIndex]; 
     }
 
     //Where (Aktueller und nächster Wochentag)
@@ -41,8 +41,37 @@
         $o,
         $w);
   
-  
-    $scDbTable->show();
+    
+    
+    
+    
+// --------------------------------------------
 
+
+    $t = new Title("Timeline");
+    $t->show();
+       
+    $tbl = new Table(array("","", ""));
+    $tbl->setBackgroundColorChange(true);
+
+    foreach ($scDbTable->ROWS as $row){
+        $cron = new HomeControlCron($row);
+        
+        $r = $tbl->createRow();
+        $r->setAlignments(array("left", "left", "right"));
+        $r->setStyle("padding-left", "5px");
+        $r->setStyle("padding-right", "25px");
+        $r->setStyle("padding-top", "12px");
+        $r->setStyle("padding-bottom", "7px");
+        
+        $r->setAttribute(0, new Text($cron->getNextExecutionTimeAsString(),3));
+        $r->setAttribute(1, new Text($cron->getName(),3));
+        $r->setAttribute(2, $cron->getPauseLink());
+        
+        $tbl->addRow($r);
+    }
+
+    $tbl->show();
+    
 ?>
 

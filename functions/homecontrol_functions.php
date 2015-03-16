@@ -1,5 +1,5 @@
 <?PHP
-
+  
   function switchShortcut($arduinoUrl, $shortcutUrl){
     $switchStatusCheck = true;
     ob_implicit_flush(true);
@@ -56,7 +56,7 @@
 
 
   function isFunk2Need($art){
-    $configDb  = new DbTable($_SESSION['config']->DBCONNECT,
+    /*$configDb  = new DbTable($_SESSION['config']->DBCONNECT,
                             'homecontrol_art', 
                             array("zweite_funkid_jn") , 
                             "",
@@ -68,7 +68,7 @@
 
     if($row != null){
 	return $row->getNamedAttribute("zweite_funk_id") == "J";    
-    }     
+    } */    
     
     return false;
   }

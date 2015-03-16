@@ -28,10 +28,8 @@ echo "
   <body>
 ";
 
-
 $SENSOR_URL_COMMAND = prepareSensorSwitchLink($sensorId);
 echo $SENSOR_URL_COMMAND . "</br>";
-$contents = file_get_contents("http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND);
 
 echo "Sensor Signal: " . $sensorId . "</br>";
 
@@ -49,7 +47,18 @@ if (isset($_REQUEST['sensorWert']) && strlen($_REQUEST['sensorWert']) > 0) {
 $sql = "UPDATE homecontrol_sensor SET lastSignal=" . time() . " WHERE id=" . $sensorId;
 $result = mysql_query($sql);
 
+ob_implicit_flush();
+ob_end_flush();
+flush();
+ob_flush ();
+
+if($SENSOR_URL_COMMAND!= ""){
+  $contents = file_get_contents("http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND);
+}
+
 mysql_close($link);
+
+
 
 
 function prepareSensorSwitchLink($sensorId) {
