@@ -53,16 +53,20 @@ class HomeControlSensor extends Object{
    function show(){
      $active = true;
      if ((time()-(24*60*60*1000)) > $this->LASTSIGNAL  ){
-        $active = $false;
+        $active = false;
      }
     
      $tbl = new Table(array("Name", "ID", "letztes Signal", "letzter Wert"));
      $tbl->setBackgroundColorChange(false);
      $tbl->setHeadEnabled($this->isWithHeader());
      $tbl->setColSizes(array(null,100,150,120));
-     $tbl->setStyle("padding", "5px");
+     $tbl->setStyle("padding-left", "5px");
+     $tbl->setStyle("padding-right", "25px");
+     $tbl->setStyle("padding-top", "5px");
+     $tbl->setStyle("padding-bottom", "5px");
      $tbl->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_'.(($this->BGID%2)==0?"1":"2")]);
      $r = $tbl->createRow();
+     $r->setAlignments(array("left", "left", "left", "right"));
      $r->setAttribute(0, new Text($this->SENSORNAME,3));
      $r->setAttribute(1, new Text($this->ID,3));
      $r->setAttribute(2, $active?new Text(date("D d.m.Y H:i:s",$this->LASTSIGNAL),3):"-");
