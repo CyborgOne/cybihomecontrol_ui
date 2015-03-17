@@ -1,18 +1,18 @@
 <?PHP
-
 include ("config/dbConnect.php");
 include ("functions/homecontrol_functions.php");
 
-if (!isset($_REQUEST['sensorId'])) {
-    return;
+if (!isset($_REQUEST['sensorId']) || !isset($_REQUEST['sensorWert']) ) {
+  exitMissingValues();
 }
 
 $SHORTCUTS_URL_COMMAND = "";
-$sensorId = $_REQUEST['sensorId'];
-if (strlen($sensorId) <= 0) {
-    return;
-}
+$sensorId   = $_REQUEST['sensorId'];
+$sensorWert = $_REQUEST['sensorWert'];
 
+if (strlen($sensorId) <= 0 || strlen($sensorWert)<=0 ) {
+  exitMissingValues();
+}
 
 $link = mysql_connect($DBHOST, $DBUSER, $DBPASS);
 if (!$link) {
@@ -20,44 +20,64 @@ if (!$link) {
 }
 mysql_select_db($DBNAME, $link) or die('Could not select database.');
 
+
+/**********************
+ *    Script Start
+ **********************/
+
+// URL-Aufruf ermitteln
+// Wenn keine Schaltvorgaenge notwendig sind (nur Status-Update)
+// wird ein Leerstring zurueckgeliefert
+$SENSOR_URL_COMMAND = prepareSensorSwitchLink($sensorId);
+
+// HTML Ausgabe
 echo "
 <html>
   <head>
     <title>SignalInput</title>
   </head>
   <body>
-";
-
-$SENSOR_URL_COMMAND = prepareSensorSwitchLink($sensorId);
-echo $SENSOR_URL_COMMAND . "</br>";
-
-echo "Sensor Signal: " . $sensorId . "</br>";
-
-echo "
+    Sensor Signal: " . $sensorId . "</br>
+    " .$SENSOR_URL_COMMAND . "</br>
   </body>
 </html>
 ";
 
-if (isset($_REQUEST['sensorWert']) && strlen($_REQUEST['sensorWert']) > 0) {
-    $sql = "UPDATE homecontrol_sensor SET lastValue=" . $_REQUEST['sensorWert'] .
-        " WHERE id=" . $sensorId;
-    $result = mysql_query($sql);
-}
-
-$sql = "UPDATE homecontrol_sensor SET lastSignal=" . time() . " WHERE id=" . $sensorId;
+// MySQL UPDATE
+$sql = "UPDATE homecontrol_sensor SET lastValue=" . $sensorWert .", lastSignal=" . time() .
+       " WHERE id=" . $sensorId;
 $result = mysql_query($sql);
+
+
+mysql_close($link);
+// HTML-Daten an Browser senden,
+// bevor Schaltvorgaenge ausgeloest werden.
 
 ob_implicit_flush();
 ob_end_flush();
 flush();
 ob_flush ();
 
-if($SENSOR_URL_COMMAND!= ""){
+
+// Wenn auszufuehrendes Kommando gefunden wurde, ausfuehren
+if(strlen($SENSOR_URL_COMMAND)>0){
   $contents = file_get_contents("http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND);
 }
 
-mysql_close($link);
 
+function exitMissingValues(){
+  echo "<html>
+    <head>
+      <title>SignalInput: FAILED!</title>
+    </head>
+    <body>
+      FEHLER!</br>
+      sensorId und sensorWert muessen angegeben werden!
+    </body>
+  </html>
+  ";
+  exit("sensorId und sensorWert muessen angegeben werden!");
+}
 
 
 
