@@ -42,10 +42,13 @@ echo "
   </body>
 </html>
 ";
-
+ 
 // MySQL UPDATE
 $sql = "UPDATE homecontrol_sensor SET lastValue=" . $sensorWert .", lastSignal=" . time() .
        " WHERE id=" . $sensorId;
+$result = mysql_query($sql);
+
+$sql = "INSERT INTO homecontrol_sensor_log(sensor_id, value, update_time) values (".$sensorId.",".$sensorWert.",".time().")";
 $result = mysql_query($sql);
 
 
@@ -56,7 +59,7 @@ mysql_close($link);
 ob_implicit_flush();
 ob_end_flush();
 flush();
-ob_flush ();
+
 
 
 // Wenn auszufuehrendes Kommando gefunden wurde, ausfuehren
