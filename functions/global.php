@@ -109,7 +109,7 @@
   }
 
 
-
+   
 
 
   /**
@@ -231,7 +231,24 @@
 	      $count = mysql_num_rows($result);
           
 	      return $count > 0;
-
+    }
+    
+    /**
+     * Durchsucht die angegebene Datei nach dem 
+     * angegebenen Schlagwort (am Zeilenanfang)
+     * und liefert den dahinter befindlichen Wert zurück
+     */
+    function findInFileBehind($path, $searchString){
+        $ret = null;
+        $file=fopen($path, 'r');
+        if($file){
+          while (($line = fgets($file))!==false){
+            if (substr(trim($line),0,strlen($searchString))==$searchString){
+                $ret = trim(substr(trim($line),strlen($searchString)));
+            }
+          }
+        }
+        return $ret;
     }
     
 ?>
