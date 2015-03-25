@@ -26,8 +26,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $spc = new Spacer(20); 
     $ln  = new Line();
 
-    $scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_sensor',
-        array("id", "name", "beschreibung"), "ID, Name, Beschreibung", "", "name", "");
+    $scDbTable = new HcSensorDbTable($_SESSION['config']->DBCONNECT, 'homecontrol_sensor',
+        array("name", "id", "beschreibung"), "Name, ID, Beschreibung", "", "name", "");
 
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
@@ -40,13 +40,17 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     // --------------------------------------------------
     //  Neuer Eintrag
     // --------------------------------------------------
-    if (isset($_REQUEST[$scDbTable->getNewEntryButtonName()])) {
+    if (isset($_REQUEST[$scDbTable->getNewEntryButtonName()]) ||
+        (isset($_REQUEST['InsertIntoDB' . $scDbTable->TABLENAME]) && $_REQUEST['InsertIntoDB'.$scDbTable->TABLENAME] == "Speichern")){
         $scDbTable->showInsertMask();
     }
 
     // --------------------------------------------------
     //  Bearbeiten-Maske
     // --------------------------------------------------
+    if (isset($_REQUEST["DbTableUpdate" . $scDbTable->TABLENAME])) {
+        $scDbTable->doUpdate();
+    }
     $updateMask = $scDbTable->getUpdateAllMask();
     $updateMask->show();
 
@@ -58,5 +62,22 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 }
 
+
+/**
+ * Abgeleitete Klasse von DbTable, mit anpassung beim löschen.
+ * So wird sicher gestellt, dass auch Details entfernt werden. 
+ */
+class HcSensorDbTable extends DbTable {
+    function postDelete($id){
+        $sqlRemoveLogs = "DELETE FROM homecontrol_sensor_log WHERE sensor_id = ".$id;
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveLogs);
+        
+        $sqlRemoveItems = "DELETE FROM homecontrol_sensor_items WHERE sensor_id = ".$id;
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveItems);
+        
+        $sqlRemoveTerms = "DELETE FROM homecontrol_term WHERE trigger_type=1 AND trigger_id = ".$id;
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveTerms);
+    }
+}
 
 ?>

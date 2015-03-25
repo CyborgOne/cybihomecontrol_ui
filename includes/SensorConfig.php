@@ -74,7 +74,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
     if (isset($_SESSION['SelectedSensorToEdit']) && strlen($_SESSION['SelectedSensorToEdit']) >
         0) {
-        $scItemsDbTable = new DbTable($_SESSION['config']->DBCONNECT,
+        $scItemsDbTable = new SensorItemDbTable($_SESSION['config']->DBCONNECT,
             'homecontrol_sensor_items', array("id", "config_id", "art_id", "zimmer_id",
             "etagen_id", "on_off", "sensor_id"),
             "ID, Objekt, Objekt-Art, Zimmer, Etage, An/Aus", "sensor_id=" . $_SESSION['SelectedSensorToEdit'],
@@ -171,7 +171,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             $termDbTable->setHeaderEnabled(true);
             $termDbTable->setWidth("100%");
 
-
             $table->addSpacer(0, 10);
 
             if (isset($_REQUEST[$termDbTable->getNewEntryButtonName()])) {
@@ -218,6 +217,16 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $form->add($table);
 
     $form->show();
+}
+
+
+class SensorItemDbTable extends DbTable{
+    function postDelete($id){
+        $sqlRemoveTerms = "DELETE FROM homecontrol_term WHERE trigger_type=1 " 
+                           ." AND trigger_id = ".$_SESSION['SelectedSensorToEdit']
+                           ." AND trigger_subid = ".$id;
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveTerms);
+    }
 }
 
 ?>

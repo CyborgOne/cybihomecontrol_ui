@@ -26,7 +26,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $spc = new Spacer(20);
     $ln = new Line();
 
-    $scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_cron',
+    $scDbTable = new CronDbTable($_SESSION['config']->DBCONNECT, 'homecontrol_cron',
         array("name", "montag", "dienstag", "mittwoch", "donnerstag", "freitag",
         "samstag", "sonntag", "stunde", "minute"),
         "Name,  Mo, Di, Mi, Do, Fr, Sa, So, Std, Min", "",
@@ -43,13 +43,12 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     // --------------------------------------------------
     //  Neuer Eintrag
     // --------------------------------------------------
-    if (isset($_REQUEST['dbTableNewhomecontrol_cron'])) {
+    if (isset($_REQUEST['dbTableNewhomecontrol_cron']) || 
+        (isset($_REQUEST['InsertIntoDBhomecontrol_cron']) && $_REQUEST['InsertIntoDBhomecontrol_cron'] ==
+         "Speichern")) {
         $scDbTable->showInsertMask();
     }
-    if (isset($_REQUEST['InsertIntoDBhomecontrol_cron']) && $_REQUEST['InsertIntoDBhomecontrol_cron'] ==
-        "Speichern") {
-        $scDbTable->doInsert();
-    }
+    
     // --------------------------------------------------
     //  Bearbeiten-Maske
     // --------------------------------------------------
@@ -109,13 +108,12 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 
     // Zuordnung ausgewählt
-
     if (isset($_SESSION['SelectedCronToEdit']) && strlen($_SESSION['SelectedCronToEdit']) >
         0) {
 
         $scItemsDbTable = new DbTable($_SESSION['config']->DBCONNECT,
             'homecontrol_cron_items', array("id", "config_id", "art_id", "zimmer_id",
-            "etagen_id", "on_off"), "ID, Objekt, Objekt-Art, Zimmer, Etage, An/Aus",
+            "etagen_id", "on_off", "cron_id"), "ID, Objekt, Objekt-Art, Zimmer, Etage, An/Aus",
             "cron_id=" . $_SESSION['SelectedCronToEdit'],
             "config_id DESC, zimmer_id DESC, etagen_id DESC", "cron_id=" . $_SESSION['SelectedCronToEdit']);
 
@@ -168,7 +166,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         // --------------------------------------------------
         //  Bedingungen
         // --------------------------------------------------
-
         $r2Title = $table->createRow();
         $r2Title->setAttribute(0, new Title("Bedingungen bearbeiten"));
         $r2Title->setSpawnAll(true);
@@ -192,7 +189,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             $termDbTable->setDeleteInUpdate(true);
             $termDbTable->setHeaderEnabled(true);
             $termDbTable->setWidth("100%");
-
 
             $table->addSpacer(0, 10);
 
@@ -240,10 +236,21 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $form->add($table);
     }
 
-
     $form->show();
-
 }
 
+
+
+
+class CronDbTable extends DbTable {
+    function postDelete($id){
+        $sqlRemoveTerms = "DELETE FROM homecontrol_term WHERE trigger_type=2 AND trigger_id = ".$id;
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveTerms);
+        
+        $sqlRemoveItems = "DELETE FROM homecontrol_cron_items WHERE cron_id = ".$id;
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveItems);
+  
+    }
+}
 ?>
 

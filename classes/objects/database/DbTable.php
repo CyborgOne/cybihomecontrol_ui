@@ -666,7 +666,7 @@ class DbTable extends Object {
             $this->TABLENAME] == "Speichern") {
             $this->doInsert();
 
-            exit();
+            return;
         }
 
         $title = new Title("Neuer Eintrag");
@@ -1353,6 +1353,8 @@ class DbTable extends Object {
 
         if ($this->isDeleteInUpdate()) {
             $this->doDeleteFromUpdatemask();
+            // Damit die Spalte mit dem Entfernen Button 
+            // zur Verfügung steht, in Arrays einbinden.
             array_push($colNames, "entfernen");
             array_push($tNames, "entfernen");
         }
@@ -1785,7 +1787,7 @@ class DbTable extends Object {
             if (isset($_REQUEST[$delName])) {
 
                 if (isset($_REQUEST['RowDeleteCommited']) && $_REQUEST['RowDeleteCommited'] ==
-                    "wirklich entfernen") {
+                    "Wirklich entfernen") {
 
                     $rowId = $this->ROWS[$ir]->getAttribute(count($this->COLNAMES));
                     $chk = 0;
@@ -1799,7 +1801,8 @@ class DbTable extends Object {
                     $e = new Message("entfernen", "Entfernen erfolgreich ");
                     $this->refresh();
                     $ret = true;
-
+                    
+                    $this->postDelete($rowId);
                 } else {
 
                     $tbl = new Table($this->COLNAMES);
@@ -1854,15 +1857,21 @@ class DbTable extends Object {
                     $frm = new Form($_SERVER['SCRIPT_NAME']);
                     $frm->add($tbl);
                     $frm->add($hiddenOk);
-
-
                     $frm->show();
+
                 }
             }
         }
         return $ret;
     }
 
+    /**
+     * Funktion zum überschreiben für eventuell 
+     * nach löschen erforderlichen Ereignissen
+     */
+    function postDelete($id){
+        
+    }
 
     //----------------------------------------------------------------------
 
