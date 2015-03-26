@@ -38,18 +38,22 @@ if(isset($_REQUEST['sensorId']) && strlen($_REQUEST['sensorId'])>0){
     $cfg['title'] = $rowSensor['name']; 
 // ------------
 
+$timeOffset = 60*60; //get_timezone_offset('UTC')*
+
 // Daten für ausgewählten Sensor ermitteln
     $sql = "SELECT from_unixtime(update_time, '%d.%m.%Y') as tag,  from_unixtime(update_time, '%H:%i:%s') as zeit, value "
           ."FROM homecontrol_sensor_log WHERE sensor_id = " .$_REQUEST['sensorId'];
           
     if(isset($_REQUEST['startTime']) && strlen($_REQUEST['startTime'])>0){
-        $sql .= " AND update_time >= ".strtotime(substr($_REQUEST['startTime'],8,2)."-".substr($_REQUEST['startTime'],3,2)."-".substr($_REQUEST['startTime'],0,2));
+        $sql .= " AND update_time >= " 
+                .(strtotime(substr($_REQUEST['startTime'],8,2)."-".substr($_REQUEST['startTime'],3,2)."-".substr($_REQUEST['startTime'],0,2)) - $timeOffset);
     }
               
     if(isset($_REQUEST['endTime']) && strlen($_REQUEST['endTime'])>0){
-        $sql .= " AND update_time <= ".strtotime(substr($_REQUEST['endTime'],8,2)."-".substr($_REQUEST['endTime'],3,2)."-".(substr($_REQUEST['endTime'],0,2)+1));
+        $sql .= " AND update_time <= "
+                .(strtotime(substr($_REQUEST['endTime'],8,2)."-".substr($_REQUEST['endTime'],3,2)."-".(substr($_REQUEST['endTime'],0,2)+1)) - $timeOffset);
     }
-              
+
     $result = mysql_query($sql);
     
 // Anzahl der auszulassenden Datensätze ermitteln
