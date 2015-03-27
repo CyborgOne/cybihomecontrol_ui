@@ -250,6 +250,9 @@ class CronDbTable extends DbTable {
         $sqlRemoveItems = "DELETE FROM homecontrol_cron_items WHERE cron_id = ".$id;
         $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveItems);
   
+        $sqlRemovePause = "DELETE FROM homecontrol_cron_pause WHERE cron_id = ".$id;
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemovePause);
+  
     }
 }
 ?>
