@@ -95,6 +95,8 @@
     $CONFIG->News_CONFIG = $News_CONFIG;
     $CONFIG->PUBLICVARS = $PUBLICVARS;
     $CONFIG->MAINPATH = $currentInitPath;
+    
+    $CONFIG->IMAGECACHE = new ImageCache();
   } else {
   // CONFIG AUS SESSION LADEN
 

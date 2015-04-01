@@ -304,18 +304,9 @@ class DbTable extends Object {
      * Prüft ob eine Spalte entsprechend dem übergebenen String existiert
      */
     function existsColumn($columnName) {
-        $sql = "select * from information_schema.COLUMNS " . "where TABLE_SCHEMA = '" .
-            $this->DBCONNECT->dbname . "' " . "  and TABLE_NAME   = '" . $this->TABLENAME .
-            "' " . "  and COLUMN_NAME  = '" . $columnName . "' ";
-
-
-        $result = $this->DBCONNECT->executeQuery($sql);
-
-        if (mysql_num_rows($result) > 0) {
-            return true;
-        }
-
-        return false;
+        $result = mysql_query("SHOW COLUMNS FROM `table` LIKE 'fieldname'");
+        $exists = (mysql_num_rows($result))?TRUE:FALSE;
+        return $exists;
     }
 
 

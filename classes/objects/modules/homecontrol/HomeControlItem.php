@@ -31,8 +31,10 @@ class HomeControlItem extends Object {
         $this->ART = $currConfigRow->getNamedAttribute("control_art");
         $this->ETAGE = $currConfigRow->getNamedAttribute("etage");
         $this->ZIMMER = $currConfigRow->getNamedAttribute("zimmer");
-        $this->PIC = strlen($this->getIconPath()) > 4 ? $this->getIconPath() :
-            "pics/homecontrol/steckdose_100.jpg";
+        $this->PIC = $this->getIconPath();
+        if (strlen($this->getIconPath()) <= 4){
+            $this->PIC = "pics/homecontrol/steckdose_100.jpg";
+        }
         $this->FUNKID2_NEED = $this->isFunkId2Needed() == "J";
 
         $this->EDIT_MODE = $editModus;
@@ -194,7 +196,11 @@ class HomeControlItem extends Object {
 
         return $row->getNamedAttribute("pic");
     }
-
+    
+    function getPic(){
+        // $_SESSION['config']->getImageFromCache($this->PIC)
+        return $this->PIC;
+    }
 
     function isFunkId2Needed() {
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_art', array
