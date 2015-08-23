@@ -2193,6 +2193,7 @@ class DbTable extends Object {
 
         $form = new Form($_SERVER['SCRIPT_NAME']);
         $form->add($insertButton);
+        $form->add($this->DEFAULT_HIDDEN_FIELDS);
 
         return $form;
     }

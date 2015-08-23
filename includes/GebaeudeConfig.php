@@ -127,18 +127,18 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
         $scItemsDbTable->setWidth("100%");
 
 // Neuer Eintrag
-        if(isset($_REQUEST['InsertIntoDBhomecontrol_etagen_items']) && $_REQUEST['InsertIntoDBhomecontrol_etagen_items']=="Speichern"){
+        if(isset($_REQUEST['InsertIntoDBhomecontrol_zimmer']) && $_REQUEST['InsertIntoDBhomecontrol_zimmer']=="Speichern"){
 
             $scItemsDbTable->doInsert();
             $scItemsDbTable->refresh();
 
-        } else if(isset($_REQUEST['dbTableNewhomecontrol_etagen_items']) ) {      
+        } else if(isset($_REQUEST['dbTableNewhomecontrol_zimmer']) ) {      
 
           $scItemsDbTable->setBorder(0);
           $insMsk = $scItemsDbTable->getInsertMask();
           $hdnFld = $insMsk->getAttribute(1);
           if($hdnFld instanceof Hiddenfield){
-            $insMsk->setAttribute(1, new Hiddenfield("dbTableNew_Etage_items", "-"));
+            $insMsk->setAttribute(1, new Hiddenfield("dbTableNew_Zimmer_items", "-"));
           }
           
  
