@@ -34,7 +34,7 @@
 		}
 	}
     $bb = new Bilderbuch($_SERVER['DOCUMENT_ROOT'] .$currentPath ."cam_pics");
-    
+    $bb->setMaximumLines(30);
     $bb->show();
 
 ?>

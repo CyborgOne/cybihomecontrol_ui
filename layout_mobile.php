@@ -46,7 +46,7 @@ $spc = new Text(" | ");
 $menu = new DbMenu("Mobilmenue");
 $menu->setSpacer($spc);
 $menu->setAlign("center");
-$menu->setFontsize("8em");
+$menu->setFontsize("7em");
 $menu->setMenuType("horizontal");
 
 $menuDiv->add(new Line(1, 6));
