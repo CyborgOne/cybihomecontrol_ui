@@ -117,6 +117,7 @@ class DbTable extends Object {
         $this->NOINSERTCOLS = array();
         $this->NOUPDATECOLS = array();
         $this->READONLYCOLS = array();
+        $this->DEFAULT_HIDDEN_FIELDS = new Container();
 
         // Falls keine Spaltennamen übergeben -> ALLE ermitteln
         if ($this->COLNAMES[0] == "*") {
@@ -183,6 +184,10 @@ class DbTable extends Object {
         $this->initialized = true;
 
         $this->refresh();
+    }
+    
+    function addDefaultHiddenField($name, $value){
+        array_push($this->DEFAULT_HIDDEN_FIELDS, new HiddenField($name, $value));
     }
     
     function setColSizes($array){
@@ -691,6 +696,7 @@ class DbTable extends Object {
         $title->show();
 
         $form = $this->getInsertMask();
+        $form->add($this->DEFAULT_HIDDEN_FIELDS);
         $form->show();
     }
 
@@ -866,6 +872,7 @@ class DbTable extends Object {
         $f = new Form($_SERVER['SCRIPT_NAME']);
         $f->add($table);
         $f->add($hidden);
+        $f->add($this->DEFAULT_HIDDEN_FIELDS);
         return $f;
     }
 
@@ -901,6 +908,7 @@ class DbTable extends Object {
             $e = new Error("Fehlende Eingabe", "Es wurden nicht alle Werte eingegeben!", $backLink =
                 '');
             $form = $this->getInsertMask();
+            $form->add($this->DEFAULT_HIDDEN_FIELDS);
             $form->show();
             return false;
         }
@@ -1067,7 +1075,7 @@ class DbTable extends Object {
 
         $form = new Form($_SERVER['SCRIPT_NAME']);
         $form->add($table);
-
+        $form->add($this->DEFAULT_HIDDEN_FIELDS);
         $form->show();
     }
 
@@ -1153,8 +1161,8 @@ class DbTable extends Object {
                     $frm = new Form($_SERVER['SCRIPT_NAME']);
                     $frm->add($tbl);
                     $frm->add($hiddenOk);
-
-
+                    $frm->add($this->DEFAULT_HIDDEN_FIELDS);
+                    
                     $frm->show();
                 }
             }
@@ -1174,6 +1182,7 @@ class DbTable extends Object {
         }
 
         $form = $this->getUpdateMask();
+        $form->add($this->DEFAULT_HIDDEN_FIELDS);
         $form->show();
     }
 
@@ -1199,6 +1208,9 @@ class DbTable extends Object {
         
         if(count($this->COLSIZES)>0){
             $table->setColSizes($this->COLSIZES);
+        }
+        if(count($this->ALIGNMENTS)>0){
+            $table->setAlignments($this->ALIGNMENTS);
         }
         
         if (isset($_REQUEST["showUpdateMask" . $this->TABLENAME]) && strlen($_REQUEST["showUpdateMask" .
@@ -1322,25 +1334,28 @@ class DbTable extends Object {
             }
 
             $div = new Div();
-            $div->setWidth(140);
+            $div->setWidth(100);
             $div->setOverflow("visible");
+            
+            $frmUpdBtn = new Form();
+            $frmUpdBtn->add($this->DEFAULT_HIDDEN_FIELDS);
+            $frmUpdBtn->add(new Hiddenfield("showUpdateMask" .$this->TABLENAME, $rowId));
+            $frmUpdBtn->add(new Button("editEtage", "bearbeiten"));
+            $div->add($frmUpdBtn);
 
             //bearbeiten Link
             $btnUpd = new Link($_SERVER['SCRIPT_NAME'] . "?" . "showUpdateMask" . $this->
                 TABLENAME . "=" . $rowId, "bearbeiten");
             $btnUpd->setValidate(false);
-            $div->add($btnUpd);
+            //$div->add($btnUpd);
 
             // entfernen Link einfügen
-            $btnDel = new Link($_SERVER['SCRIPT_NAME'] . "?" . "delete" . $rowId . $this->
-                TABLENAME . "=entfernen", "entfernen");
-            $btnDel->setValidate(false);
+            $frmDelBtn = new Form();
+            $frmDelBtn->add($this->DEFAULT_HIDDEN_FIELDS);
+            $frmDelBtn->add(new Button("delete" .$rowId .$this->TABLENAME, "entfernen"));
+            
             if ($this->isDeleteInUpdate()) {
-                $tmpTxt = new Text("&nbsp; ");
-                $tmpTxt->setFilter(false);
-
-                $div->add($tmpTxt);
-                $div->add($btnDel);
+                $div->add($frmDelBtn);
             }
 
 
@@ -1353,6 +1368,7 @@ class DbTable extends Object {
         $form = new Form($_SERVER['SCRIPT_NAME']);
         $form->add($this->getPageNavigation());
         $form->add($table);
+        $form->add($this->DEFAULT_HIDDEN_FIELDS);        
 
         return $form;
     }
@@ -1558,10 +1574,11 @@ class DbTable extends Object {
         $hidden = new Hiddenfield("UpdateAllMaskIsActive", "true");
 
         $form = new Form($_SERVER['SCRIPT_NAME']);
+        $form->add($this->DEFAULT_HIDDEN_FIELDS);   
 
-	if($deleteMask!=null){
- 	  $form->add($deleteMask);
-	}
+    	if($deleteMask!=null){
+     	  $form->add($deleteMask);
+    	}
 
         $form->add($btnOkFake);
         $form->add($this->getPageNavigation());
@@ -1721,6 +1738,7 @@ class DbTable extends Object {
         $f = new Form($_SERVER['SCRIPT_NAME']);
         $f->add($tblAll);
         $f->add(new Hiddenfield("SingleUpdateRowId", $rowId));
+        $f->add($this->DEFAULT_HIDDEN_FIELDS);
         return $f;
     }
 
@@ -1906,9 +1924,10 @@ class DbTable extends Object {
                     $hiddenOk = new Hiddenfield($delName, $_REQUEST[$delName]);
 
                     //$frm = new Form($_SERVER['SCRIPT_NAME']);
-		    $frm = new Div();
+		            $frm = new Div();
                     $frm->add($tbl);
                     $frm->add($hiddenOk);
+                    $frm->add($this->DEFAULT_HIDDEN_FIELDS);                    
 		    return $frm;
                 }
             }
