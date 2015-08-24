@@ -35,10 +35,19 @@ class MenuTable extends DbTable {
 
 
 
-  function getTextByRunlink($id){
+  function getTextByRunlink($id, $menuParent=''){
 
-    $sql = "SELECT * FROM menu WHERE (link LIKE '%?run=" .$id ."&%') OR (link LIKE '%?run=" .$id ."')";
+    $sql = "SELECT * FROM menu WHERE (link LIKE '%?run=" .$id ."%') OR (link LIKE '%&run=" .$id ."%')";
     $result = $this->DBCONNECT->executeQuery($sql);
+    
+    if(mysql_num_rows($result)>1 && strlen($menuParent)>0){
+        $sql2 = "SELECT * FROM menu WHERE ((link LIKE '%?run=" .$id ."%') OR (link LIKE '%&run=" .$id ."%')) "
+              ."AND parent='".$menuParent."'";
+        $result2 = $this->DBCONNECT->executeQuery($sql2);
+        if(mysql_num_rows($result2)>0){
+            $result = $result2;
+        }
+    }
     if(mysql_num_rows($result)>0){
       $r = mysql_fetch_array($result);
       return $r['text'];

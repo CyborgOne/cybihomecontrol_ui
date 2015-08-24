@@ -56,8 +56,8 @@ class DbMenu  extends Object {
 /**
  * die Methode ermittelt den MenÃÂÃÂÃÂÃÂ¼text zu einem Runlink (fÃÂÃÂÃÂÃÂ¼r Titelanzeige durch $_REQUEST['run']) 
  */
-  function getLabelByRunlink($runLinkName){
-	$x = $this->MENUTABLE->getTextByRunlink($runLinkName);
+  function getLabelByRunlink($runLinkName, $parent){
+	$x = $this->MENUTABLE->getTextByRunlink($runLinkName, $parent);
 	return $x;
   }
 
@@ -205,7 +205,7 @@ class DbMenu  extends Object {
     	      
 			$ftx = $txt[$rcnt]->getFonttype();
 			      
-            if($row['name'] == $_SESSION['MENU_PARENT'] || $row['name'] == $this->getLabelByRunlink($_SESSION['runLink'])){
+            if($row['name'] == $_SESSION['MENU_PARENT'] || $row['name'] == $this->getLabelByRunlink($_SESSION['runLink'], $_SESSION['MENU_PARENT'])){
               $ftx->setColor($_SESSION['config']->COLORS['hover']);                  #
 			  $ftx->setBold(true);
             } else {
@@ -250,7 +250,7 @@ class DbMenu  extends Object {
 
 		    $ftx = $txt[$rcnt]->getFonttype();
 		      
-             if($row['text'] == $_SESSION['MENU_PARENT'] || $row['text'] == $this->getLabelByRunlink($_SESSION['runLink'])){
+             if($row['text'] == $_SESSION['MENU_PARENT'] || $row['text'] == $this->getLabelByRunlink($_SESSION['runLink'],$_SESSION['MENU_PARENT'])){
                 $ftx->setColor($_SESSION['config']->COLORS['hover']);                  
 			    $ftx->setBold(true);
              } else {
@@ -317,7 +317,7 @@ class DbMenu  extends Object {
 	      	$txt = new Text($row['text']);
 	        $txt->setFonttype($this->getFonttype());
 		  
-		    if(ltrim($txt->getText()) == $_SESSION['MENU_PARENT'] || ltrim($txt->getText()) == $this->getLabelByRunlink($_SESSION['runLink'])){
+		    if(ltrim($txt->getText()) == $_SESSION['MENU_PARENT'] || ltrim($txt->getText()) == $this->getLabelByRunlink($_SESSION['runLink'],$_SESSION['MENU_PARENT'])){
                $txt->setText("<font color='" .$_SESSION['config']->COLORS['hover'] ."' >" .$txt->getText() ."</font>");
                $txt->setFilter(false);
             }
@@ -497,7 +497,7 @@ class HorizontalMenuButton extends Object{
 	  //Border, Padding und Spacing muss wegen bg hier fix auf null stehen
       echo "  cellPADDING='0'  cellSPACING='0' border='0'>";
       
-	  if($this->TEXT == $_SESSION['MENU_PARENT'] || $this->TEXT == $this->getLabelByRunlink($_SESSION['runLink'])){
+	  if($this->TEXT == $_SESSION['MENU_PARENT'] || $this->TEXT == $this->getLabelByRunlink($_SESSION['runLink'],$_SESSION['MENU_PARENT'])){
         $this->TEXT = "<font color='" .$_SESSION['config']->COLORS['hover'] ."' >" .$this->TEXT ."</font>";
       } 
       $lnk = $this->LINK;

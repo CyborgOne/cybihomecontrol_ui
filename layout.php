@@ -7,7 +7,7 @@
  */
 
 $detect = new Mobile_Detect();
-$_SESSION['additionalLayoutHeight'] = 195;
+$_SESSION['additionalLayoutHeight'] = 235;
 
 if ($detect->isMobile()) {
     if ($detect->is('iOS')) {
@@ -26,6 +26,12 @@ if ($detect->isMobile()) {
     include ("layout_mobile.php");
     exit();
 }
+
+if(isset($_REQUEST['noFrame']) && ($_REQUEST['noFrame']=="on" || $_REQUEST['noFrame']=="off")){
+  $_SESSION['noFrame'] = $_REQUEST['noFrame'];
+}
+$noFrameLayout = isset($_SESSION['noFrame']) && $_SESSION['noFrame']=="on";
+
 
 $topSpaceTable = new Table(array(""));
 $topSpaceTable->show();
@@ -47,17 +53,24 @@ $layoutTable->setSpacing(0);
 $layoutTable->setPadding(0);
 
 
+
 /* ------------------------------------
 BANNER
 ------------------------------------ */
-$banner = new Image("pics/Banner.png", -1, -1, 800);
-$banner->setGenerated(false);
-$contentLayoutRow1 = $layoutTable->createRow();
-$contentLayoutRow1->setAlign("left");
-$contentLayoutRow1->setAttribute(0, $banner);
-$contentLayoutRow1->setStyle("padding", "10px");
-$layoutTable->addRow($contentLayoutRow1);
 
+$banner = new Image("pics/Banner.png", -1, -1, $bannerWidth);
+$bannerWidth = 800;
+
+if(!$noFrameLayout){
+    $banner->setGenerated(false);
+    $contentLayoutRow1 = $layoutTable->createRow();
+    $contentLayoutRow1->setAlign("left");
+    $contentLayoutRow1->setAttribute(0, $banner);
+    $contentLayoutRow1->setStyle("padding", "10px");
+    $layoutTable->addRow($contentLayoutRow1);
+} else {
+    $_SESSION['additionalLayoutHeight'] = 15;
+}
 
 /* ------------------------------------
 HAUPT-MENU
