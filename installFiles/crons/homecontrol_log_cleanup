@@ -1,0 +1,4 @@
+#!/bin/bash
+cd /var/www
+
+php homecontrol_log_cleanup.php >> /var/log/hc_cron_log_cleanup.log

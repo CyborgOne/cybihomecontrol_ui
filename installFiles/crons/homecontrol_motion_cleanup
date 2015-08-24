@@ -1,0 +1,11 @@
+#!/bin/bash
+# 
+# Cleanup Motion-Detection Images
+# 
+# löscht alle Bilder die älter als X Tage sind
+#
+# (c) by Daniel Scheidler     April 2015
+
+DAYS=1
+
+find /var/www/cam_pics/* -mtime +$DAYS -exec rm {} \;
