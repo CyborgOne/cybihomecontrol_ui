@@ -234,8 +234,9 @@ $layoutTable->addRow($fussLayoutRow);
 
 $versionInfo = "Version: " .file_get_contents('version.txt');;
 $lVersion = new Link("http://smarthomeyourself.de/statusInfo.php", $versionInfo);
+
 $versionLayoutRow = $layoutTable->createRow();
-$versionLayoutRow->setAttribute(0, $versionInfo);
+$versionLayoutRow->setAttribute(0, $lVersion);
 $layoutTable->addRow($versionLayoutRow);
 
 /* --------------------------------- */
