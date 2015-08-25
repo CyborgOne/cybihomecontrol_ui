@@ -1,0 +1,40 @@
+#!/bin/bash
+#
+#
+# (c) by Daniel Scheidler      Aug 2015
+
+git add classes
+git add includes
+git add *.php
+git add functions
+git add *.sh
+git add commitUpdate
+
+git commit
+git push
+
+
+#
+#  Version hochzählen
+#  0.0.0.x = 0.0.0.x+1
+versionValue=$(<version.txt)
+echo "Old Version: " $versionValue
+
+IFS='.' read -a array <<< "$versionValue"
+newVersion=''
+for index in "${!array[@]}"
+do
+#   echo "$index ${array[index]}"
+  if [ $index -eq 3 ]; then
+    tmp=.$((${array[index]}+1));
+  elif [ $index -eq 0 ]; then
+    tmp=${array[index]};
+  else  
+    tmp=.${array[index]};
+  fi
+  newVersion=$newVersion$tmp;
+done
+
+echo $newVersion > version.txt
+echo "New Version: " $newVersion
+
