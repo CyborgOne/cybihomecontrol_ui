@@ -15,7 +15,8 @@ git push
 #
 #  Version hochzählen
 #  0.0.0.x = 0.0.0.x+1
-IFS='.' read -a array <<< "$string"
+versionValue=$(<version.txt)
+IFS='.' read -a array <<< "$versionValue"
 newVersion=''
 for index in "${!array[@]}"
 do
@@ -27,3 +28,4 @@ do
   fi
 done
 
+echo $newVersion > version.txt
