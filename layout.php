@@ -232,6 +232,14 @@ $layoutTable->addRow($fussLayoutRow);
 
 /* --------------------------------- */
 
+$versionInfo = "Version: " .file_get_contents('version.txt');;
+
+$versionLayoutRow = $layoutTable->createRow();
+$versionLayoutRow->setAttribute(0, $versionInfo);
+$layoutTable->addRow($versionLayoutRow);
+
+/* --------------------------------- */
+
 
 $layoutTable->show();
 
