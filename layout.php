@@ -157,15 +157,24 @@ if (isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT']) > 0) {
 }
 
 if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] == "Steuerung") {
-    $cont2 = new DivByInclude("includes/ShortcutSidebar.php", false);
+    $cont2x = new DivByInclude("includes/ShortcutSidebar.php", false);
+    $cont2x->setWidth("170");
+    $cont2x->setHeight("100%");
+    $cont2x->setStyle("padding-left", "8px");
+    $cont2x->setStyle("padding-right", "2px");
+    $cont2x->setStyle("overflow-x", "hidden");
+    $cont2x->setStyle("overflow-y", "auto");
+    $cont2x->setBorder(0);
+    $cont2x->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_2']);
+    
+
+    $cont2 = new Div();
     $cont2->setWidth("180");
-    $cont2->setHeight("100%");
-    $cont2->setStyle("padding-left", "8px");
-    $cont2->setStyle("padding-right", "2px");
-    $cont2->setStyle("overflow-x", "hidden");
-    $cont2->setStyle("overflow-y", "auto");
-    $cont2->setBorder(0);
-    $cont2->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_2']);
+    $cont2->setStyle("overflow-x", "visible");
+    $cont2->setStyle("overflow-y", "visible");
+
+    $cont2->add($cont2x);        
+
 
     $spcr = new Div();
     $spcr->setWidth(0);
@@ -238,7 +247,7 @@ $layoutTable->addRow($versionLayoutRow);
 
 
 $layoutTable->show();
-
+    
 $arduinoFrame = new IFrame($_SESSION['config'], "arduinoSwitch", -1, -1, 1, 1, 0);
 $arduinoFrame->show();
 

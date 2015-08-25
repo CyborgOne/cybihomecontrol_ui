@@ -30,6 +30,7 @@ git add includes
 git add *.php
 git add functions
 git add *.sh
+git add *.sql
 git add commitUpdate
 git add *.txt
 

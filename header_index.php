@@ -61,7 +61,7 @@ echo "
       </head>
     
     
-    <body class='indexbody'  onload='initialize()' onunload='GUnload()'>
+    <body class='indexbody'  onload='uhrzeit('jetzt'); setInterval('uhrzeit()', 1000); initialize()' onunload='GUnload()'>
     
 	
 	<!-- Tooltips -->

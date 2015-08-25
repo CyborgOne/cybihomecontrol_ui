@@ -70,7 +70,7 @@ class ShortcutSidebar extends Object {
             array("id", "funk_id", "funk_id2"), "", "", "", "zimmer=" . $zimmerId);
 
         foreach ($configDb->ROWS as $itemRow) {
-            $this->addShortcutCommandItem($itemRow->getNamedAttribute("id"), $onOff);
+            $this->addShortcutCommandItem($itemRow);
         }
 
     }
@@ -85,7 +85,7 @@ class ShortcutSidebar extends Object {
             array("id", "funk_id", "funk_id2"), "", "", "", "control_art=" . $artId);
 
         foreach ($configDb->ROWS as $itemRow) {
-            $this->addShortcutCommandItem($itemRow->getNamedAttribute("id"), $onOff);
+            $this->addShortcutCommandItem($itemRow);
         }
 
     }
@@ -99,7 +99,7 @@ class ShortcutSidebar extends Object {
             array("id", "funk_id", "funk_id2"), "", "", "", "etage=" . $etagenId);
 
         foreach ($configDb->ROWS as $itemRow) {
-            $this->addShortcutCommandItem($itemRow->getNamedAttribute("id"), $onOff);
+            $this->addShortcutCommandItem($itemRow);
         }
     }
 
@@ -122,9 +122,14 @@ class ShortcutSidebar extends Object {
     /**
      * Wenn ID nicht schon enthalten ist, Einstellungs-Werte übernehmen
      */
-    function addShortcutCommandItem($id, $status) {
-        $funkId = $this->getConfigFunkId($id, $status);
-
+    function addShortcutCommandItem($shortcutViewRow) {
+        $id = $shortcutViewRow->getNamedAttribute("config_id");
+        $name = $shortcutViewRow->getNamedAttribute("name");
+        $funkId = $shortcutViewRow->getNamedAttribute("funk_id");
+        $status = $shortcutViewRow->getNamedAttribute("on_off");
+        $picLink = $shortcutViewRow->getNamedAttribute("pic");
+        $width = 20;
+        
         if (!strpos($this->SHORTCUTS_URL_COMMAND, "_" . $funkId . "-") && strlen($funkId) >
             0 && strlen($status) > 1) {
             $this->SHORTCUTS_URL_COMMAND .= "_" . $funkId . "-" . $status . ";";
@@ -137,15 +142,17 @@ class ShortcutSidebar extends Object {
 
             if ($this->LAYOUT_ART == $this->LAYOUT_ART_MOBILE) {
                 $this->SHORTCUTS_TOOLTIP .= "<tr style=\"background-color:" . $this->
-                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" .$this->getShortcutImageString($id) .
-                    "</td><td>" . "<font size='7em'>" . $this->getConfigName($id) .
-                    "</font></td><td><font size='7em'>" . ($status == "on" ? $this->ON_LABEL : $this->
+                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td style=\"vertical-align: middle;\">".
+                    "<img src='" . $picLink . "' width='" . $width . "'>" .
+                    "</td><td style=\"vertical-align: middle;\">" . "<font size='7em'>" . $name .
+                    "</font></td><td style=\"vertical-align: middle;\"><font size='7em'>" . ($status == "on" ? $this->ON_LABEL : $this->
                     OFF_LABEL) . "</font></td></tr>";
             } else {
-                $this->SHORTCUTS_TOOLTIP .= "<tr style=\"background-color:" . $this->
-                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td>" .$this->getShortcutImageString($id, 15) .
-                    "</td><td>" . "<font size='2'>" . $this->getConfigName($id) .
-                    "</font></td><td><font size='2'>" . ($status == "on" ? $this->ON_LABEL : $this->
+                $this->SHORTCUTS_TOOLTIP .= "<tr  style=\"height:22px;background-color:" . $this->
+                    SHORTCUTS_ROW_COLOR_LAST . ";\"><td style=\"vertical-align: middle;padding-right:2px;\">" .
+                    "<img src='" . $picLink . "' width='" . $width . "'>" .
+                    "</td><td style=\"vertical-align: middle;\">" . "<font size='2'>" . $name .
+                    "</font></td><td style=\"vertical-align: middle;\"><font size='2'>" . ($status == "on" ? $this->ON_LABEL : $this->
                     OFF_LABEL) . "</font></td></tr>";
 
             }
@@ -155,7 +162,7 @@ class ShortcutSidebar extends Object {
 
 
     /**
-     * Liefert die URL zurück, mit der die Kombination 
+     * Erzeugt die benötigte URL und den Tooltip, mit der die Kombination 
      * für die gewünschte Schaltung an den Arduino übergeben wird.
      * Hierbei wird für jedes Element die ID und der gewünschte Status (on/off) durch ein Minus getrennt übergeben.
      * Die einzelnen Elemente werden durch ein Semikolon getrennt. Begonnen wird vor der ID immer mit einem Unterstrich.
@@ -169,50 +176,16 @@ class ShortcutSidebar extends Object {
     function prepareShortcutSwitchLink($shortcutId) {
         // Zuerst alle Config-IDs, Dann alle Zimmer und zum Schluss die Etagen bearbeiten.
         // Durch die Methode addShortcutCommandItem($id, $status) wird gewährleistet dass jede ID nur einmal pro Vorgang geschaltet wird.
-        $itemDb = new DbTable($_SESSION['config']->DBCONNECT,
-            'homecontrol_shortcut_items', array("id", "shortcut_id", "config_id", "art_id",
-            "zimmer_id", "etagen_id", "funkwahl", "on_off"), "", "",
-            "config_id DESC , zimmer_id DESC , etagen_id DESC ", "shortcut_id=" . $shortcutId);
 
-        foreach ($itemDb->ROWS as $itemRow) {
-            $whereStmt = "";
-            $onOff = $itemRow->getNamedAttribute("on_off");
+        $configDb = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_shortcutview',
+        array("*"), "", "", "", "shortcut_id=".$shortcutId);
 
-            if (strlen($itemRow->getNamedAttribute("config_id")) > 0) {
-                $this->addShortcutCommandItem($itemRow->getNamedAttribute("config_id"), $onOff);
-            } else {
-
-                if (strlen($itemRow->getNamedAttribute("art_id")) > 0) {
-                    $whereStmt = $whereStmt . "control_art=" . $itemRow->getNamedAttribute("art_id");
-                }
-
-                if (strlen($itemRow->getNamedAttribute("zimmer_id")) > 0) {
-                    if ($whereStmt != "") {
-                        $whereStmt = $whereStmt . " AND ";
-                    }
-                    $whereStmt = $whereStmt . "zimmer=" . $itemRow->getNamedAttribute("zimmer_id");
-                }
-
-                if (strlen($itemRow->getNamedAttribute("etagen_id")) > 0) {
-                    if ($whereStmt != "") {
-                        $whereStmt = $whereStmt . " AND ";
-                    }
-                    $whereStmt = $whereStmt . "etage=" . $itemRow->getNamedAttribute("etagen_id");
-                }
-
-                $configDb = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
-                array("id", "funk_id", "funk_id2"), "", "", "", $whereStmt);
-
-                foreach ($configDb->ROWS as $configRow) {
-                    $this->addShortcutCommandItem($configRow->getNamedAttribute("id"), $onOff);
-                }
-
-            }
+        foreach ($configDb->ROWS as $configRow) {
+            $onOff = $configRow->getNamedAttribute("on_off");
+            $this->addShortcutCommandItem($configRow);
         }
-
     }
-
-
+    
     /**
      * Shortcut-Sidebar anzeigen 
      * (Standard-Anzeige-Methode)

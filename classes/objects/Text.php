@@ -141,7 +141,7 @@ class Text extends Object {
     }
 
 
-    if( $this->getFontsize() > 0 ||  strlen($this->getFonttype()->getColor())>0){
+    if( ( $this->getFontsize() > 0 ||  strlen($this->getFonttype()->getColor())>0)){
       echo "<font ";
 	  
 	  if( $this->getFontsize() > 0){

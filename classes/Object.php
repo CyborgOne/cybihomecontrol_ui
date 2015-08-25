@@ -288,7 +288,9 @@ class Style {
 	 $STYLEATTRS = array();
   }
   
-  
+  function resetStyles(){
+	 $STYLEATTRS = array();    
+  }
   
     
   function setBorder($w){
