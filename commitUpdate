@@ -9,6 +9,7 @@ git add *.php
 git add functions
 git add *.sh
 git add commitUpdate
+git add *.txt
 
 git commit
 git push
@@ -16,7 +17,7 @@ git push
 
 #
 #  Version hochzählen
-#  0.0.0.x = 0.0.0.x+1
+#  0.0.x = 0.0.x+1
 versionValue=$(<version.txt)
 echo "Old Version: " $versionValue
 
@@ -25,7 +26,7 @@ newVersion=''
 for index in "${!array[@]}"
 do
 #   echo "$index ${array[index]}"
-  if [ $index -eq 3 ]; then
+  if [ $index -eq 2 ]; then
     tmp=.$((${array[index]}+1));
   elif [ $index -eq 0 ]; then
     tmp=${array[index]};

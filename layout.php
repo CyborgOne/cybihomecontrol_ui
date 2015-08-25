@@ -7,7 +7,7 @@
  */
 
 $detect = new Mobile_Detect();
-$_SESSION['additionalLayoutHeight'] = 235;
+$_SESSION['additionalLayoutHeight'] = 195;
 
 if ($detect->isMobile()) {
     if ($detect->is('iOS')) {
@@ -38,14 +38,7 @@ $topSpaceTable->show();
 
 $layoutTable = new Table(array(""));
 $layoutTable->setWidth(800);
-
-if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] !=
-    "Steuerung" && isset($_SESSION['runLink']) && $_SESSION['runLink'] !=
-    "start") {
-    $layoutTable->setAlign("left");
-} else {
-    $layoutTable->setAlign("center");
-}
+$layoutTable->setAlign("left");
 $layoutTable->setBORDER(0);
 $layoutTable->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
 
@@ -57,9 +50,11 @@ $layoutTable->setPadding(0);
 /* ------------------------------------
 BANNER
 ------------------------------------ */
-
-$banner = new Image("pics/Banner.png", -1, -1, $bannerWidth);
 $bannerWidth = 800;
+
+$banner = new Image("pics/Banner.png");
+$banner->setWidth($bannerWidth);
+
 
 if(!$noFrameLayout){
     $banner->setGenerated(false);
@@ -233,7 +228,7 @@ $layoutTable->addRow($fussLayoutRow);
 /* --------------------------------- */
 
 $versionInfo = "Version: " .file_get_contents('version.txt');;
-$lVersion = new Link("http://smarthomeyourself.de/statusInfo.php", $versionInfo);
+$lVersion = new Link("http://smarthomeyourself.de/statusInfo.php", $versionInfo, false, "status");
 
 $versionLayoutRow = $layoutTable->createRow();
 $versionLayoutRow->setAttribute(0, $lVersion);

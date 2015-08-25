@@ -1,7 +1,9 @@
 #!/bin/bash
 #  Installations-Skript für den HomeControl Server
 #
-# (c) by Daniel Scheidler             Aug 2015
+#  
+#
+#  (c) by Daniel Scheidler             Aug 2015
 
 sudo apt-get update
 
