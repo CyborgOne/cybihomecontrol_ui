@@ -138,7 +138,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
           $insMsk = $scItemsDbTable->getInsertMask();
           $hdnFld = $insMsk->getAttribute(1);
           if($hdnFld instanceof Hiddenfield){
-            $insMsk->setAttribute(1, new Hiddenfield("dbTableNew_Zimmer_items", "-"));
+            $insMsk->setAttribute(1, new Hiddenfield("dbTableNew_zimmer", "-"));
           }
           
  

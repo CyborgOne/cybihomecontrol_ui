@@ -6,7 +6,7 @@ class Checkbox extends Object {
   private $WERT;
   private $VALUE;
   private $SELECTED;
-  
+  private $DISABLED=false;
   
   /**
    * Konstruktor fÃÂÃÂÃÂÃÂ¼r ein Checkbox-Objekt
@@ -20,9 +20,17 @@ class Checkbox extends Object {
      $this->setBorder(0);
      $this->WERT = $wert;
      $this->setSelected($value=="J");
-     $this->TEXT = $text;
+     $this->TEXT = $text;   
   }
 
+  function setDisabled($b){
+    $this->DISABLED = true === $b;
+  }
+  
+  function isDisabled(){
+    return $this->DISABLED;
+  }
+  
   /**
    * die Methode gibt an ob die Checkbox ausgewÃÂÃÂÃÂÃÂ¤hlt sein soll
    * 
@@ -117,7 +125,10 @@ class Checkbox extends Object {
 	       ."' value = '" .$this->WERT ."' " .$this->getToolTipTag() ." ";
 	
 	 	
-	if($this->isSelected()){
+	if($this->isDisabled()){
+	   $x .= " disabled ";
+	}
+    if($this->isSelected()){
 		$x .= " checked ";
 	}
 	

@@ -1507,7 +1507,7 @@ class DbTable extends Object {
 
                         if (mysql_field_type($result, $ia) == "blob") {
                             $t = new TextArea($fieldName . $rowId, $row->getNamedAttribute($colNames[$ia]),
-                                round(100 / count($this->COLNAMES), 0), 4);
+                                round(70 / count($this->COLNAMES), 0), 4);
 
                         } else
                             if (strpos(mysql_field_flags($result, $ia), "enum") > 0) {

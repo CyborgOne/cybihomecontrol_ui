@@ -215,7 +215,7 @@ class ShortcutSidebar extends Object {
 
         foreach ($this->SHORTCUTS_DB->ROWS as $shortcutRow) {
             $this->SHORTCUTS_URL_COMMAND = "/?switchShortcut=";
-            $this->SHORTCUTS_TOOLTIP = "<table width='100%' cellspacing=0 cellpadding=0>";
+            $this->SHORTCUTS_TOOLTIP = "<table width='90%' cellspacing=0 cellpadding=0>";
 
             $this->prepareShortcutSwitchLink($shortcutRow->getNamedAttribute("id"));
 

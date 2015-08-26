@@ -8,6 +8,15 @@
 
 $detect = new Mobile_Detect();
 $_SESSION['additionalLayoutHeight'] = 195;
+$bannerWidth = 820;
+$mainWidth = 620;
+$mainHeight = 390;
+
+if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] !=
+    "Steuerung" && isset($_SESSION['runLink']) && $_SESSION['runLink'] !=
+    "start") {
+    $mainWidth = $bannerWidth;
+}
 
 if ($detect->isMobile()) {
     if ($detect->is('iOS')) {
@@ -37,7 +46,7 @@ $topSpaceTable = new Table(array(""));
 $topSpaceTable->show();
 
 $layoutTable = new Table(array(""));
-$layoutTable->setWidth(800);
+$layoutTable->setWidth($bannerWidth);
 $layoutTable->setAlign("left");
 $layoutTable->setBORDER(0);
 $layoutTable->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
@@ -50,7 +59,7 @@ $layoutTable->setPadding(0);
 /* ------------------------------------
 BANNER
 ------------------------------------ */
-$bannerWidth = 800;
+
 
 $banner = new Image("pics/Banner.png");
 $banner->setWidth($bannerWidth);
@@ -72,9 +81,9 @@ HAUPT-MENU
 ------------------------------------ */
 
 $menuDiv = new Div();
-$menuDiv->setWidth(790);
+$menuDiv->setWidth($bannerWidth);
 $menuDiv->setBorder(0);
-$menuDiv->setOverflow("visible");
+$menuDiv->setOverflow("hidden");
 $menuDiv->setAlign("center");
 $menuDiv->setStyle("padding-left", "2px");
 $menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
@@ -98,30 +107,21 @@ $layoutTable->addRow($contentLayoutRow1);
 /* ------------------------------------
 HAUPTPANEL
 ------------------------------------ */
-$mainWidth = 610;
 
-if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] !=
-    "Steuerung" && isset($_SESSION['runLink']) && $_SESSION['runLink'] !=
-    "start") {
-    $mainWidth = 804;
-}
 
 $MainPanel = new Div();
 $MainPanel->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
-$MainPanel->setBorder(0);
-$MainPanel->setStyle("padding", "5px 5px");
-
-
+$MainPanel->setWidth($bannerWidth+12);
+$MainPanel->setBorder(2);
+$MainPanel->setStyle("padding", "0px 0px");
+$MainPanel->setStyle("margin", "0px 0px");
+$MainPanel->setStyle("overflow-x", "hidden");
+$MainPanel->setStyle("overflow-y", "overflow");
+  
 $cont = new DivByInclude($_SESSION['mainpage'], false);
 $cont->setWidth($mainWidth);
-$cont->setStyle("overflow-x", "hidden");
-
-if ($_SESSION['runLink'] == "homeconfig") {
-    $cont->setStyle("overflow-y", "visible");
-} else {
-    $cont->setStyle("overflow-y", "auto");
-}
-$cont->setStyle("padding", "5px 5px");
+$cont->setStyle("overflow-y", "overflow");
+$cont->setStyle("padding", "5px 6px");
 
 $cont->setBackgroundColor($_SESSION['config']->COLORS['main_background']);
 
@@ -136,7 +136,7 @@ if (isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT']) > 0) {
         $_SESSION['additionalLayoutHeight'] = $_SESSION['additionalLayoutHeight'] + $menuHeight;
 
         $menuDiv = new Div();
-        $menuDiv->setWidth("99%");
+        $menuDiv->setWidth(800);
         $menuDiv->setHeight($menuHeight);
         $menuDiv->setBorder(0);
         $menuDiv->setAlign("left");
@@ -158,31 +158,30 @@ if (isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT']) > 0) {
 
 if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] == "Steuerung") {
     $cont2x = new DivByInclude("includes/ShortcutSidebar.php", false);
-    $cont2x->setWidth("170");
-    $cont2x->setHeight("100%");
-    $cont2x->setStyle("padding-left", "8px");
-    $cont2x->setStyle("padding-right", "2px");
-    $cont2x->setStyle("overflow-x", "hidden");
-    $cont2x->setStyle("overflow-y", "auto");
+    $cont2x->setWidth("192");
+    $cont2x->setHeight($mainHeight);
+    $cont2x->setStyle("padding-left", "4px");
+    $cont2x->setStyle("padding-right", "6px");
     $cont2x->setBorder(0);
     $cont2x->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_2']);
-    
+    $cont2x->setStyle("overflow-x", "hidden");
+    $cont2x->setStyle("overflow-y", "overflow");
+        
 
     $cont2 = new Div();
-    $cont2->setWidth("180");
-    $cont2->setStyle("overflow-x", "visible");
-    $cont2->setStyle("overflow-y", "visible");
-
-    $cont2->add($cont2x);        
-
+    $cont2->setWidth("200");
+    $cont2->add($cont2x);
+    $cont2->setStyle("overflow-x", "hidden");
+    $cont2->setStyle("overflow-y", "hidden");
+    
 
     $spcr = new Div();
     $spcr->setWidth(0);
-    $spcr->setHeight(400);
+    $spcr->setHeight($mainHeight);
 
     $tbl = new Table(array("", "", ""));
-    $tbl->setBorder(2);
-    $tbl->setColSizes(array("650", "1", "150"));
+    $tbl->setBorder(0);
+    $tbl->setColSizes(array($mainWidth, "1"));
     $tbl->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_1']);
 
     $rMain = $tbl->createRow();
@@ -194,8 +193,8 @@ if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] == "Steuerung") 
     $MainPanel->add($tbl);
 } else {
     $tbl = new Table(array(""));
-    $tbl->setBorder(2);
-    $tbl->setColSizes(array("800"));
+    $tbl->setBorder(0);
+    $tbl->setColSizes(array($mainWidth));
     $tbl->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_1']);
 
     $rMain = $tbl->createRow();
