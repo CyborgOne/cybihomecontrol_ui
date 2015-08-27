@@ -1,7 +1,9 @@
 <?PHP
 
 class NetworksettingsEditor{
- 
+  
+  private  $SAVE_BTN_LABEL = "Netzwerkeinstellungen Speichern";
+  
   function getNetworkSettingsMask(){
     $tbl = new Table(array("",""));
     
@@ -27,7 +29,7 @@ class NetworksettingsEditor{
     
     $rOk = $tbl->createRow();
     $rOk->setSpawnAll(true);
-    $rOk->setAttribute(0, new Button("saveNetworkSettingsMask", "Speichern"));
+    $rOk->setAttribute(0, new Button("saveNetworkSettingsMask", $this->SAVE_BTN_LABEL));
     $tbl->addRow($rOk);    
     
     $f = new Form();
@@ -79,7 +81,7 @@ class NetworksettingsEditor{
   }
   
   function show(){
-    if(isset($_REQUEST['saveNetworkSettingsMask']) && $_REQUEST['saveNetworkSettingsMask']=="Speichern"){
+    if(isset($_REQUEST['saveNetworkSettingsMask']) && $_REQUEST['saveNetworkSettingsMask']==$this->SAVE_BTN_LABEL){
         $err = false;
         $errMsg = "";
         
@@ -121,7 +123,7 @@ class NetworksettingsEditor{
             $msk->show();
         }
     } else {
-        $msk = $this->getNetworkSettingsMask($_REQUEST['ip'],$_REQUEST['mask'],$_REQUEST['gate'],$_REQUEST['dns']);
+        $msk = $this->getNetworkSettingsMask(isset($_REQUEST['ip'])?$_REQUEST['ip']:"0.0.0.0", isset($_REQUEST['mask'])?$_REQUEST['mask']:"0.0.0.0",isset($_REQUEST['gate'])?$_REQUEST['gate']:"0.0.0.0",isset($_REQUEST['dns'])?$_REQUEST['dns']:"0.0.0.0");
         $msk->show();
     }
  }

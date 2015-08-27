@@ -1,14 +1,19 @@
 <?PHP
 include ("config/dbConnect.php");
 
-$loggingDays = 30;
-
-
 $link = mysql_connect($DBHOST, $DBUSER, $DBPASS);
 if (!$link) {
     die('Verbindung schlug fehl: ' . mysql_error());
 }
 mysql_select_db($DBNAME, $link) or die('Could not select database.');
+
+
+
+$sql = "SELECT value FROM pageconfig WHERE name = 'sensorlogDauer'";
+$result = mysql_query($sql);
+$row = mysql_fetch_array($result);
+
+$loggingDays = $row['value'];
 
  
 // MySQL UPDATE

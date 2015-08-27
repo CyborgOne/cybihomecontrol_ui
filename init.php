@@ -49,8 +49,8 @@
   if(!isset($_SESSION)){
     session_start();
   } else {
-    // last request was more than 30 minutes ago
-    if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 1800)) {
+    // Letzte Aktion ist mehr als X Sekunden her.
+    if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $_SESSION['config']->PUBLICVARS['sessionDauer'])) {
       session_unset();     // unset $_SESSION variable for the run-time 
       session_destroy();   // destroy session data in storage
     }

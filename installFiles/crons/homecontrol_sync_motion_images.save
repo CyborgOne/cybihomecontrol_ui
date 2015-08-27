@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Syncronisiert die Cam-Pics mit dem Webserver
+# 
+# (c) by Daniel Scheidler           April 2015
+
+sshpass -p "Cyborg@82" \
+  rsync -rtuve "ssh -p 222  2" /var/www/cam_pics/ danielscheidler@danielscheidler.de:/srv/www/vhosts/danielscheidler.de/motioncam.danielscheidler.de/motioncam_pics/
+
+#sshpass -p "Cyborg@82" \
+#  rsync -rtuve "ssh -p 2222" --delete /var/www/cam_pics/ danielscheidler@danielscheidler.de:/srv/www/vhosts/danielscheidler.de/motioncam.danielscheidler.de/motioncam_pics/
+
+

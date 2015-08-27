@@ -1,3 +1,1 @@
-#!/bin/bash
-cd /var/www
-php hc_cron.php >> /var/log/homecontrolcron.log
+php /var/www/hc_cron.php

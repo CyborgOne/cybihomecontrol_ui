@@ -66,6 +66,25 @@ class DbTable extends Object {
     private $initialized;
 
     private $DEFAULT_HIDDEN_FIELDS;
+    private $UPDATE_USERID_ON_INSERT = true;
+    private $UPDATE_USERID_ON_UPDATE = false;
+
+    
+    function isUpdateUserIdOnInsert(){
+       return $this->UPDATE_USERID_ON_INSERT;
+    }
+
+    function setUpdateUserIdOnInsert($b){
+       $this->UPDATE_USERID_ON_INSERT = ($b===true);
+    }
+
+    function isUpdateUserIdOnUpdate(){
+       return $this->UPDATE_USERID_ON_UPDATE;
+    }
+
+    function setUpdateUserIdOnUpdate($b){
+       $this->UPDATE_USERID_ON_UPDATE = ($b===true);
+    }
 
     /**
      * DbTable($con, $tbname="", $cols=array("*"), $labels="", $defaults="", $o="", $w="")
@@ -1777,6 +1796,7 @@ class DbTable extends Object {
                     }
                     if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) > 0) {
                         $val = $_REQUEST[$x];
+                       // echo "neuer Wert: "+$val;
                         if (mysql_field_type($result, $ia) == "real") {
                             if (isset($val)) {
                                 $val = str_replace(",", ".", $val);
@@ -1797,16 +1817,6 @@ class DbTable extends Object {
                 }                
      		
 
-		if ( $this->isUpdateUserIdOnUpdate() && $this->existsColumn("user_id") && strlen($_SESSION['config']->CURRENTUSER->USERID)>0) {
-			// Wenn nicht explizit gesetzt
-			if( !strpos($sql, "user_id") ){
-				if ($chk>0){
-					$sql .= ", ";
-				}
-				$sql .= "user_id=".$_SESSION['config']->CURRENTUSER->USERID;
-                        }
-	        }
-
                 if ($chk > 0) {
                     $sql = "UPDATE " . $this->TABLENAME . " SET " . $sql;
         
@@ -1815,7 +1825,7 @@ class DbTable extends Object {
                  //   }
         
                     $sql = $sql . " WHERE id = " . $rowId;
-//        echo $sql."<br>";
+        //echo $sql."<br>";
                     $this->DBCONNECT->executeQuery($sql);
         
                     $updateDo = true;
@@ -1830,7 +1840,7 @@ class DbTable extends Object {
                     }
                 }
             }
-        }
+       }
 
         if ($updateDo) {
                     if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=

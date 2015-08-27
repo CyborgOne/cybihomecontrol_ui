@@ -47,6 +47,12 @@ cd /var/www
 rm * -R
 git clone https://github.com/CyborgOne/cybihomecontrol_ui.git .
 
+# Fuer Netzwerk-Einstellungen
+sudo chmod 775 /etc/network/interfaces
+sudo chown root:www-data /etc/network/interfaces
+
+
+
 #
 #  DATENBANK
 #

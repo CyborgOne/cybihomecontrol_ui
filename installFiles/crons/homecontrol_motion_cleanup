@@ -5,7 +5,12 @@
 # löscht alle Bilder die älter als X Tage sind
 #
 # (c) by Daniel Scheidler     April 2015
+user="scripts"
+password="H0meC0ntr0l"
+database="homecontrol"
 
-DAYS=1
+DAYS=$(mysql $database -u $user -p$password -s -e "SELECT value FROM pageconfig WHERE name = 'motionDauer'")
 
-find /var/www/cam_pics/* -mtime +$DAYS -exec rm {} \;
+echo  "$DAYS Tage alte Bilder entfernen"
+#
+find /var/www/cam_pics/* -mtime "+$DAYS" -exec rm {} \;
