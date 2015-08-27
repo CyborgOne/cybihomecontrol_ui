@@ -1761,10 +1761,10 @@ class DbTable extends Object {
         for ($ir = 1; $ir <= count($this->ROWS); $ir++) {
             $rowId = $this->ROWS[$ir]->getAttribute(count($this->FIELDNAMES));
 
-            if ($rowId == $_REQUEST['SingleUpdateRowId'] || isset($_REQUEST['UpdateAllMaskIsActive'])){
+            if ((isset($_REQUEST['SingleUpdateRowId'])  && $rowId == $_REQUEST['SingleUpdateRowId'] )|| isset($_REQUEST['UpdateAllMaskIsActive'])){
                 $chk = 0;
                 $sql = "";
-    
+    		
                 for ($ia = 0; $ia < count($this->FIELDNAMES); $ia++) {
                     $fieldName = mysql_field_name($result, $ia);
                     $row = $this->ROWS[$ir];
@@ -1772,7 +1772,7 @@ class DbTable extends Object {
     
                     $ev = $this->getEnumValues($fieldName);
     
-                    if ($chk > 0 && ! (strlen($_REQUEST[$x]) == 0 && strpos(" " . $this->DEFAULTS, $fieldName) > 0)) {
+                    if ($chk > 0 && isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) >= 0 ) {
                         $sql .= ", ";
                     }
                     if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) > 0) {
@@ -1789,15 +1789,24 @@ class DbTable extends Object {
                         $sql .= $fieldName . " = 'N' ";
                         $chk++;
                     } else {
-                        if (strlen($_REQUEST[$x]) == 0 && strpos(" " . $this->DEFAULTS, $fieldName) <= 0) {
+                        if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) == 0 && strpos(" " . $this->DEFAULTS, $fieldName) <= 0) {
                             $sql .= $fieldName . " = null ";
                             $chk++;
                         }
                     }
                 }                
-     
-    
-        
+     		
+
+		if ( $this->isUpdateUserIdOnUpdate() && $this->existsColumn("user_id") && strlen($_SESSION['config']->CURRENTUSER->USERID)>0) {
+			// Wenn nicht explizit gesetzt
+			if( !strpos($sql, "user_id") ){
+				if ($chk>0){
+					$sql .= ", ";
+				}
+				$sql .= "user_id=".$_SESSION['config']->CURRENTUSER->USERID;
+                        }
+	        }
+
                 if ($chk > 0) {
                     $sql = "UPDATE " . $this->TABLENAME . " SET " . $sql;
         
@@ -1820,9 +1829,10 @@ class DbTable extends Object {
                         return true;
                     }
                 }
-                    
-            
-                if ($updateDo) {
+            }
+        }
+
+        if ($updateDo) {
                     if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
                         "OK")) {
                         $e = new Message("Speichern", "Erfolgreich gespeichert");
@@ -1830,15 +1840,13 @@ class DbTable extends Object {
                     }
                     $this->refresh();
                     return true;
-                } else {
-                    if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
-                        "OK")) {
-                        $e = new Message("Speichern", "Nichts zu speichern");
-                        $_REQUEST['saveOK'] = "OK";
-                    }
-                    return false;
-                }
+        } else {
+            if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
+                "OK")) {
+                $e = new Message("Speichern", "Nichts zu speichern");
+                $_REQUEST['saveOK'] = "OK";
             }
+            return false;
         }
     }
 
