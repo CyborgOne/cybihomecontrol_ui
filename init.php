@@ -48,13 +48,14 @@
 //Session darf erst gestartet werden wenn alle Klassen geladen sind.
   if(!isset($_SESSION)){
     session_start();
-  } else {
+  } 
     // Letzte Aktion ist mehr als X Sekunden her.
     if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $_SESSION['config']->PUBLICVARS['sessionDauer'])) {
       session_unset();     // unset $_SESSION variable for the run-time 
       session_destroy();   // destroy session data in storage
+      session_start();
     }
-  }
+  
 
   $_SESSION['LAST_ACTIVITY'] = time(); 
 
