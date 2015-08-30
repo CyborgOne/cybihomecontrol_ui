@@ -48,13 +48,13 @@ class DbTable extends Object {
 
     var $MAX_ROWS_TO_FETCH;
 
-    var $NOINSERTCOLS; // Array welches die Spalten enthält die aus Insert ausgenommen werden sollen
-    var $NOUPDATECOLS; // Array welches die Spalten enthält die nicht änderbar sein sollen
-    var $READONLYCOLS; // Array welches die Spaltennamen enthält die nicht änderbar sein sollen
+    var $NOINSERTCOLS;     // Array welches die Spalten enthält die aus Insert ausgenommen werden sollen
+    var $NOUPDATECOLS;     // Array welches die Spalten enthält die nicht änderbar sein sollen
+    var $READONLYCOLS;     // Array welches die Spaltennamen enthält die nicht änderbar sein sollen
 
-    var $TOCHECK; // String der mit Kommas getrennt alle Spaltennamen enthält, die Pflichtfelder darstellen
+    var $TOCHECK;          // String der mit Kommas getrennt alle Spaltennamen enthält, die Pflichtfelder darstellen
     var $COLNAMESTRING;
-    var $FONTTYPES; // Array welches die Schriftformatierung für einzelne Spalten vorgibt
+    var $FONTTYPES;        // Array welches die Schriftformatierung für einzelne Spalten vorgibt
     var $HEAD_ENABLED;
     var $DELETE_IN_UPDATE; //boolean der angibt ob ein Button zum entfernen in der UPDATE-Maske angezeigt werden soll
     var $CURRENT_PAGE;
@@ -1612,7 +1612,7 @@ class DbTable extends Object {
 
     function getSingleUpdateMask($rowId) {
         $tblAll = new Table(array(""));
-
+        
         if ($rowId == null || $rowId == "") {
             return $tblAll;
         }
@@ -1625,16 +1625,37 @@ class DbTable extends Object {
 
         $fts = array($f1, $f2);
 
-        $title = new Title("Bearbeite Eintrag");
-
         $table = new Table(array("", ""));
         $table->setHeadEnabled(false);
         $table->setBorder(0);
         $table->setFontTypes($fts);
-
-        $rT = $table->createRow();
-        $rT->setAttribute(0, $title);
-        $table->addRow($rT);
+        
+        $table->setAlign($this->getAlign());
+        $table->setVAlign($this->getVAlign());
+        $table->setAlignments($this->getAlignments());
+        
+        if ($this->WIDTH > 0) {
+            $table->setWidth($this->WIDTH);
+        }
+        if ($this->HEIGHT > 0) {
+            $table->setHeight($this->HEIGHT);
+        }
+        if ($this->BORDER != null && strlen($this->BORDER) > 0) {
+            $table->setBorder($this->BORDER);
+        }
+        if ($this->PADDING >= 0) {
+            $table->setPadding($this->PADDING);
+        }
+        if ($this->HEAD_ENABLED) {
+            $table->setHeadEnabled($this->HEAD_ENABLED);
+        }
+        if ($this->SPACING >= 0) {
+            $table->setSpacing($this->SPACING);
+        }
+        if ($this->XPOS > 0 && $this->YPOS > 0) {
+            $table->setXPos($this->XPOS);
+            $table->setYPos($this->YPOS);
+        }
 
         $chk = 0;
         $stmnt = "SELECT ";
@@ -1734,6 +1755,11 @@ class DbTable extends Object {
                     $r->setAttribute(0, "");
                 }
 
+                $arrChk = array_search($fieldName, $this->READONLYCOLS);
+                if (strlen($arrChk) != 0) {
+                    $o->setReadOnly(true);
+                }
+                
                 $r->setAttribute(1, $o);
 
                 $table->addRow($r);

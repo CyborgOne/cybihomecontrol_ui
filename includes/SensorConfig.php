@@ -1,5 +1,8 @@
 <?PHP
 
+$t = new Title("Sensor Einstellungen");
+$t->show();
+
 if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     CURRENTUSER->STATUS != "user") {
 
@@ -21,8 +24,59 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 } else {
 
-    $spc = new Spacer(10);
+    $spc = new Spacer(20);
     $ln = new Line();
+    $spc->show();
+
+    $table = new Table(array("", ""));
+    $table->setColSizes(array(150));
+
+
+    $sensorDBTbl = new DbTable( $_SESSION['config']->DBCONNECT, 
+                            "homecontrol_sensor", 
+                            array("id", "name", "beschreibung"),
+                            "Id, Name, Beschreibung",
+                            "",
+                            "name",
+                            "");
+    $sensorDBTbl->setReadOnlyCols(array("geaendert", "lastSignal", "lastValue"));
+    $sensorDBTbl->setNoInsertCols(array("geaendert", "lastSignal", "lastValue"));
+    
+    
+    
+    
+    // Neuer Eintrag
+    if (isset($_REQUEST['InsertIntoDBhomecontrol_sensor']) && $_REQUEST['InsertIntoDBhomecontrol_sensor'] ==
+        "Speichern") {
+
+        $sensorDBTbl->doInsert();
+        $sensorDBTbl->refresh();
+
+    } else if (isset($_REQUEST[$sensorDBTbl->getNewEntryButtonName()])) {
+
+            $sensorDBTbl->setBorder(0);
+            $insMsk = $sensorDBTbl->getInsertMask();
+            $hdnFld = $insMsk->getAttribute(1);
+            if ($hdnFld instanceof Hiddenfield) {
+                $insMsk->setAttribute(1, new Hiddenfield($sensorDBTbl->getNewEntryButtonName(), "-"));
+            }
+
+            $rNew = $table->createRow();
+            $rNew->setAttribute(0, $insMsk);
+            $rNew->setSpawnAll(true);
+            $table->addRow($rNew);
+            $table->addSpacer(0,10);
+    }
+
+    $table->addSpacer(0, 10);
+
+    $newItemBtn = $sensorDBTbl->getNewEntryButton("Neuen Sensor anlegen");
+    $rZuordnung = $table->createRow();
+    $rZuordnung->setAttribute(0, $newItemBtn);
+    $rZuordnung->setSpawnAll(true);
+    $table->addRow($rZuordnung);
+
+    $table->addSpacer(1, 10);
 
 
 
@@ -39,12 +93,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $_SESSION['SelectedSensorItemToEdit'] = $_REQUEST['SelectedSensorItemToEdit'];
     }
 
-    $table = new Table(array("", ""));
-    $table->setColSizes(array(150));
-    $table->addSpacer(1, 10);
-
     $rTitle = $table->createRow();
-    $rTitle->setAttribute(0, new Title("Sensor Einstellung bearbeiten"));
+    $rTitle->setAttribute(0, new Title("Schaltgruppen zuordnen"));
     $rTitle->setSpawnAll(true);
     $table->addRow($rTitle);
 
@@ -93,8 +143,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             $scItemsDbTable->doInsert();
             $scItemsDbTable->refresh();
 
-        } else
-            if (isset($_REQUEST[$scItemsDbTable->getNewEntryButtonName()])) {
+        } else if (isset($_REQUEST[$scItemsDbTable->getNewEntryButtonName()])) {
 
                 $scItemsDbTable->setBorder(0);
                 $insMsk = $scItemsDbTable->getInsertMask();
@@ -108,7 +157,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
                 $rNew->setSpawnAll(true);
                 $table->addRow($rNew);
                 $table->addSpacer(0,10);
-            }
+        }
+        
 
         $rZuordnung = $table->createRow();
         $rZuordnung->setAttribute(0, $scItemsDbTable->getUpdateAllMask());
@@ -128,7 +178,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 // --------------------------------------------------
 //  Bedingungen
 // --------------------------------------------------
-
         $r2Title = $table->createRow();
         $r2Title->setAttribute(0, new Title("Bedingungen bearbeiten"));
         $r2Title->setSpawnAll(true);
@@ -138,12 +187,16 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $sqlSensorItems = "SELECT id, id id2 FROM homecontrol_sensor_items WHERE sensor_id=" .
             $_SESSION['SelectedSensorToEdit'];
-            
+
+        
         $cobSelectItems = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sqlSensorItems,
             "SelectedSensorItemToEdit", 
-            isset($_SESSION['SelectedSensorItemToEdit']) ? $_SESSION['SelectedSensorItemToEdit'] : "", 0, 1, " ");
+            isset($_SESSION['SelectedSensorItemToEdit'])&&strlen(trim($_SESSION['SelectedSensorItemToEdit']))>0 ? $_SESSION['SelectedSensorItemToEdit'] : "0", 0, 1);
         $cobSelectItems->setDirectSelect(true);
-
+        $frmChooser = new Form();            
+        $frmChooser->add($cobSelectItems);
+        
+        
         $r2Auswahl = $table->createRow();
         $r2Auswahl->setSpawnAll(true);
         $r2Auswahl->setAttribute(0, new Text("Schaltgruppe auswaehlen: "));
@@ -156,7 +209,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $table->addSpacer(0, 10);
 
-        if (isset($_SESSION['SelectedSensorItemToEdit'])) {
+        if (isset($_SESSION['SelectedSensorItemToEdit']) && strlen($_SESSION['SelectedSensorItemToEdit'])>0) {
             $termDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_term',
                 array("id", "trigger_id", "trigger_type", "config_id", "term_type", "sensor_id",
                 "min", "std", "value", "termcondition", "status", "montag", "dienstag",
@@ -219,15 +272,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $form->show();
 }
 
-
-class SensorItemDbTable extends DbTable{
-    function postDelete($id){
-        $sqlRemoveTerms = "DELETE FROM homecontrol_term WHERE trigger_type=1 " 
-                           ." AND trigger_id = ".$_SESSION['SelectedSensorToEdit']
-                           ." AND trigger_subid = ".$id;
-        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveTerms);
-    }
-}
 
 ?>
 

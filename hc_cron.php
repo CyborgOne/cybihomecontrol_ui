@@ -7,7 +7,7 @@
  */
 include ("functions/homecontrol_functions.php");
 
-$con = new mysqli('localhost', 'homecontrol', 'CybiHOME82', 'homecontrol');
+$con = new mysqli('localhost', 'homecontrol', 'CybiHome82', 'homecontrol');
 if (!$con) {
     echo "Failed to connect to MySQL: ";
     return;

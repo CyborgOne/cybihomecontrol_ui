@@ -32,18 +32,18 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
     $scDbTable->setWidth("100%");
+    $scDbTable->setBorder(0);
 
     $spc->show();
 
-    $scDbTable->setBorder(0);
-
+    
     // --------------------------------------------------
     //  Neuer Eintrag
     // --------------------------------------------------
     if (isset($_REQUEST[$scDbTable->getNewEntryButtonName()]) ||
         (isset($_REQUEST['InsertIntoDB' . $scDbTable->TABLENAME]) && $_REQUEST['InsertIntoDB'.$scDbTable->TABLENAME] == "Speichern")){
         $scDbTable->showInsertMask();
-    }
+    } 
 
     // --------------------------------------------------
     //  Bearbeiten-Maske
