@@ -260,7 +260,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $f->add($tblMain);
     $f->show();
     
-       /*
+    /*
     * NETZWERK
     */
         
@@ -270,8 +270,33 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $line->show();
 
     include("includes/NetworkConfig.php");
-    
+
     $spc->show();
+    $line->show();
+
+    $sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
+    $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlNoFrame);
+    $noFrameExists = mysql_num_rows($rslt)>0; 
+
+    $fNoFrame = new Form();
+    $fNoFrame->add(new Hiddenfield("noFrame", $noFrameExists?"off":"on"));
+    $fNoFrame->add(new Button("ok", "Banner auf dieser IP ".($noFrameExists?"einblenden":"ausblenden")));
+    $fNoFrame->show();
+
+    $spc->show();
+    $line->show();
+
+    $fRemoveCamPics = new Form();
+    $fRemoveCamPics->add(new Hiddenfield("removeCamPics", "dropIt"));
+    $fRemoveCamPics->add(new Button("ok", "Bewegungserkennungsbilder entfernen"));
+    $fRemoveCamPics->show();
+    
+    if($_REQUEST["removeCamPics"] == "dropIt"){        
+        echo shell_exec("sudo rm " .dirname($_SERVER['DOCUMENT_ROOT'].$_SERVER['SCRIPT_NAME'])."/cam_pics/* -R");
+    }        
+
+    $spc->show();
+
 
 }
 

@@ -26,12 +26,12 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $ln  = new Line();
 
     $scDbTable  = new DbTable($_SESSION['config']->DBCONNECT,
-                           'homecontrol_shortcut', 
-	                    array(  "name", "beschreibung" ) , 
-                           "Name, Beschreibung",
-			       "",
-			       "name",
-			       "");
+                            'homecontrol_shortcut',
+                            array(  "name", "beschreibung", "show_shortcut" ) , 
+                            "Name, Beschreibung, Shortcut anzeigen",
+			                "",
+                            "name",
+                            "");
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
     $scDbTable->setWidth("100%");

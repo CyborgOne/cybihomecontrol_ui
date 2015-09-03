@@ -5,12 +5,14 @@
  * @author  Daniel Scheidler
  * @copyright Oktober 2012
  */
-
 $detect = new Mobile_Detect();
+
+$bannerWidth = 780;
+$mainSizeInternal = 620;
 $_SESSION['additionalLayoutHeight'] = 195;
-$bannerWidth = 820;
-$mainWidth = 620;
+
 $mainHeight = 390;
+$mainWidth = $mainSizeInternal;
 
 if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] !=
     "Steuerung" && isset($_SESSION['runLink']) && $_SESSION['runLink'] !=
@@ -36,10 +38,36 @@ if ($detect->isMobile()) {
     exit();
 }
 
+
+$sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
+$rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlNoFrame);
+$noFrameExists = mysql_num_rows($rslt)>0; 
+
 if(isset($_REQUEST['noFrame']) && ($_REQUEST['noFrame']=="on" || $_REQUEST['noFrame']=="off")){
   $_SESSION['noFrame'] = $_REQUEST['noFrame'];
+  
+  if(!$noFrameExists && $_REQUEST['noFrame']=="on"){
+      $sqlAddNoFrame = "INSERT INTO homecontrol_noframe (ip) VALUES ('".$_SERVER['REMOTE_ADDR']."')"; //$_SERVER['HTTP_X_FORWARDED_FOR']
+      $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlAddNoFrame);    
+  }
+  if($noFrameExists && $_REQUEST['noFrame']=="off"){
+      $sqlDelNoFrame = "DELETE FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
+      $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlDelNoFrame);    
+  }
 }
-$noFrameLayout = isset($_SESSION['noFrame']) && $_SESSION['noFrame']=="on";
+
+
+$sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
+$rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlNoFrame);
+$noFrameLayout = mysql_num_rows($rslt)>0; 
+
+if(isset($_REQUEST['changeMode']) && strlen($_REQUEST['changeMode'])>0 && $_SESSION['config']->PUBLICVARS['changeMode']!=$_REQUEST['changeMode']){
+  $updSql = "UPDATE pageconfig SET value=".$_REQUEST['changeMode']." WHERE name='currentMode' ";
+  $_SESSION['config']->DBCONNECT->executeQuery($updSql);
+
+  $_SESSION['config']->PUBLICVARS['currentMode'] = $_REQUEST['changeMode'];
+} 
+
 
 
 $topSpaceTable = new Table(array(""));
@@ -59,8 +87,6 @@ $layoutTable->setPadding(0);
 /* ------------------------------------
 BANNER
 ------------------------------------ */
-
-
 $banner = new Image("pics/Banner.png");
 $banner->setWidth($bannerWidth);
 
@@ -76,15 +102,32 @@ if(!$noFrameLayout){
     $_SESSION['additionalLayoutHeight'] = 15;
 }
 
+  
+
+$modeSwitchComboTbl = new Table(array(""));
+$modeSwitchComboTbl->setWidth(100);
+$modeSwitchComboTbl->setAlign("center");
+$modeSwitchComboTbl->setVAlign("middle");
+$modeSwitchComboTbl->setHeight(25);
+
+$cobMode = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_modes WHERE selectable = 'J'","changeMode",$_SESSION['config']->PUBLICVARS['currentMode']);
+$cobMode->setDirectSelect(true);
+
+$rMode = $modeSwitchComboTbl->createRow();
+$rMode->setAttribute(0, $cobMode);
+$modeSwitchComboTbl->addRow($rMode);
+
+$fMode = new Form();
+$fMode->add($modeSwitchComboTbl);
+
 /* ------------------------------------
 HAUPT-MENU
 ------------------------------------ */
-
 $menuDiv = new Div();
-$menuDiv->setWidth($bannerWidth);
+$menuDiv->setWidth($bannerWidth-80);
 $menuDiv->setBorder(0);
 $menuDiv->setOverflow("hidden");
-$menuDiv->setAlign("center");
+$menuDiv->setAlign("left");
 $menuDiv->setStyle("padding-left", "2px");
 $menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
 
@@ -96,9 +139,18 @@ $menu->setMenuType("horizontal");
 
 $menuDiv->add($menu);
 
+$tblMenu = new Table(array("",""));
+$tblMenu->setAlignments(array("left", "right"));
+$tblMenu->setWidth($bannerWidth+20);
+$tblMenu->setColSizes(array($bannerWidth-70));
+$rMenu = $tblMenu->createRow();
+$rMenu->setAttribute(0,$menuDiv);
+$rMenu->setAttribute(1,$fMode);
+$tblMenu->addRow($rMenu);
+
 $layoutTable->addSpacer(0, 15);
 $contentLayoutRow1 = $layoutTable->createRow();
-$contentLayoutRow1->setAttribute(0, $menuDiv);
+$contentLayoutRow1->setAttribute(0, $tblMenu);
 $layoutTable->addRow($contentLayoutRow1);
 
 /* --------------------------------- */
@@ -107,8 +159,6 @@ $layoutTable->addRow($contentLayoutRow1);
 /* ------------------------------------
 HAUPTPANEL
 ------------------------------------ */
-
-
 $MainPanel = new Div();
 $MainPanel->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
 $MainPanel->setWidth($bannerWidth+12);
@@ -117,7 +167,7 @@ $MainPanel->setStyle("padding", "0px 0px");
 $MainPanel->setStyle("margin", "0px 0px");
 $MainPanel->setStyle("overflow-x", "hidden");
 $MainPanel->setStyle("overflow-y", "overflow");
-  
+
 $cont = new DivByInclude($_SESSION['mainpage'], false);
 $cont->setWidth($mainWidth);
 $cont->setStyle("overflow-y", "overflow");
@@ -136,7 +186,7 @@ if (isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT']) > 0) {
         $_SESSION['additionalLayoutHeight'] = $_SESSION['additionalLayoutHeight'] + $menuHeight;
 
         $menuDiv = new Div();
-        $menuDiv->setWidth(800);
+        $menuDiv->setWidth($bannerWidth);
         $menuDiv->setHeight($menuHeight);
         $menuDiv->setBorder(0);
         $menuDiv->setAlign("left");
@@ -158,7 +208,7 @@ if (isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT']) > 0) {
 
 if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] == "Steuerung") {
     $cont2x = new DivByInclude("includes/ShortcutSidebar.php", false);
-    $cont2x->setWidth("192");
+    $cont2x->setWidth("150");
     $cont2x->setHeight($mainHeight);
     $cont2x->setStyle("padding-left", "4px");
     $cont2x->setStyle("padding-right", "6px");
@@ -166,13 +216,13 @@ if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] == "Steuerung") 
     $cont2x->setBackgroundColor($_SESSION['config']->COLORS['Tabelle_Hintergrund_2']);
     $cont2x->setStyle("overflow-x", "hidden");
     $cont2x->setStyle("overflow-y", "overflow");
-        
-
+      
+    
     $cont2 = new Div();
-    $cont2->setWidth("200");
+    $cont2->setWidth("160");
     $cont2->add($cont2x);
     $cont2->setStyle("overflow-x", "hidden");
-    $cont2->setStyle("overflow-y", "hidden");
+    $cont2->setStyle("overflow-y", "auto");
     
 
     $spcr = new Div();
@@ -216,7 +266,7 @@ FUSS-MENU
 ------------------------------------ */
 
 $footMenuDiv = new Div();
-$footMenuDiv->setWidth(800);
+$footMenuDiv->setWidth($bannerWidth);
 $footMenuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
 $footMenuDiv->setBorder(0);
 $footMenuDiv->setAlign("center");
@@ -232,15 +282,6 @@ $footMenuDiv->add($footMenu);
 $fussLayoutRow = $layoutTable->createRow();
 $fussLayoutRow->setAttribute(0, $footMenuDiv);
 $layoutTable->addRow($fussLayoutRow);
-
-/* --------------------------------- */
-
-$versionInfo = "Version: " .file_get_contents('version.txt');;
-$lVersion = new Link("http://smarthomeyourself.de/statusInfo.php", $versionInfo, false, "status");
-
-$versionLayoutRow = $layoutTable->createRow();
-$versionLayoutRow->setAttribute(0, $lVersion);
-$layoutTable->addRow($versionLayoutRow);
 
 /* --------------------------------- */
 

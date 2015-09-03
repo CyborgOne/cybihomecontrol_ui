@@ -1817,7 +1817,7 @@ class DbTable extends Object {
     
                     $ev = $this->getEnumValues($fieldName);
     
-                    if ($chk > 0 && isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) >= 0 ) {
+                    if (($chk > 0 && isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) >= 0 ) || (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev)))) {
                         $sql .= ", ";
                     }
                     if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) > 0) {
@@ -1835,7 +1835,7 @@ class DbTable extends Object {
                         $sql .= $fieldName . " = 'N' ";
                         $chk++;
                     } else {
-                        if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) == 0 && strpos(" " . $this->DEFAULTS, $fieldName) <= 0) {
+                        if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) == 0 ) { // && strpos(" " . $this->DEFAULTS, $fieldName) <= 0
                             $sql .= $fieldName . " = null ";
                             $chk++;
                         }

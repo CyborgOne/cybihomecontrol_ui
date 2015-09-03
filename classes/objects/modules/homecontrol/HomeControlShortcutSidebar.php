@@ -22,7 +22,7 @@ class ShortcutSidebar extends Object {
 
         $this->SHORTCUTS_DB = new DbTable($_SESSION['config']->DBCONNECT,
             'homecontrol_shortcut', array("id", "name", "beschreibung"),
-            "Id, Name, Beschreibung", "", "name", "");
+            "Id, Name, Beschreibung", "", "name", "show_shortcut='J'");
 
         $this->ON_LABEL = "<div style=\"background-color:#33ee33;\">Ein</Div> ";
         $this->OFF_LABEL = "<div style=\"background-color:#ee3333;\">Aus</Div> ";
@@ -151,8 +151,8 @@ class ShortcutSidebar extends Object {
                 $this->SHORTCUTS_TOOLTIP .= "<tr  style=\"height:22px;background-color:" . $this->
                     SHORTCUTS_ROW_COLOR_LAST . ";\"><td style=\"vertical-align: middle;padding-right:2px;\">" .
                     "<img src='" . $picLink . "' width='" . $width . "'>" .
-                    "</td><td style=\"vertical-align: middle;\">" . "<font size='2'>" . $name .
-                    "</font></td><td style=\"vertical-align: middle;\"><font size='2'>" . ($status == "on" ? $this->ON_LABEL : $this->
+                    "</td><td width='70' style=\"vertical-align: middle;white-space: pre-wrap;word-wrap:break-word;\">" . "<p style=\"font-size:10px;width=50px;white-space: pre-wrap;word-wrap:break-word;\">" . $name .
+                    "</p></td><td style=\"vertical-align: middle;\"><font size='2'>" . ($status == "on" ? $this->ON_LABEL : $this->
                     OFF_LABEL) . "</font></td></tr>";
 
             }
@@ -203,7 +203,7 @@ class ShortcutSidebar extends Object {
         }
 
         $dvSc = new Div();
-        $dvSc->setWidth("100%");
+        $dvSc->setWidth("140");
 
         $title = new Title("Shortcuts");
 
@@ -215,7 +215,7 @@ class ShortcutSidebar extends Object {
 
         foreach ($this->SHORTCUTS_DB->ROWS as $shortcutRow) {
             $this->SHORTCUTS_URL_COMMAND = "/?switchShortcut=";
-            $this->SHORTCUTS_TOOLTIP = "<table width='90%' cellspacing=0 cellpadding=0>";
+            $this->SHORTCUTS_TOOLTIP = "<table width='120' cellspacing=0 cellpadding=0>";
 
             $this->prepareShortcutSwitchLink($shortcutRow->getNamedAttribute("id"));
 
