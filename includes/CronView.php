@@ -1,36 +1,36 @@
 <?PHP
 
+$timelineDuration = getPageConfigParam($_SESSION['config']->DBCONNECT, "timelineDuration");
+
 $spc = new Spacer(20);
 $ln = new Line();
 $weekDays = array(0 => "sonntag", 1 => "montag", 2 => "dienstag", 3 =>
     "mittwoch", 4 => "donnerstag", 5 => "freitag", 6 => "samstag");
 
 $dayOfWeek = date("w", time());
+$w = "(tagnr=".$dayOfWeek ." AND ((stunde >= ".date("H").
+        " AND minute > ".date("i")." ) OR (stunde > ".date("H")."))) OR ";
+     
+$o = "if( ((tagnr=" .$dayOfWeek ." AND ((stunde >= ".date("H").
+        " AND minute > ".date("i")." ) OR (stunde > ".date("H")."))) OR (tagnr!=" .$dayOfWeek .") ) AND tagnr-" .($dayOfWeek) .">=0 ,tagnr-" .($dayOfWeek) .", tagnr+(7-" .($dayOfWeek) .")), stunde, minute";
+        
+if ($timelineDuration>1){
+    for($tmpDays=1;$tmpDays<$timelineDuration;$tmpDays++){
+      $dayOfWeek = $dayOfWeek < 6 ? $dayOfWeek + 1:0;
+      $w .= "tagnr=".$dayOfWeek." OR ";
+    }
+}
 $nextDayOfWeek = $dayOfWeek < 6 ? $dayOfWeek + 1:0;
 
-//Order By (Aktueller Wochentag als erstes)
-$o = "if(".$weekDays[$dayOfWeek]."='J' AND ("."(stunde = ".date("H").
-    " AND minute > ".date("i")." ) OR "."(stunde > ".date("H").
-    ")) ,'0','1'),stunde, minute,";
-
-$o .= $weekDays[$dayOfWeek];
-for ($iO = 1; $iO < 7; $iO++) {
-    $weekDayIndex = ($dayOfWeek + $iO) <= 6 ? ($dayOfWeek + $iO):($dayOfWeek + $iO) -
-        7;
-    $o .= ",".$weekDays[$weekDayIndex];
-}
-
 //Where (Aktueller und nächster Wochentag)
-$w = "(".$weekDays[$dayOfWeek]."='J' AND ("."(stunde = ".date("H").
-    " AND minute > ".date("i")." ) OR "."(stunde > ".date("H").")))"." OR (".$weekDays[$nextDayOfWeek].
-    "='J' AND ("."(stunde = ".date("H")." AND minute <= ".date("i")." ) OR ".
-    "(stunde < ".date("H").")))";
+$w .= " (tagnr=".$nextDayOfWeek." AND ((stunde <= ".date("H")." AND minute <= ".date("i")." ) OR ".
+     "(stunde < ".date("H").")))";
 
 
-$scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_cron',
-    array("name", "montag", "dienstag", "mittwoch", "donnerstag", "freitag",
+$scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_cronview',
+    array("wochentag", "tagnr", "name", "montag", "dienstag", "mittwoch", "donnerstag", "freitag",
     "samstag", "sonntag", "stunde", "minute", "id"),
-    "Name,  Mo, Di, Mi, Do, Fr, Sa, So, Std, Min", "", $o, $w);
+    "Wochentag, Tag Nr, Name,  Mo, Di, Mi, Do, Fr, Sa, So, Std, Min", "", $o, $w);
 
 
 // --------------------------------------------

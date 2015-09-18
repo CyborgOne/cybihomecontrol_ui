@@ -38,10 +38,14 @@ class HomeControlCron {
 
 
     function getPauseLink() {
-        if($this->isCronPaused()){
-            return $this->getPauseDeactivationLink();
+        if ($this->isNextExecutionCron() && ($_SESSION['config']->CURRENTUSER->STATUS=="admin" || $_SESSION['config']->CURRENTUSER->STATUS=="user")){
+            if($this->isCronPaused()){
+                return $this->getPauseDeactivationLink();
+            } else {
+                return $this->getPauseActivationLink();
+            }
         } else {
-            return $this->getPauseActivationLink();
+            return new Spacer(0);
         }
     }
 
@@ -95,13 +99,31 @@ class HomeControlCron {
         $ret = "";
 
         if (strlen($dayIndex) > 0 && $dayIndex >= 0 && $dayIndex <= 6) {
-            $ret = $this->SHORTWEEKDAYS[$dayIndex];
+            $ret = $this->CRON_ROW->getNamedAttribute("wochentag");
             $ret .= " ".sprintf('%02d', $this->CRON_ROW->getNamedAttribute("stunde"));
             $ret .= ":".sprintf('%02d', $this->CRON_ROW->getNamedAttribute("minute"));
         }
         return $ret;
     }
+    
+    function isNextExecutionCron(){
+        $dayIndex = $this->CRON_ROW->getNamedAttribute("tagnr");
+        if ($dayIndex >= 0 && $dayIndex <= 6) {
+            $std = $this->CRON_ROW->getNamedAttribute("stunde");
+            $min = $this->CRON_ROW->getNamedAttribute("minute");
 
+            $rlNxtDay = date("w") < 6 ? date("w") + 1:0;
+               
+            $isCurrentDay = $dayIndex==date("w");
+            $isNextDay = $dayIndex==$rlNxtDay;
+  
+            if ( ($isCurrentDay && ($std == date("H") && $min > date("i") || $std > date("H")) ) || 
+                 ($isNextDay    && ($std == date("H") && $min < date("i") || $std < date("H")) )  ) {
+                 return true;
+            }
+        }
+        return false;
+    }
 
     function isCronPaused() {
         $sql = "SELECT 'X' FROM homecontrol_cron_pause WHERE cron_id = ".$this->getId();

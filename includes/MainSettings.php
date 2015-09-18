@@ -40,23 +40,19 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
                             'pageconfig', 
                             array("*"));
     $configDb->setReadOnlyCols(array("name"));
-    
+    // Checkboxen brauchen Sonderbehandlung da bei fehlender Auswahl kein Wert mitgegeben wird
     if(isset($_REQUEST['DbTableUpdatepageconfig']) && !isset($_REQUEST['loginForSwitchNeed'])){
         $_REQUEST['loginForSwitchNeed'] = 'N';
     }
-        
     if(isset($_REQUEST['DbTableUpdatepageconfig']) && !isset($_REQUEST['anwesendMotion'])){
         $_REQUEST['anwesendMotion'] = 'N';
     }
-        
     if(isset($_REQUEST['DbTableUpdatepageconfig']) && !isset($_REQUEST['abwesendAlarm'])){
         $_REQUEST['abwesendAlarm'] = 'N';
     }
-        
     if(isset($_REQUEST['DbTableUpdatepageconfig']) && !isset($_REQUEST['abwesendSimulation'])){
         $_REQUEST['abwesendSimulation'] = 'N';
     }
-        
     if(isset($_REQUEST['DbTableUpdatepageconfig']) && !isset($_REQUEST['abwesendMotion'])){
         $_REQUEST['abwesendMotion'] = 'N';
     }
@@ -64,6 +60,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     if( isset($_REQUEST['DbTableUpdate'.$configDb->TABLENAME]) && $_REQUEST['DbTableUpdate'.$configDb->TABLENAME] == "Speichern" ){
       $configDb->doUpdate();
     }
+
     
     $loginForSwitchNeedRow = getRowByName($configDb->ROWS, "loginForSwitchNeed");
     $loginForSwitchNeedName = 'value'.$loginForSwitchNeedRow->getNamedAttribute('id');
@@ -109,6 +106,10 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $pagetitelName = 'value'.$pagetitelRow->getNamedAttribute('id');
     $pagetitel = $pagetitelRow->getNamedAttribute('value');
     
+    $timelineDurationRow          = getRowByName($configDb->ROWS, "timelineDuration");
+    $timelineDurationName    = 'value'.$timelineDurationRow->getNamedAttribute('id');
+    $timelineDuration = $timelineDurationRow->getNamedAttribute('value');
+    
     
     
     
@@ -137,6 +138,10 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
                                        "N", 
                                        $anwesendMotion);
 
+    $cobTimelineDuration = new Combobox($timelineDurationName,
+                                        array(1=>"1",2=>"2",3=>"3",4=>"4",5=>"5",6=>"6"),
+                                        $timelineDuration);
+
     $txtSessionDauer = new Text("Sekunden bis zur neuen Anmeldung");
     $txfSessionDauer = new Textfield($sessionDauerName, $sessionDauer,4,5);
     $divSessionDauer = new Div();
@@ -154,7 +159,13 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $divSensorlogDauer = new Div();
     $divSensorlogDauer->add($txfSensorlogDauer);
     $divSensorlogDauer->add($txtSensorlogDauer);
-                                       
+              
+
+    $txtTimelineDuration = new Text("Tage in der Timeline anzeigen (1-6)");
+    $divTimelineDuration = new Div();
+    $divTimelineDuration->add($cobTimelineDuration);
+    $divTimelineDuration->add($txtTimelineDuration);
+                             
                                        
     $txtPageTitel = new Text("Seiten-Titel");
     $txfPageTitel = new Textfield($pagetitelName, $pagetitel,30,50);
@@ -178,6 +189,8 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $rightDiv->add($divMotionDauer);
     $rightDiv->add(new Spacer(5));
     $rightDiv->add($divSensorlogDauer);
+    $rightDiv->add(new Spacer(5));
+    $rightDiv->add($divTimelineDuration);
     
         
     $leftTab = new Table(array("", ""));
@@ -264,9 +277,10 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     * NETZWERK
     */
         
-    $spc  = new Spacer(20);
+    $spc  = new Spacer(40);
     $line = new Line(1,20);
     $spc->show();
+    $line->show();
     $line->show();
 
     include("includes/NetworkConfig.php");

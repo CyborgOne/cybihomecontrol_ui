@@ -49,7 +49,7 @@
         echo "<br>";
       }
       ob_flush();
-      sleep(.3);
+      sleep(.2);
     }
   }
 
@@ -125,6 +125,29 @@ function getShortcutSwitchKeyForCron($con, $cronId){
     return $shortcutUrl;
   }
 
+
+
+
+function getShortcutSwitchKeyByName($shortcutName){
+    $sqlSubItems = "SELECT * FROM homecontrol_shortcutview WHERE lower(shortcut_name)='" .strtolower($shortcutName)."' ORDER BY on_off"; 
+    $resultSubItems = mysql_query($sqlSubItems);
+    $shortcutUrl = "";
+    while($rowSub = mysql_fetch_array($resultSubItems)) {
+      $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
+    }      
+    return $shortcutUrl;
+}
+
+
+function getShortcutSwitchKeyById($con, $shortcutId){
+    $sqlSubItems = "SELECT * FROM homecontrol_shortcutview WHERE shortcut_id=" .$shortcutId." ORDER BY on_off"; 
+    $resultSubItems = mysql_query($sqlSubItems);
+    $shortcutUrl = "";
+    while($rowSub = mysql_fetch_array($resultSubItems)) {
+      $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
+    }      
+    return $shortcutUrl;
+}
 
   
 ?>
