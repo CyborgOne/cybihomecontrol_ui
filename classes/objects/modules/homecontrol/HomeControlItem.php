@@ -56,45 +56,45 @@ class HomeControlItem extends Object {
         switch ($this->ART) {
             case 1:
                 // Steckdosen
-                $ttt .= "<tr><td><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:green;width:50;height:40;text-align:center;\" ><h1>AN</h1></div></a></td>" .
-                    "<td align='right'><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=-" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:red;width:50;height:40;text-align:center;\" ><h1>AUS</h1></div></a></td></tr>" .
+                $ttt .= "<tr><td><a href='". 
+                    "?schalte=" . $this->FUNK_ID . "'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:green;width:50;height:40;text-align:center;\" ><h1>AN</h1></div></a></td>" .
+                    "<td align='right'><a href='".
+                    "?schalte=-" . $this->FUNK_ID . "'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:red;width:50;height:40;text-align:center;\" ><h1>AUS</h1></div></a></td></tr>" .
                     "</table>";
                 break;
 
             case 2:
                 // Jalousien
-                $ttt .= "<tr><td><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:orange;width:70;height:40;text-align:center;\" ><h1>AUF</h1></div></a></td>" .
-                    "<td align='right'><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=-" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:#7777ee;width:70;height:40;text-align:center;\" ><h1>ZU</h1></div></a></td></tr>" .
+                $ttt .= "<tr><td><a href='" .
+                    "?schalte=" . $this->FUNK_ID . "' ><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:orange;width:70;height:40;text-align:center;\" ><h1>AUF</h1></div></a></td>" .
+                    "<td align='right'><a href='" .
+                    "?schalte=-" . $this->FUNK_ID . "'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:#7777ee;width:70;height:40;text-align:center;\" ><h1>ZU</h1></div></a></td></tr>" .
                     "</table>";
                 break;
 
             case 3:
                 // Glühbirne
-                $ttt .= "<tr><td><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:green;width:70;height:40;text-align:center;\" ><h1>AN</h1></div></a></td>" .
-                    "<td align='right'><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=-" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:red;width:70;height:40;text-align:center;\" ><h1>AUS</h1></div></a></td></tr>" .
+                $ttt .= "<tr><td><a href='".
+                    "?schalte=" . $this->FUNK_ID . "' ><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:green;width:70;height:40;text-align:center;\" ><h1>AN</h1></div></a></td>" .
+                    "<td align='right'><a href='" .
+                    "?schalte=-" . $this->FUNK_ID . "' ><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:red;width:70;height:40;text-align:center;\" ><h1>AUS</h1></div></a></td></tr>" .
                     "</table>";
                 break;
 
             case 4:
                 // Heizung
-                $ttt .= "<tr><td><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=-" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"spacing:1px;border-width:3px; border-style:solid;border-color:black;background-color:blue;width:100;height:40;text-align:center;\" ><h1>KALT</h1></div></a></td>" .
-                    "<td align='right'><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"border-width:3px; border-style:solid;border-color:black;width:100;height:40;text-align:center;background-color:red;\" ><h1>WARM</h1></div></a></td></tr>" .
+                $ttt .= "<tr><td><a href='".
+                    "?schalte=-" . $this->FUNK_ID . "' ><div style=\"spacing:1px;border-width:3px; border-style:solid;border-color:black;background-color:blue;width:100;height:40;text-align:center;\" ><h1>KALT</h1></div></a></td>" .
+                    "<td align='right'><a href='".
+                    "?schalte=" . $this->FUNK_ID . "' ><div style=\"border-width:3px; border-style:solid;border-color:black;width:100;height:40;text-align:center;background-color:red;\" ><h1>WARM</h1></div></a></td></tr>" .
                     "</table>";
                 break;
 
             default:
-                $ttt .= "<tr><td><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:green;width:70;height:40;text-align:center;\" ><h1>AN</h1></div></a></td>" .
-                    "<td align='right'><a href='http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-                    "?schalte=-" . $this->FUNK_ID . "' target='arduinoSwitch'><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:red;width:70;height:40;text-align:center;\" ><h1>AUS</h1></div></a></td></tr>" .
+                $ttt .= "<tr><td><a href='".
+                    "?schalte=" . $this->FUNK_ID . "' ><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:green;width:70;height:40;text-align:center;\" ><h1>AN</h1></div></a></td>" .
+                    "<td align='right'><a href='" .
+                    "?schalte=-" . $this->FUNK_ID . "' ><div style=\"border-width:3px; border-style:solid;border-color:black;background-color:red;width:70;height:40;text-align:center;\" ><h1>AUS</h1></div></a></td></tr>" .
                     "</table>";
 
         }

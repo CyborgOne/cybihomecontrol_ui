@@ -584,6 +584,12 @@ class HomeControlMap extends Object {
         return $layoutTable;
     }
 
+    function checkSwitch(){
+        if(isset($_REQUEST['schalte']) && $_REQUEST['schalte']!=0){
+            $this->switchObject($_REQUEST['schalte']>0?$_REQUEST['schalte']:-$_REQUEST['schalte'], $_REQUEST['schalte']>0?"on":"off");            
+        }
+    }
+
 
     /*
     * Standard Anzeige
@@ -593,7 +599,9 @@ class HomeControlMap extends Object {
     function show() {
 
         $this->handleEtage();
-
+        
+        $this->checkSwitch();
+        
         if ($this->LAYOUT_ART == $this->LAYOUTART_MOBILE) {
             $this->showMobileView();
             return;
@@ -639,6 +647,10 @@ class HomeControlMap extends Object {
     }
 
 
+
+    function switchObject($id, $onOff){
+        switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'],$id."-".$onOff);
+    }
 }
 
 ?>
