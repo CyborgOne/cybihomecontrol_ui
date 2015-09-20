@@ -67,7 +67,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $spc->setHeight(10);
     $spc->show();
 
-    $newBtn = $scDbTable->getNewEntryButton();
+    $newBtn = $scDbTable->getNewEntryButton("Neue Etage anlegen");
     $newBtn->show();
 
     $spc->show();
@@ -159,7 +159,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
         $table->addSpacer(0,10);
 
-        $newItemBtn = $scItemsDbTable->getNewEntryButton();
+        $newItemBtn = $scItemsDbTable->getNewEntryButton("Neues Zimmer anlegen");
         $form->add($table);
         $form->add($newItemBtn);
     } else {
