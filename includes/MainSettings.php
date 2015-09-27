@@ -35,7 +35,6 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     /*
      * Basis-Einstellungen
      */
-    
     $configDb  = new DbTable($_SESSION['config']->DBCONNECT,
                             'pageconfig', 
                             array("*"));
@@ -43,6 +42,9 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     // Checkboxen brauchen Sonderbehandlung da bei fehlender Auswahl kein Wert mitgegeben wird
     if(isset($_REQUEST['DbTableUpdatepageconfig']) && !isset($_REQUEST['loginForSwitchNeed'])){
         $_REQUEST['loginForSwitchNeed'] = 'N';
+    }
+    if(isset($_REQUEST['DbTableUpdatepageconfig']) && !isset($_REQUEST['loginForTimelinePauseNeed'])){
+        $_REQUEST['loginForTimelinePauseNeed'] = 'N';
     }
     if(isset($_REQUEST['DbTableUpdatepageconfig']) && !isset($_REQUEST['anwesendMotion'])){
         $_REQUEST['anwesendMotion'] = 'N';
@@ -66,6 +68,10 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $loginForSwitchNeedName = 'value'.$loginForSwitchNeedRow->getNamedAttribute('id');
     $loginForSwitchNeed = $loginForSwitchNeedRow->getNamedAttribute('value')=="J"?"J":"N";
     
+    $loginForTimelinePauseNeedRow = getRowByName($configDb->ROWS, "loginForTimelinePauseNeed");
+    $loginForTimelinePauseNeedName = 'value'.$loginForTimelinePauseNeedRow->getNamedAttribute('id');
+    $loginForTimelinePauseNeed = $loginForTimelinePauseNeedRow->getNamedAttribute('value')=="J"?"J":"N";
+        
     $anwesendMotionRow     = getRowByName($configDb->ROWS, "anwesendMotion");
     $anwesendMotionName = 'value'.$anwesendMotionRow->getNamedAttribute('id');
     $anwesendMotion = $anwesendMotionRow->getNamedAttribute('value')=="J"?"J":"N";
@@ -110,13 +116,16 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $timelineDurationName    = 'value'.$timelineDurationRow->getNamedAttribute('id');
     $timelineDuration = $timelineDurationRow->getNamedAttribute('value');
     
-    
-    
-    
+        
     $chbLoginSwitchNeed = new Checkbox($loginForSwitchNeedName, 
                                        "Login zum Schalten notwendig?", 
                                        "J", 
                                        $loginForSwitchNeed);
+    
+    $chbLoginForTimelinePauseNeed = new Checkbox($loginForTimelinePauseNeedName, 
+                                       "Login zum Pausieren notwendig?", 
+                                       "J", 
+                                       $loginForTimelinePauseNeed);
     
     $chbAbwesendAlarm = new Checkbox($abwesendAlarmName, 
                                        "Alarmanlage Aktiv?", 
@@ -184,8 +193,12 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $rightDiv = new Div();
     $rightDiv->add($chbLoginSwitchNeed);    
     $rightDiv->add(new Spacer(5));
-    $rightDiv->add($divSessionDauer);    
-    $rightDiv->add(new Spacer(15));
+    $rightDiv->add($divSessionDauer);  
+    
+    $rightDiv->add(new Spacer(20));
+    $rightDiv->add($chbLoginForTimelinePauseNeed);    
+        
+    $rightDiv->add(new Spacer(20));
     $rightDiv->add($divMotionDauer);
     $rightDiv->add(new Spacer(5));
     $rightDiv->add($divSensorlogDauer);
