@@ -30,14 +30,16 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $ln  = new Line();
 
     $scDbTable  = new DbTable($_SESSION['config']->DBCONNECT,
-                           'homecontrol_etagen', 
-	                    array(  "name", "pic" ) , 
-                           "Name, Raumplan",
-			       "",
-			       "name",
-			       "");
+                              'homecontrol_etagen', 
+	                          array(  "name", "pic" ) , 
+                              "Name, Raumplan",
+        			          "",
+        			          "name",
+        			          "");
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
+    $scDbTable->setNoInsertCols(array("pic"));
+    $scDbTable->setToCheck("name");
     $scDbTable->setWidth("100%");
 
     $spc->show();
@@ -67,9 +69,11 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $spc->setHeight(10);
     $spc->show();
 
-    $newBtn = $scDbTable->getNewEntryButton("Neue Etage anlegen");
-    $newBtn->show();
-
+    if(!isset($_REQUEST['dbTableNewhomecontrol_etagen']) ) {
+        $newBtn = $scDbTable->getNewEntryButton("Neue Etage anlegen");
+        $newBtn->show();
+    }
+    
     $spc->show();
     $ln->show();
 

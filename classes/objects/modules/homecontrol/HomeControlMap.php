@@ -86,7 +86,7 @@ class HomeControlMap extends Object {
 
         $usedFunkIds = $this->getUsedFunkIds();
 
-        for ($i = 1; $i < 160; $i++) {
+        for ($i = 1; $i <= 306; $i++) {
             if (!existsInArray($i, $usedFunkIds) || $default == $i) {
                 $code = $i;
                 $value = $i;
@@ -97,7 +97,6 @@ class HomeControlMap extends Object {
 
         $cob = new Combobox($name, $cobArr, $default);
         return $cob;
-
     }
 
 
@@ -250,7 +249,7 @@ class HomeControlMap extends Object {
         $row->setAttribute(0, "Etage:");
         $row->setAttribute(1, $frmEtage);
         $row->setAttribute(2, "");
-        $row->setAttribute(3, $frmFullSwitch);
+        $row->setAttribute(3, ""); //$frmFullSwitch);
 
         return $mask;
     }

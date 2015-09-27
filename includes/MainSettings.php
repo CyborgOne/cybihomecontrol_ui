@@ -220,13 +220,13 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $rMain0->setAttribute(1,$rightDiv);
     $tblMain->addRow($rMain0);
 
-    $tblMain->addSpacer(0,15);
-    $tblMain->addSpacer(1,25);
-    
+
+    $tblMain->addSpacer(0,50);
 
     $t2 = new Title("Anwesenheits-Einstellungen");
     $t2->setAlign("left");
     $rMainT1 = $tblMain->createRow();
+    $rMainT1->setSpawnAll(true);
     $rMainT1->setAttribute(0,$t2);
     $tblMain->addRow($rMainT1);
 
@@ -237,13 +237,13 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $rMain0->setAttribute(1,"");
     $tblMain->addRow($rMain0);
 
-    $tblMain->addSpacer(0,15);
-    $tblMain->addSpacer(1,25);
 
+    $tblMain->addSpacer(0,50);
 
     $t3 = new Title("Abwesenheits-Einstellungen");
     $t3->setAlign("left");
     $rMainT2 = $tblMain->createRow();
+    $rMainT2->setSpawnAll(true);
     $rMainT2->setAttribute(0,$t3);
     $tblMain->addRow($rMainT2);
 
@@ -259,58 +259,77 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $rMain2->setAttribute(1,"");
     $tblMain->addRow($rMain2);
 
-    $tblMain->addSpacer(0,15);
-    $tblMain->addSpacer(1,25);
-    
+    $tblMain->addSpacer(0,25);
     
     $rMainOk = $tblMain->createRow();
     $rMainOk->setSpawnAll(true);
     $rMainOk->setAttribute(0,new Button("DbTableUpdatepageconfig", "Speichern"));
     $tblMain->addRow($rMainOk);
     
+    /*
+    * NETZWERK
+    */
+    $network = new DivByInclude("includes/NetworkConfig.php", false);
+
+    $tblMain->addSpacer(0,20);    
+    $tblMain->addSpacer(1,15);
+    $tblMain->addSpacer(0,20);  
+        
+    $rMainNet = $tblMain->createRow();
+    $rMainNet->setSpawnAll(true);
+    $rMainNet->setAttribute(0, $network);
+    $tblMain->addRow($rMainNet);
+    
+    $tblMain->addSpacer(0,20);    
+    $tblMain->addSpacer(1,15);
+    $tblMain->addSpacer(0,20);  
+        
+    $tS = new Title("Sonstige Einstellungen");
+    $tS->setAlign("left");
+    $rMainTs = $tblMain->createRow();
+    $rMainTs->setSpawnAll(true);
+    $rMainTs->setAttribute(0,$tS);
+    $tblMain->addRow($rMainTs);
+    $tblMain->addSpacer(0,10);
+    
+
+    $fNoFrame = new Form();
+    $fNoFrame->add(new Hiddenfield("noFrame", $noFrameExists?"off":"on"));
+    $fNoFrame->add(new Button("ok", "Banner auf dieser IP ".($noFrameExists?"einblenden":"ausblenden")));
+
+    $rNoFrame = $tblMain->createRow();
+    $rNoFrame->setSpawnAll(true);
+    $rNoFrame->setAttribute(0,$fNoFrame);
+    $tblMain->addRow($rNoFrame);
+    
+    $tblMain->addSpacer(0,10);
+    
+    $fRemoveCamPics = new Form();
+    $fRemoveCamPics->add(new Hiddenfield("removeCamPics", "dropIt"));
+    $fRemoveCamPics->add(new Button("ok", "Bewegungserkennungsbilder entfernen"));
+
+    $rRemoveCamPics = $tblMain->createRow();
+    $rRemoveCamPics->setSpawnAll(true);
+    $rRemoveCamPics->setAttribute(0,$fRemoveCamPics);
+    $tblMain->addRow($rRemoveCamPics);
+    
+
+    $tblMain->addSpacer(0,15);
+    $tblMain->addSpacer(1,25);
+    
+    $sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
+    $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlNoFrame);
+    $noFrameExists = mysql_num_rows($rslt)>0; 
+
+
     $f = new Form();
     $f->add(new Hiddenfield("UpdateAllMaskIsActive", "true"));
     $f->add($tblMain);
     $f->show();
     
-    /*
-    * NETZWERK
-    */
-        
-    $spc  = new Spacer(40);
-    $line = new Line(1,20);
-    $spc->show();
-    $line->show();
-    $line->show();
-
-    include("includes/NetworkConfig.php");
-
-    $spc->show();
-    $line->show();
-
-    $sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
-    $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlNoFrame);
-    $noFrameExists = mysql_num_rows($rslt)>0; 
-
-    $fNoFrame = new Form();
-    $fNoFrame->add(new Hiddenfield("noFrame", $noFrameExists?"off":"on"));
-    $fNoFrame->add(new Button("ok", "Banner auf dieser IP ".($noFrameExists?"einblenden":"ausblenden")));
-    $fNoFrame->show();
-
-    $spc->show();
-    $line->show();
-
-    $fRemoveCamPics = new Form();
-    $fRemoveCamPics->add(new Hiddenfield("removeCamPics", "dropIt"));
-    $fRemoveCamPics->add(new Button("ok", "Bewegungserkennungsbilder entfernen"));
-    $fRemoveCamPics->show();
-    
     if($_REQUEST["removeCamPics"] == "dropIt"){        
         echo shell_exec("sudo rm " .dirname($_SERVER['DOCUMENT_ROOT'].$_SERVER['SCRIPT_NAME'])."/cam_pics/* -R");
     }        
-
-    $spc->show();
-
 
 }
 

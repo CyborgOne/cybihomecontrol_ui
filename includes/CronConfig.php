@@ -166,6 +166,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         // --------------------------------------------------
         //  Bedingungen
         // --------------------------------------------------
+/*
         $r2Title = $table->createRow();
         $r2Title->setAttribute(0, new Title("Bedingungen bearbeiten"));
         $r2Title->setSpawnAll(true);
@@ -232,6 +233,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $table->addRow($rZuordnung);
 
         $table->addSpacer(1, 30);
+*/
     } else {
         $form->add($table);
     }
