@@ -325,7 +325,7 @@ class Folder {
   */   
   function doUploadFile($probe, $targetPath="", $targetfile_prefix="", $targetFileName=""){
   	  if(!is_writeable($this->getPath())){
-		new Error("Verzeichniss schreibgeschÃÂÃÂÃÂÃÂ¼tzt", "Das Verzeichniss *" .$this->getPath() ."* ist schreibgeschÃÂÃÂÃÂÃÂ¼tzt." );
+		new Error("Verzeichniss schreibgeschützt", "Das Verzeichniss *" .$this->getPath() ."* ist schreibgeschÃÂÃÂÃÂÃÂ¼tzt." );
 	  }
 
 	  if ( strlen($probe['tmp_name'])>0  ) {
@@ -334,18 +334,16 @@ class Folder {
 		}
 	  	
 	    //VollstÃÂÃÂÃÂÃÂ¤ndiger Ziel-Name incl. gesamter Pfadangabe
-	    $target= $_SERVER['DOCUMENT_ROOT'].$targetPath."/".$targetfile_prefix.$probe['name'];
+	    $target= $_SERVER['DOCUMENT_ROOT'].$targetPath.$targetfile_prefix.$probe['name'];
 	    
 	    if($targetFileName!=""){
-			$target= $_SERVER['DOCUMENT_ROOT'].$targetPath."/".$targetFileName;	
+			$target= $_SERVER['DOCUMENT_ROOT'].$targetPath.$targetFileName;	
 		}
 	    
 	    move_uploaded_file($probe['tmp_name'], $target );
-	    if($targetFileName!=""){
-			return $targetPath."/".$targetFileName;		
-		}
+
 	    
-		return $targetPath."/".$targetfile_prefix.$probe['name'];
+		return $target;
 	  
 	  }	else {
 	    new Error("Fehlende Eingabe", "Es wurden nicht alle Werte fÃÂÃÂÃÂÃÂ¼r den Dateiupload angegeben!" );

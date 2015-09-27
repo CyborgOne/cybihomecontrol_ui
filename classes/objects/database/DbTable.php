@@ -676,8 +676,9 @@ class DbTable extends Object {
         foreach ($checkVals as $val) {
             $checkValue = trim($val);
 
-            if (strlen($checkValue) > 0 && (isset($_REQUEST[$checkValue]) && strlen($_REQUEST[$checkValue] <
-                1))) {
+            if (strlen($checkValue) > 0 && 
+                (isset($_REQUEST[$checkValue]) && strlen($_REQUEST[$checkValue]) < 1)) {
+                    echo $checkValue ." = " .$_REQUEST[$checkValue];
                 return false;
             }
         }
@@ -1898,7 +1899,6 @@ class DbTable extends Object {
             $rowId = $this->ROWS[$ir]->getAttribute(count($this->COLNAMES));
             $delName = "delete" . $rowId . $this->TABLENAME;
             if (isset($_REQUEST[$delName])) {
-
                 if (isset($_REQUEST['RowDeleteCommited']) && $_REQUEST['RowDeleteCommited'] ==
                     "Wirklich entfernen") {
 
@@ -1972,7 +1972,7 @@ class DbTable extends Object {
                     $frm->add($tbl);
                     $frm->add($hiddenOk);
                     $frm->add($this->DEFAULT_HIDDEN_FIELDS);                    
-		    return $frm;
+                    return $frm;
                 }
             }
         }

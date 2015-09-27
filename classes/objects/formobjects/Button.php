@@ -47,7 +47,7 @@ class Button extends Object {
     
 	echo $this->getToolTipTag();
 
-       echo "style=\" ";
+/*       echo "style=\" ";
 
        if($this->XPOS>=0 && $this->YPOS>=0){        
          echo " position:absolute; top:" .$this->YPOS ."px; left:" .$this->XPOS ."px; ";
@@ -61,7 +61,9 @@ class Button extends Object {
        } else {
 
        }
-
+*/
+       $this->showStyles();
+       
        echo " \" >";
   }
 
