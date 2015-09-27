@@ -38,7 +38,10 @@ class HomeControlCron {
 
 
     function getPauseLink() {
-        if ($this->isNextExecutionCron() && ($_SESSION['config']->CURRENTUSER->STATUS=="admin" || $_SESSION['config']->CURRENTUSER->STATUS=="user")){
+        $loginNeed = getPageConfigParam($_SESSION['config']->DBCONNECT, "loginForTimelinePauseNeed")=="J";
+        $loggedIn  = ($_SESSION['config']->CURRENTUSER->STATUS=="admin" || $_SESSION['config']->CURRENTUSER->STATUS=="user");
+        
+        if ($this->isNextExecutionCron() && (($loginNeed && $loggedIn) || !$loginNeed)){
             if($this->isCronPaused()){
                 return $this->getPauseDeactivationLink();
             } else {
@@ -128,7 +131,7 @@ class HomeControlCron {
     function isCronPaused() {
         $sql = "SELECT 'X' FROM homecontrol_cron_pause WHERE cron_id = ".$this->getId();
         $result = $_SESSION['config']->DBCONNECT->executeQuery($sql);
-        return mysql_num_rows($result) > 0;
+        return (mysql_num_rows($result) > 0) && $this->isNextExecutionCron();
     }
 
 

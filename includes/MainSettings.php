@@ -115,7 +115,14 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $timelineDurationRow          = getRowByName($configDb->ROWS, "timelineDuration");
     $timelineDurationName    = 'value'.$timelineDurationRow->getNamedAttribute('id');
     $timelineDuration = $timelineDurationRow->getNamedAttribute('value');
-    
+  
+  
+    $sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
+    $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlNoFrame);
+    $noFrameExists = mysql_num_rows($rslt)>0; 
+
+       
+        
         
     $chbLoginSwitchNeed = new Checkbox($loginForSwitchNeedName, 
                                        "Login zum Schalten notwendig?", 
@@ -151,6 +158,8 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
                                         array(1=>"1",2=>"2",3=>"3",4=>"4",5=>"5",6=>"6"),
                                         $timelineDuration);
 
+
+
     $txtSessionDauer = new Text("Sekunden bis zur neuen Anmeldung");
     $txfSessionDauer = new Textfield($sessionDauerName, $sessionDauer,4,5);
     $divSessionDauer = new Div();
@@ -169,11 +178,11 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $divSensorlogDauer->add($txfSensorlogDauer);
     $divSensorlogDauer->add($txtSensorlogDauer);
               
-
     $txtTimelineDuration = new Text("Tage in der Timeline anzeigen (1-6)");
     $divTimelineDuration = new Div();
     $divTimelineDuration->add($cobTimelineDuration);
     $divTimelineDuration->add($txtTimelineDuration);
+                             
                              
                                        
     $txtPageTitel = new Text("Seiten-Titel");
@@ -330,10 +339,6 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $tblMain->addSpacer(0,15);
     $tblMain->addSpacer(1,25);
     
-    $sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
-    $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlNoFrame);
-    $noFrameExists = mysql_num_rows($rslt)>0; 
-
 
     $f = new Form();
     $f->add(new Hiddenfield("UpdateAllMaskIsActive", "true"));

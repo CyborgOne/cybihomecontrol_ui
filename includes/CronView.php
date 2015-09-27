@@ -39,6 +39,7 @@ $scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_cronview',
 $t = new Title("Timeline");
 $t->show();
 
+
 $tbl = new Table(array("", "", ""));
 $tbl->setBackgroundColorChange(true);
 
@@ -70,6 +71,26 @@ foreach ($scDbTable->ROWS as $row) {
 }
 
 $tbl->show();
+
+if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->CURRENTUSER->STATUS != "user" ) {
+           
+   /* ------------------------------------
+      BENUTZERSTATUS ANZEIGEN
+    ------------------------------------ */
+    $USR = $_SESSION['config']->CURRENTUSER;
+     
+    $USERSTATUS = new UserStatus($USR, -1, -1);
+    
+    $tbl = new Table( array("") );
+    $tbl->addSpacer(0, 20);
+    $tbl->setAlign("center");
+    $r = $tbl->createRow();
+    $r->setAttribute( 0, $USERSTATUS );
+    $tbl->addRow( $r );
+    $tbl->addSpacer(0, 20);
+    $tbl->show();
+    /* --------------------------------- */
+}
 
 ?>
 
