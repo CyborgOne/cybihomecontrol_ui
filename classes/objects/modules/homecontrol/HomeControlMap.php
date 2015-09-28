@@ -190,7 +190,7 @@ class HomeControlMap extends Object {
 
 
         $frmDel = new Form();
-        $frmDel->add(new Button("DelControl" . $r->getNamedAttribute("id"), "Löschen"));
+        $frmDel->add(new Button("DelControl" . $r->getNamedAttribute("id"), "Entfernen"));
         $frmDel->add(new HiddenField("removeId", $r->getNamedAttribute("id")));
 
         $dv = new Div();
@@ -341,10 +341,10 @@ class HomeControlMap extends Object {
         }
 
         if (isset($_REQUEST['removeId']) && isset($_REQUEST['DelControl' . $_REQUEST['removeId']]) &&
-            $_REQUEST['DelControl' . $_REQUEST['removeId']] == "Löschen") {
+            $_REQUEST['DelControl' . $_REQUEST['removeId']] == "Entfernen") {
             $newRow = $dbTable->getRowById($_REQUEST['removeId']);
             $newRow->deleteFromDb();
-
+            
             return true;
         }
 
@@ -629,14 +629,14 @@ class HomeControlMap extends Object {
 
         if ($this->EDITMODE) {
             echo "
-	  <script type=\"text/javascript\">
-		function Coords () {
-
-                var Ziel = \"?InsertNewControl=do&X=\" + window.event.pageX + \"&Y=\" + window.event.pageY;
-                window.location.href = Ziel;  
-		}
-         </script>
-      ";
+    	  <script type=\"text/javascript\">
+    		function Coords () {
+    
+                    var Ziel = \"?InsertNewControl=do&X=\" + window.event.pageX + \"&Y=\" + window.event.pageY;
+                    window.location.href = Ziel;  
+    		}
+          </script>
+            ";
         }
 
 

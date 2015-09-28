@@ -21,7 +21,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 
 } else {
-
+    $ttlC = new Title("Zeitsteuerung");
+    $ttlC->setAlign("left");
+    $ttlC->show();
 
     $spc = new Spacer(20);
     $ln = new Line();
@@ -83,8 +85,11 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $table = new Table(array("", ""));
     $table->setWidth("100%");
 
+    $ttlZuord = new Title("Zuordnungen bearbeiten");
+    $ttlZuord->setAlign("left");
+
     $rTitle = $table->createRow();
-    $rTitle->setAttribute(0, new Title("Zuordnungen bearbeiten"));
+    $rTitle->setAttribute(0, $ttlZuord);
     $rTitle->setSpawnAll(true);
     $table->addRow($rTitle);
 
@@ -161,12 +166,13 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $form->add($table);
 
-        $table->addSpacer(1, 30);
 
         // --------------------------------------------------
         //  Bedingungen
         // --------------------------------------------------
 /*
+        $table->addSpacer(1, 30);
+
         $r2Title = $table->createRow();
         $r2Title->setAttribute(0, new Title("Bedingungen bearbeiten"));
         $r2Title->setSpawnAll(true);
@@ -238,6 +244,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $form->add($table);
     }
 
+    $form->add(new Spacer());
     $form->show();
 }
 

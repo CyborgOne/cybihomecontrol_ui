@@ -25,8 +25,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     // -----------------------------------
     //   Image Upload
     // -----------------------------------
-
     $t = new Title("Etagen");
+    $t->setAlign("left");
     $t->show();
 
     $spc = new Spacer(20);
@@ -72,10 +72,11 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     }
 
     $tblEtagen = new Table(array("Name", "Raumplan", "hochladen", "entfernen"));
+    $tblEtagen->setHeadEnabled(true);
     $tblEtagen->setVAlign("middle");
     $tblEtagen->setAlignments(array("left", "center", "center", "right"));
-    $tblEtagen->addSpacer();
-
+    $tblEtagen->setBackgroundColorChange(true);
+    
     foreach ($scDbTable->ROWS as $etagenRow) {
         $rowId = $etagenRow->getNamedAttribute("rowid");
 
@@ -109,6 +110,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $cBtnRaumplan->add(new Text("<br>JPG Datei mit den Ma&#223;en: 600x340",1,false,false,false,false));
 
         $r = $tblEtagen->createRow();
+        $r->setStyle("padding","10px 5px");
         $r->setVAlign("middle");
         $r->setAttribute(0, $txfName);
         $r->setAttribute(1, $imgRaumplan);
@@ -116,7 +118,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $r->setAttribute(3, $btnDelete);
         $tblEtagen->addRow($r);
 
-        $tblEtagen->addSpacer();
     }
 
     $fEt = new Form();
@@ -155,8 +156,11 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $table = new Table(array("", ""));
     $table->setWidth("100%");
 
+    $ttlZ =  new Title("Zimmer");
+    $ttlZ->setAlign("left");
+
     $rTitle = $table->createRow();
-    $rTitle->setAttribute(0, new Title("Zimmer"));
+    $rTitle->setAttribute(0,$ttlZ);
     $rTitle->setSpawnAll(true);
     $table->addRow($rTitle);
 
@@ -234,10 +238,10 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     } else {
         $form->add($table);
     }
-
+    $form->add(new Spacer());
 
     $form->show();
-
+    
 }
 
 ?>

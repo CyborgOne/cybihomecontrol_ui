@@ -4,6 +4,3 @@ Version: 0.0.19
 
 Commit-Script um Versions-History erweitert
 
-Version: 0.0.20
----------------------
-nachbesserung commit-script

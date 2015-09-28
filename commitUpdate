@@ -27,6 +27,22 @@ echo $newVersion > version.txt
 echo "New Version: " $newVersion
 
 
+
+
+#-----------------------------------------------------------------
+#  GIT - Dateien adden und commiten
+#-----------------------------------------------------------------
+git add classes
+git add includes
+git add *.php
+git add functions
+git add *.sh
+git add *.sql
+git add commitUpdate
+git add *.txt
+
+
+
 #-----------------------------------------------------------------
 #  Versions-History ===>>> Eingabe der Beschreibung
 #-----------------------------------------------------------------
@@ -35,6 +51,8 @@ then
   rm versionHistory.tmp
 fi
 
+git status
+echo  
 echo  "Geben Sie die Anpassungen des Commits an: "
 echo  "Beenden Sie die Eingabe mit 2x Enter (also einer Leerzeile)"
 while read changes 
@@ -52,19 +70,6 @@ echo "---------------------" >> versionHistory.txt
 cat versionHistory.tmp       >> versionHistory.txt
 #-----------------------------------------------------------------
 
-
-
-#-----------------------------------------------------------------
-#  GIT - Dateien adden und commiten
-#-----------------------------------------------------------------
-git add classes
-git add includes
-git add *.php
-git add functions
-git add *.sh
-git add *.sql
-git add commitUpdate
-git add *.txt
 
 
 git commit --file versionHistory.tmp

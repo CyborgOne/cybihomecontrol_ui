@@ -189,8 +189,12 @@ class Table extends Object {
      $l->setHeight($height);
      $s->setAttribute(0,$l);
      $s->setSpawnAll(true);
-     
      $this->addRow($s);
+     
+     // damit changeColor passt
+     $spcR = $this->createRow();
+     $spcR->setHeight(0);
+     $this->addRow($spcR);
   }
 
 

@@ -34,8 +34,8 @@ class DbTable extends Object {
     var $DBCONNECT;
     var $TABLENAME;
     var $COLNAMES;
-    var $COLNAMEIDS;    
-    var $COLSIZES=array();
+    var $COLNAMEIDS;
+    var $COLSIZES = array();
 
     var $BORDER;
     var $LABELS;
@@ -48,13 +48,13 @@ class DbTable extends Object {
 
     var $MAX_ROWS_TO_FETCH;
 
-    var $NOINSERTCOLS;     // Array welches die Spalten enthält die aus Insert ausgenommen werden sollen
-    var $NOUPDATECOLS;     // Array welches die Spalten enthält die nicht änderbar sein sollen
-    var $READONLYCOLS;     // Array welches die Spaltennamen enthält die nicht änderbar sein sollen
+    var $NOINSERTCOLS; // Array welches die Spalten enthält die aus Insert ausgenommen werden sollen
+    var $NOUPDATECOLS; // Array welches die Spalten enthält die nicht änderbar sein sollen
+    var $READONLYCOLS; // Array welches die Spaltennamen enthält die nicht änderbar sein sollen
 
-    var $TOCHECK;          // String der mit Kommas getrennt alle Spaltennamen enthält, die Pflichtfelder darstellen
+    var $TOCHECK; // String der mit Kommas getrennt alle Spaltennamen enthält, die Pflichtfelder darstellen
     var $COLNAMESTRING;
-    var $FONTTYPES;        // Array welches die Schriftformatierung für einzelne Spalten vorgibt
+    var $FONTTYPES; // Array welches die Schriftformatierung für einzelne Spalten vorgibt
     var $HEAD_ENABLED;
     var $DELETE_IN_UPDATE; //boolean der angibt ob ein Button zum entfernen in der UPDATE-Maske angezeigt werden soll
     var $CURRENT_PAGE;
@@ -69,21 +69,21 @@ class DbTable extends Object {
     private $UPDATE_USERID_ON_INSERT = true;
     private $UPDATE_USERID_ON_UPDATE = false;
 
-    
-    function isUpdateUserIdOnInsert(){
-       return $this->UPDATE_USERID_ON_INSERT;
+
+    function isUpdateUserIdOnInsert() {
+        return $this->UPDATE_USERID_ON_INSERT;
     }
 
-    function setUpdateUserIdOnInsert($b){
-       $this->UPDATE_USERID_ON_INSERT = ($b===true);
+    function setUpdateUserIdOnInsert($b) {
+        $this->UPDATE_USERID_ON_INSERT = ($b === true);
     }
 
-    function isUpdateUserIdOnUpdate(){
-       return $this->UPDATE_USERID_ON_UPDATE;
+    function isUpdateUserIdOnUpdate() {
+        return $this->UPDATE_USERID_ON_UPDATE;
     }
 
-    function setUpdateUserIdOnUpdate($b){
-       $this->UPDATE_USERID_ON_UPDATE = ($b===true);
+    function setUpdateUserIdOnUpdate($b) {
+        $this->UPDATE_USERID_ON_UPDATE = ($b === true);
     }
 
     /**
@@ -204,20 +204,20 @@ class DbTable extends Object {
 
         $this->refresh();
     }
-    
-    function addDefaultHiddenField($name, $value){
+
+    function addDefaultHiddenField($name, $value) {
         array_push($this->DEFAULT_HIDDEN_FIELDS, new HiddenField($name, $value));
     }
-    
-    function setColSizes($array){
+
+    function setColSizes($array) {
         $this->COLSIZES = $array;
     }
 
-    function getColSizes(){
+    function getColSizes() {
         return $this->COLSIZES;
     }
-    
-    function getTableName(){
+
+    function getTableName() {
         return $this->TABLENAME;
     }
 
@@ -244,16 +244,16 @@ class DbTable extends Object {
     //----------------------------------------------------------------------
 
 
-  function setAlignments($array){
-    foreach($this->ROWS as $r) {
-     $r->ALIGNMENTS = $array;
-	}  
-    $this->ALIGNMENTS = $array;
-  }
+    function setAlignments($array) {
+        foreach ($this->ROWS as $r) {
+            $r->ALIGNMENTS = $array;
+        }
+        $this->ALIGNMENTS = $array;
+    }
 
-  function getAlignments(){
-    return $this->ALIGNMENTS = $array;
-  }
+    function getAlignments() {
+        return $this->ALIGNMENTS = $array;
+    }
     /**
      * legt fest, ob die Seitennavigation aktiviert werden soll. 
      * (beim überschreiten von MAX_ROWS_TO_FETCH)
@@ -352,11 +352,12 @@ class DbTable extends Object {
      * Prüft ob eine Spalte entsprechend dem übergebenen String existiert
      */
     function existsColumn($columnName) {
-        $result = mysql_query("SHOW COLUMNS FROM ".$this->getTableName()." LIKE '" .$columnName ."'");
+        $result = mysql_query("SHOW COLUMNS FROM " . $this->getTableName() . " LIKE '" .
+            $columnName . "'");
         if (!$result) {
-          return false;
+            return false;
         }
-        $exists = (mysql_num_rows($result))?TRUE:FALSE;
+        $exists = (mysql_num_rows($result)) ? true : false;
         return $exists;
     }
 
@@ -541,7 +542,7 @@ class DbTable extends Object {
         if ($this->isLimitActive()) {
             $stmt .= " limit " . $limitFrom . ", " . $this->getMaxRowsToFetch();
         }
-        
+
         debugOutput($stmt . "<br>");
 
         $result = $this->DBCONNECT->executeQuery($stmt);
@@ -676,9 +677,9 @@ class DbTable extends Object {
         foreach ($checkVals as $val) {
             $checkValue = trim($val);
 
-            if (strlen($checkValue) > 0 && 
-                (isset($_REQUEST[$checkValue]) && strlen($_REQUEST[$checkValue]) < 1)) {
-                    echo $checkValue ." = " .$_REQUEST[$checkValue];
+            if (strlen($checkValue) > 0 && (isset($_REQUEST[$checkValue]) && strlen($_REQUEST[$checkValue]) <
+                1)) {
+                echo $checkValue . " = " . $_REQUEST[$checkValue];
                 return false;
             }
         }
@@ -753,7 +754,7 @@ class DbTable extends Object {
      * 
      * Felder die als Default angegeben sind werden nicht angezeigt!    
      */
-    function getInsertMask($hiddenKey="dbTableNew") {
+    function getInsertMask($hiddenKey = "dbTableNew") {
 
         $f1 = new FontType();
         $f1->setFontSize(2);
@@ -905,7 +906,7 @@ class DbTable extends Object {
      * 
      */
 
-    function doInsert($showOutput=true) {
+    function doInsert($showOutput = true) {
 
         //Alle Spalten Holen
         $chk = 0;
@@ -972,7 +973,8 @@ class DbTable extends Object {
                         $flags = mysql_fieldflags($result, $i);
 
                         if (strpos(" " . $flags, "not_null") > 0) {
-                            if (mysql_field_type($result, $i) == "int" || mysql_field_type($result, $i) == "real") {
+                            if (mysql_field_type($result, $i) == "int" || mysql_field_type($result, $i) ==
+                                "real") {
                                 $statement .= "" . $fieldName . " = 0 ";
                             } else {
                                 $statement .= "" . $fieldName . " = '' ";
@@ -1013,17 +1015,18 @@ class DbTable extends Object {
                                             }
                                         }
 
-                                    }else
-                                    if (mysql_field_type($result, $i) == "real") {
-                                        if (isset($fieldValue)) {
-                                            $statement .= "" . $fieldName . " = '" . str_replace(",", ".", $fieldValue) . "' ";
-                                        }
-                                    } else {
-                                        if (isset($fieldValue)) {
-                                            $statement .= "" . $fieldName . " = '" . $fieldValue . "' ";
-                                        }
+                                    } else
+                                        if (mysql_field_type($result, $i) == "real") {
+                                            if (isset($fieldValue)) {
+                                                $statement .= "" . $fieldName . " = '" . str_replace(",", ".", $fieldValue) .
+                                                    "' ";
+                                            }
+                                        } else {
+                                            if (isset($fieldValue)) {
+                                                $statement .= "" . $fieldName . " = '" . $fieldValue . "' ";
+                                            }
 
-                                    }
+                                        }
             }
 
             //Damit kein nicht versehentlich ein 2. Insert erfolgen kann, hier die Werte leeren
@@ -1182,7 +1185,7 @@ class DbTable extends Object {
                     $frm->add($tbl);
                     $frm->add($hiddenOk);
                     $frm->add($this->DEFAULT_HIDDEN_FIELDS);
-                    
+
                     $frm->show();
                 }
             }
@@ -1225,14 +1228,14 @@ class DbTable extends Object {
         array_push($tNames, " ");
 
         $table = new Table($tNames);
-        
-        if(count($this->COLSIZES)>0){
+
+        if (count($this->COLSIZES) > 0) {
             $table->setColSizes($this->COLSIZES);
         }
-        if(count($this->ALIGNMENTS)>0){
+        if (count($this->ALIGNMENTS) > 0) {
             $table->setAlignments($this->ALIGNMENTS);
         }
-        
+
         if (isset($_REQUEST["showUpdateMask" . $this->TABLENAME]) && strlen($_REQUEST["showUpdateMask" .
             $this->TABLENAME]) > 0) {
             $r = $table->createRow();
@@ -1356,10 +1359,10 @@ class DbTable extends Object {
             $div = new Div();
             $div->setWidth(100);
             $div->setOverflow("visible");
-            
+
             $frmUpdBtn = new Form();
             $frmUpdBtn->add($this->DEFAULT_HIDDEN_FIELDS);
-            $frmUpdBtn->add(new Hiddenfield("showUpdateMask" .$this->TABLENAME, $rowId));
+            $frmUpdBtn->add(new Hiddenfield("showUpdateMask" . $this->TABLENAME, $rowId));
             $frmUpdBtn->add(new Button("editEtage", "bearbeiten"));
             $div->add($frmUpdBtn);
 
@@ -1372,8 +1375,8 @@ class DbTable extends Object {
             // entfernen Link einfügen
             $frmDelBtn = new Form();
             $frmDelBtn->add($this->DEFAULT_HIDDEN_FIELDS);
-            $frmDelBtn->add(new Button("delete" .$rowId .$this->TABLENAME, "entfernen"));
-            
+            $frmDelBtn->add(new Button("delete" . $rowId . $this->TABLENAME, "entfernen"));
+
             if ($this->isDeleteInUpdate()) {
                 $div->add($frmDelBtn);
             }
@@ -1388,7 +1391,7 @@ class DbTable extends Object {
         $form = new Form($_SERVER['SCRIPT_NAME']);
         $form->add($this->getPageNavigation());
         $form->add($table);
-        $form->add($this->DEFAULT_HIDDEN_FIELDS);        
+        $form->add($this->DEFAULT_HIDDEN_FIELDS);
 
         return $form;
     }
@@ -1396,16 +1399,16 @@ class DbTable extends Object {
 
     //----------------------------------------------------------------------
 
-    function isDeleteActive(){
-       foreach ($this->ROWS as $r){
-          $rowId = $r->getAttribute(count($this->COLNAMES));
-          $delName = "delete" . $rowId . $this->TABLENAME;
+    function isDeleteActive() {
+        foreach ($this->ROWS as $r) {
+            $rowId = $r->getAttribute(count($this->COLNAMES));
+            $delName = "delete" . $rowId . $this->TABLENAME;
 
-          if(isset($_REQUEST[$delName])){
-	    return true;
-          }
-       }
-       return false;
+            if (isset($_REQUEST[$delName])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1416,21 +1419,22 @@ class DbTable extends Object {
         $tNames = $this->LABELS;
         $colNames = $this->COLNAMES;
 
-	$deleteMask = null;
+        $deleteMask = null;
         if ($this->isDeleteInUpdate()) {
-            $deleteMask = !$this->doDeleteFromUpdatemask()?null:$this->doDeleteFromUpdatemask();
-            // Damit die Spalte mit dem Entfernen Button 
+            $deleteMask = !$this->doDeleteFromUpdatemask() ? null : $this->
+                doDeleteFromUpdatemask();
+            // Damit die Spalte mit dem Entfernen Button
             // zur Verfügung steht, in Arrays einbinden.
             array_push($colNames, "entfernen");
             array_push($tNames, "entfernen");
         }
 
         $table = new Table($tNames);
-        
-        if(count($this->COLSIZES)>0){
+
+        if (count($this->COLSIZES) > 0) {
             $table->setColSizes($this->COLSIZES);
         }
-        
+
         $table->setHeadEnabled(true);
         $table->setBackgroundColorChange(true);
         if ($this->WIDTH > 0) {
@@ -1587,6 +1591,7 @@ class DbTable extends Object {
         // Speichern/Abbrechen Button einfügen
         $btnOk = new Button("DbTableUpdate" . $this->TABLENAME, "Speichern");
         $btnOkFake = new Button("DbTableUpdate" . $this->TABLENAME, "Speichern");
+        $btnOkFake->setStyle("display", "none");
         $btnOkFake->setWidth(0);
         $btnOkFake->setHeight(0);
         $btnCancel = new Button("", "Abbrechen");
@@ -1594,11 +1599,11 @@ class DbTable extends Object {
         $hidden = new Hiddenfield("UpdateAllMaskIsActive", "true");
 
         $form = new Form($_SERVER['SCRIPT_NAME']);
-        $form->add($this->DEFAULT_HIDDEN_FIELDS);   
+        $form->add($this->DEFAULT_HIDDEN_FIELDS);
 
-    	if($deleteMask!=null){
-     	  $form->add($deleteMask);
-    	}
+        if ($deleteMask != null) {
+            $form->add($deleteMask);
+        }
 
         $form->add($btnOkFake);
         $form->add($this->getPageNavigation());
@@ -1613,7 +1618,7 @@ class DbTable extends Object {
 
     function getSingleUpdateMask($rowId) {
         $tblAll = new Table(array(""));
-        
+
         if ($rowId == null || $rowId == "") {
             return $tblAll;
         }
@@ -1630,11 +1635,11 @@ class DbTable extends Object {
         $table->setHeadEnabled(false);
         $table->setBorder(0);
         $table->setFontTypes($fts);
-        
+
         $table->setAlign($this->getAlign());
         $table->setVAlign($this->getVAlign());
         $table->setAlignments($this->getAlignments());
-        
+
         if ($this->WIDTH > 0) {
             $table->setWidth($this->WIDTH);
         }
@@ -1696,45 +1701,45 @@ class DbTable extends Object {
                 if (mysql_num_rows($lookups) == 0 && !$this->isDbComboSet($this->TABLENAME, $fieldName)) {
 
                     /*if (strpos(" " . $this->DEFAULTS, $fieldName) > 0) {
-                        $tmpval = substr($this->DEFAULTS, strpos($this->DEFAULTS, "=") + 1);
-                        $o = new HiddenField($fieldName, $tmpval);
+                    $tmpval = substr($this->DEFAULTS, strpos($this->DEFAULTS, "=") + 1);
+                    $o = new HiddenField($fieldName, $tmpval);
 
                     } else*/
-                        if (strpos(mysql_field_flags($result, $i), "enum") > 0) {
-                            $ev = $this->getEnumValues($fieldName);
+                    if (strpos(mysql_field_flags($result, $i), "enum") > 0) {
+                        $ev = $this->getEnumValues($fieldName);
 
-                            if (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
-                                $o = new Checkbox($fieldName . $rowId, "", "J");
+                        if (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
+                            $o = new Checkbox($fieldName . $rowId, "", "J");
 
-                                if ($rowEdit[$fieldName] == "J") {
-                                    $o->setSelected(true);
-                                }
-
-                            } else {
-                                $o = new ComboBox($fieldName . $rowId, $this->getComboboxEnumArray($fieldName));
+                            if ($rowEdit[$fieldName] == "J") {
+                                $o->setSelected(true);
                             }
 
+                        } else {
+                            $o = new ComboBox($fieldName . $rowId, $this->getComboboxEnumArray($fieldName));
+                        }
+
+                    } else
+                        if (mysql_field_type($result, $i) == "blob") {
+                            $o = new TextArea($fieldName . $rowId, $val, 80, 10);
+                            $o->setTextEditor(true);
+
                         } else
-                            if (mysql_field_type($result, $i) == "blob") {
-                                $o = new TextArea($fieldName . $rowId, $val, 80, 10);
-                                $o->setTextEditor(true);
+                            if (mysql_field_type($result, $i) == "date") {
+                                $o = new DateTextfield($fieldName . $rowId, $val);
+                                $o->setToolTip("Bitte im Format:  <b>YYYY-MM-TT</b>  angeben");
 
                             } else
-                                if (mysql_field_type($result, $i) == "date") {
-                                    $o = new DateTextfield($fieldName . $rowId, $val);
-                                    $o->setToolTip("Bitte im Format:  <b>YYYY-MM-TT</b>  angeben");
+                                if (mysql_field_type($result, $i) == "int") {
+                                    $o = new TextField($fieldName . $rowId, $val);
 
                                 } else
-                                    if (mysql_field_type($result, $i) == "int") {
+                                    if (mysql_field_type($result, $i) == "timestamp") {
                                         $o = new TextField($fieldName . $rowId, $val);
 
-                                    } else
-                                        if (mysql_field_type($result, $i) == "timestamp") {
-                                            $o = new TextField($fieldName . $rowId, $val);
-
-                                        } else {
-                                            $o = new TextField($fieldName . $rowId, $val);
-                                        }
+                                    } else {
+                                        $o = new TextField($fieldName . $rowId, $val);
+                                    }
 
                 } else {
                     if (mysql_num_rows($lookups) > 0) {
@@ -1760,7 +1765,7 @@ class DbTable extends Object {
                 if (strlen($arrChk) != 0) {
                     $o->setReadOnly(true);
                 }
-                
+
                 $r->setAttribute(1, $o);
 
                 $table->addRow($r);
@@ -1807,23 +1812,25 @@ class DbTable extends Object {
         for ($ir = 1; $ir <= count($this->ROWS); $ir++) {
             $rowId = $this->ROWS[$ir]->getAttribute(count($this->FIELDNAMES));
 
-            if ((isset($_REQUEST['SingleUpdateRowId'])  && $rowId == $_REQUEST['SingleUpdateRowId'] )|| isset($_REQUEST['UpdateAllMaskIsActive'])){
+            if ((isset($_REQUEST['SingleUpdateRowId']) && $rowId == $_REQUEST['SingleUpdateRowId']) ||
+                isset($_REQUEST['UpdateAllMaskIsActive'])) {
                 $chk = 0;
                 $sql = "";
-    		
+
                 for ($ia = 0; $ia < count($this->FIELDNAMES); $ia++) {
                     $fieldName = mysql_field_name($result, $ia);
                     $row = $this->ROWS[$ir];
                     $x = $fieldName . $rowId;
-    
+
                     $ev = $this->getEnumValues($fieldName);
-    
-                    if (($chk > 0 && isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) >= 0 ) || (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev)))) {
+
+                    if (($chk > 0 && isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) >= 0) || (count($ev) ==
+                        2 && (in_array('J', $ev) && in_array('N', $ev)))) {
                         $sql .= ", ";
                     }
                     if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) > 0) {
                         $val = $_REQUEST[$x];
-                       // echo "neuer Wert: "+$val;
+                        // echo "neuer Wert: "+$val;
                         if (mysql_field_type($result, $ia) == "real") {
                             if (isset($val)) {
                                 $val = str_replace(",", ".", $val);
@@ -1836,25 +1843,25 @@ class DbTable extends Object {
                         $sql .= $fieldName . " = 'N' ";
                         $chk++;
                     } else {
-                        if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) == 0 ) { // && strpos(" " . $this->DEFAULTS, $fieldName) <= 0
+                        if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) == 0) { // && strpos(" " . $this->DEFAULTS, $fieldName) <= 0
                             $sql .= $fieldName . " = null ";
                             $chk++;
                         }
                     }
-                }                
-     		
+                }
+
 
                 if ($chk > 0) {
                     $sql = "UPDATE " . $this->TABLENAME . " SET " . $sql;
-        
-                 //   if (strlen(trim($this->DEFAULTS)) > 0) {
-                 //       $sql = $sql . ", " . $this->DEFAULTS;
-                 //   }
-        
+
+                    //   if (strlen(trim($this->DEFAULTS)) > 0) {
+                    //       $sql = $sql . ", " . $this->DEFAULTS;
+                    //   }
+
                     $sql = $sql . " WHERE id = " . $rowId;
-        //echo $sql."<br>";
+                    //      echo $sql."<br>";
                     $this->DBCONNECT->executeQuery($sql);
-        
+
                     $updateDo = true;
                     if (!isset($_REQUEST['UpdateAllMaskIsActive'])) {
                         if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
@@ -1867,16 +1874,16 @@ class DbTable extends Object {
                     }
                 }
             }
-       }
+        }
 
         if ($updateDo) {
-                    if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
-                        "OK")) {
-                        $e = new Message("Speichern", "Erfolgreich gespeichert");
-                        $_REQUEST['saveOK'] = "OK";
-                    }
-                    $this->refresh();
-                    return true;
+            if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
+                "OK")) {
+                $e = new Message("Speichern", "Erfolgreich gespeichert");
+                $_REQUEST['saveOK'] = "OK";
+            }
+            $this->refresh();
+            return true;
         } else {
             if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
                 "OK")) {
@@ -1914,7 +1921,7 @@ class DbTable extends Object {
                     $e = new Message("entfernen", "Entfernen erfolgreich ");
                     $this->refresh();
                     $ret = true;
-                    
+
                     $this->postDelete($rowId);
                 } else {
 
@@ -1968,10 +1975,10 @@ class DbTable extends Object {
                     $hiddenOk = new Hiddenfield($delName, $_REQUEST[$delName]);
 
                     //$frm = new Form($_SERVER['SCRIPT_NAME']);
-		            $frm = new Div();
+                    $frm = new Div();
                     $frm->add($tbl);
                     $frm->add($hiddenOk);
-                    $frm->add($this->DEFAULT_HIDDEN_FIELDS);                    
+                    $frm->add($this->DEFAULT_HIDDEN_FIELDS);
                     return $frm;
                 }
             }
@@ -1983,8 +1990,8 @@ class DbTable extends Object {
      * Funktion zum überschreiben für eventuell 
      * nach löschen erforderlichen Ereignissen
      */
-    function postDelete($id){
-        
+    function postDelete($id) {
+
     }
 
     //----------------------------------------------------------------------
@@ -2048,7 +2055,7 @@ class DbTable extends Object {
             $tNames = $this->LABELS;
         }
         $table = new Table($tNames);
-	$table->setAlignments($this->getAlignments());
+        $table->setAlignments($this->getAlignments());
         $table->setBorder($this->BORDER);
         $table->setHeadEnabled($this->HEAD_ENABLED);
         $table->setBackgroundColorChange(true);

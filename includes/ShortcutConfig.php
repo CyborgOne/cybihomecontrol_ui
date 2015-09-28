@@ -21,6 +21,9 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
 } else {
 
+    $ttlZuord = new Title("Shortcut Einstellungen");
+    $ttlZuord->setAlign("left");
+    $ttlZuord->show();
 
     $spc = new Spacer(20); 
     $ln  = new Line();
@@ -83,9 +86,12 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
     $table = new Table(array("",""));
     $table->setWidth("100%");
-
+    
+    $ttlZuord = new Title("Zuordnungen bearbeiten");
+    $ttlZuord->setAlign("left");
+    
     $rTitle = $table->createRow();
-    $rTitle->setAttribute(0, new Title("Zuordnungen bearbeiten"));
+    $rTitle->setAttribute(0, $ttlZuord);
     $rTitle->setSpawnAll(true);
     $table->addRow($rTitle);
 
@@ -158,8 +164,10 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
         $newItemBtn = $scItemsDbTable->getNewEntryButton();
         $form->add($table);
         $form->add($newItemBtn);
+        $form->add(new Spacer());
     } else {
         $form->add($table);
+        $form->add(new Spacer());
     }
 
     

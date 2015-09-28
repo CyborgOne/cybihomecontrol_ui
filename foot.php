@@ -11,10 +11,13 @@
   $fTbl->show();
   */
 
-  $t = new Text("Arduino URL: ".$_SESSION['config']->PUBLICVARS['arduino_url'], 2, false, true, false);
+ // $t = new Text("Arduino URL: ".$_SESSION['config']->PUBLICVARS['arduino_url'], 2, false, true, false);
+  $versionInfo = "Status-Info";
+  $t = new Link("http://smarthomeyourself.de/statusInfo.php", $versionInfo, false, "status");
+  
   
   $versionInfo = "Version: " .file_get_contents('version.txt');;
-  $lVersion = new Link("http://smarthomeyourself.de/statusInfo.php", $versionInfo, false, "status");
+  $lVersion = new Link("/versionHistory.txt", $versionInfo, false, "versionHist");
     
   $fTbl = new Table(array("", ""));
   $fTbl->setAlignments(array("left","right"));
