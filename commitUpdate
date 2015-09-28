@@ -10,7 +10,6 @@ IFS='.' read -a array <<< "$versionValue"
 newVersion=''
 for index in "${!array[@]}"
 do
-#   echo "$index ${array[index]}"
   if [ $index -eq 2 ]; then
     tmp=.$((${array[index]}+1));
   elif [ $index -eq 0 ]; then
@@ -34,6 +33,27 @@ git add *.sql
 git add commitUpdate
 git add *.txt
 
-git commit
+
+
+echo "" > versionHistory.tmp
+
+echo  "Geben Sie die Anpassungen des Commits an: "
+echo  "Beenden Sie die Eingabe mit 2x Enter (also einer Leerzeile)"
+while read changes 
+do
+   if  [ ${#changes} -gt 0 ]; then
+      echo "$changes"        >> versionHistory.tmp
+   else
+      break
+   fi
+done
+
+echo ""                      >> versionHistory.txt
+echo "Version: $newVersion"  >> versionHistory.txt
+echo "---------------------" >> versionHistory.txt
+echo ""                      >> versionHistory.txt
+cat versionHistory.tmp       >> versionHistory.txt
+
+git commit --file versionHistory.tmp
 git push
 
