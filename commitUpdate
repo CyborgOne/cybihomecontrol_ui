@@ -49,7 +49,6 @@ done
 echo ""                      >> versionHistory.txt
 echo "Version: $newVersion"  >> versionHistory.txt
 echo "---------------------" >> versionHistory.txt
-echo ""                      >> versionHistory.txt
 cat versionHistory.tmp       >> versionHistory.txt
 #-----------------------------------------------------------------
 
