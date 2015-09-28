@@ -38,11 +38,13 @@ class HomeControlCron {
 
 
     function getPauseLink() {
-        $loginNeed = getPageConfigParam($_SESSION['config']->DBCONNECT, "loginForTimelinePauseNeed")=="J";
-        $loggedIn  = ($_SESSION['config']->CURRENTUSER->STATUS=="admin" || $_SESSION['config']->CURRENTUSER->STATUS=="user");
-        
-        if ($this->isNextExecutionCron() && (($loginNeed && $loggedIn) || !$loginNeed)){
-            if($this->isCronPaused()){
+        $loginNeed = getPageConfigParam($_SESSION['config']->DBCONNECT,
+            "loginForTimelinePauseNeed") == "J";
+        $loggedIn = ($_SESSION['config']->CURRENTUSER->STATUS == "admin" || $_SESSION['config']->
+            CURRENTUSER->STATUS == "user");
+
+        if ($this->isNextExecutionCron() && (($loginNeed && $loggedIn) || !$loginNeed)) {
+            if ($this->isCronPaused()) {
                 return $this->getPauseDeactivationLink();
             } else {
                 return $this->getPauseActivationLink();
@@ -54,7 +56,7 @@ class HomeControlCron {
 
 
     private function getPauseActivationLink() {
-        $lnk = new Link("?pauseCron=".$this->getId(), new Text("Pause", 4));
+        $lnk = new Link("?pauseCron=" . $this->getId(), new Text("Pause", 4));
         $lnk->setToolTip("Folgende Ausführung auslassen");
 
         return $lnk;
@@ -62,19 +64,20 @@ class HomeControlCron {
 
 
     private function getPauseDeactivationLink() {
-        $lnk = new Link("?unpauseCron=".$this->getId(), new Text("Aktivieren", 4));
+        $lnk = new Link("?unpauseCron=" . $this->getId(), new Text("Aktivieren", 4));
         $lnk->setToolTip("Pausierung aufheben");
 
         return $lnk;
     }
 
-    function checkPauseLink(){
-      if(isset($_REQUEST['pauseCron'])&&$_REQUEST['pauseCron']==$this->getId()){
-         $this->setPause(true);
-      }   
-      if(isset($_REQUEST['unpauseCron'])&&$_REQUEST['unpauseCron']==$this->getId()){
-         $this->setPause(false);       
-      }   
+    function checkPauseLink() {
+        if (isset($_REQUEST['pauseCron']) && $_REQUEST['pauseCron'] == $this->getId()) {
+            $this->setPause(true);
+        }
+        if (isset($_REQUEST['unpauseCron']) && $_REQUEST['unpauseCron'] == $this->getId
+            ()) {
+            $this->setPause(false);
+        }
     }
 
 
@@ -82,7 +85,7 @@ class HomeControlCron {
         $dayOfWeek = date("w", time());
 
         for ($iO = 0; $iO < 7; $iO++) {
-            $weekDayIndex = ($dayOfWeek + $iO) <= 6 ? ($dayOfWeek + $iO):($dayOfWeek + $iO) -
+            $weekDayIndex = ($dayOfWeek + $iO) <= 6 ? ($dayOfWeek + $iO) : ($dayOfWeek + $iO) -
                 7;
 
             if ($this->CRON_ROW->getNamedAttribute($this->WEEKDAYS[$weekDayIndex]) == "J") {
@@ -103,33 +106,33 @@ class HomeControlCron {
 
         if (strlen($dayIndex) > 0 && $dayIndex >= 0 && $dayIndex <= 6) {
             $ret = $this->CRON_ROW->getNamedAttribute("wochentag");
-            $ret .= " ".sprintf('%02d', $this->CRON_ROW->getNamedAttribute("stunde"));
-            $ret .= ":".sprintf('%02d', $this->CRON_ROW->getNamedAttribute("minute"));
+            $ret .= " " . sprintf('%02d', $this->CRON_ROW->getNamedAttribute("stunde"));
+            $ret .= ":" . sprintf('%02d', $this->CRON_ROW->getNamedAttribute("minute"));
         }
         return $ret;
     }
-    
-    function isNextExecutionCron(){
+
+    function isNextExecutionCron() {
         $dayIndex = $this->CRON_ROW->getNamedAttribute("tagnr");
         if ($dayIndex >= 0 && $dayIndex <= 6) {
             $std = $this->CRON_ROW->getNamedAttribute("stunde");
             $min = $this->CRON_ROW->getNamedAttribute("minute");
 
-            $rlNxtDay = date("w") < 6 ? date("w") + 1:0;
-               
-            $isCurrentDay = $dayIndex==date("w");
-            $isNextDay = $dayIndex==$rlNxtDay;
-  
-            if ( ($isCurrentDay && ($std == date("H") && $min > date("i") || $std > date("H")) ) || 
-                 ($isNextDay    && ($std == date("H") && $min < date("i") || $std < date("H")) )  ) {
-                 return true;
+            $rlNxtDay = date("w") < 6 ? date("w") + 1 : 0;
+
+            $isCurrentDay = $dayIndex == date("w");
+            $isNextDay = $dayIndex == $rlNxtDay;
+
+            if (($isCurrentDay && ($std == date("H") && $min > date("i") || $std > date("H"))) ||
+                ($isNextDay && ($std == date("H") && $min < date("i") || $std < date("H")))) {
+                return true;
             }
         }
         return false;
     }
 
     function isCronPaused() {
-        $sql = "SELECT 'X' FROM homecontrol_cron_pause WHERE cron_id = ".$this->getId();
+        $sql = "SELECT 'X' FROM homecontrol_cron_pause WHERE cron_id = " . $this->getId();
         $result = $_SESSION['config']->DBCONNECT->executeQuery($sql);
         return (mysql_num_rows($result) > 0) && $this->isNextExecutionCron();
     }
@@ -139,10 +142,10 @@ class HomeControlCron {
         $sql = "";
 
         if ($b === true) {
-            $sql = "INSERT INTO homecontrol_cron_pause (cron_id, pause_time) VALUES (".$this->getId().
-                ",".time().")";
+            $sql = "INSERT INTO homecontrol_cron_pause (cron_id, pause_time) VALUES (" . $this->
+                getId() . "," . time() . ")";
         } else {
-            $sql = "DELETE FROM homecontrol_cron_pause WHERE cron_id=".$this->getId();
+            $sql = "DELETE FROM homecontrol_cron_pause WHERE cron_id=" . $this->getId();
         }
 
         $_SESSION['config']->DBCONNECT->executeQuery($sql);

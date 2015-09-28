@@ -23,4 +23,7 @@ foreach($sensorDBTbl->ROWS as $row){
     $cnt++;
 }
 
+$spc = new Spacer();
+$spc->show();
+
 ?>

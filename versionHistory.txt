@@ -1,6 +1,12 @@
 
 Version: 0.0.19
 ---------------------
-
 Commit-Script um Versions-History erweitert
 
+
+Version: 0.0.21
+---------------------
+Diverse Einstellungen korrigiert
+Seitenüberschriften alle links ausgerichtet
+Sensoreinstellungen auf Sensor-Id, Name und Beschreibung anlegen, bearbeiten und löschen reduziert
+Menüpunkt Automatisierung in Einstellungen eingefügt
