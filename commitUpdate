@@ -3,6 +3,9 @@
 #
 # (c) by Daniel Scheidler      Aug 2015
 
+#-----------------------------------------------------------------
+#  Versions-Nummer rauf zählen
+#-----------------------------------------------------------------
 versionValue=$(<version.txt)
 echo "Old Version: " $versionValue
 
@@ -24,15 +27,8 @@ echo $newVersion > version.txt
 echo "New Version: " $newVersion
 
 
-git add classes
-git add includes
-git add *.php
-git add functions
-git add *.sh
-git add *.sql
-git add commitUpdate
-git add *.txt
-
+#-----------------------------------------------------------------
+#  Versions-History ===>>> Eingabe der Beschreibung
 #-----------------------------------------------------------------
 if [ -f versionHistory.tmp ];
 then
@@ -56,6 +52,20 @@ echo "---------------------" >> versionHistory.txt
 echo ""                      >> versionHistory.txt
 cat versionHistory.tmp       >> versionHistory.txt
 #-----------------------------------------------------------------
+
+
+
+#-----------------------------------------------------------------
+#  GIT - Dateien adden und commiten
+#-----------------------------------------------------------------
+git add classes
+git add includes
+git add *.php
+git add functions
+git add *.sh
+git add *.sql
+git add commitUpdate
+git add *.txt
 
 
 git commit --file versionHistory.tmp

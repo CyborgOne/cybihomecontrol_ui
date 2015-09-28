@@ -1,12 +1,5 @@
 
-
-Version: 0.0.20
----------------------
-
-
-
 Version: 0.0.19
 ---------------------
 
-
-Commit-Script um Versionshistory erweitert
+Commit-Script um Versions-History erweitert
