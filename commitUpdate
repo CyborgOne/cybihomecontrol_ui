@@ -33,9 +33,11 @@ git add *.sql
 git add commitUpdate
 git add *.txt
 
-
-
-echo "" > versionHistory.tmp
+#-----------------------------------------------------------------
+if [ -f versionHistory.tmp ];
+then
+  rm versionHistory.tmp
+fi
 
 echo  "Geben Sie die Anpassungen des Commits an: "
 echo  "Beenden Sie die Eingabe mit 2x Enter (also einer Leerzeile)"
@@ -53,6 +55,8 @@ echo "Version: $newVersion"  >> versionHistory.txt
 echo "---------------------" >> versionHistory.txt
 echo ""                      >> versionHistory.txt
 cat versionHistory.tmp       >> versionHistory.txt
+#-----------------------------------------------------------------
+
 
 git commit --file versionHistory.tmp
 git push
