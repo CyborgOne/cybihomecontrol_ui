@@ -32,7 +32,9 @@ class HomeControlTermCreator extends Object {
     
     private function getTypeChooseDialog(){
         $sensorWertOption    = new Div("createSensorWert", 250, 40);
+        $sensorWertOption->setToolTip("Sensoren die einen Messwert liefern<br><br>z.b. <br>- Helligkeitssensor<br>- Temperatursensor<br>- Abstandssensor");
         $sensorStatusOption  = new Div("createSensorStatus", 250, 40);
+        $sensorStatusOption->setToolTip("Sensoren die nur 1 oder 0 als Wert liefern<br><br>z.b. <br>- Bewegungsmelder<br>- Regensensor<br>- Lichtschranke");
         $zeitOption          = new Div("createZeit", 250, 40);
         $wochentagOption     = new Div("createWochentag", 250, 40);
         
@@ -98,20 +100,7 @@ class HomeControlTermCreator extends Object {
     }
 
 
-
-
-
-
-
-
-
-
-    
-
-
-    
-    
-      /**
+    /**
      * Maske um Urhzeit incl. Bedingung (<>=) zu erzeugen
      */
     private function getSensorWertTermCreatorMask(){
@@ -164,7 +153,7 @@ class HomeControlTermCreator extends Object {
             $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, value, termcondition, sensor_id, order_nr, and_or) " 
                         ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 1" 
                         .", '" .$_REQUEST['value'] ."', '" .$_REQUEST['condition'] ."', " .$_REQUEST['sensor'] .", " .$orderNr .", '" .$andOr ."' )";
-            if($insert){                        
+            if($insert){              
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
               $this->TYPE = null;
               $_REQUEST['saveCreateSensorWertTerm'] = null;
@@ -292,13 +281,15 @@ class HomeControlTermCreator extends Object {
     private function checkTimeTermCreatorMask($insert=true){
         if (isset($_REQUEST['saveCreateTimeTerm']) && strlen($_REQUEST['saveCreateTimeTerm'])>0 
           && strlen($_REQUEST['stunde'])>0 && strlen($_REQUEST['minute'])>0 && strlen($_REQUEST['condition'])>0 ){
+echo "saveCreateTimeTerm<br>";
             $orderNr = 1;
             $andOr    = "and";            
             
             $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, min, std, termcondition, order_nr, and_or) " 
                         ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 3, " 
                         .$_REQUEST['minute'] .", " .$_REQUEST['stunde'] .", '" .$_REQUEST['condition'] ."', " .$orderNr .", '" .$andOr ."' )";
-            if($insert){                        
+            if($insert){   
+                echo $sqlInsert;
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
               $this->TYPE = null;
               $_REQUEST['saveCreateTimeTerm'] = null;

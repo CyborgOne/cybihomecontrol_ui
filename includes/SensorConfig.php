@@ -22,8 +22,7 @@ $t = new Title("Sensor Einstellungen");
 $t->setAlign("left");
 $t->show();
 
-if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
-    CURRENTUSER->STATUS != "user") {
+if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->CURRENTUSER->STATUS != "user") {
 
     /* ------------------------------------
     BENUTZERSTATUS ANZEIGEN

@@ -43,6 +43,10 @@ class HomeControlTerm extends Object {
         return $this->TERM_ROW->getNamedAttribute('value');
     }
 
+    private function getSensorId() {
+        return $this->TERM_ROW->getNamedAttribute('sensor_id');
+    }
+
     private function getStd() {
         return str_pad($this->TERM_ROW->getNamedAttribute('std'), 2, '0', STR_PAD_LEFT);
     }
@@ -102,7 +106,7 @@ class HomeControlTerm extends Object {
      * (Type 1) 
      */
     private function getDescriptionForSensorWert() {
-        return "Sensor " . $this->getTriggerId() . " " . $this->getCondition() .
+        return "Sensor: " .getSensorName($this->getSensorId()) . " " . $this->getCondition() .
             " " . $this->getValue();
     }
 
@@ -111,7 +115,7 @@ class HomeControlTerm extends Object {
      * (Type 2) 
      */
     private function getDescriptionForSensorStatus() {
-        return "Sensor " . $this->getTriggerId() . ": " .($this->getStatus()=="J"?"Aktiv":"Inaktiv");
+        return "Sensor: " . getSensorName($this->getSensorId()) . ": " .($this->getStatus()=="J"?"Aktiv":"Inaktiv");
     }
 
     /**

@@ -185,7 +185,7 @@ Class Div extends Object {
 	
 	$this->showStyles();
      
-    $this->getToolTipTag();
+    echo $this->getToolTipTag();
 	
 	echo " >";
 	

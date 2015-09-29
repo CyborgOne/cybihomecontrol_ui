@@ -1,5 +1,13 @@
 <?PHP
   
+  function getSensorName($id){
+    $sql = "SELECT name FROM homecontrol_sensor WHERE id = ".$id;
+    $result = mysql_query($sql);
+    $row = mysql_fetch_array($result);
+    return $row['name'];
+
+  }
+  
   function switchShortcut($arduinoUrl, $shortcutUrl){
     $switchStatusCheck = true;
     ob_implicit_flush(true);

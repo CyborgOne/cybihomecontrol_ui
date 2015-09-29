@@ -40,7 +40,7 @@ class DbTable extends Object {
     var $BORDER;
     var $LABELS;
     var $ALIGNMENTS;
-
+    
     var $ORDERBY;
     var $PADDING;
     var $SPACING;
@@ -68,6 +68,7 @@ class DbTable extends Object {
     private $DEFAULT_HIDDEN_FIELDS;
     private $UPDATE_USERID_ON_INSERT = true;
     private $UPDATE_USERID_ON_UPDATE = false;
+    private $TEXTEDITOR_ENABLED = true;
 
 
     function isUpdateUserIdOnInsert() {
@@ -84,6 +85,14 @@ class DbTable extends Object {
 
     function setUpdateUserIdOnUpdate($b) {
         $this->UPDATE_USERID_ON_UPDATE = ($b === true);
+    }
+
+    function isTexteditorEndabled(){
+        return $this->TEXTEDITOR_ENABLED;
+    }
+    
+    function setTexteditorEndabled($bool){
+        $this->TEXTEDITOR_ENABLED = $bool;
     }
 
     /**
@@ -429,6 +438,11 @@ class DbTable extends Object {
 
     function setNoUpdateCols($c) {
         $this->NOUPDATECOLS = $c;
+    }
+
+
+    function isNoUpdateCol($name) {
+        return existsInArray($name, $this->NOUPDATECOLS);
     }
 
 
@@ -843,7 +857,8 @@ class DbTable extends Object {
 
                     } else
                         if (mysql_field_type($result, $i) == "blob") {
-                            $o = new TextArea($fieldName, $val, 120, 10);
+                            $o = new TextArea($fieldName, $val, 80, 10);
+                            $o->setTextEditor($this->TEXTEDITOR_ENABLED);
 
                         } else
                             if (mysql_field_type($result, $i) == "date") {
@@ -1356,15 +1371,14 @@ class DbTable extends Object {
                     $r->setAttribute($ia, $txt);
             }
 
-            $div = new Div();
-            $div->setWidth(100);
-            $div->setOverflow("visible");
-
+            $tblBtns = new Table(array("", ""));
+            $tblBtns->setWidth(150);
+        
             $frmUpdBtn = new Form();
             $frmUpdBtn->add($this->DEFAULT_HIDDEN_FIELDS);
             $frmUpdBtn->add(new Hiddenfield("showUpdateMask" . $this->TABLENAME, $rowId));
             $frmUpdBtn->add(new Button("editEtage", "bearbeiten"));
-            $div->add($frmUpdBtn);
+            
 
             //bearbeiten Link
             $btnUpd = new Link($_SERVER['SCRIPT_NAME'] . "?" . "showUpdateMask" . $this->
@@ -1377,12 +1391,16 @@ class DbTable extends Object {
             $frmDelBtn->add($this->DEFAULT_HIDDEN_FIELDS);
             $frmDelBtn->add(new Button("delete" . $rowId . $this->TABLENAME, "entfernen"));
 
+            $rBtns = $tblBtns->createRow();
+            $rBtns->setAttribute(0, $frmUpdBtn);
             if ($this->isDeleteInUpdate()) {
-                $div->add($frmDelBtn);
+                $rBtns->setAttribute(1,$frmDelBtn);
+            } else {
+                $rBtns->setSpawnAll(true);
             }
-
-
-            $r->setAttribute(count($tNames) - 1, $div);
+            $tblBtns->addRow($rBtns);
+            
+            $r->setAttribute(count($tNames) - 1, $tblBtns);
 
             $table->addRow($r);
         }
@@ -1722,7 +1740,7 @@ class DbTable extends Object {
                     } else
                         if (mysql_field_type($result, $i) == "blob") {
                             $o = new TextArea($fieldName . $rowId, $val, 80, 10);
-                            $o->setTextEditor(true);
+                            $o->setTextEditor($this->TEXTEDITOR_ENABLED);
 
                         } else
                             if (mysql_field_type($result, $i) == "date") {

@@ -69,7 +69,7 @@ class HomeControlTermEditor extends Object {
         if (isset($_REQUEST['saveEditSensorWertTerm']) && isset($_REQUEST['editTerm']) && strlen($_REQUEST['saveEditSensorWertTerm'])>0 
           && strlen($_REQUEST['condition'])>0 && strlen($_REQUEST['sensor'])>0 && strlen($_REQUEST['value'])>0 ){
             $sqlUpdate = "UPDATE homecontrol_term " 
-                    ."SET condition='".$_REQUEST['condition'] ."', sensor_id=" .$_REQUEST['sensor'] 
+                    ."SET termcondition='".$_REQUEST['condition'] ."', sensor_id=" .$_REQUEST['sensor'] 
                        .", value='" .$_REQUEST['value'] ."' " 
                        ."WHERE id = ".$_REQUEST['editTerm'];
             if($update){

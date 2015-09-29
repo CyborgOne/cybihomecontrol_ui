@@ -132,8 +132,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $scItemsDbTable->setNoInsertCols(array("id"));
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
-        $scItemsDbTable->setWidth("100%");
-
+        
         // Neuer Eintrag
         if (isset($_REQUEST['InsertIntoDBhomecontrol_alarm_items']) && $_REQUEST['InsertIntoDBhomecontrol_alarm_items'] ==
             "Speichern") {
