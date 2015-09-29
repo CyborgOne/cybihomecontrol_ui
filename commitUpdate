@@ -64,10 +64,15 @@ do
    fi
 done
 
-echo ""                      >> versionHistory.txt
+cat versionHistory.txt       >  versionHistory.old
+
+echo ""                      >  versionHistory.txt
 echo "Version: $newVersion"  >> versionHistory.txt
 echo "---------------------" >> versionHistory.txt
 cat versionHistory.tmp       >> versionHistory.txt
+
+cat versionHistory.old       >> versionHistory.txt
+
 #-----------------------------------------------------------------
 
 
