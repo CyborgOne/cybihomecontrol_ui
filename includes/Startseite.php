@@ -1,7 +1,9 @@
 <?PHP
 //Filename: Startseite.php
+$loginNeed = getPageConfigParam($_SESSION['config']->DBCONNECT,
+    "loginForSwitchNeed") == "J";
 
-if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->CURRENTUSER->STATUS != "user" ) {
+if ($loginNeed && $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->CURRENTUSER->STATUS != "user" ) {
             
    /* ------------------------------------
       BENUTZERSTATUS ANZEIGEN

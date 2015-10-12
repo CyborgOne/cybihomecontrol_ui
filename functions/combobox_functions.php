@@ -148,7 +148,21 @@
     return $ret;    
   }
 
+    
+  function getDefaultComboValue($name, $code){
+    $ret = null;
+	
+    $sqlComboData    = "SELECT DISTINCT code, value from default_combo_values where combo_name = '" .$name ."' and code = ".$code;
+    $resComboData = $_SESSION['config']->DBCONNECT->executeQuery($sqlComboData);
+    while($rowComboData = mysql_fetch_array($resComboData)){
+    	$code  = $rowComboData["code"];
+    	$value = $rowComboData["value"];
+    	
+		$ret = $value;
+	}
 
+    return $ret;    
+  }
 
   function getNumberComboArray($von, $bis, $emptyRowBool=false){
     // Liefert ein Array für eine Combobox (code=>text)

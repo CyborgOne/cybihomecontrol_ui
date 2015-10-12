@@ -32,7 +32,7 @@ class HomeControlTermEditor extends Object {
                          "condition");
         $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor ", "sensor");
         $wertTxt   = new Textfield("value",$this->TERM_ROW->getNamedAttribute("value"),9,9);
-        
+
         $t = new Table(array("","","","",""));
         $r = $t->createRow();
         $r->setAttribute(0,"Wert");
@@ -41,19 +41,19 @@ class HomeControlTermEditor extends Object {
         $r->setAttribute(3,$wertTxt);
         $r->setAttribute(4,new Button("saveEditSensorWertTerm", " Speichern "));
         $t->addRow($r);
-        
+
         $rH = $t->createRow();
         $rH->setSpawnAll(true);
         $rH->setAttribute(0, new Hiddenfield("editTerm", $_REQUEST['editTerm']));
         $t->addRow($rH);
-                
+
         $rH2 = $t->createRow();
         $rH2->setSpawnAll(true);
         $rH2->setAttribute(0, new Hiddenfield("editSensorWert", "ok"));
         $t->addRow($rH2);
-        
+
         $div->add($t);
-        
+
         return $div;
     }
     

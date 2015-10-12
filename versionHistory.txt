@@ -1,4 +1,8 @@
 
+Version: 0.0.24
+---------------------
+Versions-History umgedreht (aktuellster Eintrag oben)
+
 Version: 0.0.23
 ---------------------
 Seite für Automatisierungs-Einstellungen erstellt

@@ -59,7 +59,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
                             "");
     
     $sensorDBTbl->setDeleteInUpdate(true);
-//    $sensorDBTbl->setReadOnlyCols(array("geaendert", "lastSignal", "lastValue"));
+    $sensorDBTbl->setReadOnlyCols(array("id","geaendert", "lastSignal", "lastValue"));
 //    $sensorDBTbl->setNoInsertCols(array("geaendert", "lastSignal", "lastValue"));
     
     
