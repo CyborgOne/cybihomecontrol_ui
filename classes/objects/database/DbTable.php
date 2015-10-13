@@ -833,19 +833,18 @@ class DbTable extends Object {
                 // definierte Combobox laden (wenn vorhanden)
                 $dbCombo = getDbComboArray($this->TABLENAME, $fieldName);
 
-                if ((mysql_num_rows($lookups) == 0 && !$this->isDbComboSet($this->TABLENAME, $fieldName)) ||
-                    strlen($this->getDefaultValue($this->DEFAULTS, $fieldName)) > 0) {
+
+                if ((mysql_num_rows($lookups) == 0 && !$this->isDbComboSet($this->TABLENAME, $fieldName)) ) {//|| strlen($this->getDefaultValue($this->DEFAULTS, $fieldName)) > 0 
                     $val = "";
+                    if (strlen($this->getDefaultValue($this->DEFAULTS, $fieldName)) > 0) {
+                        $val = $this->getDefaultValue($this->DEFAULTS, $fieldName);
+                    }
                     if (isset($_REQUEST[$fieldName]) && strlen($_REQUEST[$fieldName]) > 0) {
                         $val = $_REQUEST[$fieldName];
                     }
 
-                    if (strlen($this->getDefaultValue($this->DEFAULTS, $fieldName)) > 0) {
-                        $tmpval = $this->getDefaultValue($this->DEFAULTS, $fieldName);
-
-                        $o = new HiddenField($fieldName, $tmpval);
-
-                    } elseif (strpos(mysql_field_flags($result, $i), "enum") > 0) {
+                     
+                    if (strpos(mysql_field_flags($result, $i), "enum") > 0) {
                         $ev = $this->getEnumValues($fieldName);
 
                         if (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
@@ -886,11 +885,9 @@ class DbTable extends Object {
                             $o = new ComboBox($fieldName, $dbCombo);
                         }
                 }
-                if (strlen($this->getDefaultValue($this->DEFAULTS, $fieldName)) <= 0) {
-                    $r->setAttribute(0, $this->LABELS[$i]);
-                } else {
-                    $r->setAttribute(0, "");
-                }
+
+                $r->setAttribute(0, $this->LABELS[$i]);
+
                 $r->setAttribute(1, $o);
 
                 $table->addRow($r);
@@ -1773,7 +1770,7 @@ class DbTable extends Object {
                         }
                 }
 
-                if ($i < count($this->LABELS) && !strpos(" " . $this->DEFAULTS, $fieldName) > 0) {
+                if ($i < count($this->LABELS) ) {
                     $r->setAttribute(0, $this->LABELS[$i]);
                 } else {
                     $r->setAttribute(0, "");

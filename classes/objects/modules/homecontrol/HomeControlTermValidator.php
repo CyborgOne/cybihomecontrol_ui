@@ -72,14 +72,19 @@ class HomeControlTermValidator {
     function isCompare($valueA, $valueB, $comp){
         
         if($comp == "<"){
+            echo "$valueA < $valueB";
             return $valueA < $valueB;           
         } else if($comp == ">"){
+            echo "$valueA > $valueB";
             return $valueA > $valueB;            
         } else if($comp == "<="){
+            echo "$valueA <= $valueB";
             return $valueA <= $valueB;            
         } else if($comp == ">="){
+            echo "$valueA >= $valueB";
             return $valueA >= $valueB;
         } else if($comp == "="){
+            echo "$valueA = $valueB";
             return $valueA == $valueB;
         }
         

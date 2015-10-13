@@ -12,8 +12,8 @@ $spc->show();
 
 $regelDbTbl   = new HcRegelnDbTable($_SESSION['config']->DBCONNECT, 
                             "homecontrol_regeln", 
-                            array("name", "beschreibung"), 
-                            "Name, Beschreibung", 
+                            array("name", "reverse_switch", "beschreibung"), 
+                            "Name, Reverse-Switch, Beschreibung", 
                             "", 
                             "name", 
                             "");
@@ -21,6 +21,7 @@ $regelDbTbl   = new HcRegelnDbTable($_SESSION['config']->DBCONNECT,
 $regelDbTbl->setDeleteInUpdate(true);
 $regelDbTbl->setNoInsertCols(array("id", "beschreibung"));
 $regelDbTbl->setNoUpdateCols(array("id"));
+$regelDbTbl->setDefaults("reverse_switch='J'");
 $regelDbTbl->setHeaderEnabled(true);
 $regelDbTbl->setTexteditorEndabled(false);
 
@@ -38,6 +39,7 @@ if (isset($_REQUEST['InsertIntoDB'.$regelDbTbl->TABLENAME]) && $_REQUEST['Insert
 
     $regelDbTbl->setBorder(0);
     $insMsk = $regelDbTbl->getInsertMask();
+
     $hdnFld = $insMsk->getAttribute(1);
     if ($hdnFld instanceof Hiddenfield) {
         $insMsk->setAttribute(1, new Hiddenfield($regelDbTbl->getNewEntryButtonName(), "-"));
@@ -52,8 +54,10 @@ if (isset($_REQUEST['InsertIntoDB'.$regelDbTbl->TABLENAME]) && $_REQUEST['Insert
 
 $form = new Form();
 
+$updMsk = $regelDbTbl->getUpdateMask();
+
 $form->add($table);
-$form->add($regelDbTbl->getUpdateMask());
+$form->add($updMsk);
 $form->add(new Spacer(10));
 $form->add($regelDbTbl->getNewEntryButton("Neue Regel anlegen"));
 $form->add($spc);
@@ -94,7 +98,7 @@ $table->addRow($r2Auswahl);
 
 $table->addSpacer(0, 10);
 
-if (isset($_SESSION['SelectedRegelToEdit'])) {
+if (isset($_SESSION['SelectedRegelToEdit']) && strlen($_SESSION['SelectedRegelToEdit'])>0) {
     $where = "trigger_id=" . $_SESSION['SelectedRegelToEdit'] ." AND trigger_type=1 ";
     
     $termDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_term',
@@ -146,97 +150,105 @@ if (isset($_SESSION['SelectedRegelToEdit'])) {
     $rZuordnung->setSpawnAll(true);
     $rZuordnung->setAttribute(0, $newItemBtn);
     $table->addRow($rZuordnung);
+    
+    $form = new Form();
+    $form->add($spc);
+    $form->add($table);
+    $form->add($spc);
+    $form->show();
+    
+    
+    
+    
+    // -------------------------------------------
+    //                 Schaltgruppen
+    // -------------------------------------------
+    
+    $regelItemsDbTable = new DbTable($_SESSION['config']->DBCONNECT,
+        'homecontrol_regeln_items', array("config_id", "art_id", "zimmer_id",
+        "etagen_id", "on_off", "regel_id", "id"),
+        "Objekt, Objekt-Art, Zimmer, Etage, An/Aus", "regel_id=" . $_SESSION['SelectedRegelToEdit'],
+        "config_id DESC, zimmer_id DESC, etagen_id DESC", "regel_id=" . $_SESSION['SelectedRegelToEdit']);
+    
+    $regelItemsDbTable->setReadOnlyCols(array("id"));
+    $regelItemsDbTable->setNoInsertCols(array("id"));
+    $regelItemsDbTable->setDeleteInUpdate(true);
+    $regelItemsDbTable->setHeaderEnabled(true);
+    
+    
+    $itemsTable = new Table(array("", ""));
+    $itemsTable->setColSizes(array(150));
+    $itemsTable->setBorder(0);
+    
+    $ttlItems = new Title("Zu schaltende Objekte");
+    $ttlItems->setAlign("left");
+    $itemsTable->addSpacer(0,15);
+    
+    $r1Title = $itemsTable->createRow();
+    $r1Title->setSpawnAll(true);
+    $r1Title->setAttribute(0, $ttlItems);
+    $itemsTable->addRow($r1Title);
+    
+    // Neuer Eintrag
+    if (isset($_REQUEST['InsertIntoDB'.$regelItemsDbTable->TABLENAME]) && $_REQUEST['InsertIntoDB'.$regelItemsDbTable->TABLENAME] == "Speichern") {
+    
+        $regelItemsDbTable->doInsert();
+        $regelItemsDbTable->refresh();
+    
+    } else
+        if (isset($_REQUEST[$regelItemsDbTable->getNewEntryButtonName()])) {
+    
+            $regelItemsDbTable->setBorder(0);
+            $insMsk = $regelItemsDbTable->getInsertMask();
+            $hdnFld = $insMsk->getAttribute(1);
+            if ($hdnFld instanceof Hiddenfield) {
+                $insMsk->setAttribute(1, new Hiddenfield($regelItemsDbTable->getNewEntryButtonName(), "-"));
+            }
+    
+            $rNew = $itemsTable->createRow();
+            $rNew->setSpawnAll(true);
+            $rNew->setAttribute(0, $insMsk);
+            $itemsTable->addRow($rNew);
+            $itemsTable->addSpacer(0,10);
+    }
+    
+    if (isset($_REQUEST["DbTableUpdate" . $regelItemsDbTable->TABLENAME])) {
+        $regelItemsDbTable->doUpdate();
+    }
+    
+    $itemsTable->addSpacer(0,15);
+    
+    $rZuordnung = $itemsTable->createRow();
+    $rZuordnung->setSpawnAll(true);
+    $rZuordnung->setAttribute(0, $regelItemsDbTable->getUpdateAllMask());
+    $itemsTable->addRow($rZuordnung);
+    
+    $itemsTable->addSpacer(0, 10);
+    
+    $newItemBtn = $regelItemsDbTable->getNewEntryButton("Schaltung anlegen");
+    $rZuordnung = $itemsTable->createRow();
+    $rZuordnung->setSpawnAll(true);
+    $rZuordnung->setAttribute(0, $newItemBtn);
+    $itemsTable->addRow($rZuordnung);
+    
+    
+    $form = new Form();
+    $form->add($spc);
+    $form->add($itemsTable);
+    $form->add($spc);
+    $form->show();
+    
+} else {
+    // Regel-Auswahl Combobox anzeigen,
+    // wenn noch keine Regel ausgewählt wurde
+    $form = new Form();
+    $form->add($spc);
+    $form->add($table);
+    $form->add($spc);
+    $form->show();  
 }
+    
 
-$form = new Form();
-$form->add($spc);
-$form->add($table);
-$form->add($spc);
-$form->show();
-
-
-
-
-// -------------------------------------------
-//                 Schaltgruppen
-// -------------------------------------------
-
-$regelItemsDbTable = new DbTable($_SESSION['config']->DBCONNECT,
-    'homecontrol_regeln_items', array("config_id", "art_id", "zimmer_id",
-    "etagen_id", "on_off", "regel_id", "id"),
-    "Objekt, Objekt-Art, Zimmer, Etage, An/Aus", "regel_id=" . $_SESSION['SelectedRegelToEdit'],
-    "config_id DESC, zimmer_id DESC, etagen_id DESC", "regel_id=" . $_SESSION['SelectedRegelToEdit']);
-
-$regelItemsDbTable->setReadOnlyCols(array("id"));
-$regelItemsDbTable->setNoInsertCols(array("id"));
-$regelItemsDbTable->setDeleteInUpdate(true);
-$regelItemsDbTable->setHeaderEnabled(true);
-
-
-$itemsTable = new Table(array("", ""));
-$itemsTable->setColSizes(array(150));
-$itemsTable->setBorder(0);
-
-$ttlItems = new Title("Zu schaltende Objekte");
-$ttlItems->setAlign("left");
-$itemsTable->addSpacer(0,15);
-
-$r1Title = $itemsTable->createRow();
-$r1Title->setSpawnAll(true);
-$r1Title->setAttribute(0, $ttlItems);
-$itemsTable->addRow($r1Title);
-
-// Neuer Eintrag
-if (isset($_REQUEST['InsertIntoDB'.$regelItemsDbTable->TABLENAME]) && $_REQUEST['InsertIntoDB'.$regelItemsDbTable->TABLENAME] == "Speichern") {
-
-    $regelItemsDbTable->doInsert();
-    $regelItemsDbTable->refresh();
-
-} else
-    if (isset($_REQUEST[$regelItemsDbTable->getNewEntryButtonName()])) {
-
-        $regelItemsDbTable->setBorder(0);
-        $insMsk = $regelItemsDbTable->getInsertMask();
-        $hdnFld = $insMsk->getAttribute(1);
-        if ($hdnFld instanceof Hiddenfield) {
-            $insMsk->setAttribute(1, new Hiddenfield($regelItemsDbTable->getNewEntryButtonName(), "-"));
-        }
-
-        $rNew = $itemsTable->createRow();
-        $rNew->setSpawnAll(true);
-        $rNew->setAttribute(0, $insMsk);
-        $itemsTable->addRow($rNew);
-        $itemsTable->addSpacer(0,10);
-}
-
-if (isset($_REQUEST["DbTableUpdate" . $regelItemsDbTable->TABLENAME])) {
-    $regelItemsDbTable->doUpdate();
-}
-
-
-
-$itemsTable->addSpacer(0,15);
-
-$rZuordnung = $itemsTable->createRow();
-$rZuordnung->setSpawnAll(true);
-$rZuordnung->setAttribute(0, $regelItemsDbTable->getUpdateAllMask());
-$itemsTable->addRow($rZuordnung);
-
-$itemsTable->addSpacer(0, 10);
-
-$newItemBtn = $regelItemsDbTable->getNewEntryButton("Schaltung anlegen");
-$rZuordnung = $itemsTable->createRow();
-$rZuordnung->setSpawnAll(true);
-$rZuordnung->setAttribute(0, $newItemBtn);
-$itemsTable->addRow($rZuordnung);
-
-
-
-$form = new Form();
-$form->add($spc);
-$form->add($itemsTable);
-$form->add($spc);
-$form->show();
 
 
 
@@ -270,5 +282,8 @@ class HcRegelnDbTable extends DbTable {
         $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveTerms);
     }
 }
+
+
+
 
 ?>

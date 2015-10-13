@@ -157,5 +157,117 @@ function getShortcutSwitchKeyById($con, $shortcutId){
     return $shortcutUrl;
 }
 
+
+
+function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
+    $dbRegelTerms = new DbTable($_SESSION['config']->DBCONNECT,
+                                "homecontrol_term",
+                                array("*"),
+                                "",
+                                "",
+                                "",
+                                "trigger_type=1 AND trigger_id=".$regelId);
+    $isValid = true;
+    
+    // Alle Regel-Bedingungen prüfen
+    foreach($dbRegelTerms->ROWS as $rowRegelTerm){
+        $validator = new HomeControlTermValidator($rowRegelTerm);
+        if (!$validator->isValid()){
+            echo $rowRegelTerm->getNamedAttribute("id").": Fail<br/>";
+            $isValid = false;
+        } else {
+            echo $rowRegelTerm->getNamedAttribute("id").": OK<br/>";
+        }
+    }
+
+    // Wenn alle Bedingungen erfüllt sind,
+    // Geräte schalten. Bei reverseJN == "J"
+    // negiert schalten.
+    if($isValid || $reverseJN=="J"){    
+        $sql = "SELECT id, regel_id, config_id, art_id, zimmer_id, etagen_id, funkwahl, on_off " .
+            "FROM homecontrol_regeln_items WHERE regel_id=".$regelId . " " .
+            "ORDER BY on_off DESC, config_id DESC , zimmer_id DESC , etagen_id DESC ";
+
+        $result = $_SESSION['config']->DBCONNECT->executeQuery($sql);
+        while ($row = mysql_fetch_array($result)) {
+            $whereStmt = "";
+            $onOff = $isValid?$row["on_off"]:($row["on_off"]=="on"?"off":"on");
+            
+            if (strlen($row["config_id"]) > 0) {
+                $funkId = getConfigFunkId($row["config_id"], $onOff);
+                $SHORTCUTS_URL_COMMAND = addShortcutCommandItem($funkId, $onOff, $SHORTCUTS_URL_COMMAND);
+            } else {
+    
+                if (strlen($row["art_id"]) > 0) {
+                    $whereStmt = $whereStmt . " control_art=" . $row["art_id"];
+                }
+    
+                if (strlen($row["zimmer_id"]) > 0) {
+                    if ($whereStmt != "") {
+                        $whereStmt = $whereStmt . " AND ";
+                    }
+                    $whereStmt = $whereStmt . " zimmer=" . $row["zimmer_id"];
+                }
+    
+                if (strlen($row["etagen_id"]) > 0) {
+                    if ($whereStmt != "") {
+                        $whereStmt = $whereStmt . " AND ";
+                    }
+                    $whereStmt = $whereStmt . " etage=" . $row["etagen_id"];
+                }
+    
+                $sqlConfig = "SELECT id, funk_id, funk_id2 FROM homecontrol_config " . "WHERE " .
+                    $whereStmt;
+            
+                $resultConfig = $_SESSION['config']->DBCONNECT->executeQuery($sqlConfig);
+                while ($rowConfig = mysql_fetch_array($resultConfig)) {
+                    $SHORTCUTS_URL_COMMAND = addShortcutCommandItem($rowConfig["funk_id"], $onOff, $SHORTCUTS_URL_COMMAND);
+                }
+            }
+        }
+    }
+
+    echo $SHORTCUTS_URL_COMMAND."<br>";
+    
+    return $SHORTCUTS_URL_COMMAND;
+}
+
+
+
+
+
+/**
+ * Wenn ID nicht schon enthalten ist, Einstellungs-Werte übernehmen
+ */
+function addShortcutCommandItem($funkId, $status, $command) {
+
+    if (!strpos($command, $funkId . "-") && strlen($funkId) > 0 && strlen($status) >
+        1) {
+        $command .= $funkId . "-" . $status . ";";
+    }
+    return $command;
+}
+
+
+
+
+function getConfigFunkId($id, $status) {
+
+    $sqlConfig = "SELECT id, funk_id, funk_id2, control_art FROM homecontrol_config WHERE id=" .
+        $id;
+
+    $resultConfig = mysql_query($sqlConfig);
+    if ($rowConfig = mysql_fetch_array($resultConfig)) {
+        if ($status == "off" && isFunk2Need($rowConfig["control_art"])) {
+            return $rowConfig["funk_id2"];
+        } else {
+            return $rowConfig["funk_id"];
+        }
+
+
+        return "";
+    }
+
+}
   
 ?>

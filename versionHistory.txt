@@ -1,4 +1,10 @@
 
+Version: 0.0.27
+---------------------
+Sensor Signaleingang verarbeitung eingebaut.
+Regel Objekte vorbereitet
+Klasse zum prüfen der Bedingungen erzeugt
+
 Version: 0.0.24
 ---------------------
 Versions-History umgedreht (aktuellster Eintrag oben)
