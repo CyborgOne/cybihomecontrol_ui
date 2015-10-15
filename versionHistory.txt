@@ -1,4 +1,8 @@
 
+Version: 0.0.28
+---------------------
+Automatisierung jede minute Zeitabhängige Regeln prüfen
+
 Version: 0.0.27
 ---------------------
 Sensor Signaleingang verarbeitung eingebaut.

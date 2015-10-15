@@ -109,7 +109,7 @@ class HomeControlTermCreator extends Object {
         $condition = new ComboBoxBySql($_SESSION['config']->DBCONNECT, 
                          "SELECT value, name FROM homecontrol_condition ", 
                          "condition");
-        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor ", "sensor");
+        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor WHERE status_sensor!='J'", "sensor");
         $wertTxt   = new Textfield("value","",9,9);
         
         $t = new Table(array("","","","","",""));
@@ -172,7 +172,7 @@ class HomeControlTermCreator extends Object {
         $div = new Div ("createSensorStatus");
         
         $statusCbo = new Checkbox("status");
-        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor ", "sensor");
+        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor  WHERE status_sensor='J'", "sensor");
         
         $t = new Table(array("","","","","",""));
         $t->setAlignments(array("","","","","","right"));

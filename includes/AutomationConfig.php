@@ -177,7 +177,7 @@ if (isset($_SESSION['SelectedRegelToEdit']) && strlen($_SESSION['SelectedRegelTo
     
     
     $itemsTable = new Table(array("", ""));
-    $itemsTable->setColSizes(array(150));
+    //$itemsTable->setColSizes(array(150));
     $itemsTable->setBorder(0);
     
     $ttlItems = new Title("Zu schaltende Objekte");

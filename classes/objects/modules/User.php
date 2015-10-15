@@ -181,7 +181,7 @@ class User  extends Object {
 
 
   //MELDUNG AUSGEBEN 
-     $m = new Title("Passwort erstellt", "Ihnen wurde soeben ein neues Passwort per Email zugesendet.");
+     $m = new Message("Passwort erstellt", "Ihnen wurde soeben ein neues Passwort per Email zugesendet.");
      $m->show();
  
 
