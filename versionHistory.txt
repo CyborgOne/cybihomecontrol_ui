@@ -1,4 +1,8 @@
 
+Version: 0.0.29
+---------------------
+Sensoren zwischen Status und Werte Sensoren zu unterscheiden.
+
 Version: 0.0.28
 ---------------------
 Automatisierung jede minute Zeitabhängige Regeln prüfen

@@ -131,12 +131,11 @@ $menuDiv->setAlign("left");
 $menuDiv->setStyle("padding-left", "2px");
 $menuDiv->setBackgroundColor($_SESSION['config']->COLORS['panel_background']);
 
-$spc = new Text(" | ");
 $menu = new DbMenu("Kopfmenue");
 $menu->setAlign("center");
 $menu->setFontsize("4em");
 $menu->setMenuType("horizontal");
-
+$menu->setSpacer(new Text("|"));
 $menuDiv->add($menu);
 
 $tblMenu = new Table(array("",""));
@@ -197,7 +196,7 @@ if (isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT']) > 0) {
         $menu->setAlign("center");
         $menu->setFontsize(3);
         $menu->setMenuType("horizontal");
-
+        $menu->setSpacer(new Text("|"));
         $menuDiv->add(new Line(1, 6));
         $menuDiv->add($menu);
         $menuDiv->add(new Line(1, 6));
