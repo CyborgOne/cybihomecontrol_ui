@@ -1,4 +1,8 @@
 
+Version: 0.0.34
+---------------------
+fix2
+
 Version: 0.0.33
 ---------------------
 fix: Geraete anlegen
