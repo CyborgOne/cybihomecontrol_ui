@@ -616,9 +616,9 @@ class HomeControlMap extends Object {
         $this->LAYOUT_ART = $this->LAYOUTART_DESKTOP;
 
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
-            array("name", "funk_id", "funk_id2", "beschreibung", "control_art",
+            array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
             "etage", "zimmer", "x", "y"), "", "", "", "etage=" . $_SESSION['aktEtage']);
-
+        $dbTable->setNoInsertCols("id");
         if ($this->handleControlEdit($dbTable)) {
             $dbTable->refresh();
         }

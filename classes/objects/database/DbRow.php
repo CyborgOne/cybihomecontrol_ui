@@ -156,11 +156,12 @@ class DbRow extends Object{
     if(count($this->COLNAMES)>0){
     	$chk=0;
 		foreach($this->COLNAMES as $cn){
-	      if($chk>0){
-	 	    $COLNAMESTRING .= ", ";
-	      }
-	      $COLNAMESTRING .= $cn;
-	    
+          if(strlen($this->getAttribute($i))>0){
+    	      if($chk>0){
+    	 	    $COLNAMESTRING .= ", ";
+    	      }
+  	          $COLNAMESTRING .= $cn;
+          }
 	      $chk++;
 	    }
     } 
@@ -172,10 +173,12 @@ class DbRow extends Object{
     $sql = "insert into ".$this->TABLENAME." (" .$COLNAMESTRING .") VALUES (";
 	
 	for($i=0;$i<count($this->COLNAMES);$i++){
-		$sql .= "'" .$this->getAttribute($i) ."' ";
-		if($i+1<count($this->COLNAMES)){
-			$sql .= ", ";
-		}
+	    if(strlen($this->getAttribute($i))>0){
+            $sql .= "'" .$this->getAttribute($i) ."' ";
+    		if($i+1<count($this->COLNAMES)){
+    			$sql .= ", ";
+    		}
+        }
 	}	
 	
 	$sql .= ") ";
