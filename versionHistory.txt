@@ -1,11 +1,7 @@
 
-Version: 0.0.33
----------------------
-SQL: homecontrol_etagen.pic von NOT NULL auf NULL korrigiert
-
 Version: 0.0.32
 ---------------------
-SQL: homecontrol_etagen.pic von NOT NULL auf NULL geändert
+SQL: homecontrol_etagen.pic von NOT NULL auf NULL korrigiert
 
 Version: 0.0.31
 ---------------------
