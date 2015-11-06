@@ -1,4 +1,8 @@
 
+Version: 0.0.33
+---------------------
+fix: Geraete anlegen
+
 Version: 0.0.32
 ---------------------
 SQL: homecontrol_etagen.pic von NOT NULL auf NULL korrigiert
