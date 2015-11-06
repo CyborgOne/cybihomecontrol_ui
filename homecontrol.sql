@@ -538,18 +538,18 @@ CREATE TABLE IF NOT EXISTS `homecontrol_cron_pause` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `homecontrol_etagen`
+-- Tabellenstruktur f�r Tabelle `homecontrol_etagen`
 --
 
-DROP TABLE IF EXISTS `homecontrol_etagen`;
 CREATE TABLE IF NOT EXISTS `homecontrol_etagen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
-  `pic` varchar(200) NOT NULL,
+  `pic` varchar(200) DEFAULT NULL,
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_uk` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 
 
 -- --------------------------------------------------------
@@ -667,6 +667,15 @@ CREATE TABLE IF NOT EXISTS `homecontrol_sensor` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
+
+DROP TABLE IF EXISTS `homecontrol_sensor_log`;
+CREATE TABLE IF NOT EXISTS `homecontrol_sensor_log` (
+  `sensor_id` int(11) NOT NULL,
+  `value` int(9) NOT NULL,
+  `update_time` int(30) NOT NULL,
+  `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`sensor_id`,`update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Tabellenstruktur für Tabelle `homecontrol_shortcut`

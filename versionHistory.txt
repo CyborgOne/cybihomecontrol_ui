@@ -1,4 +1,13 @@
 
+Version: 0.0.32
+---------------------
+SQL: homecontrol_etagen.pic von NOT NULL auf NULL geändert
+
+Version: 0.0.31
+---------------------
+SQL-Script aktualisiert
+Standard Benutzer: admin/admin
+
 Version: 0.0.30
 ---------------------
 Alarmgeber Einstellungen hinzugefügt

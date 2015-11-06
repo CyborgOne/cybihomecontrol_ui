@@ -73,6 +73,7 @@ cat versionHistory.tmp       >> versionHistory.txt
 
 cat versionHistory.old       >> versionHistory.txt
 
+git add versionHistory.txt
 #-----------------------------------------------------------------
 
 
