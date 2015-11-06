@@ -161,8 +161,8 @@ class DbRow extends Object{
     	 	    $COLNAMESTRING .= ", ";
     	      }
   	          $COLNAMESTRING .= $cn;
+    	      $chk++;
           }
-	      $chk++;
 	    }
     } 
 	
