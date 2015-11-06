@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 30. Sep 2015 um 00:30
+-- Erstellungszeit: 06. Nov 2015 um 16:54
 -- Server Version: 5.5.44
 -- PHP-Version: 5.4.41-0+deb7u1
 
@@ -26,6 +26,7 @@ SET time_zone = "+00:00";
 -- Tabellenstruktur für Tabelle `action_log`
 --
 
+DROP TABLE IF EXISTS `action_log`;
 CREATE TABLE IF NOT EXISTS `action_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `sessionid` varchar(50) NOT NULL,
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `action_log` (
   `request_dump` text NOT NULL,
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -42,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `action_log` (
 -- Tabellenstruktur für Tabelle `colors`
 --
 
+DROP TABLE IF EXISTS `colors`;
 CREATE TABLE IF NOT EXISTS `colors` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
@@ -50,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `colors` (
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
 
 --
 -- Daten für Tabelle `colors`
@@ -75,6 +77,7 @@ INSERT INTO `colors` (`id`, `name`, `farbwert`, `page_id`, `geaendert`) VALUES
 -- Tabellenstruktur für Tabelle `dbcombos`
 --
 
+DROP TABLE IF EXISTS `dbcombos`;
 CREATE TABLE IF NOT EXISTS `dbcombos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tab_name` varchar(50) NOT NULL,
@@ -87,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `dbcombos` (
   `combo_orderby` varchar(50) NOT NULL,
   `distinct_jn` enum('J','N') NOT NULL DEFAULT 'J',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=60 ;
 
 --
 -- Daten für Tabelle `dbcombos`
@@ -157,13 +160,14 @@ INSERT INTO `dbcombos` (`id`, `tab_name`, `col_name`, `combo_tab`, `combo_code_c
 -- Tabellenstruktur für Tabelle `default_combo_values`
 --
 
+DROP TABLE IF EXISTS `default_combo_values`;
 CREATE TABLE IF NOT EXISTS `default_combo_values` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `combo_name` varchar(50) NOT NULL,
   `code` varchar(50) NOT NULL,
   `value` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=51 ;
 
 --
 -- Daten für Tabelle `default_combo_values`
@@ -227,6 +231,7 @@ INSERT INTO `default_combo_values` (`id`, `combo_name`, `code`, `value`) VALUES
 -- Tabellenstruktur für Tabelle `default_pageconfig`
 --
 
+DROP TABLE IF EXISTS `default_pageconfig`;
 CREATE TABLE IF NOT EXISTS `default_pageconfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -235,14 +240,14 @@ CREATE TABLE IF NOT EXISTS `default_pageconfig` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `page_id` (`page_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
 --
 -- Daten für Tabelle `default_pageconfig`
 --
 
 INSERT INTO `default_pageconfig` (`id`, `name`, `value`, `page_id`) VALUES
-(1, 'pagetitel', 'Meine Homepage', 0),
+(1, 'pagetitel', 'SmartHome yourself', 0),
 (2, 'pageowner', '', 0),
 (3, 'background_pic', '', 0),
 (4, 'banner_pic', '', 0),
@@ -255,8 +260,8 @@ INSERT INTO `default_pageconfig` (`id`, `name`, `value`, `page_id`) VALUES
 (13, 'hauptmenu_button_image', 'pics/hauptmenu_button.jpg', 0),
 (14, 'max_rowcount_for_dbtable', '50', 0),
 (15, 'suchbegriffe', '', 0),
-(16, 'NotifyTargetMail', 'd.scheidler@web.de', 0),
-(17, 'KontaktformularTargetMail', 'd.scheidler@web.de', 0),
+(16, 'NotifyTargetMail', '', 0),
+(17, 'KontaktformularTargetMail', '', 0),
 (18, 'changeMode', '', 0);
 
 -- --------------------------------------------------------
@@ -265,13 +270,14 @@ INSERT INTO `default_pageconfig` (`id`, `name`, `value`, `page_id`) VALUES
 -- Tabellenstruktur für Tabelle `fixtexte`
 --
 
+DROP TABLE IF EXISTS `fixtexte`;
 CREATE TABLE IF NOT EXISTS `fixtexte` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL DEFAULT '',
   `text` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -279,12 +285,13 @@ CREATE TABLE IF NOT EXISTS `fixtexte` (
 -- Tabellenstruktur für Tabelle `form_insert_validation`
 --
 
+DROP TABLE IF EXISTS `form_insert_validation`;
 CREATE TABLE IF NOT EXISTS `form_insert_validation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `chkVal` varchar(250) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `chkVal` (`chkVal`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -292,6 +299,7 @@ CREATE TABLE IF NOT EXISTS `form_insert_validation` (
 -- Tabellenstruktur für Tabelle `homecontrol_alarm`
 --
 
+DROP TABLE IF EXISTS `homecontrol_alarm`;
 CREATE TABLE IF NOT EXISTS `homecontrol_alarm` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -301,7 +309,8 @@ CREATE TABLE IF NOT EXISTS `homecontrol_alarm` (
   `foto_senden_jn` enum('J','N') COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
 
 
 -- --------------------------------------------------------
@@ -310,6 +319,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_alarm` (
 -- Tabellenstruktur für Tabelle `homecontrol_alarmgeber_art`
 --
 
+DROP TABLE IF EXISTS `homecontrol_alarmgeber_art`;
 CREATE TABLE IF NOT EXISTS `homecontrol_alarmgeber_art` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
@@ -317,7 +327,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_alarmgeber_art` (
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Daten für Tabelle `homecontrol_alarmgeber_art`
@@ -333,18 +343,19 @@ INSERT INTO `homecontrol_alarmgeber_art` (`id`, `name`, `pic`, `geaendert`) VALU
 -- Tabellenstruktur für Tabelle `homecontrol_alarm_geber`
 --
 
+DROP TABLE IF EXISTS `homecontrol_alarm_geber`;
 CREATE TABLE IF NOT EXISTS `homecontrol_alarm_geber` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `ip` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
-  `x` int(10) NOT NULL DEFAULT '-1',
-  `y` int(10) NOT NULL DEFAULT '-1',
-  `etage_id` int(11) NOT NULL,
-  `zimmer_id` int(11) NOT NULL,
-  `alarmgeber_art` int(11) NOT NULL,
+  `x` int(10) DEFAULT '-1',
+  `y` int(10) DEFAULT '-1',
+  `etage_id` int(11) DEFAULT NULL,
+  `zimmer_id` int(11) DEFAULT NULL,
+  `alarmgeber_art` int(11) DEFAULT NULL,
+  `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -352,6 +363,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_alarm_geber` (
 -- Tabellenstruktur für Tabelle `homecontrol_alarm_items`
 --
 
+DROP TABLE IF EXISTS `homecontrol_alarm_items`;
 CREATE TABLE IF NOT EXISTS `homecontrol_alarm_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `alarm_id` int(11) NOT NULL,
@@ -364,9 +376,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_alarm_items` (
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cron_item_uk` (`alarm_id`,`config_id`,`zimmer_id`,`etagen_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
-
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -374,6 +384,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_alarm_items` (
 -- Tabellenstruktur für Tabelle `homecontrol_art`
 --
 
+DROP TABLE IF EXISTS `homecontrol_art`;
 CREATE TABLE IF NOT EXISTS `homecontrol_art` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
@@ -382,7 +393,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_art` (
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Daten für Tabelle `homecontrol_art`
@@ -400,13 +411,14 @@ INSERT INTO `homecontrol_art` (`id`, `name`, `zweite_funkid_jn`, `pic`, `geaende
 -- Tabellenstruktur für Tabelle `homecontrol_condition`
 --
 
+DROP TABLE IF EXISTS `homecontrol_condition`;
 CREATE TABLE IF NOT EXISTS `homecontrol_condition` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `value` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 --
 -- Daten für Tabelle `homecontrol_condition`
@@ -425,6 +437,7 @@ INSERT INTO `homecontrol_condition` (`id`, `name`, `value`) VALUES
 -- Tabellenstruktur für Tabelle `homecontrol_config`
 --
 
+DROP TABLE IF EXISTS `homecontrol_config`;
 CREATE TABLE IF NOT EXISTS `homecontrol_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
@@ -438,13 +451,15 @@ CREATE TABLE IF NOT EXISTS `homecontrol_config` (
   `y` int(4) NOT NULL DEFAULT '0',
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `homecontrol_cron`
 --
 
+DROP TABLE IF EXISTS `homecontrol_cron`;
 CREATE TABLE IF NOT EXISTS `homecontrol_cron` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
@@ -461,13 +476,14 @@ CREATE TABLE IF NOT EXISTS `homecontrol_cron` (
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hc_cron_name_uk` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-
+-- --------------------------------------------------------
 
 --
 -- Stellvertreter-Struktur des Views `homecontrol_cronview`
 --
+DROP VIEW IF EXISTS `homecontrol_cronview`;
 CREATE TABLE IF NOT EXISTS `homecontrol_cronview` (
 `wochentag` varchar(10)
 ,`tagnr` bigint(20)
@@ -491,6 +507,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_cronview` (
 -- Tabellenstruktur für Tabelle `homecontrol_cron_items`
 --
 
+DROP TABLE IF EXISTS `homecontrol_cron_items`;
 CREATE TABLE IF NOT EXISTS `homecontrol_cron_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cron_id` int(11) NOT NULL,
@@ -503,8 +520,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_cron_items` (
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cron_item_uk` (`cron_id`,`config_id`,`zimmer_id`,`etagen_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -512,6 +528,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_cron_items` (
 -- Tabellenstruktur für Tabelle `homecontrol_cron_pause`
 --
 
+DROP TABLE IF EXISTS `homecontrol_cron_pause`;
 CREATE TABLE IF NOT EXISTS `homecontrol_cron_pause` (
   `cron_id` int(11) NOT NULL,
   `pause_time` int(30) NOT NULL,
@@ -524,6 +541,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_cron_pause` (
 -- Tabellenstruktur für Tabelle `homecontrol_etagen`
 --
 
+DROP TABLE IF EXISTS `homecontrol_etagen`;
 CREATE TABLE IF NOT EXISTS `homecontrol_etagen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
@@ -531,13 +549,16 @@ CREATE TABLE IF NOT EXISTS `homecontrol_etagen` (
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_uk` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+
+-- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `homecontrol_modes`
 --
 
+DROP TABLE IF EXISTS `homecontrol_modes`;
 CREATE TABLE IF NOT EXISTS `homecontrol_modes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -545,7 +566,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_modes` (
   `beschreibung` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Daten für Tabelle `homecontrol_modes`
@@ -563,13 +584,13 @@ INSERT INTO `homecontrol_modes` (`id`, `name`, `selectable`, `beschreibung`) VAL
 -- Tabellenstruktur für Tabelle `homecontrol_noframe`
 --
 
+DROP TABLE IF EXISTS `homecontrol_noframe`;
 CREATE TABLE IF NOT EXISTS `homecontrol_noframe` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -577,16 +598,16 @@ CREATE TABLE IF NOT EXISTS `homecontrol_noframe` (
 -- Tabellenstruktur für Tabelle `homecontrol_regeln`
 --
 
+DROP TABLE IF EXISTS `homecontrol_regeln`;
 CREATE TABLE IF NOT EXISTS `homecontrol_regeln` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `beschreibung` text COLLATE utf8_unicode_ci,
+  `reverse_switch` enum('J','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'J',
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -594,6 +615,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_regeln` (
 -- Tabellenstruktur für Tabelle `homecontrol_regeln_items`
 --
 
+DROP TABLE IF EXISTS `homecontrol_regeln_items`;
 CREATE TABLE IF NOT EXISTS `homecontrol_regeln_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `regel_id` int(11) NOT NULL,
@@ -606,43 +628,43 @@ CREATE TABLE IF NOT EXISTS `homecontrol_regeln_items` (
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `regel_id` (`regel_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
+-- --------------------------------------------------------
+
+--
+-- Stellvertreter-Struktur des Views `homecontrol_regel_item_view`
+--
+DROP VIEW IF EXISTS `homecontrol_regel_item_view`;
+CREATE TABLE IF NOT EXISTS `homecontrol_regel_item_view` (
+`id` varchar(23)
+,`regel_id` int(11)
+,`name` varchar(50)
+,`beschreibung` text
+,`config_id` int(11)
+,`art_id` int(11)
+,`zimmer_id` int(11)
+,`etagen_id` int(11)
+,`on_off` set('on','off')
+);
 -- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `homecontrol_sensor`
 --
 
+DROP TABLE IF EXISTS `homecontrol_sensor`;
 CREATE TABLE IF NOT EXISTS `homecontrol_sensor` (
   `id` int(11) NOT NULL,
   `name` varchar(30) NOT NULL,
   `beschreibung` text,
+  `status_sensor` enum('J','N') NOT NULL COMMENT 'J: Sensor der nur einen Status (1 oder 0) zurückliefert',
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `lastSignal` int(30) NOT NULL,
   `lastValue` int(9) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `homecontrol_sensor_log`
---
-
-CREATE TABLE IF NOT EXISTS `homecontrol_sensor_log` (
-  `sensor_id` int(11) NOT NULL,
-  `value` int(9) NOT NULL,
-  `update_time` int(30) NOT NULL,
-  `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`sensor_id`,`update_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Daten für Tabelle `homecontrol_sensor_log`
---
 
 -- --------------------------------------------------------
 
@@ -650,6 +672,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_sensor_log` (
 -- Tabellenstruktur für Tabelle `homecontrol_shortcut`
 --
 
+DROP TABLE IF EXISTS `homecontrol_shortcut`;
 CREATE TABLE IF NOT EXISTS `homecontrol_shortcut` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
@@ -658,7 +681,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_shortcut` (
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
 -- --------------------------------------------------------
@@ -666,6 +689,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_shortcut` (
 --
 -- Stellvertreter-Struktur des Views `homecontrol_shortcutview`
 --
+DROP VIEW IF EXISTS `homecontrol_shortcutview`;
 CREATE TABLE IF NOT EXISTS `homecontrol_shortcutview` (
 `id` varchar(23)
 ,`shortcut_id` int(11)
@@ -692,6 +716,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_shortcutview` (
 -- Tabellenstruktur für Tabelle `homecontrol_shortcut_items`
 --
 
+DROP TABLE IF EXISTS `homecontrol_shortcut_items`;
 CREATE TABLE IF NOT EXISTS `homecontrol_shortcut_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `shortcut_id` int(11) NOT NULL,
@@ -705,7 +730,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_shortcut_items` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `shortcut_item_uk` (`shortcut_id`,`config_id`,`zimmer_id`,`etagen_id`),
   KEY `shortcut_id` (`shortcut_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
 -- --------------------------------------------------------
@@ -714,6 +739,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_shortcut_items` (
 -- Tabellenstruktur für Tabelle `homecontrol_term`
 --
 
+DROP TABLE IF EXISTS `homecontrol_term`;
 CREATE TABLE IF NOT EXISTS `homecontrol_term` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `trigger_id` int(11) NOT NULL,
@@ -740,7 +766,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_term` (
   `lastSensorintervall` int(8) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `trigger_id` (`trigger_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
 
 -- --------------------------------------------------------
@@ -749,12 +775,13 @@ CREATE TABLE IF NOT EXISTS `homecontrol_term` (
 -- Tabellenstruktur für Tabelle `homecontrol_term_trigger_type`
 --
 
+DROP TABLE IF EXISTS `homecontrol_term_trigger_type`;
 CREATE TABLE IF NOT EXISTS `homecontrol_term_trigger_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Daten für Tabelle `homecontrol_term_trigger_type`
@@ -771,11 +798,12 @@ INSERT INTO `homecontrol_term_trigger_type` (`id`, `name`) VALUES
 -- Tabellenstruktur für Tabelle `homecontrol_term_type`
 --
 
+DROP TABLE IF EXISTS `homecontrol_term_type`;
 CREATE TABLE IF NOT EXISTS `homecontrol_term_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Daten für Tabelle `homecontrol_term_type`
@@ -793,6 +821,7 @@ INSERT INTO `homecontrol_term_type` (`id`, `name`) VALUES
 -- Tabellenstruktur für Tabelle `homecontrol_zimmer`
 --
 
+DROP TABLE IF EXISTS `homecontrol_zimmer`;
 CREATE TABLE IF NOT EXISTS `homecontrol_zimmer` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
@@ -800,7 +829,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_zimmer` (
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_etage_uk` (`name`,`etage_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 
 
 -- --------------------------------------------------------
@@ -809,6 +838,7 @@ CREATE TABLE IF NOT EXISTS `homecontrol_zimmer` (
 -- Tabellenstruktur für Tabelle `kopftexte`
 --
 
+DROP TABLE IF EXISTS `kopftexte`;
 CREATE TABLE IF NOT EXISTS `kopftexte` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `runlink` varchar(250) NOT NULL,
@@ -817,7 +847,7 @@ CREATE TABLE IF NOT EXISTS `kopftexte` (
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `runlink_name` (`runlink`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Daten für Tabelle `kopftexte`
@@ -837,6 +867,7 @@ INSERT INTO `kopftexte` (`id`, `runlink`, `text`, `parent`, `geaendert`) VALUES
 -- Tabellenstruktur für Tabelle `links`
 --
 
+DROP TABLE IF EXISTS `links`;
 CREATE TABLE IF NOT EXISTS `links` (
   `id` int(6) unsigned NOT NULL AUTO_INCREMENT,
   `link` varchar(100) DEFAULT NULL,
@@ -845,14 +876,8 @@ CREATE TABLE IF NOT EXISTS `links` (
   `autor` varchar(50) NOT NULL DEFAULT '',
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
---
--- Daten für Tabelle `links`
---
-
-INSERT INTO `links` (`id`, `link`, `descr`, `topic`, `autor`, `geaendert`) VALUES
-(26, 'http://www.mozilla-europe.org/de/products/firefox/', 'Der preisgekrÃ¶nte Browser ist jetzt schneller, noch sicherer und komplett anpassbar an Ihr Online-Leben. \r\nDownloaden Sie Firefox jetzt (wenn Sie ihn nicht schon haben) und holen Sie das Beste aus dem Netz!', 'Download-Empfehlungen', 'Developer X', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -860,6 +885,7 @@ INSERT INTO `links` (`id`, `link`, `descr`, `topic`, `autor`, `geaendert`) VALUE
 -- Tabellenstruktur für Tabelle `log`
 --
 
+DROP TABLE IF EXISTS `log`;
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Date` varchar(25) DEFAULT NULL,
@@ -867,7 +893,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `Ip` varchar(20) DEFAULT NULL,
   `Action` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1507 ;
 
 -- --------------------------------------------------------
 
@@ -875,6 +901,7 @@ CREATE TABLE IF NOT EXISTS `log` (
 -- Tabellenstruktur für Tabelle `lookupwerte`
 --
 
+DROP TABLE IF EXISTS `lookupwerte`;
 CREATE TABLE IF NOT EXISTS `lookupwerte` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tab_name` varchar(50) NOT NULL,
@@ -886,7 +913,7 @@ CREATE TABLE IF NOT EXISTS `lookupwerte` (
   `sortnr` int(5) NOT NULL DEFAULT '0',
   `default` varchar(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=18;
 
 --
 -- Daten für Tabelle `lookupwerte`
@@ -916,6 +943,7 @@ INSERT INTO `lookupwerte` (`id`, `tab_name`, `col_name`, `code`, `text`, `valida
 -- Tabellenstruktur für Tabelle `menu`
 --
 
+DROP TABLE IF EXISTS `menu`;
 CREATE TABLE IF NOT EXISTS `menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `text` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
@@ -931,7 +959,7 @@ CREATE TABLE IF NOT EXISTS `menu` (
   UNIQUE KEY `text` (`text`,`name`),
   KEY `parent_gruppe` (`parent`),
   KEY `sortnr` (`sortnr`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 PACK_KEYS=0;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 PACK_KEYS=0 AUTO_INCREMENT=141 ;
 
 --
 -- Daten für Tabelle `menu`
@@ -956,7 +984,11 @@ INSERT INTO `menu` (`id`, `text`, `parent`, `link`, `status`, `target`, `tooltip
 (131, 'Basis', 'Einstellungen', '?menuParent=Einstellungen&run=mainSettings', 'admin', '_top', 'Basis-Einstellungen', 1, 'Hauptmenue', '2015-08-25 21:06:41'),
 (134, 'Cam', '', '?run=camPics', 'admin', '_top', 'Bewegungserkennung - Bilder', 9999, 'Kopfmenue', '2015-09-03 23:32:15'),
 (135, 'Timeline', '', '?menuParent=Einstellungen&menuParent=Timeline&run=cronView', NULL, '_top', 'Hier werden die Events der nächsten 24 Stunden angezeigt und können für die nächste Ausführung pausiert werden.', 50, 'Mobilmenue', '2015-08-23 17:04:06'),
-(136, 'Automatisierung', 'Einstellungen', '?menuParent=Einstellungen&run=automationConfig', 'admin', '_top', 'In diesem Bereich werden Automatisierungen in Abhängigkeit der Sensorwerte konfiguriert.', 85, 'Hauptmenue', '2015-09-28 21:35:34');
+(136, 'Automatisierung', 'Einstellungen', '?menuParent=Einstellungen&run=automationConfig', 'admin', '_top', 'In diesem Bereich werden Automatisierungen in Abhängigkeit der Sensorwerte konfiguriert.', 85, 'Hauptmenue', '2015-09-28 21:35:34'),
+(137, 'Passwort vergessen', '', '?run=userRequestPw', NULL, '_top', '', 9999, 'need', '2015-10-15 20:34:29'),
+(138, '', '', '?run=changeMyProfile', NULL, '_top', '', 9999, 'need', '0000-00-00 00:00:00'),
+(139, 'cc', '', 'run=userpicUpload', NULL, '_top', '', 9999, 'need', '0000-00-00 00:00:00'),
+(140, 'Signale', 'Einstellungen', '?menuParent=Einstellungen&run=alarmgeberConfig', 'admin', '_top', 'Hier können die Alarmgeber (Sirenen, Lampen etc.) konfiguriert werden.', 110, 'Hauptmenue', '2015-10-26 21:00:52');
 
 -- --------------------------------------------------------
 
@@ -964,6 +996,7 @@ INSERT INTO `menu` (`id`, `text`, `parent`, `link`, `status`, `target`, `tooltip
 -- Tabellenstruktur für Tabelle `pageconfig`
 --
 
+DROP TABLE IF EXISTS `pageconfig`;
 CREATE TABLE IF NOT EXISTS `pageconfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -974,7 +1007,7 @@ CREATE TABLE IF NOT EXISTS `pageconfig` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `page_id` (`page_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=36 ;
 
 --
 -- Daten für Tabelle `pageconfig`
@@ -1009,7 +1042,7 @@ INSERT INTO `pageconfig` (`id`, `name`, `value`, `page_id`, `geaendert`, `label`
 (30, 'motionDauer', '9', 0, '2015-09-28 00:37:09', 'Tage die Bewegungs-Bilder behalten'),
 (31, 'sensorlogDauer', '60', 0, '2015-08-28 07:03:00', 'Tage die Sensor-Log Daten behalten'),
 (32, 'abwesendAlarm', 'N', 0, '2015-08-26 23:23:41', NULL),
-(33, 'currentMode', '2', 0, '2015-09-11 16:51:04', NULL),
+(33, 'currentMode', '2', 0, '2015-10-11 17:18:53', NULL),
 (34, 'timelineDuration', '3', 0, '2015-09-28 00:33:59', NULL),
 (35, 'loginForTimelinePauseNeed', 'N', 0, '2015-09-28 19:45:14', NULL);
 
@@ -1019,6 +1052,7 @@ INSERT INTO `pageconfig` (`id`, `name`, `value`, `page_id`, `geaendert`, `label`
 -- Tabellenstruktur für Tabelle `programm_gruppen`
 --
 
+DROP TABLE IF EXISTS `programm_gruppen`;
 CREATE TABLE IF NOT EXISTS `programm_gruppen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -1026,7 +1060,7 @@ CREATE TABLE IF NOT EXISTS `programm_gruppen` (
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 --
 -- Daten für Tabelle `programm_gruppen`
@@ -1044,6 +1078,7 @@ INSERT INTO `programm_gruppen` (`id`, `name`, `text`, `geaendert`) VALUES
 -- Tabellenstruktur für Tabelle `public_vars`
 --
 
+DROP TABLE IF EXISTS `public_vars`;
 CREATE TABLE IF NOT EXISTS `public_vars` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `gruppe` varchar(50) NOT NULL,
@@ -1052,7 +1087,7 @@ CREATE TABLE IF NOT EXISTS `public_vars` (
   `text` text NOT NULL,
   `sortnr` int(5) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Daten für Tabelle `public_vars`
@@ -1071,6 +1106,7 @@ INSERT INTO `public_vars` (`id`, `gruppe`, `name`, `titel`, `text`, `sortnr`) VA
 -- Tabellenstruktur für Tabelle `run_links`
 --
 
+DROP TABLE IF EXISTS `run_links`;
 CREATE TABLE IF NOT EXISTS `run_links` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -1081,7 +1117,7 @@ CREATE TABLE IF NOT EXISTS `run_links` (
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk` (`name`,`parent`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=68 ;
 
 --
 -- Daten für Tabelle `run_links`
@@ -1115,7 +1151,8 @@ INSERT INTO `run_links` (`id`, `name`, `link`, `target`, `parent`, `prog_grp_id`
 (62, 'network', 'includes/NetworkConfig.php', 'mainpage', '', 0, '0000-00-00 00:00:00'),
 (63, 'alarmConfig', 'includes/AlarmConfig.php', 'mainpage', '', 0, '0000-00-00 00:00:00'),
 (64, 'camPics', 'includes/CamPics.php', 'mainpage', '', 0, '0000-00-00 00:00:00'),
-(66, 'automationConfig', 'includes/AutomationConfig.php', 'mainpage', '', 0, '2010-02-20 14:16:00');
+(66, 'automationConfig', 'includes/AutomationConfig.php', 'mainpage', '', 0, '2010-02-20 14:16:00'),
+(67, 'alarmgeberConfig', 'includes/AlarmgeberConfig.php', 'mainpage', '', 0, '2010-02-20 14:16:00');
 
 -- --------------------------------------------------------
 
@@ -1123,13 +1160,14 @@ INSERT INTO `run_links` (`id`, `name`, `link`, `target`, `parent`, `prog_grp_id`
 -- Tabellenstruktur für Tabelle `site-enter`
 --
 
+DROP TABLE IF EXISTS `site-enter`;
 CREATE TABLE IF NOT EXISTS `site-enter` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `value` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
 
 --
 -- Daten für Tabelle `site-enter`
@@ -1167,6 +1205,7 @@ INSERT INTO `site-enter` (`id`, `name`, `value`) VALUES
 -- Tabellenstruktur für Tabelle `smileys`
 --
 
+DROP TABLE IF EXISTS `smileys`;
 CREATE TABLE IF NOT EXISTS `smileys` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(20) NOT NULL,
@@ -1174,7 +1213,7 @@ CREATE TABLE IF NOT EXISTS `smileys` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `Title` (`title`),
   UNIQUE KEY `Link` (`link`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=28 ;
 
 --
 -- Daten für Tabelle `smileys`
@@ -1196,6 +1235,7 @@ INSERT INTO `smileys` (`id`, `title`, `link`) VALUES
 -- Tabellenstruktur für Tabelle `tags`
 --
 
+DROP TABLE IF EXISTS `tags`;
 CREATE TABLE IF NOT EXISTS `tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag` varchar(15) NOT NULL DEFAULT '',
@@ -1204,7 +1244,7 @@ CREATE TABLE IF NOT EXISTS `tags` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `tag` (`tag`),
   KEY `tag1` (`tag`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=38 ;
 
 --
 -- Daten für Tabelle `tags`
@@ -1254,13 +1294,14 @@ INSERT INTO `tags` (`id`, `tag`, `html`, `btn`) VALUES
 -- Tabellenstruktur für Tabelle `update_log`
 --
 
+DROP TABLE IF EXISTS `update_log`;
 CREATE TABLE IF NOT EXISTS `update_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `descr` text NOT NULL,
   `geaendert` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 -- --------------------------------------------------------
 
@@ -1268,6 +1309,7 @@ CREATE TABLE IF NOT EXISTS `update_log` (
 -- Tabellenstruktur für Tabelle `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Vorname` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT '',
@@ -1317,7 +1359,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `User` (`User`),
   KEY `Name` (`Name`(8))
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_german2_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_german2_ci AUTO_INCREMENT=2 ;
+
+--
+-- Daten für Tabelle `user`
+--
+
+INSERT INTO `user` (`id`, `Vorname`, `Nachname`, `Name`, `Geburtstag`, `Strasse`, `Plz`, `Ort`, `Email`, `Telefon`, `Fax`, `Handy`, `Icq`, `Aim`, `Homepage`, `User`, `Pw`, `Nation`, `Status`, `user_group_id`, `Newsletter`, `Signatur`, `Lastlogin`, `Posts`, `Beschreibung`, `pic`, `pnnotify`, `autoforumnotify`, `geaendert`, `emailJN`, `icqJN`, `telefonJN`, `Level`, `EP`, `Gold`, `Holz`, `Erz`, `Felsen`, `Wasser`, `Nahrung`, `aktiv`, `activationString`, `angelegt`, `clan_id`, `rasse_id`) VALUES
+(1, 'Admini', 'Istrator', 'Admini Istrator', '0000-00-00', '-', '-', '-', '', '-', '', '-', '', NULL, '', 'admin', '21232f297a57a5a743894a0e4a801fc3', NULL, 'admin', 1, 'true', '', '2015-11-04 21:06:51', 0, NULL, 'unknown.jpg', 'Y', 'Y', '2015-11-04 20:06:51', 'N', 'N', 'N', 0, 0, 0, 0, 0, 0, 0, 0, 'J', NULL, '0000-00-00', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -1325,6 +1374,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Tabellenstruktur für Tabelle `userstatus`
 --
 
+DROP TABLE IF EXISTS `userstatus`;
 CREATE TABLE IF NOT EXISTS `userstatus` (
   `id` varchar(10) NOT NULL,
   `title` varchar(20) NOT NULL,
@@ -1347,6 +1397,7 @@ INSERT INTO `userstatus` (`id`, `title`) VALUES
 -- Tabellenstruktur für Tabelle `user_groups`
 --
 
+DROP TABLE IF EXISTS `user_groups`;
 CREATE TABLE IF NOT EXISTS `user_groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -1355,7 +1406,7 @@ CREATE TABLE IF NOT EXISTS `user_groups` (
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -1365,6 +1416,15 @@ CREATE TABLE IF NOT EXISTS `user_groups` (
 DROP TABLE IF EXISTS `homecontrol_cronview`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `homecontrol_cronview` AS select 'Montag' AS `wochentag`,1 AS `tagnr`,`hc`.`id` AS `id`,`hc`.`name` AS `name`,`hc`.`beschreibung` AS `beschreibung`,`hc`.`montag` AS `montag`,`hc`.`dienstag` AS `dienstag`,`hc`.`mittwoch` AS `mittwoch`,`hc`.`donnerstag` AS `donnerstag`,`hc`.`freitag` AS `freitag`,`hc`.`samstag` AS `samstag`,`hc`.`sonntag` AS `sonntag`,`hc`.`stunde` AS `stunde`,`hc`.`minute` AS `minute`,`hc`.`geaendert` AS `geaendert` from `homecontrol_cron` `hc` where (`hc`.`montag` = 'J') union select 'Dienstag' AS `My_exp_Dienstag`,2 AS `2`,`hc1`.`id` AS `id`,`hc1`.`name` AS `name`,`hc1`.`beschreibung` AS `beschreibung`,`hc1`.`montag` AS `montag`,`hc1`.`dienstag` AS `dienstag`,`hc1`.`mittwoch` AS `mittwoch`,`hc1`.`donnerstag` AS `donnerstag`,`hc1`.`freitag` AS `freitag`,`hc1`.`samstag` AS `samstag`,`hc1`.`sonntag` AS `sonntag`,`hc1`.`stunde` AS `stunde`,`hc1`.`minute` AS `minute`,`hc1`.`geaendert` AS `geaendert` from `homecontrol_cron` `hc1` where (`hc1`.`dienstag` = 'J') union select 'Mittwoch' AS `My_exp_Mittwoch`,3 AS `3`,`hc2`.`id` AS `id`,`hc2`.`name` AS `name`,`hc2`.`beschreibung` AS `beschreibung`,`hc2`.`montag` AS `montag`,`hc2`.`dienstag` AS `dienstag`,`hc2`.`mittwoch` AS `mittwoch`,`hc2`.`donnerstag` AS `donnerstag`,`hc2`.`freitag` AS `freitag`,`hc2`.`samstag` AS `samstag`,`hc2`.`sonntag` AS `sonntag`,`hc2`.`stunde` AS `stunde`,`hc2`.`minute` AS `minute`,`hc2`.`geaendert` AS `geaendert` from `homecontrol_cron` `hc2` where (`hc2`.`mittwoch` = 'J') union select 'Donnerstag' AS `My_exp_Donnerstag`,4 AS `4`,`hc3`.`id` AS `id`,`hc3`.`name` AS `name`,`hc3`.`beschreibung` AS `beschreibung`,`hc3`.`montag` AS `montag`,`hc3`.`dienstag` AS `dienstag`,`hc3`.`mittwoch` AS `mittwoch`,`hc3`.`donnerstag` AS `donnerstag`,`hc3`.`freitag` AS `freitag`,`hc3`.`samstag` AS `samstag`,`hc3`.`sonntag` AS `sonntag`,`hc3`.`stunde` AS `stunde`,`hc3`.`minute` AS `minute`,`hc3`.`geaendert` AS `geaendert` from `homecontrol_cron` `hc3` where (`hc3`.`donnerstag` = 'J') union select 'Freitag' AS `My_exp_Freitag`,5 AS `5`,`hc4`.`id` AS `id`,`hc4`.`name` AS `name`,`hc4`.`beschreibung` AS `beschreibung`,`hc4`.`montag` AS `montag`,`hc4`.`dienstag` AS `dienstag`,`hc4`.`mittwoch` AS `mittwoch`,`hc4`.`donnerstag` AS `donnerstag`,`hc4`.`freitag` AS `freitag`,`hc4`.`samstag` AS `samstag`,`hc4`.`sonntag` AS `sonntag`,`hc4`.`stunde` AS `stunde`,`hc4`.`minute` AS `minute`,`hc4`.`geaendert` AS `geaendert` from `homecontrol_cron` `hc4` where (`hc4`.`freitag` = 'J') union select 'Samstag' AS `My_exp_Samstag`,6 AS `6`,`hc5`.`id` AS `id`,`hc5`.`name` AS `name`,`hc5`.`beschreibung` AS `beschreibung`,`hc5`.`montag` AS `montag`,`hc5`.`dienstag` AS `dienstag`,`hc5`.`mittwoch` AS `mittwoch`,`hc5`.`donnerstag` AS `donnerstag`,`hc5`.`freitag` AS `freitag`,`hc5`.`samstag` AS `samstag`,`hc5`.`sonntag` AS `sonntag`,`hc5`.`stunde` AS `stunde`,`hc5`.`minute` AS `minute`,`hc5`.`geaendert` AS `geaendert` from `homecontrol_cron` `hc5` where (`hc5`.`samstag` = 'J') union select 'Sonntag' AS `My_exp_Sonntag`,0 AS `0`,`hc6`.`id` AS `id`,`hc6`.`name` AS `name`,`hc6`.`beschreibung` AS `beschreibung`,`hc6`.`montag` AS `montag`,`hc6`.`dienstag` AS `dienstag`,`hc6`.`mittwoch` AS `mittwoch`,`hc6`.`donnerstag` AS `donnerstag`,`hc6`.`freitag` AS `freitag`,`hc6`.`samstag` AS `samstag`,`hc6`.`sonntag` AS `sonntag`,`hc6`.`stunde` AS `stunde`,`hc6`.`minute` AS `minute`,`hc6`.`geaendert` AS `geaendert` from `homecontrol_cron` `hc6` where (`hc6`.`sonntag` = 'J');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur des Views `homecontrol_regel_item_view`
+--
+DROP TABLE IF EXISTS `homecontrol_regel_item_view`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `homecontrol_regel_item_view` AS select concat(`r`.`id`,'-',`i`.`id`) AS `id`,`r`.`id` AS `regel_id`,`r`.`name` AS `name`,`r`.`beschreibung` AS `beschreibung`,`i`.`config_id` AS `config_id`,`i`.`art_id` AS `art_id`,`i`.`zimmer_id` AS `zimmer_id`,`i`.`etagen_id` AS `etagen_id`,`i`.`on_off` AS `on_off` from (`homecontrol_regeln` `r` join `homecontrol_regeln_items` `i`) where (`r`.`id` = `i`.`regel_id`);
 
 -- --------------------------------------------------------
 

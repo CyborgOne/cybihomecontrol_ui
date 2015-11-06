@@ -1,4 +1,8 @@
 
+Version: 0.0.30
+---------------------
+Alarmgeber Einstellungen hinzugefügt
+
 Version: 0.0.29
 ---------------------
 Sensoren zwischen Status und Werte Sensoren zu unterscheiden.
