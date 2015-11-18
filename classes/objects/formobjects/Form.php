@@ -50,6 +50,15 @@ class Form  extends Object{
     }
   }
 
+  function  addInFront($formObject){
+    if(method_exists($formObject, "show")){
+        // Objekt ins Array aufnehmen
+        array_unshift($this->OBJECTS , $formObject);
+    } else {
+        $e = new Error("Form-Objekt ohne show()", "Das ÃÂÃÂÃÂÃÂ¼bergebene Objekt hat keine <b>show()</b> - Methode!!!");
+    }
+  }
+
   function  getAttribute($id){
     if(count($this->OBJECTS)>$id){
         return $this->OBJECTS[$id];

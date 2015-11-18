@@ -140,16 +140,16 @@
 	
 	$ret = "<table width='300'>"
 	      ."<tr><th colspan='2'><font size='2' color='".$color."'>" .$retRow['User'] ."</font></th></tr>"
-	      ."<tr><th colspan='2'>" .getUserImageSourceByPicname($retRow['pic'],150) ."</th></tr>"
+	      //."<tr><th colspan='2'>" .getUserImageSourceByPicname($retRow['pic'],150) ."</th></tr>"
 	      ."<tr><td width = '20%'><font size='2' color='".$color."'>Name: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Vorname'] ." " .$retRow['Nachname'] ."</font></td></tr>"
 	      ."<tr><td width = '20%'><font size='2' color='".$color."'>Status: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Status'] ."</font></td></tr>"
-	      ."<tr><td width = '20%'><font size='2' color='".$color."'>Strasse: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Strasse']  ."</font></td></tr>"
-	      ."<tr><td width = '20%'><font size='2' color='".$color."'>Plz/Ort: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Plz'] ." " .$retRow['Ort'] ."</font></td></tr>"
-	      ."<tr><td width = '20%'><font size='2' color='".$color."'>Telefon: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Telefon']  ."</font></td></tr>"
-	      ."<tr><td width = '20%'><font size='2' color='".$color."'>Fax: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Fax']  ."</font></td></tr>"
-	      ."<tr><td width = '20%'><font size='2' color='".$color."'>Handy: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Handy']  ."</font></td></tr>"
-	      ."<tr><td width = '20%'><font size='2' color='".$color."'>ICQ: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Icq']  ."</font></td></tr>"
-	      ."<tr><td width = '20%'><font size='2' color='".$color."'>Homepage: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Homepage']  ."</font></td></tr>"
+	      //."<tr><td width = '20%'><font size='2' color='".$color."'>Strasse: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Strasse']  ."</font></td></tr>"
+	      //."<tr><td width = '20%'><font size='2' color='".$color."'>Plz/Ort: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Plz'] ." " .$retRow['Ort'] ."</font></td></tr>"
+	      //."<tr><td width = '20%'><font size='2' color='".$color."'>Telefon: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Telefon']  ."</font></td></tr>"
+	      //."<tr><td width = '20%'><font size='2' color='".$color."'>Fax: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Fax']  ."</font></td></tr>"
+	      //."<tr><td width = '20%'><font size='2' color='".$color."'>Handy: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Handy']  ."</font></td></tr>"
+	      //."<tr><td width = '20%'><font size='2' color='".$color."'>ICQ: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Icq']  ."</font></td></tr>"
+	      //."<tr><td width = '20%'><font size='2' color='".$color."'>Homepage: </font></td><td width = '80%'><font size='2' color='#555555'>" .$retRow['Homepage']  ."</font></td></tr>"
 	      
 		  ."</table>";
 	

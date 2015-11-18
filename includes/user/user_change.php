@@ -113,15 +113,7 @@ echo "
 	  <tr>
 	    <td align='center'><center> 
 	    <br>
-	      <table width='580'>	 
-	      <tr>
-	        <td colspan='2'>
-	          <center>
-	            " .getUserImageSourceByPicname($usrrow['pic']) ."
-	          </center>
-	        </td>
-	      </tr>
-	     
+	      <table width='580'>	     
 		<tr>
 		  <td>
 		    Vorname: <br>
@@ -138,35 +130,7 @@ echo "
 		    <input type='text' name='Nachname' size='37' maxlength='50' value='" .$usrrow['Nachname'] ."'>
 		  </td>
 		</tr>
-		
-		<tr>
-		  <td>
-		    Geburtstag: ( Format:  YYYY-MM-DD )
-		  </td>
-		  <td>
-		    <input type='text' name='Geburtstag' size='10' maxlength='50' value='" .$usrrow['Geburtstag'] ."'>
-		  </td>
-		</tr>
 
-
-
-		<tr>
-		  <td>
-		    Strasse: <br>
-		  </td>
-		  <td>
-		    <input type='text' name='Strasse' size='37' maxlength='50' value='" .$usrrow['Strasse'] ."'>
-		  </td>
-		</tr>
-		<tr>
-		  <td>
-		    Plz/Ort: <br>
-		  </td>
-		  <td>
-		    <input type='text' name='Plz' size='5' maxlength='5' value='" .$usrrow['Plz'] ."'><input type='text' name='Ort' size='28' maxlength='50' value='" .$usrrow['Ort'] ."'>
-		  </td>
-		</tr>
-		
 		<tr>
 		  <td>
 		    Email:
@@ -175,70 +139,12 @@ echo "
 		    <input type='text' name='Email' size='37' maxlength='50' value='" .$usrrow['Email'] ."'>
 		  </td>
 		</tr>
-	
-		<tr>
-		  <td>
-		    Telefon:
-		  </td>
-		  <td>
-		    <input type='text' name='Telefon' size='37' maxlength='20' value='" .$usrrow['Telefon'] ."'>
-		  </td>
-		</tr>
-		
-		<tr>
-		  <td>
-		    Fax:
-		  </td>
-		  <td>
-		    <input type='text' name='Fax' size='37' maxlength='20' value='" .$usrrow['Fax'] ."'>
-		  </td>
-		</tr>
-
-		<tr>
-		  <td>
-		    Handy:
-		  </td>
-		  <td>
-		    <input type='text' name='Handy' size='37' maxlength='20' value='" .$usrrow['Handy'] ."'>
-		  </td>
-		</tr>
-
-		<tr>
-		  <td>
-  	    ICQ:
-		  </td>
-		  <td>
-		    <input type='text' name='Icq' size='37' maxlength='50' value='" .$usrrow['Icq'] ."'>
-		  </td>
-		</tr>
-		<tr>
-		  <td>
-		    Meine Homepage:
-		  </td>
-		  <td>
-		    <input type='text' name='Homepage' size='37' maxlength='50' value='" .$usrrow['Homepage'] ."'>
-		  </td>
-		</tr>
-
-   	    <tr height='10'>
-		  <td colspan='2'>
-		  </td>
-		</tr>
 
    	    <tr height='25'>
 		  <td colspan='2'>
 		  </td>
 		</tr>
 
-		<tr>
-		  <td>
-		    Signatur:<br>
-		    <font size='1'>(Ein Spruch fürs Forum)</font>
-		  </td>
-		  <td>
-		    <input type='text' name='Signatur' size='37' maxlength='100' value='" .$usrrow['Signatur'] ."'>
-		  </td>
-		</tr>
 ";
 
 if ($_SESSION['config']->CURRENTUSER->STATUS=='admin')
@@ -256,9 +162,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS=='admin')
 	";
 }
 
-
-
-
 echo "
 		<tr>
 		  <td>
@@ -270,13 +173,11 @@ echo "
 		  </td>
 		</tr>
 		
-		
-		<tr>
+   	    <tr height='25'>
 		  <td colspan='2'>
- 	         <br><a href='" .$_SERVER['SCRIPT_NAME'] ."?run=userpicUpload'><font color='blue'>Profil-Bild ändern</font></a>		    
 		  </td>
 		</tr>
-
+        
 		<tr border='0'><td border='0' colspan='2'>
 		  <center>
 			<input type='submit' name='Submit' value='Abschicken'>
@@ -284,9 +185,12 @@ echo "
 		</td></tr>
 		</table>
 		</td></tr>
+        <tr height='25'>
+		  <td colspan='2'>
+		  </td>
+		</tr>
     </table>
 	</form>
-	
 	";
 	
 ?>

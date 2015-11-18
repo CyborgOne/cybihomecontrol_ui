@@ -8,9 +8,6 @@ class HcSensorDbTable extends DbTable {
         $sqlRemoveLogs = "DELETE FROM homecontrol_sensor_log WHERE sensor_id = ".$id;
         $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveLogs);
         
-        $sqlRemoveItems = "DELETE FROM homecontrol_sensor_items WHERE sensor_id = ".$id;
-        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveItems);
-        
         $sqlRemoveTerms = "DELETE FROM homecontrol_term WHERE trigger_type=1 AND trigger_id = ".$id;
         $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveTerms);
     }

@@ -691,9 +691,8 @@ class DbTable extends Object {
         foreach ($checkVals as $val) {
             $checkValue = trim($val);
 
-            if (strlen($checkValue) > 0 && (isset($_REQUEST[$checkValue]) && strlen($_REQUEST[$checkValue]) <
-                1)) {
-                echo $checkValue . " = " . $_REQUEST[$checkValue];
+            if (strlen($checkValue) > 0 && (!isset($_REQUEST[$checkValue]) || strlen($_REQUEST[$checkValue]) < 1)) {
+                echo $checkValue . " fehlt";
                 return false;
             }
         }
@@ -701,6 +700,21 @@ class DbTable extends Object {
         return true;
     }
 
+
+    function checkUpdateValue($rowId) {
+        $checkVals = explode(",", $this->TOCHECK);
+
+        foreach ($checkVals as $val) {
+            $checkValue = trim($val);
+
+            if (strlen($checkValue) > 0 && (!isset($_REQUEST[$checkValue.$rowId]) || strlen($_REQUEST[$checkValue.$rowId]) < 1)) {
+                echo $checkValue . " fehlt<br/>";
+                return false;
+            }
+        }
+
+        return true;
+    }
     //----------------------------------------------------------------------
 
     /**
@@ -938,7 +952,7 @@ class DbTable extends Object {
 
         // Prüfung der Pflichtfelder
         if (!$this->checkInsertValue()) {
-            $e = new Error("Fehlende Eingabe", "Es wurden nicht alle Werte eingegeben!", $backLink =
+            $e = new Message("Fehlende Eingabe", "Es wurden nicht alle Werte eingegeben!", $backLink =
                 '');
             $form = $this->getInsertMask();
             $form->add($this->DEFAULT_HIDDEN_FIELDS);
@@ -1211,13 +1225,33 @@ class DbTable extends Object {
 
 
     function showUpdateMask() {
-        if (isset($_REQUEST['DbTableUpdate' . $this->TABLENAME]) && $_REQUEST['DbTableUpdate' .
-            $this->TABLENAME] == "Speichern") {
-            $this->doUpdate();
+        $checkValues = true;
+        $doUpdateActive = false;
+        $deleteMask = null;
+        
+        if ($this->isDeleteInUpdate()) {
+            $deleteMask = !$this->doDeleteFromUpdatemask() ? null : $this->doDeleteFromUpdatemask();
         }
 
+        if (isset($_REQUEST['DbTableUpdate' . $this->TABLENAME]) 
+            && $_REQUEST['DbTableUpdate' .$this->TABLENAME] == "Speichern" ) {
+            $checkValues = $this->checkUpdateValue($_REQUEST['SingleUpdateRowId']);
+            if($checkValues){
+                $this->doUpdate();
+            }
+        } 
+        
+        if (!$checkValues){
+            $_REQUEST["showUpdateMaskuser"] = $_REQUEST['SingleUpdateRowId'];    
+        }
+        
+            
         $form = $this->getUpdateMask();
+        if ($deleteMask != null) {
+            $form->addInFront($deleteMask);
+        }            
         $form->add($this->DEFAULT_HIDDEN_FIELDS);
+
         $form->show();
     }
 
@@ -1826,7 +1860,7 @@ class DbTable extends Object {
 
         for ($ir = 1; $ir <= count($this->ROWS); $ir++) {
             $rowId = $this->ROWS[$ir]->getAttribute(count($this->FIELDNAMES));
-
+            
             if ((isset($_REQUEST['SingleUpdateRowId']) && $rowId == $_REQUEST['SingleUpdateRowId']) ||
                 isset($_REQUEST['UpdateAllMaskIsActive'])) {
                 $chk = 0;
@@ -1866,7 +1900,7 @@ class DbTable extends Object {
                 }
 
 
-                if ($chk > 0) {
+                if ($chk > 0 && $this->checkUpdateValue($rowId)) {
                     $sql = "UPDATE " . $this->TABLENAME . " SET " . $sql;
 
                     //   if (strlen(trim($this->DEFAULTS)) > 0) {

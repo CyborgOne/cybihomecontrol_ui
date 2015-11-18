@@ -1,27 +1,56 @@
 <?PHP
 
+$t = new Title("Benutzer verwalten");
+$t->setAlign("left");
+$t->show();
+
+$spc = new Spacer(10);
+$spc->show();    
+
 if (($_SESSION['config']->CURRENTUSER->STATUS=="admin") && (! $_SESSION['config']->CURRENTUSER->STATUS=="user")){
    $e = new Error("Kein Zugriff", " Sie haben keine Berechtigung fÃ¼r diesen Bereich!");
 }
 
 $userTable = new DbTable($_SESSION['config']->DBCONNECT, 
                       "user", 
-					  array( "Vorname", "Nachname", "Geburtstag", "Plz", "Ort", "Status", "Email"), 
-					  "Vorname, Nachname, Geburtstag, Plz, Ort, Email",
+					  array( "Vorname", "Nachname", "User", "Email", "Status"), 
+					  "Vorname, Nachname, Benutzername, Email, Status",
 					  "",
 					  " Vorname ASC ",
-					  " User != 'Developer' AND  User != 'Superuser' ");
+					  " User != 'Developer' AND  User != 'admin' ");
 						  
 $userTable->setHeaderEnabled(true);
-$cnt = 0;
-foreach($userTable->ROWS as $row){
-	$id = $row->getNamedAttribute("rowid");
-	$tt = getUserprofilAsTooltipText($id);
-	$row->setToolTip($tt);
-    
-	$cnt++;
+$userTable->setDeleteInUpdate(true);
+$userTable->setToCheck("Vorname, Nachname, User, Email, Status");
+
+// Neuer Eintrag
+if (isset($_REQUEST['InsertIntoDBuser']) && $_REQUEST['InsertIntoDBuser'] ==
+    "Speichern") {
+
+    if($userTable->doInsert()){
+        $userTable->refresh();
+    }
+    $spc->show();  
+} else if (isset($_REQUEST[$userTable->getNewEntryButtonName()])) {
+
+    $userTable->setBorder(0);
+    $insMsk = $userTable->getInsertMask();
+    $hdnFld = $insMsk->getAttribute(1);
+    if ($hdnFld instanceof Hiddenfield) {
+        $insMsk->setAttribute(1, new Hiddenfield($userTable->getNewEntryButtonName(), "-"));
+    }
+
+    $insMsk->show();
+    $spc->show();  
 }
 
-$userTable->show();
-	
+$userTable->showUpdateMask();
+
+$spc->show();  
+
+$form = new Form();
+$form->add($userTable->getNewEntryButton("Neuen Benutzer anlegen"));
+$form->add(new Spacer());
+$form->show();    
+
 ?>

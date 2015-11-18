@@ -233,6 +233,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
     $tblMain = new Table(array("", ""));
     $rMainT0 = $tblMain->createRow();
+    
+    
+    
     $t1 = new Title("Generelle-Einstellungen");
     $t1->setAlign("left");
     $rMainT0->setAttribute(0, $t1);
@@ -245,6 +248,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 
     $tblMain->addSpacer(0, 50);
+
+
+
 
     $t2 = new Title("Anwesenheits-Einstellungen");
     $t2->setAlign("left");
@@ -262,6 +268,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 
     $tblMain->addSpacer(0, 50);
+
+
+
 
     $t3 = new Title("Abwesenheits-Einstellungen");
     $t3->setAlign("left");
@@ -303,9 +312,13 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $rMainNet->setAttribute(0, $network);
     $tblMain->addRow($rMainNet);
 
+
     $tblMain->addSpacer(0, 20);
     $tblMain->addSpacer(1, 15);
     $tblMain->addSpacer(0, 20);
+    
+    
+    
 
     $tS = new Title("Sonstige Einstellungen");
     $tS->setAlign("left");
@@ -314,7 +327,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $rMainTs->setAttribute(0, $tS);
     $tblMain->addRow($rMainTs);
     $tblMain->addSpacer(0, 10);
-
 
     $fNoFrame = new Form();
     $fNoFrame->add(new Hiddenfield("noFrame", $noFrameExists ? "off" : "on"));
@@ -337,8 +349,10 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $rRemoveCamPics->setAttribute(0, $fRemoveCamPics);
     $tblMain->addRow($rRemoveCamPics);
 
+
     $tblMain->addSpacer(0, 15);
     $tblMain->addSpacer(1, 25);
+
 
 
     $f = new Form();
