@@ -117,13 +117,13 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         0) {
 
         $scItemsDbTable = new DbTable($_SESSION['config']->DBCONNECT,
-            'homecontrol_cron_items', array("id", "config_id", "art_id", "zimmer_id",
-            "etagen_id", "on_off", "cron_id"), "ID, Objekt, Objekt-Art, Zimmer, Etage, An/Aus",
+            'homecontrol_cron_items', array("config_id", "art_id", "zimmer_id",
+            "etagen_id", "on_off", "cron_id"), "Objekt, Objekt-Art, Zimmer, Etage, An/Aus, Job",
             "cron_id=" . $_SESSION['SelectedCronToEdit'],
             "config_id DESC, zimmer_id DESC, etagen_id DESC", "cron_id=" . $_SESSION['SelectedCronToEdit']);
 
         $scItemsDbTable->setReadOnlyCols(array("id"));
-        $scItemsDbTable->setNoInsertCols(array("id"));
+        $scItemsDbTable->setNoInsertCols(array("id"));        
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
         $scItemsDbTable->setWidth("100%");

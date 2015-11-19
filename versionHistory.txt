@@ -1,4 +1,9 @@
 
+Version: 0.0.36
+---------------------
+SHYS-49
+Default berücksichtigung bei DB-Table Insert-Mask korrigiert
+
 Version: 0.0.35
 ---------------------
 Benutzerverwaltung eingefügt

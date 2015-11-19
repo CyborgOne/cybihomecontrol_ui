@@ -442,6 +442,9 @@ class DbTable extends Object {
 
 
     function isNoUpdateCol($name) {
+        if(strlen($name)<=0 || count($this->NOUPDATECOLS)<=0){
+            return false;
+        }
         return existsInArray($name, $this->NOUPDATECOLS);
     }
 
@@ -764,12 +767,13 @@ class DbTable extends Object {
         for ($x = 0; $x < count($array); $x++) {
             if (trim(substr(trim($array[$x]), 0, strlen($id))) == $id) {
                 $ret = trim(substr($array[$x], strpos($array[$x], "=") + 1));
-
+                
                 $ret = str_replace("'", "", $ret);
 
                 return $ret;
             }
         }
+        return null;
     }
 
 
@@ -835,7 +839,8 @@ class DbTable extends Object {
                 $fieldLen = $maxLen;
             }
             $arrChk = array_search($fieldName, $this->NOINSERTCOLS);
-            if (strlen($arrChk) == 0) {
+            
+            if (strlen($arrChk) == 0 && $this->getDefaultValue($this->DEFAULTS, $fieldName)==null) {
                 $r = $table->createRow();
                 $o = "";
 
@@ -851,7 +856,7 @@ class DbTable extends Object {
                 if ((mysql_num_rows($lookups) == 0 && !$this->isDbComboSet($this->TABLENAME, $fieldName)) ) {//|| strlen($this->getDefaultValue($this->DEFAULTS, $fieldName)) > 0 
                     $val = "";
                     if (strlen($this->getDefaultValue($this->DEFAULTS, $fieldName)) > 0) {
-                        $val = $this->getDefaultValue($this->DEFAULTS, $fieldName);
+                           $val = $this->getDefaultValue($this->DEFAULTS, $fieldName);
                     }
                     if (isset($_REQUEST[$fieldName]) && strlen($_REQUEST[$fieldName]) > 0) {
                         $val = $_REQUEST[$fieldName];
@@ -896,7 +901,7 @@ class DbTable extends Object {
                             TABLENAME, $fieldName);
                     } else
                         if (count($dbCombo) > 0) {
-                            $o = new ComboBox($fieldName, $dbCombo);
+                            $o = new ComboBox($fieldName, $dbCombo, $this->getDefaultValue($this->DEFAULTS, $fieldName));
                         }
                 }
 
@@ -906,6 +911,13 @@ class DbTable extends Object {
 
                 $table->addRow($r);
 
+            } else {
+                if($this->getDefaultValue($this->DEFAULTS, $fieldName)!=null){
+                    $r = $table->createRow();
+                    $r->setSpawnAll(true);
+                    $r->setAttribute(0, new Hiddenfield($fieldName, $this->getDefaultValue($this->DEFAULTS, $fieldName)));
+                    $table->addRow($r);
+                }
             }
         }
 
@@ -1465,8 +1477,23 @@ class DbTable extends Object {
      *  somit kann man direkt mehrere Zeilen auf einmal bearbeiten. 
      */
     function getUpdateAllMask() {
-        $tNames = $this->LABELS;
-        $colNames = $this->COLNAMES;
+        $tNames   = array(); 
+        $colNames = array();
+        
+        $i = 0;
+        foreach($this->COLNAMES as $colName){
+            if(!$this->isNoUpdateCol($colName)){
+                $lbl = "";
+                if($i<count($this->LABELS)){
+                  $lbl = $this->LABELS[$i];
+                } else {
+                  $lbl = $colName; 
+                }
+                array_push($tNames, $lbl);
+                array_push($colNames, $colName);
+            }
+            $i++;
+        }
 
         $deleteMask = null;
         if ($this->isDeleteInUpdate()) {
@@ -1546,86 +1573,90 @@ class DbTable extends Object {
                 $t = "";
                 $fieldName = mysql_field_name($result, $ia);
                 $fieldLen = 30;
-
-                $maxLen = mysql_field_len($result, $ia);
-
-                if ($maxLen < $fieldLen) {
-                    $fieldLen = $maxLen;
-                }
-
-                $lookups = getLookupWerte($_SESSION['config']->DBCONNECT, $this->TABLENAME, $fieldName);
-                if (mysql_num_rows($lookups) > 0) {
-                    $t = new LookupCombo($_SESSION['config']->DBCONNECT, $fieldName . $rowId, $this->
-                        TABLENAME, $fieldName, $row->getNamedAttribute($fieldName));
-                } else
-                    if ($this->isDbComboSet($this->TABLENAME, $fieldName)) {
-                        // Wenn DbCombo definiert wurde wird die Combobox zur Spalte angezeigt
-                        //Wenn die Combobox noch nicht erzeugt wurde, erzeugen.
-                        if (!(isset($dbComboArrays[$this->TABLENAME . $colNames[$ia]]))) {
-                            $dbComboArrays[$this->TABLENAME . $colNames[$ia]] = getDbComboArray($this->
-                                TABLENAME, $colNames[$ia], $this->ROWS[$ir]);
-                        }
-
-                        $dbCombo = $dbComboArrays[$this->TABLENAME . $colNames[$ia]];
-
-                        if (count($dbCombo) > 0) {
-                            $default = $row->getAttribute($ia);
-                            if (!existsKeyInArray($default, $dbCombo)) {
-                                $default = null;
-                            }
-                            $t = new ComboBox($fieldName . $rowId, $dbCombo, $default);
-                        }
-
-                    } else {
-
-                        if (mysql_field_type($result, $ia) == "blob") {
-                            $t = new TextArea($fieldName . $rowId, $row->getNamedAttribute($colNames[$ia]),
-                                round(70 / count($this->COLNAMES), 0), 4);
-
-                        } else
-                            if (strpos(mysql_field_flags($result, $ia), "enum") > 0) {
-                                $ev = $this->getEnumValues($fieldName);
-
-                                if (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
-                                    $t = new Checkbox($fieldName . $rowId);
-
-                                    if ($row->getNamedAttribute($colNames[$ia]) == "J") {
-                                        $t->setSelected(true);
-                                    }
-
-                                } else {
-                                    $t = new ComboBox($fieldName . $rowId, $this->getComboboxEnumArray($fieldName));
-                                }
-
-                            } else
-                                if (mysql_field_type($result, $ia) == "int") {
-                                    $t = new TextField($fieldName . $rowId, $row->getNamedAttribute($colNames[$ia]),
-                                        $fieldLen, $maxLen);
-
-                                } else
-                                    if (mysql_field_type($result, $ia) == "date") {
-                                        //$t = new TextField($fieldName.$rowId,$row->getNamedAttribute($colNames[$ia]),  $tfWidth, mysql_field_len ( $result, $ia ) );
-                                        $val = $row->getNamedAttribute($colNames[$ia]);
-                                        $t = new DateTextfield($fieldName . $rowId, $val);
-
-                                    } else
-                                        if (mysql_field_type($result, $ia) == "timestamp") {
-                                            $t = new TextField($fieldName . $rowId, $row->getNamedAttribute($colNames[$ia]),
-                                                $fieldLen, $maxLen);
-
-                                        } else {
-                                            $t = new TextField($fieldName . $rowId, $row->getNamedAttribute($colNames[$ia]),
-                                                $fieldLen, $maxLen);
-                                        }
-
-                                        $arrChk = array_search($fieldName, $this->READONLYCOLS);
-                        if (strlen($arrChk) != 0) {
-                            $t->setReadOnly(true);
-                        }
-
+                
+                if(!$this->isNoUpdateCol($fieldName)){
+                    $maxLen = mysql_field_len($result, $ia);
+    
+                    if ($maxLen < $fieldLen) {
+                        $fieldLen = $maxLen;
                     }
-                    // Eingabe-Objekt in Zeile einfügen
-                    $r->setAttribute($ia, $t);
+    
+                    $lookups = getLookupWerte($_SESSION['config']->DBCONNECT, $this->TABLENAME, $fieldName);
+                    if (mysql_num_rows($lookups) > 0) {
+                        $t = new LookupCombo($_SESSION['config']->DBCONNECT, $fieldName . $rowId, $this->
+                            TABLENAME, $fieldName, $row->getNamedAttribute($fieldName));
+                    } else
+                        if ($this->isDbComboSet($this->TABLENAME, $fieldName)) {
+                            // Wenn DbCombo definiert wurde wird die Combobox zur Spalte angezeigt
+                            //Wenn die Combobox noch nicht erzeugt wurde, erzeugen.
+                            if (!(isset($dbComboArrays[$this->TABLENAME . $colNames[$ia]]))) {
+                                $dbComboArrays[$this->TABLENAME . $colNames[$ia]] = getDbComboArray($this->
+                                    TABLENAME, $colNames[$ia], $this->ROWS[$ir]);
+                            }
+    
+                            $dbCombo = $dbComboArrays[$this->TABLENAME . $colNames[$ia]];
+    
+                            if (count($dbCombo) > 0) {
+                                $default = $row->getAttribute($ia);
+                                if (!existsKeyInArray($default, $dbCombo)) {
+                                    $default = null;
+                                }
+                                $t = new ComboBox($fieldName . $rowId, $dbCombo, $default);
+                            }
+    
+                        } else {
+    
+                            if (mysql_field_type($result, $ia) == "blob") {
+                                $t = new TextArea($fieldName . $rowId, $row->getNamedAttribute($colNames[$ia]),
+                                    round(70 / count($this->COLNAMES), 0), 4);
+    
+                            } else
+                                if (strpos(mysql_field_flags($result, $ia), "enum") > 0) {
+                                    $ev = $this->getEnumValues($fieldName);
+    
+                                    if (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
+                                        $t = new Checkbox($fieldName . $rowId);
+    
+                                        if ($row->getNamedAttribute($colNames[$ia]) == "J") {
+                                            $t->setSelected(true);
+                                        }
+    
+                                    } else {
+                                        $t = new ComboBox($fieldName . $rowId, $this->getComboboxEnumArray($fieldName));
+                                    }
+    
+                                } else
+                                    if (mysql_field_type($result, $ia) == "int") {
+                                        $t = new TextField($fieldName . $rowId, $row->getNamedAttribute($colNames[$ia]),
+                                            $fieldLen, $maxLen);
+    
+                                    } else
+                                        if (mysql_field_type($result, $ia) == "date") {
+                                            //$t = new TextField($fieldName.$rowId,$row->getNamedAttribute($colNames[$ia]),  $tfWidth, mysql_field_len ( $result, $ia ) );
+                                            $val = $row->getNamedAttribute($colNames[$ia]);
+                                            $t = new DateTextfield($fieldName . $rowId, $val);
+    
+                                        } else
+                                            if (mysql_field_type($result, $ia) == "timestamp") {
+                                                $t = new TextField($fieldName . $rowId, $row->getNamedAttribute($colNames[$ia]),
+                                                    $fieldLen, $maxLen);
+    
+                                            } else {
+                                                $t = new TextField($fieldName . $rowId, $row->getNamedAttribute($colNames[$ia]),
+                                                    $fieldLen, $maxLen);
+                                            }
+    
+                                            $arrChk = array_search($fieldName, $this->READONLYCOLS);
+                            if (strlen($arrChk) != 0) {
+                                $t->setReadOnly(true);
+                            }
+    
+                        }
+                        // Eingabe-Objekt in Zeile einfügen
+                        $r->setAttribute($ia, $t);
+                } else {
+                    $r->setAttribute($ia, "");
+                }
             }
 
             // entfernen Button einfügen
