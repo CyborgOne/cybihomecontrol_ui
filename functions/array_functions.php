@@ -9,7 +9,6 @@
 
 
     function existsInArray($wert, $array, $absolute=true){
-
       //Prüft ob Wert im übergebenen Array vorkommt
       if(existsKeyInArray($wert,$array, $absolute) || existsValueInArray($wert,$array, $absolute)){
         return true;

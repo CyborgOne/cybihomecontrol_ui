@@ -276,7 +276,7 @@ class HomeControlMap extends Object {
             if (isset($_REQUEST['InsertNewControl']) && $_REQUEST['InsertNewControl'] ==
                 "do" && isset($_REQUEST['X']) && isset($_REQUEST['Y'])) {
                 $newRow = $dbTable->createRow();
-                $newRow->setNamedAttribute("name", $_REQUEST['Name']);
+                $newRow->setNamedAttribute("name", strlen($_REQUEST['Name'])>0?$_REQUEST['Name']:"Tmp ".time());
                 $newRow->setNamedAttribute("x", $_REQUEST['X']);
                 $newRow->setNamedAttribute("y", $_REQUEST['Y']);
                 $newRow->setNamedAttribute("etage", $_SESSION['aktEtage']);

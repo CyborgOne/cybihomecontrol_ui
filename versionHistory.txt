@@ -1,4 +1,9 @@
 
+Version: 0.0.37
+---------------------
+SHYS-51
+Beim anlegen eines neuen Gerätes wird nun ein Standardname vergeben, wenn keiner eingegeben wurde
+
 Version: 0.0.36
 ---------------------
 SHYS-49

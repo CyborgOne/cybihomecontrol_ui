@@ -124,6 +124,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $scItemsDbTable->setReadOnlyCols(array("id"));
         $scItemsDbTable->setNoInsertCols(array("id"));        
+        $scItemsDbTable->setNoUpdateCols(array("cron_id"));        
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
         $scItemsDbTable->setWidth("100%");

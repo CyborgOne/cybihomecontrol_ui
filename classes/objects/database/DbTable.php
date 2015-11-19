@@ -445,9 +445,8 @@ class DbTable extends Object {
         if(strlen($name)<=0 || count($this->NOUPDATECOLS)<=0){
             return false;
         }
-        return existsInArray($name, $this->NOUPDATECOLS);
+        return existsValueInArray($name, $this->NOUPDATECOLS);
     }
-
 
     function setReadOnlyCols($c) {
         $this->READONLYCOLS = $c;
@@ -1535,11 +1534,19 @@ class DbTable extends Object {
             $table->setXPos($this->XPOS);
             $table->setYPos($this->YPOS);
         }
-
+        
         //---------------------------------------------------
         // gesamte Tabelle einlesen um Feldtypen zu ermitteln
         //---------------------------------------------------
-        $stmnt = "SELECT " . $this->COLNAMESTRING . " FROM " . $this->TABLENAME .
+        $cns = "";
+
+        foreach($colNames as $cn){
+            if(strpos(" ".$this->COLNAMESTRING, $cn)>0){
+                $cns .= ($cns=="")?$cn:",".$cn;
+            }
+        }
+        
+        $stmnt = "SELECT " . $cns . " FROM " . $this->TABLENAME .
             " LIMIT 1 ";
         $result = $this->DBCONNECT->executeQuery($stmnt);
 
