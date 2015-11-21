@@ -1,4 +1,15 @@
 
+Version: 0.0.38
+---------------------
+SHYS-46
+An/Aus Buttons in Steuerung direkt am Icon anzeigen
+SHYS-45
+Aktivieren Button bei Shortcuts immer sichtbar
+SHYS-52
+Etagen-Auswahl in Mobiler Ansicht
+SHYS-53
+wiederholter Aufruf von Schaltvorgängen unterbinden
+
 Version: 0.0.37
 ---------------------
 SHYS-51

@@ -225,11 +225,7 @@ class ShortcutSidebar extends Object {
                     SHORTCUTS_URL_COMMAND);
 
 
-                $this->SHORTCUTS_TOOLTIP .= "</table> <br><br><a href='" . $this->
-                    SHORTCUTS_URL_COMMAND . "'>" .
-                    "<center><div align='center' style='display:table-cell; padding:6px; width:100%;vertical-align:middle;background-color:green'>" .
-                    "<font size='4' color='#deffde'><b>aktivieren</b></font>" . "</div></center>" .
-                    "</a><br><br>";
+                $this->SHORTCUTS_TOOLTIP .= "</table> ";
 
                 //$txtShortcut = new Text($shortcutRow->getNamedAttribute("name"), 3, true);
                 //$txtShortcut->setTooltip($this->SHORTCUTS_TOOLTIP);
@@ -239,6 +235,11 @@ class ShortcutSidebar extends Object {
                 $spn->add(new Text($this->SHORTCUTS_TOOLTIP, null, false, false, false, false));
 
                 $dvSc->add($spn);
+                $dvSc->add(new Text("<a href='" . $this->
+                    SHORTCUTS_URL_COMMAND . "'>" .
+                    "<center><div align='center' style='display:table-cell; padding:2px 25px; width:100%;vertical-align:middle;background-color:green'>" .
+                    "<font size='3' color='#deffde'><b>aktivieren</b></font>" . "</div></center>" .
+                    "</a>", 2, false, false, false, false));
                 $dvSc->add($spc);
 
             } else {

@@ -469,17 +469,26 @@ class HomeControlMap extends Object {
         $columnCount = 1;
         $this->handleEtage();
 
+
         $layoutTable = new Table(array(""));
-
-        //$layoutTable->setStyle("padding-bottom","5px");
-        $etagenName = new Title($this->getEtagenName($_SESSION['aktEtage']), 0, 8, true, false);
-        $layoutTable->addSpacer(0, 25);
-        $layoutTable->addSpacer(1, 2);
-        $layoutTable->addSpacer(0, 15);
-        $layoutRow = $layoutTable->createRow();
-        $layoutTable->addRow($layoutRow);
-        $layoutRow->setAttribute(0, $etagenName);
-
+        
+        $etagenSql = "SELECT id, name FROM homecontrol_etagen";
+        $cobChooser = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $etagenSql, "aktEtage", strlen($_SESSION['aktEtage'])>0?$_SESSION['aktEtage']:"");
+        $cobChooser->setDirectSelect(true);
+        $cobChooser->setStyle("font-size", "40px");
+        $frmChooser = new Form();
+        $frmChooser->add($cobChooser);
+                
+        
+        $layoutTable->addSpacer(0,30);
+                
+        $rChooser = $layoutTable->createRow();
+        $rChooser->setSpawnAll(true);
+        $rChooser->setAttribute(0, $frmChooser);
+        $layoutTable->addRow($rChooser);
+        
+                
+        $layoutTable->addSpacer(0,15);
 
         $layoutRow = $layoutTable->createRow();
         $layoutTable->addRow($layoutRow);
@@ -494,9 +503,9 @@ class HomeControlMap extends Object {
         foreach ($dbTable->ROWS as $row) {
             if ($currCol >= $columnCount) {
                 $currCol = 0;
-                $layoutTable->addSpacer(0, 15);
+                $layoutTable->addSpacer(0, 7);
                 $layoutTable->addSpacer(1, 2);
-                $layoutTable->addSpacer(0, 15);
+                $layoutTable->addSpacer(0, 7);
                 $layoutRow = $layoutTable->createRow();
                 $layoutTable->addRow($layoutRow);
             }
@@ -510,7 +519,11 @@ class HomeControlMap extends Object {
 
                 $layoutRow = $layoutTable->createRow();
                 $layoutTable->addRow($layoutRow);
-                $layoutRow->setAttribute(0, new Text($this->getZimmerName($zimmer), 7));
+                $iT = new Text($this->getZimmerName($zimmer), "7", true);
+                $iTFt = $iT->getFonttype();
+                $iTFt->setColor("#7babdb");
+                $iT->setFonttype($iTFt);
+                $layoutRow->setAttribute(0, $iT);
                 $layoutTable->addSpacer(0, 15);
                 $layoutTable->addSpacer(1, 2);
                 $layoutTable->addSpacer(0, 15);
@@ -583,8 +596,30 @@ class HomeControlMap extends Object {
         return $layoutTable;
     }
 
+
     function checkSwitch(){
-        if(isset($_REQUEST['schalte']) && $_REQUEST['schalte']!=0){
+        $dbActionLog = new DbTable($_SESSION['config']->DBCONNECT, 
+                                   "action_log", 
+                                   array("sessionid", "userid", "zeit"),
+                                   "Session, Benutzer, Timestamp",
+                                   "",
+                                   "geaendert desc",
+                                   "sessionid='?schalte=".$_REQUEST['schalte'].(strlen($_REQUEST['tmstmp'])>0?"' AND zeit=".$_REQUEST['tmstmp']:"") );
+        
+        if(isset($_REQUEST['schalte']) && $_REQUEST['schalte']!=0 && count($dbActionLog->ROWS)==0){
+            $actionLogRow = $dbActionLog->createRow();
+            $actionLogRow->setNamedAttribute("sessionid", "?schalte=".$_REQUEST['schalte']);
+            $actionLogRow->setNamedAttribute("userid", $_SESSION['config']->CURRENTUSER->USERID);
+            $actionLogRow->setNamedAttribute("zeit", $_REQUEST['tmstmp']);
+            $actionLogRow->insertIntoDB();
+            
+            $dayInMillis = 86400000;
+            $dbActionLog->setWhere("zeit is null or zeit < " .($_REQUEST['tmstmp']-$dayInMillis) );
+            $dbActionLog->refresh();
+            foreach($dbActionLog->ROWS as $r){
+                $r->deleteFromDb();
+            }
+            
             $this->switchObject($_REQUEST['schalte']>0?$_REQUEST['schalte']:-$_REQUEST['schalte'], $_REQUEST['schalte']>0?"on":"off");            
         }
     }
@@ -631,7 +666,6 @@ class HomeControlMap extends Object {
             echo "
     	  <script type=\"text/javascript\">
     		function Coords () {
-    
                     var Ziel = \"?InsertNewControl=do&X=\" + window.event.pageX + \"&Y=\" + window.event.pageY;
                     window.location.href = Ziel;  
     		}
@@ -645,8 +679,7 @@ class HomeControlMap extends Object {
         $this->postHandleControlEdit($dbTable);
     }
 
-
-
+    
     function switchObject($id, $onOff){
         switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'],$id."-".$onOff);
     }

@@ -48,6 +48,7 @@ class FontType extends Object {
 
   function setFontsize($x){
     $this->FONTSIZE = $x;
+    $this->setStyle("font-size", $x);
   }
 
   function getFontsize(){

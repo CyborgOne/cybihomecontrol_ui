@@ -75,7 +75,8 @@ class Combobox extends Object {
 	}
 	
 	echo $this->getToolTipTag();
-	
+    echo $this->getStyleString();
+
 	echo  "> ";
 
     $isselected=false;
@@ -87,6 +88,8 @@ class Combobox extends Object {
             echo "selected";
     	    $isselected="true";
         }
+        
+        echo $this->getStyleString();
         
         echo ">".$this->getNullValue()."</option>";
           
@@ -107,6 +110,8 @@ class Combobox extends Object {
 	    $isselected="true";
       }
  
+       echo $this->getStyleString();
+
        echo ">&nbsp;" .$VALUE ."&nbsp;</option>";  
     }
     

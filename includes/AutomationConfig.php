@@ -172,6 +172,7 @@ if (isset($_SESSION['SelectedRegelToEdit']) && strlen($_SESSION['SelectedRegelTo
     
     $regelItemsDbTable->setReadOnlyCols(array("id"));
     $regelItemsDbTable->setNoInsertCols(array("id"));
+    $regelItemsDbTable->setNoUpdateCols(array("regel_id", "id"));
     $regelItemsDbTable->setDeleteInUpdate(true);
     $regelItemsDbTable->setHeaderEnabled(true);
     
