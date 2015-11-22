@@ -1,4 +1,9 @@
 
+Version: 0.0.39
+---------------------
+SHYS-53
+FIX: letzte Änderung führte im Geräte-Editor zu einem Fehler.
+
 Version: 0.0.38
 ---------------------
 SHYS-46

@@ -598,29 +598,31 @@ class HomeControlMap extends Object {
 
 
     function checkSwitch(){
-        $dbActionLog = new DbTable($_SESSION['config']->DBCONNECT, 
-                                   "action_log", 
-                                   array("sessionid", "userid", "zeit"),
-                                   "Session, Benutzer, Timestamp",
-                                   "",
-                                   "geaendert desc",
-                                   "sessionid='?schalte=".$_REQUEST['schalte'].(strlen($_REQUEST['tmstmp'])>0?"' AND zeit=".$_REQUEST['tmstmp']:"") );
-        
-        if(isset($_REQUEST['schalte']) && $_REQUEST['schalte']!=0 && count($dbActionLog->ROWS)==0){
-            $actionLogRow = $dbActionLog->createRow();
-            $actionLogRow->setNamedAttribute("sessionid", "?schalte=".$_REQUEST['schalte']);
-            $actionLogRow->setNamedAttribute("userid", $_SESSION['config']->CURRENTUSER->USERID);
-            $actionLogRow->setNamedAttribute("zeit", $_REQUEST['tmstmp']);
-            $actionLogRow->insertIntoDB();
+        if(isset($_REQUEST['schalte']) && $_REQUEST['schalte']!=0){
+            $dbActionLog = new DbTable($_SESSION['config']->DBCONNECT, 
+                                       "action_log", 
+                                       array("sessionid", "userid", "zeit"),
+                                       "Session, Benutzer, Timestamp",
+                                       "",
+                                       "geaendert desc",
+                                       "sessionid='?schalte=".$_REQUEST['schalte'].(strlen($_REQUEST['tmstmp'])>0?"' AND zeit=".$_REQUEST['tmstmp']:"") );
             
-            $dayInMillis = 86400000;
-            $dbActionLog->setWhere("zeit is null or zeit < " .($_REQUEST['tmstmp']-$dayInMillis) );
-            $dbActionLog->refresh();
-            foreach($dbActionLog->ROWS as $r){
-                $r->deleteFromDb();
+            if(count($dbActionLog->ROWS)==0){
+                $actionLogRow = $dbActionLog->createRow();
+                $actionLogRow->setNamedAttribute("sessionid", "?schalte=".$_REQUEST['schalte']);
+                $actionLogRow->setNamedAttribute("userid", $_SESSION['config']->CURRENTUSER->USERID);
+                $actionLogRow->setNamedAttribute("zeit", $_REQUEST['tmstmp']);
+                $actionLogRow->insertIntoDB();
+                
+                $dayInMillis = 86400000;
+                $dbActionLog->setWhere("zeit is null or zeit < " .($_REQUEST['tmstmp']-$dayInMillis) );
+                $dbActionLog->refresh();
+                foreach($dbActionLog->ROWS as $r){
+                    $r->deleteFromDb();
+                }
+                
+                $this->switchObject($_REQUEST['schalte']>0?$_REQUEST['schalte']:-$_REQUEST['schalte'], $_REQUEST['schalte']>0?"on":"off");            
             }
-            
-            $this->switchObject($_REQUEST['schalte']>0?$_REQUEST['schalte']:-$_REQUEST['schalte'], $_REQUEST['schalte']>0?"on":"off");            
         }
     }
 

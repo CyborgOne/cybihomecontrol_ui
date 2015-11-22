@@ -124,6 +124,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
                                        "shortcut_id=".$_SESSION['SelectedShortcutToEdit']);
 
         $scItemsDbTable->setReadOnlyCols(array("id"));
+        $scItemsDbTable->setNoUpdateCols(array("shortcut_id"));
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
         $scItemsDbTable->setWidth("100%");
