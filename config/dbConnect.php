@@ -3,9 +3,9 @@
 /* ---------------------------------------
 DATENBANK-VERBINDUNGS-DATEN
 --------------------------------------- */
-$DBUSER = "YOUR-USER-NAME";
+$DBUSER = "root";
 $DBPASS = "YOUR-PASSWORD";
-$DBNAME = "YOUR-DATABASE-NAME";
+$DBNAME = "homecontrol";
 $DBHOST = "localhost";
 
 ?>
