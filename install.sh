@@ -1,11 +1,14 @@
 #!/bin/bash
 #  Installations-Skript für den HomeControl Server
 #
-#  
-#
-#  (c) by Daniel Scheidler             Aug 2015
+#  Daniel Scheidler                      Juni 2016 
 
 sudo apt-get update
+
+#
+# Basis-Packages
+#
+sudo apt-get nano screen 
 
 
 #
@@ -16,9 +19,13 @@ sudo apt-get install libapache2-mod-php5 libapache2-mod-perl2 php5 php5-cli php5
 sudo a2enmod rewrite
 cp installFiles/etc/apache2/sites-enabled/000-default  /etc/apache2/sites-enabled/000-default
 
-# sudo visudo
-# Am Ende der Datei fügen wir hierzu die folgende Zeile ein:
-#  www-data ALL=(ALL) NOPASSWD: ALL
+
+echo "Am Ende der Datei bitte die folgende Zeile einfügen und speichern:"
+echo ""
+echo "www-data ALL=(ALL) NOPASSWD: ALL"
+echo ""
+pause 
+sudo visudo
 
 #
 #  PHPMyAdmin
@@ -44,24 +51,27 @@ cp installFiles/etc/samba/smb.conf /etc/samba/smb.conf
 #
 apt-get install git
 cd /var/www
-rm * -R
+sudo rm * -R
+sudo rm .git -R
+sudo rm .gitignore
 git clone https://github.com/CyborgOne/cybihomecontrol_ui.git .
-
-# Fuer Netzwerk-Einstellungen
-sudo chmod 775 /etc/network/interfaces
-sudo chown root:www-data /etc/network/interfaces
-
-
 
 #
 #  DATENBANK
 #
-echo "Geben Sie das Passwort für den root-Datenbankbenutzer ein"
+echo "Geben Sie das neue Passwort für den root-Datenbankbenutzer ein"
+echo ""
 sudo apt-get install mysql-server
 sudo apt-get install php5-mysql php5-odbc mysql-client php5-mysql
 mysql -u root -p homecontrol < homecontrol.sql
-
-#nano /var/www/config/dbConnect.php
+echo "Geben Sie hier Ihr gerade neu vergebenes Datenbank-Kennwort ein."
+echo ""
+echo "Die Benutzerdaten kann man nach der Installation jeder Zeit anpassen."
+echo "Ein neuer/anderer Datenbank-Benutzer benötigt Vollzugriff auf die Datenbank 'homecontrol'."
+echo "Anschließend muss man nur die Login-Daten in der Datei /var/www/config/dbConnect.php an den gerade angelegten Benutzer anpassen."
+echo ""
+pause
+nano /var/www/config/dbConnect.php
 
 #
 #  CRONS
@@ -69,14 +79,23 @@ mysql -u root -p homecontrol < homecontrol.sql
 mkdir -p /etc/cron.manual
 cp installFiles/crons/* /etc/cron.manual
 
-chmod +x /ect/cron.manual/homecontrol_cron
-chmod +x /ect/cron.manual/homecontrol_motion_cleanup
-chmod +x /ect/cron.manual/homecontrol_log_cleanup
-
 #crons aktivieren
 (crontab -l 2>/dev/null; echo "*/1 *  * * * /etc/cron.manual/homecontrol_cron >> /var/log/homecontrol_cron") | crontab -
 (crontab -l 2>/dev/null; echo "0   0  * * * /etc/cron.manual/homecontrol_log_cleanup >> /var/log/homecontrol_log_cleanup") | crontab -
 (crontab -l 2>/dev/null; echo "0   10 * * * /etc/cron.manual/homecontrol_motion_cleanup >> /var/log/homecontrol_motion_cleanup") | crontab -
 
 
+#
+# Rechte anpassen
+#
+sudo chown pi:www-data /var/www/* -R
+sudo chmod 755 /var/www/* -R
 
+sudo chown root:www-data /etc/network/interfaces -R
+sudo chmod 775 /etc/network/interfaces -R
+
+sudo chmod 775 /var/www/pics/raumplan -R
+sudo chmod 775 /var/www/cam_pics
+
+sudo chmod 755 /etc/cron.manual/* -R
+sudo chmod +x  /etc/cron.manual/* -R
