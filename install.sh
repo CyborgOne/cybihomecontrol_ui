@@ -73,6 +73,13 @@ echo ""
 pause
 nano /var/www/config/dbConnect.php
 
+
+#
+# Kamera / Motion-Detection
+#
+sudo apt-get install motion
+
+
 #
 #  CRONS
 #

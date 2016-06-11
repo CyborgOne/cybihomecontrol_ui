@@ -1,4 +1,13 @@
 
+Version: 0.0.40
+---------------------
+SHYS-54
+Shortcut Layout für Mobile-Geräte grob angepasst
+SHYS-31
+Installations-Script angepasst
+SHYS-86
+cam_pics Ordner fehlte
+
 Version: 0.0.39
 ---------------------
 SHYS-53

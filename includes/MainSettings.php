@@ -195,11 +195,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $txfNotifyTargetMail = new Textfield($notifyTargetMailName, $notifyTargetMail,
         30, 50);
 
-    $chbAnwesendMotion->setDisabled(true);
-    $chbAbwesendAlarm->setDisabled(true);
-    $chbAbwesendMotion->setDisabled(true);
-    $chbAbwesendSimulation->setDisabled(true);
-
     $rightDiv = new Div();
     $rightDiv->add($chbLoginSwitchNeed);
     $rightDiv->add(new Spacer(5));
@@ -319,7 +314,40 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     
     
     
+    
+    $tS = new Title("Bewegungserkennung");
+    $tS->setAlign("left");
+    $rMainTs = $tblMain->createRow();
+    $rMainTs->setSpawnAll(true);
+    $rMainTs->setAttribute(0, $tS);
+    $tblMain->addRow($rMainTs);
+    $tblMain->addSpacer(0, 10);
 
+    $dvMotion = new Table(array("",""));
+    $fMotion = new Form();
+    // Dienst aktiv?
+    //echo exec("sudo pgrep -x motion", $output, $return);
+    //echo "/";
+    //print_r($output);
+    //echo"/".$return."/";
+    //echo "Ok, Motion-Detection-Process ist gestartet\n";
+    $fMotion->add(new Hiddenfield("Motion", $return==0 ? "off" : "on"));
+    $fMotion->add(new Button("ok", "Bewegungserkennung der Kamera " . ($return==0 ? "deaktivieren" : "aktivieren")));
+
+    $rMotion = $tblMain->createRow();
+    $rMotion->setSpawnAll(true);
+    $rMotion->setAttribute(0, $fMotion);
+
+    $tblMain->addRow($rMotion);
+    
+    
+    
+    $tblMain->addSpacer(0, 20);
+    $tblMain->addSpacer(1, 15);
+    $tblMain->addSpacer(0, 20);
+    
+        
+    
     $tS = new Title("Sonstige Einstellungen");
     $tS->setAlign("left");
     $rMainTs = $tblMain->createRow();
@@ -349,7 +377,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $rRemoveCamPics->setAttribute(0, $fRemoveCamPics);
     $tblMain->addRow($rRemoveCamPics);
 
-
     $tblMain->addSpacer(0, 15);
     $tblMain->addSpacer(1, 25);
 
@@ -364,6 +391,15 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         echo shell_exec("sudo rm " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) .
             "/cam_pics/* -R");
     }
+
+    if ($_REQUEST["Motion"] == "on") {
+        echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/startMotionDetection.sh");
+    }
+
+    if ($_REQUEST["Motion"] == "off") {
+        echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/stopMotionDetection.sh");
+    }
+
 
 }
 

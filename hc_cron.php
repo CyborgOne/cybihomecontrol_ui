@@ -5,9 +5,10 @@
  *
  *  (c) by Daniel Scheidler   -   September 2014
  */
+include ("config/dbConnect.php");
 include ("functions/homecontrol_functions.php");
 
-$con = new mysqli('localhost', 'homecontrol', 'CybiHome82', 'homecontrol');
+$con = new mysqli($DBHOST, $DBUSER, $DBPASS, $DBNAME);
 if (!$con) {
     echo "Failed to connect to MySQL: ";
     return;
