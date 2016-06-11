@@ -144,8 +144,8 @@ class ShortcutSidebar extends Object {
                 $this->SHORTCUTS_TOOLTIP .= "<tr style=\"background-color:" . $this->
                     SHORTCUTS_ROW_COLOR_LAST . ";\"><td style=\"vertical-align: middle;\">".
                     "<img src='" . $picLink . "' width='" . $width . "'>" .
-                    "</td><td style=\"vertical-align: middle;\">" . "<font size='7em'>" . $name .
-                    "</font></td><td style=\"vertical-align: middle;\"><font size='7em'>" . ($status == "on" ? $this->ON_LABEL : $this->
+                    "</td><td style=\"vertical-align: middle;\">" . "<font size='6em'>" . $name .
+                    "</font></td><td style=\"vertical-align: middle;\"><font size='6em'>" . ($status == "on" ? $this->ON_LABEL : $this->
                     OFF_LABEL) . "</font></td></tr>";
             } else {
                 $this->SHORTCUTS_TOOLTIP .= "<tr  style=\"height:22px;background-color:" . $this->
@@ -203,7 +203,7 @@ class ShortcutSidebar extends Object {
         }
 
         $dvSc = new Div();
-        $dvSc->setWidth("140");
+        $dvSc->setWidth("100%");
 
         $title = new Title("Shortcuts");
 
@@ -276,7 +276,7 @@ class ShortcutSidebar extends Object {
 
         foreach ($this->SHORTCUTS_DB->ROWS as $shortcutRow) {
             $this->SHORTCUTS_URL_COMMAND = "/?switchShortcut=";
-            $this->SHORTCUTS_TOOLTIP = "<table width='100%' cellspacing=0 cellpadding=0>";
+            $this->SHORTCUTS_TOOLTIP = "<table width='120' cellspacing=0 cellpadding=0>";
 
             $this->prepareShortcutSwitchLink($shortcutRow->getNamedAttribute("id"));
 
@@ -286,26 +286,28 @@ class ShortcutSidebar extends Object {
                     SHORTCUTS_URL_COMMAND);
 
 
-                $this->SHORTCUTS_TOOLTIP .= "</table><br> <br><a href='" . $this->
-                    SHORTCUTS_URL_COMMAND . "' >" .
-                    "<center><div align='center' style='display:table-cell; padding:20px 30px;width:100%;vertical-align:middle;background-color:green'>" .
-                    "<font size='8em' color='#deffde'><b>aktivieren</b></font>" . "</div></center>" .
-                    "</a><br><br>";
+                $this->SHORTCUTS_TOOLTIP .= "</table> ";
 
                 //$txtShortcut = new Text($shortcutRow->getNamedAttribute("name"), 3, true);
                 //$txtShortcut->setTooltip($this->SHORTCUTS_TOOLTIP);
 
                 $spn = new Span($shortcutRow->getNamedAttribute("name"), $shortcutRow->
                     getNamedAttribute("name"));
-                $spn->add(new Text($this->SHORTCUTS_TOOLTIP, 6, false, false, false, false));
-                $spn->setFontsize(8);
+                $spn->setFontsize("12em");
+                $spn->add(new Text($this->SHORTCUTS_TOOLTIP, null, false, false, false, false));
+
                 $dvSc->add($spn);
+                $dvSc->add(new Text("<a href='" . $this->
+                    SHORTCUTS_URL_COMMAND . "'>" .
+                    "<center><div align='center' style='display:table-cell; padding:2px 25px; width:100%;vertical-align:middle;background-color:green'>" .
+                    "<font size='12em' color='#deffde'><b>aktivieren</b></font>" . "</div></center>" .
+                    "</a>", 2, false, false, false, false));
                 $dvSc->add($spc);
 
             } else {
                 // inaktiv (Keine konfigurierten Items)
 
-                $txt = new Text($shortcutRow->getNamedAttribute("name"), 6, false);
+                $txt = new Text($shortcutRow->getNamedAttribute("name"), 3, false);
                 $txt->setTooltip("Noch keine Konfiguration hinterlegt");
 
                 $dvSc->add($txt);
