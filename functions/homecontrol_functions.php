@@ -20,11 +20,14 @@
       // Nach Minus trennen um ID und STATUS zu erhalten.
       $tmp    = explode("-",$cfg);
 
-      if(count($tmp)==2){
+      if(count($tmp)>=2){
         $id     = $tmp[0];
         $status = $tmp[1];
-     
-
+        $dimmer = 0;
+        if(count($tmp)==3){
+            $dimmer = $tmp[2];
+            echo $dimmer;
+        }
         if( strlen($id)>0 && $id>0 ){
           $status = $status=="on"?"on":"off";
   
@@ -40,7 +43,7 @@
 
           $check = @fsockopen($host, 80); 
           If ($check) { 
-            $retVal = file_get_contents( $arduinoUrl."?schalte&" .$id );
+            $retVal = file_get_contents( $arduinoUrl."?schalte=".$id."&dimm=".$dimmer );
  
             if(strpos(substr($retVal,0,50), "Warning")>0){
                $switchStatusCheck = false;

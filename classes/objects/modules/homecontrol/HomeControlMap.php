@@ -56,7 +56,7 @@ class HomeControlMap extends Object {
         $rName = $mask->createRow();
         $rName->setAttribute(0, "Name: ");
         $rName->setAttribute(1, new TextField("Name", "", 30, 30));
-        $rName->addSpan(1, 2);
+        $rName->setAttribute(2, new Checkbox("dimmer", "Dimmer?", "J", "N"));
         $mask->addRow($rName);
 
         $mask->addSpacer(0, 20);
@@ -86,7 +86,10 @@ class HomeControlMap extends Object {
 
         $usedFunkIds = $this->getUsedFunkIds();
 
-        for ($i = 1; $i <= 306; $i++) {
+        // Wenn BT-Switch aktiv stehen 80 IDs mehr zur Verfuegung
+        $maxFunkId = getPageConfigParam($_SESSION['config']->DBCONNECT,"btSwitchActive")=="J"?386:306;
+        
+        for ($i = 1; $i <= $maxFunkId; $i++) {
             if (!existsInArray($i, $usedFunkIds) || $default == $i) {
                 $code = $i;
                 $value = $i;
@@ -124,7 +127,7 @@ class HomeControlMap extends Object {
 
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
             array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-            "etage", "zimmer", "x", "y"), "", "", "", "id=" . $id);
+            "etage", "zimmer", "x", "y", "dimmer"), "", "", "", "id=" . $id);
 
         $r = $dbTable->getRow(1);
 
@@ -171,7 +174,7 @@ class HomeControlMap extends Object {
         $r2 = $mask->createRow();
         $r2->setAttribute(0, "Name: ");
         $r2->setAttribute(1, new TextField("Name", $r->getNamedAttribute("name"), 30, 20));
-        $r2->addSpan(1, 2);
+        $r2->setAttribute(2, new Checkbox("dimmer", "Dimmer?", "J", $r->getNamedAttribute("dimmer")));
         $mask->addRow($r2);
 
         $mask->addSpacer(0, 20);
@@ -301,6 +304,12 @@ class HomeControlMap extends Object {
                 } else {
                     $newRow->setNamedAttribute("beschreibung", null);
                 }
+                
+                if (isset($_REQUEST['dimmer'])) {
+                    $newRow->setNamedAttribute("dimmer", $_REQUEST['dimmer']);
+                } else {
+                    $newRow->setNamedAttribute("dimmer", "N");
+                }
 
                 $newRow->insertIntoDB();
                 return true;
@@ -332,6 +341,12 @@ class HomeControlMap extends Object {
                     $newRow->setNamedAttribute("beschreibung", $_REQUEST['Beschreibung']);
                 } else {
                     $newRow->setNamedAttribute("beschreibung", null);
+                }
+
+                if (isset($_REQUEST['dimmer'])) {
+                    $newRow->setNamedAttribute("dimmer", $_REQUEST['dimmer']);
+                } else {
+                    $newRow->setNamedAttribute("dimmer", "N");
                 }
 
                 $newRow->updateDB();
@@ -605,14 +620,21 @@ class HomeControlMap extends Object {
                                        "Session, Benutzer, Timestamp",
                                        "",
                                        "geaendert desc",
-                                       "sessionid='?schalte=".$_REQUEST['schalte'].(strlen($_REQUEST['tmstmp'])>0?"' AND zeit=".$_REQUEST['tmstmp']:"") );
+                                       "sessionid='?schalte=".$_REQUEST['schalte']."'".(strlen($_REQUEST['dimmer'])>0?"-".$_REQUEST['dimmer']:"")
+                                        .(strlen($_REQUEST['tmstmp'])>0?" AND zeit=".$_REQUEST['tmstmp']:"") );
+
             
             if(count($dbActionLog->ROWS)==0){
+                if(strlen($_REQUEST['tmstmp'])<=0){
+                    $_REQUEST['tmstmp'] = time();
+                }
                 $actionLogRow = $dbActionLog->createRow();
                 $actionLogRow->setNamedAttribute("sessionid", "?schalte=".$_REQUEST['schalte']);
                 $actionLogRow->setNamedAttribute("userid", $_SESSION['config']->CURRENTUSER->USERID);
                 $actionLogRow->setNamedAttribute("zeit", $_REQUEST['tmstmp']);
                 $actionLogRow->insertIntoDB();
+   
+                echo "Dimmer: ".$_REQUEST['dimmer'];
                 
                 $dayInMillis = 86400000;
                 $dbActionLog->setWhere("zeit is null or zeit < " .($_REQUEST['tmstmp']-$dayInMillis) );
@@ -620,8 +642,7 @@ class HomeControlMap extends Object {
                 foreach($dbActionLog->ROWS as $r){
                     $r->deleteFromDb();
                 }
-                
-                $this->switchObject($_REQUEST['schalte']>0?$_REQUEST['schalte']:-$_REQUEST['schalte'], $_REQUEST['schalte']>0?"on":"off");            
+                $this->switchObject($_REQUEST['schalte']>0?$_REQUEST['schalte']:-$_REQUEST['schalte'], $_REQUEST['schalte']>0?"on":"off", $_REQUEST['dimmer']);            
             }
         }
     }
@@ -654,7 +675,7 @@ class HomeControlMap extends Object {
 
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
             array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-            "etage", "zimmer", "x", "y"), "", "", "", "etage=" . $_SESSION['aktEtage']);
+            "etage", "zimmer", "x", "y", "dimmer"), "", "", "", "etage=" . $_SESSION['aktEtage']);
         $dbTable->setNoInsertCols("id");
         if ($this->handleControlEdit($dbTable)) {
             $dbTable->refresh();
@@ -682,8 +703,8 @@ class HomeControlMap extends Object {
     }
 
     
-    function switchObject($id, $onOff){
-        switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'],$id."-".$onOff);
+    function switchObject($id, $onOff, $dimm=0){
+        switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'],$id."-".$onOff.($dimm>0&&$dimm<17?"-".$dimm:""));
     }
 }
 

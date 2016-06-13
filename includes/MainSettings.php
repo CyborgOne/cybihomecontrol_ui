@@ -53,6 +53,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $pagetitelRow = getRowByName($configDb->ROWS, "pagetitel");
     $notifyTargetMailRow = getRowByName($configDb->ROWS, "NotifyTargetMail");
     $timelineDurationRow = getRowByName($configDb->ROWS, "timelineDuration");
+    $btSwitchActiveRow = getRowByName($configDb->ROWS, "btSwitchActive");
 
     $loginForSwitchNeedName = 'value' . $loginForSwitchNeedRow->getNamedAttribute('id');
     $loginForTimelinePauseNeedName = 'value' . $loginForTimelinePauseNeedRow->getNamedAttribute('id');
@@ -67,6 +68,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $notifyTargetMailName = 'value' . $notifyTargetMailRow->getNamedAttribute('id');
     $pagetitelName = 'value' . $pagetitelRow->getNamedAttribute('id');
     $timelineDurationName = 'value' . $timelineDurationRow->getNamedAttribute('id');
+    $btSwitchActiveName = 'value' . $btSwitchActiveRow->getNamedAttribute('id');
 
 
     // Checkboxen brauchen Sonderbehandlung da bei fehlender Auswahl kein Wert mitgegeben wird
@@ -87,6 +89,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     }
     if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$abwesendMotionName])) {
         $_REQUEST[$abwesendMotionName] = 'N';
+    }
+    if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$btSwitchActiveName])) {
+        $_REQUEST[$btSwitchActiveName] = 'N';
     }
 
     if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && $_REQUEST['DbTableUpdate' .
@@ -109,21 +114,18 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $pagetitelRow = getRowByName($configDb->ROWS, "pagetitel");
         $notifyTargetMailRow = getRowByName($configDb->ROWS, "NotifyTargetMail");
         $timelineDurationRow = getRowByName($configDb->ROWS, "timelineDuration");
+        $btSwitchActiveRow = getRowByName($configDb->ROWS, "btSwitchActive");
     }
 
 
-    $loginForSwitchNeed = $loginForSwitchNeedRow->getNamedAttribute('value') == "J" ?
-        "J" : "N";
-    $loginForTimelinePauseNeed = $loginForTimelinePauseNeedRow->getNamedAttribute('value') ==
-        "J" ? "J" : "N";
-    $anwesendMotion = $anwesendMotionRow->getNamedAttribute('value') == "J" ? "J" :
-        "N";
-    $abwesendAlarm = $abwesendAlarmRow->getNamedAttribute('value') == "J" ? "J" :
-        "N";
-    $abwesendSimulation = $abwesendSimulationRow->getNamedAttribute('value') == "J" ?
-        "J" : "N";
-    $abwesendMotion = $abwesendMotionRow->getNamedAttribute('value') == "J" ? "J" :
-        "N";
+    $loginForSwitchNeed = $loginForSwitchNeedRow->getNamedAttribute('value') == "J" ? "J" : "N";
+    $loginForTimelinePauseNeed = $loginForTimelinePauseNeedRow->getNamedAttribute('value') == "J" ? "J" : "N";
+    $anwesendMotion = $anwesendMotionRow->getNamedAttribute('value') == "J" ? "J" : "N";
+    $abwesendAlarm = $abwesendAlarmRow->getNamedAttribute('value') == "J" ? "J" : "N";
+    $abwesendSimulation = $abwesendSimulationRow->getNamedAttribute('value') == "J" ? "J" : "N";
+    $abwesendMotion = $abwesendMotionRow->getNamedAttribute('value') == "J" ? "J" : "N";
+    $btSwitchActive = $btSwitchActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";        
+        
     $sensorlogDauer = $sensorlogDauerRow->getNamedAttribute('value');
     $motionDauer = $motionDauerRow->getNamedAttribute('value');
     $sessionDauer = $sessionDauerRow->getNamedAttribute('value');
@@ -155,7 +157,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         "J", $abwesendMotion);
 
     $chbAnwesendMotion = new Checkbox($anwesendMotionName,
-        "Kamera Bewegungserkennung?", "N", $anwesendMotion);
+        "Kamera Bewegungserkennung?", "J", $anwesendMotion);
+
+    $chbBtSwitchActive = new Checkbox($btSwitchActiveName, "Intertechno BT-Switch aktiv?","J", $btSwitchActive);
 
     $cobTimelineDuration = new Combobox($timelineDurationName, array(1 => "1", 2 =>
         "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6"), $timelineDuration);
@@ -212,18 +216,25 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
 
     $leftTab = new Table(array("", ""));
-    $rT = $leftTab->createRow();
-    $rT->setAttribute(0, $txtPageTitel);
-    $rT->setAttribute(1, $txfPageTitel);
-    $leftTab->addRow($rT);
-    $rA = $leftTab->createRow();
-    $rA->setAttribute(0, $txtArduinoUrl);
-    $rA->setAttribute(1, $txfArduinoUrl);
-    $leftTab->addRow($rA);
-    $rN = $leftTab->createRow();
-    $rN->setAttribute(0, $txtNotifyTargetMail);
-    $rN->setAttribute(1, $txfNotifyTargetMail);
-    $leftTab->addRow($rN);
+    $lT = $leftTab->createRow();
+    $lT->setAttribute(0, $txtPageTitel);
+    $lT->setAttribute(1, $txfPageTitel);
+    $leftTab->addRow($lT);
+    $leftTab->addSpacer(0,3);
+    $lN = $leftTab->createRow();
+    $lN->setAttribute(0, $txtNotifyTargetMail);
+    $lN->setAttribute(1, $txfNotifyTargetMail);
+    $leftTab->addRow($lN);
+    $leftTab->addSpacer(0,20);
+    $lA = $leftTab->createRow();
+    $lA->setAttribute(0, $txtArduinoUrl);
+    $lA->setAttribute(1, $txfArduinoUrl);
+    $leftTab->addRow($lA);
+    $leftTab->addSpacer(0,10);
+    $lB = $leftTab->createRow();
+    $lB->setSpawnAll(true);
+    $lB->setAttribute(0, $chbBtSwitchActive);
+    $leftTab->addRow($lB);
 
 
     $tblMain = new Table(array("", ""));

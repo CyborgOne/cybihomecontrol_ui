@@ -13,6 +13,7 @@ class HomeControlItem extends Object {
     private $ZIMMER = 0;
     private $PIC = "";
     private $FUNKID2_NEED = false;
+    private $DIMMER = "N";
 
     private $EDIT_MODE = false;
 
@@ -31,6 +32,7 @@ class HomeControlItem extends Object {
         $this->ART = $currConfigRow->getNamedAttribute("control_art");
         $this->ETAGE = $currConfigRow->getNamedAttribute("etage");
         $this->ZIMMER = $currConfigRow->getNamedAttribute("zimmer");
+        $this->DIMMER = $currConfigRow->getNamedAttribute("dimmer");
         $this->PIC = $this->getIconPath();
         if (strlen($this->getIconPath()) <= 4){
             $this->PIC = "pics/homecontrol/steckdose_100.jpg";
@@ -40,9 +42,12 @@ class HomeControlItem extends Object {
         $this->EDIT_MODE = $editModus;
     }
 
-
+    function isDimmable(){
+        return $this->DIMMER=="J";
+    }
+ 
     function getIconTooltip($configButtons = true) {
-        $ttt = "<table cellspacing='10'><tr><td colspan=2><center><b>" . $this->OBJNAME .
+        $ttt = "<table cellspacing='10'><tr><td>" .$this->getControlArtIconSrc(false,80) ."</td><td><center><b>" . $this->OBJNAME .
             "</b></center><hr></td></tr>" . "<tr><td>Funk-Id: </td><td align='right'>" . $this->
             FUNK_ID . "</td></tr>";
 
@@ -53,6 +58,32 @@ class HomeControlItem extends Object {
 
         $ttt .= "<tr><td colspan=2 height='1px'> </td></tr>";
 
+        if($this->isDimmable()){
+            $ttt .= "<tr><td>Dimmer-Level:</td><td>"
+            ."<form action='".$_SERVER['SCRIPT_NAME']."'>"
+            ."<select id='dimmer' name='dimmer' size='1' onchange=\"this.form.submit();\" >"
+            ."<option value='0'></option>"
+            ."<option value='1'>1</option>"
+            ."<option value='2'>2</option>"
+            ."<option value='3'>3</option>"
+            ."<option value='4'>4</option>"
+            ."<option value='5'>5</option>"
+            ."<option value='6'>6</option>"
+            ."<option value='7'>7</option>"
+            ."<option value='8'>8</option>"
+            ."<option value='9'>9</option>"
+            ."<option value='10'>10</option>"
+            ."<option value='11'>11</option>"
+            ."<option value='12'>12</option>"
+            ."<option value='13'>13</option>"
+            ."<option value='14'>14</option>"
+            ."<option value='15'>15</option>"
+            ."<option value='16'>16</option>"
+          ."</select>"
+          ."<input id='schalte' name='schalte' type='hidden' value='".$this->FUNK_ID."'>"
+          ."</form></td></tr>";
+        }
+        
         switch ($this->ART) {
             case 1:
                 // Steckdosen
@@ -109,8 +140,8 @@ class HomeControlItem extends Object {
     function getSwitchButtons() {
         $tbl = new Table(array("","",""));
         $tbl->setStyle("position", "relative");
-        $tbl->setStyle("left", "-22px");
-        $tbl->setStyle("top", "-8px");
+        $tbl->setStyle("left", "-17px");
+        $tbl->setStyle("top", "-20px");
         $tbl->setAlignments(array("left", "right"));
         $tbl->setColSizes(array(40, 5, 40));
         $tbl->setBorder(0);
@@ -150,20 +181,20 @@ class HomeControlItem extends Object {
         $divAn = new Div();
         $divAn->add($txtAn);
         $divAn->setWidth(35);
-        $divAn->setHeight(15);
+        $divAn->setHeight(20);
         $divAn->setAlign("center");
         $divAn->setVAlign("middle");
-        $divAn->setStyle("line-height", "15px");
+        $divAn->setStyle("line-height", "20px");
         $divAn->setBorder(1);
         $divAn->setBackgroundColor("green");
         $divAn->setOverflow("hidden");
 
         $divAus = new Div();
         $divAus->setWidth(35);
-        $divAus->setHeight(15);
+        $divAus->setHeight(20);
         $divAus->setAlign("center");
         $divAus->setVAlign("middle");
-        $divAus->setStyle("line-height", "15px");
+        $divAus->setStyle("line-height", "20px");
         $divAus->add($txtAus);
         $divAus->setBorder(1);
         $divAus->setBackgroundColor("red");
@@ -182,12 +213,12 @@ class HomeControlItem extends Object {
 
         return $tbl;
     }
-    
+   
     function getMobileSwitch() {
-
-        $tbl = new Table(array("", "", "", ""));
-        $tbl->setAlignments(array("center", "left", "left", "right"));
-        $tbl->setColSizes(array(60, "", 170, 150));
+        
+        $tbl = new Table(array("","", "", "", ""));
+        $tbl->setAlignments(array("center", "left", "left", "left", "right"));
+        $tbl->setColSizes(array(60, "", 80, 170, 150));
         $tbl->setBorder(0);
         $rowTtl = $tbl->createRow();
         $rowTtl->setVAlign("middle");
@@ -255,11 +286,19 @@ class HomeControlItem extends Object {
         $lnkAus = new Link("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
             "?schalte=-" . $this->FUNK_ID, $divAus, false, "arduinoSwitch");
 
+        $fDimmLvl  = new Form();
+        $cobDimmLvl = new Combobox("dimmer", getNumberComboArray(1,16),""," ");
+        $cobDimmLvl->setDirectSelect(true);
+        $fDimmLvl->add($cobDimmLvl);
+        $fDimmLvl->add(new Hiddenfield("schalte",$this->FUNK_ID));
+
         $rowTtl->setAttribute(0, $img);
         $rowTtl->setAttribute(1, $txtName);
-        $rowTtl->setAttribute(2, $lnkAn);
-        $rowTtl->setAttribute(3, $lnkAus);
+        $rowTtl->setAttribute(2, $this->isDimmable()?$fDimmLvl:"");
+        $rowTtl->setAttribute(3, $lnkAn);
+        $rowTtl->setAttribute(4, $lnkAus);
 
+        
         $tbl->addRow($rowTtl);
 
         return $tbl;
@@ -309,9 +348,9 @@ class HomeControlItem extends Object {
      *  Liefert das Grafik-Symbol zurück (Image),
      *  welches zur Control-Art passt.
      */
-    function getControlArtIconSrc($tooltipActive = true) {
+    function getControlArtIconSrc($tooltipActive = true,$width=0) {
         $lnkImg = new Image($this->PIC);
-        $lnkImg->setWidth($this->CONTROL_IMAGE_WIDTH);
+        $lnkImg->setWidth($width==0?$this->CONTROL_IMAGE_WIDTH:$width);
 
         if ($tooltipActive) {
             $ttt = $this->getIconTooltip();
@@ -333,12 +372,27 @@ class HomeControlItem extends Object {
 
         } else {
 
+
             echo "<div style=\"position:absolute; left:" . $this->X . "px; top:" . ($this->
                 Y + $_SESSION['additionalLayoutHeight']) . "px; width:" . $this->
                 CONTROL_IMAGE_WIDTH . "px; height:" . $this->CONTROL_IMAGE_HEIGHT . "px;\">";
             echo $this->getControlArtIconSrc();
+
             $this->getSwitchButtons()->show();            
             echo "</div>";
+            
+            if($this->DIMMER=="J"){
+                $f  = new Form();
+                $cobDimmLvl = new Combobox("dimmer", getNumberComboArray(1,16),""," ");
+                $cobDimmLvl->setDirectSelect(true);
+                $cobDimmLvl->setStyle("position", "absolute"); 
+                $cobDimmLvl->setStyle("left", $this->X ."px"); 
+                $cobDimmLvl->setStyle("top", $this->Y+$this->CONTROL_IMAGE_HEIGHT-3+$_SESSION['additionalLayoutHeight']."px"); 
+                $f->add($cobDimmLvl);
+                $f->add(new Hiddenfield("schalte",$this->FUNK_ID));
+                $f->show();
+            }
+
         }
     }
 

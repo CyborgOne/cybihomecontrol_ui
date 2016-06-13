@@ -1,4 +1,12 @@
 
+Version: 0.0.41
+---------------------
+Intertechno BT-Switch ins System Integriert
+.
+- In Basiseinstellungen einstellbar ob BT-Switch verwendet wird (da dann Mehr IDs zur Verfügung stehen
+- Combobox zur Dimmerlevel-Auswahl in Tooltip, Mobil und Desktopversion eingebaut
+- In Geräte-Einstellungen Dimmer per Checkbox aktivierbar (Default=N)
+
 Version: 0.0.40
 ---------------------
 SHYS-54
