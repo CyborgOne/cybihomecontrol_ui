@@ -215,10 +215,9 @@ class HomeControlItem extends Object {
     }
    
     function getMobileSwitch() {
-        
-        $tbl = new Table(array("","", "", "", ""));
+        $tbl = new Table(array("", "", "", "", ""));
         $tbl->setAlignments(array("center", "left", "left", "left", "right"));
-        $tbl->setColSizes(array(60, "", 80, 170, 150));
+        $tbl->setColSizes(array(60, "", 100, 160, 150));
         $tbl->setBorder(0);
         $rowTtl = $tbl->createRow();
         $rowTtl->setVAlign("middle");
@@ -285,25 +284,27 @@ class HomeControlItem extends Object {
             "?schalte=" . $this->FUNK_ID, $divAn, false, "arduinoSwitch");
         $lnkAus = new Link("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
             "?schalte=-" . $this->FUNK_ID, $divAus, false, "arduinoSwitch");
-
-        $fDimmLvl  = new Form();
-        $cobDimmLvl = new Combobox("dimmer", getNumberComboArray(1,16),""," ");
-        $cobDimmLvl->setDirectSelect(true);
-        $fDimmLvl->add($cobDimmLvl);
-        $fDimmLvl->add(new Hiddenfield("schalte",$this->FUNK_ID));
-
+        
+        $fDimmLvl="";
+        if($this->isDimmable()){
+            $fDimmLvl  = new Form();
+            $cobDimmLvl = new Combobox("dimmer", getNumberComboArray(1,16),""," ");
+            $cobDimmLvl->setDirectSelect(true);
+            $cobDimmLvl->setStyle("font-size", "40px");
+            $fDimmLvl->add($cobDimmLvl);
+            $fDimmLvl->add(new Hiddenfield("schalte", $this->FUNK_ID));
+        }
+        
         $rowTtl->setAttribute(0, $img);
         $rowTtl->setAttribute(1, $txtName);
-        $rowTtl->setAttribute(2, $this->isDimmable()?$fDimmLvl:"");
+        $rowTtl->setAttribute(2, $fDimmLvl);
         $rowTtl->setAttribute(3, $lnkAn);
         $rowTtl->setAttribute(4, $lnkAus);
-
         
         $tbl->addRow($rowTtl);
 
         return $tbl;
     }
-
 
     function getIconPath() {
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_art', array
@@ -371,8 +372,6 @@ class HomeControlItem extends Object {
             echo "</a>";
 
         } else {
-
-
             echo "<div style=\"position:absolute; left:" . $this->X . "px; top:" . ($this->
                 Y + $_SESSION['additionalLayoutHeight']) . "px; width:" . $this->
                 CONTROL_IMAGE_WIDTH . "px; height:" . $this->CONTROL_IMAGE_HEIGHT . "px;\">";

@@ -511,7 +511,7 @@ class HomeControlMap extends Object {
 
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
             array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-            "etage", "zimmer", "x", "y"), "", "", "zimmer", "etage=" . $_SESSION['aktEtage']);
+            "etage", "zimmer", "x", "y", "dimmer"), "", "", "zimmer", "etage=" . $_SESSION['aktEtage']);
 
         $currCol = 0;
         $zimmer = null;

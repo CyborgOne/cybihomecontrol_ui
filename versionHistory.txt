@@ -1,4 +1,9 @@
 
+Version: 0.0.42
+---------------------
+Nachbesserung:
+Mobile-Layout Dimmer-Level-Auswahl nun auch sichtbar
+
 Version: 0.0.41
 ---------------------
 Intertechno BT-Switch ins System Integriert

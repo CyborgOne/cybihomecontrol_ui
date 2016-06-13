@@ -37,7 +37,8 @@ if ($detect->isMobile()) {
     include ("layout_mobile.php");
     exit();
 }
-
+    include ("layout_mobile.php");
+    exit();
 
 $sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
 $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlNoFrame);
