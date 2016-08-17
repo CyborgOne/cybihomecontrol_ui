@@ -5,6 +5,8 @@ class Radiobutton extends Object {
   private $TEXT;
   private $WERT;
   private $SELECTED;
+  private $ONCHANGESUBMIT;
+
 
   /**
    * Radiobutton:
@@ -12,16 +14,27 @@ class Radiobutton extends Object {
    * @param $text   setzt den anzuzeigenden Text
    * @param $wert   setzt den zuÃÂÃÂÃÂÃÂ¼bergebenden Wert
    */
-  function Radiobutton($name, $text, $wert, $sel=false){
+  function Radiobutton($name, $text, $wert, $sel=false, $ONCHANGESUBMIT=false){
   	 $this->NAME = $name; 
      $this->setBorder(0);
      $this->SELECTED=$sel;
      $this->WERT = $wert;
      $this->TEXT = $text;
+     $this->ONCHANGESUBMIT = $ONCHANGESUBMIT;
   }
 
 
-
+  
+  function isOnChangeSubmit(){
+    return $this->ONCHANGESUBMIT;
+  }
+  
+  
+  function setOnChangeSubmit($onChange){
+    return $this->ONCHANGESUBMIT===$onChange;
+  }
+  
+  
   /**
    * zeigt die Radiobuttons an
    */
@@ -30,6 +43,9 @@ class Radiobutton extends Object {
 	if($this->SELECTED){
 		echo " checked ";
 	}
+    if($this->isOnChangeSubmit()){
+       echo " onChange='this.form.submit();' "; 
+    }
 	echo "> " .$this->TEXT." ";
 	
   }

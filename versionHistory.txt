@@ -1,4 +1,10 @@
 
+Version: 0.0.44
+---------------------
+Raumplan um Sensoren erweitert.
+Sensoren können nun wie die anderen Geräte auch über den Raumplan (Einstellungen - Geräte) angelegt werden.
+Ebenfalls werden Sie mit dem letzten/aktuellen Wert auf dem Raumplan im "Steuerungsmenü" angezeigt.
+
 Version: 0.0.42
 ---------------------
 Nachbesserung:

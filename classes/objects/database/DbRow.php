@@ -7,6 +7,7 @@ class DbRow extends Object{
   var $FONTTYPES;  // Array welches die Schriftformatierung fÃÂÃÂÃÂÃÂ¼r einzelne Spalten vorgibt
   private $TABLENAME;
   private $FIELDNAMES; 
+  var $FORCE_ID_UPDATE=false; 
   
   function DbRow($colNamesArray, $TableName, $fldNames){
   	$this->TABLENAME = $TableName;
@@ -173,13 +174,14 @@ class DbRow extends Object{
 	}
   	
     $sql = "insert into ".$this->TABLENAME." (" .$COLNAMESTRING .") VALUES (";
-	
+	$first=true;
 	for($i=0;$i<count($this->COLNAMES);$i++){
 	    if(strlen($this->getAttribute($i))>0){
-            $sql .= "'" .$this->getAttribute($i) ."' ";
-    		if($i+1<count($this->COLNAMES)){
+    		if(!$first){
     			$sql .= ", ";
     		}
+            $sql .= "'" .$this->getAttribute($i) ."' ";
+           	$first=false;
         }
 	}	
 	
@@ -217,7 +219,7 @@ class DbRow extends Object{
     $sql = "UPDATE ".$this->TABLENAME." SET ";
 	
 	for($i=0;$i<count($this->COLNAMES);$i++){
-		if($this->COLNAMES[$i] != "id"){
+		if($this->COLNAMES[$i] != "id" || $this->FORCE_ID_UPDATE){
 		  $sql .= $this->COLNAMES[$i] ." = '" .$this->getAttribute($i) ."' ";
   		  
 		  if($i+1<count($this->COLNAMES)){
@@ -226,8 +228,8 @@ class DbRow extends Object{
 		}
 	}	
 	
-	$sql .= " WHERE id = ".$this->getNamedAttribute("id");
-	
+	$sql .= " WHERE id = ".$this->getNamedAttribute("rowid");
+
 	$_SESSION['config']->DBCONNECT->executeQuery($sql);
   }
 

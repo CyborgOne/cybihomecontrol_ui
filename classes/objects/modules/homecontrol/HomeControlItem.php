@@ -368,7 +368,7 @@ class HomeControlItem extends Object {
                 $this->X . "px; top:" . ($this->Y + $_SESSION['additionalLayoutHeight']) .
                 "px; width:" . $this->CONTROL_IMAGE_WIDTH . "px; height:" . $this->
                 CONTROL_IMAGE_HEIGHT . "px;\">";
-            echo $this->getControlArtIconSrc(false);
+            echo $this->getControlArtIconSrc();
             echo "</a>";
 
         } else {

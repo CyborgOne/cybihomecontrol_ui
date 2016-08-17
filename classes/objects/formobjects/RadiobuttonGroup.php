@@ -2,8 +2,12 @@
 //FileNAME: RadiobuttonGroup.php
 
 class RadiobuttonGroup extends Object {
+  private $SELECTED_VALUE;
+
   private $OBJECTS;
   private $HORIZONTAL;
+  private $ONCHANGESUBMIT;
+
 
   /**
    * RadiobuttonGroup:
@@ -15,6 +19,8 @@ class RadiobuttonGroup extends Object {
      $this->setBorder(0);
      $this->OBJECTS = array();
      $this->HORIZONTAL = false;
+     
+     $this->SELECTED_VALUE = isset($_REQUEST[$this->NAME])?$_REQUEST[$this->NAME]:"";
   }
 
 
@@ -24,7 +30,10 @@ class RadiobuttonGroup extends Object {
    * @param $name    entspricht dem Wert der in der Liste angezeigt wird
    * @param $wert    entspricht dem Wert der bei ausfÃÂÃÂÃÂÃÂ¼hren der Form ÃÂÃÂÃÂÃÂ¼bergeben wird
    */
-  function add($name, $wert){
+  function add($name, $wert, $selected=false){
+    if((count($this->OBJECTS)==0 && strlen($this->SELECTED_VALUE)==0) || $selected){
+        $this->SELECTED_VALUE = $wert;
+    }
     $this->OBJECTS[$name] = $wert; 
   }
   
@@ -47,7 +56,15 @@ class RadiobuttonGroup extends Object {
     return $this->HORIZONTAL===true?true:false; 
   }
   
+    
+  function isOnChangeSubmit(){
+    return $this->ONCHANGESUBMIT;
+  }
   
+  
+  function setOnChangeSubmit($onChange){
+    return $this->ONCHANGESUBMIT===$onChange;
+  }
   
   
   
@@ -60,7 +77,9 @@ class RadiobuttonGroup extends Object {
       if(! $this->isHorizontal()){
 		$text = $text ."<br>";
 	  }
-      $rdb = new Radiobutton($this->NAME, $text, $wert);
+      $selected = $wert==$this->SELECTED_VALUE;
+      $rdb = new Radiobutton($this->NAME, $text, $wert, $selected, true);
+     
       $rdb->show();
     }
   }

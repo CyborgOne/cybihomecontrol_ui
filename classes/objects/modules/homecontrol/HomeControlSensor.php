@@ -2,22 +2,57 @@
 
 class HomeControlSensor extends Object{
    private $ID = 0;
+   private $X = 0;
+   private $Y = 0;
+   private $ETAGE = 0;
+   private $ZIMMER = 0;
+   
    private $SENSORNAME = "";
    private $DESCRPT = "";
    private $LASTSIGNAL = 0;
    private $LASTVALUE = 0;
    
+   private $SENSOR_ART = 1;
+   
    private $WITHHEADER = false;
    private $BGID = 0;
+
+   private $PIC = 'pics/Sensor.png';
+ 
+   private $EDIT_MODE = false;
    
+   private $CONTROL_IMAGE_WIDTH = 40;
+   private $CONTROL_IMAGE_HEIGHT = 40;
    
-   function HomeControlSensor($currConfigRow) {
+   private $ICON_VIEW_ACTIVE = false;
+    
+
+   function HomeControlSensor($currConfigRow, $editModus=false) {
       $this->ID = $currConfigRow->getNamedAttribute("id");
+      $this->NAME = $currConfigRow->getNamedAttribute("name");
+      $this->X = $currConfigRow->getNamedAttribute("x");
+      $this->Y = $currConfigRow->getNamedAttribute("y");
+      $this->ETAGE = $currConfigRow->getNamedAttribute("etage");
+      $this->ZIMMER = $currConfigRow->getNamedAttribute("zimmer");
       $this->SENSORNAME = $currConfigRow->getNamedAttribute("name");
       $this->DESCRPT = $currConfigRow->getNamedAttribute("beschreibung");
       $this->LASTSIGNAL = $currConfigRow->getNamedAttribute("lastSignal");
       $this->LASTVALUE = $currConfigRow->getNamedAttribute("lastValue");
       $this->setFonttype(new FontType());
+      $this->SENSOR_ART = $currConfigRow->getNamedAttribute("sensor_art");
+      
+      $this->PIC = $this->getSensorArtImg();
+      
+      $this->EDIT_MODE = $editModus;
+   }
+   
+   function getSensorArtImg(){
+     $ret = getDbValue("homecontrol_sensor_arten", "pic", "id=".$this->SENSOR_ART);
+     if(strlen($ret)==0){
+        $ret = 'pics/Sensor.png';
+     }
+     
+     return $ret;
    }
    
    function setWithHeader($b){
@@ -50,7 +85,82 @@ class HomeControlSensor extends Object{
    }
    
    
+    /**
+     *  Liefert das Grafik-Symbol zurück (Image),
+     *  welches zur Sensor-Art passt.
+     */
+    function getSensorArtIconSrc($tooltip=true,$width=0) {
+        $lnkImg = new Image($this->PIC);
+        $lnkImg->setWidth($width==0?$this->CONTROL_IMAGE_WIDTH:$width);
+
+        if ($tooltip) {
+            $ttt = $this->getIconTooltip();
+            $lnkImg->setToolTip($ttt);
+        }
+        
+        $lnkImgSrc = $lnkImg->getImgSrc($this->PIC);
+
+        return $lnkImgSrc;
+    }
+
+
+   function showAsIcon(){
+        if ($this->EDIT_MODE) {
+            echo "<a href=\"?editSensorControl=" . $this->ID . "\" style=\"position:absolute; left:" .
+                $this->X . "px; top:" . ($this->Y + $_SESSION['additionalLayoutHeight']) .
+                "px; width:" . $this->CONTROL_IMAGE_WIDTH . "px; height:" . $this->
+                CONTROL_IMAGE_HEIGHT . "px;\">";
+            echo $this->getSensorArtIconSrc();
+            
+            if($this->LASTVALUE!=null){
+              echo "<center>".$this->LASTVALUE."</center>";   
+            }
+            
+            echo "</a>";
+        
+        } else {
+            echo "<div style=\"position:absolute; left:" . $this->X . "px; top:" . ($this->
+                Y + $_SESSION['additionalLayoutHeight']) . "px; width:" . $this->
+                CONTROL_IMAGE_WIDTH . "px; height:" . $this->CONTROL_IMAGE_HEIGHT . "px;\">";
+            
+            echo $this->getSensorArtIconSrc();
+            
+            if($this->LASTVALUE!=null){
+              echo "<center>".$this->LASTVALUE."</center>";   
+            }
+            
+            //$this->getSwitchButtons()->show();     
+                   
+            echo "</div>";
+        }
+   }
+   
+   
+    function getIconTooltip() {
+        $ttt = "<table cellspacing='10'><tr><td>" .$this->getSensorArtIconSrc(false,80) ."</td><td><center><b>" . $this->NAME ."</b></center><hr></br>" .$this->DESCRPT ."</td></tr>"; 
+        $ttt .= "<tr><td>" .$this->LASTVALUE ."</td><td align='right'>" .$this->LASTSIGNAL ."</td></tr>";
+        $ttt .= "<tr><td colspan=2 height='1px'> </td></tr>";  
+        $ttt .= "</table>";
+
+        return $ttt;
+    }
+   
+   function setIconViewActive($active){
+     $this->ICON_VIEW_ACTIVE = $active===true;
+   }
+   
+   function isIconViewActive(){
+     return $this->ICON_VIEW_ACTIVE;
+   }
+   
+   
+   
    function show(){
+     if($this->isIconViewActive()){
+        $this->showAsIcon();
+        return;
+     }
+    
      $active = true;
      if ((time()-(24*60*60*1000)) > $this->LASTSIGNAL  ){
         $active = false;

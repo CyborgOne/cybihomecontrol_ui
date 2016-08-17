@@ -101,8 +101,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $configDb->refresh();
 
         $loginForSwitchNeedRow = getRowByName($configDb->ROWS, "loginForSwitchNeed");
-        $loginForTimelinePauseNeedRow = getRowByName($configDb->ROWS,
-            "loginForTimelinePauseNeed");
+        $loginForTimelinePauseNeedRow = getRowByName($configDb->ROWS,  "loginForTimelinePauseNeed");
         $anwesendMotionRow = getRowByName($configDb->ROWS, "anwesendMotion");
         $abwesendAlarmRow = getRowByName($configDb->ROWS, "abwesendAlarm");
         $abwesendSimulationRow = getRowByName($configDb->ROWS, "abwesendSimulation");
@@ -153,7 +152,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $chbAbwesendSimulation = new Checkbox($abwesendSimulationName,
         "Anwesenheits-Simulation aktiv?", "J", $abwesendSimulation);
 
-    $chbAbwesendMotion = new Checkbox($abwesendMotion, "Kamera Bewegungserkennung?",
+    $chbAbwesendMotion = new Checkbox($abwesendMotionName, "Kamera Bewegungserkennung?",
         "J", $abwesendMotion);
 
     $chbAnwesendMotion = new Checkbox($anwesendMotionName,
@@ -342,8 +341,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     //print_r($output);
     //echo"/".$return."/";
     //echo "Ok, Motion-Detection-Process ist gestartet\n";
-    $fMotion->add(new Hiddenfield("Motion", $return==0 ? "off" : "on"));
-    $fMotion->add(new Button("ok", "Bewegungserkennung der Kamera " . ($return==0 ? "deaktivieren" : "aktivieren")));
+    $fMotion->add(new Hiddenfield("Motion", isset($return) && $return==0 ? "off" : "on"));
+    $fMotion->add(new Button("ok", "Bewegungserkennung der Kamera " . (isset($return) && $return==0 ? "deaktivieren" : "aktivieren")));
 
     $rMotion = $tblMain->createRow();
     $rMotion->setSpawnAll(true);
@@ -398,16 +397,16 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $f->add($tblMain);
     $f->show();
 
-    if ($_REQUEST["removeCamPics"] == "dropIt") {
+    if (isset($_REQUEST["removeCamPics"]) && $_REQUEST["removeCamPics"] == "dropIt") {
         echo shell_exec("sudo rm " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) .
             "/cam_pics/* -R");
     }
 
-    if ($_REQUEST["Motion"] == "on") {
+    if (isset($_REQUEST["Motion"]) && $_REQUEST["Motion"] == "on") {
         echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/startMotionDetection.sh");
     }
 
-    if ($_REQUEST["Motion"] == "off") {
+    if (isset($_REQUEST["Motion"]) && $_REQUEST["Motion"] == "off") {
         echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/stopMotionDetection.sh");
     }
 

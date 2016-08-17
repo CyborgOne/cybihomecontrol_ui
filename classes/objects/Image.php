@@ -146,15 +146,7 @@ class Image extends Object {
       $ret = $ret ."style=\"  position:absolute; top:" .$this->YPOS ."px; left:" .$this->XPOS ."px; \" ";
     }
     
-    if(($this->COMMENTS_ACTIVE)){ 
-	  if($_SESSION['config']->CURRENTUSER->STATUS == "admin" || $_SESSION['config']->CURRENTUSER->STATUS == "user"){	   
-	    $ret = $ret .$this->getToolTipFixedTag();
-	  } else {
-	    $ret = $ret .$this->getToolTipTag();
-	  }
-	} else {
-	    $ret = $ret .$this->getToolTipTag();
-	}
+    $ret = $ret .$this->getToolTipTag();
 	     
     $ret = $ret ." >";
     

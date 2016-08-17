@@ -16,6 +16,71 @@ class HomeControlMap extends Object {
     }
 
 
+    function getInsertSensorMask($x, $y) {
+        $mask = new Table(array("", "", ""));
+        $mask->setSpacing(3);
+
+        $mask->addSpacer(0, 10);
+
+        $rTitle = $mask->createRow();
+        $rTitle->setAttribute(0, new Title("Neuen Sensor Anlegen"));
+        $rTitle->setSpawnAll(true);
+        $mask->addRow($rTitle);
+
+        $mask->addSpacer(0, 10);
+
+        $cobStatus = new Checkbox("status_sensor", "Status-Sensor?", "J", "N");
+        $cobStatus->setToolTip("Gibt an, ob der Sensor einen Status (1 oder 0) oder Werte von 0-1023 übermittelt");
+
+        $rArt = $mask->createRow();
+        $rArt->setAttribute(0, "Sensor-Art: ");
+        $rArt->setAttribute(1, new ComboBox("sensor_art", getComboArrayBySql("SELECT id, name FROM homecontrol_sensor_arten")));
+        $rArt->setAttribute(2, $cobStatus);        
+        $mask->addRow($rArt);
+        
+        $rName = $mask->createRow();
+        $rName->addSpan(1,2);
+        $rName->setAttribute(0, "Id: ");
+        $rName->setAttribute(1, new TextField("id", "", 30, 30));
+        $mask->addRow($rName);
+
+        $rName = $mask->createRow();
+        $rName->addSpan(1,2);
+        $rName->setAttribute(0, "Name: ");
+        $rName->setAttribute(1, new TextField("name", "", 30, 30));
+        $mask->addRow($rName);
+
+        $rKoord = $mask->createRow();
+        $rKoord->setAttribute(0, "Koordinaten: ");
+        $rKoord->setAttribute(1, new TextField("x", $x, 15, 4, true));
+        $rKoord->setAttribute(2, new TextField("y", $y, 15, 4, true));
+        $mask->addRow($rKoord);
+
+        $rZimmer = $mask->createRow();
+        $rZimmer->setAttribute(0, "Zimmer: ");
+        $rZimmer->setAttribute(1, $this->getZimmerCombo("zimmer"));
+        $rZimmer->addSpan(1, 2);
+        $mask->addRow($rZimmer);
+        
+        $mask->addSpacer(0, 20);
+
+        $rActions = $mask->createRow();
+        $rActions->setAttribute(0, new Button("SaveNewSensorControl", "Speichern"));
+        $rActions->setSpawnAll(true);
+        $mask->addRow($rActions);
+
+        $mask->addSpacer(0, 10);
+
+
+        $frm = new Form();
+        $frm->add(new HiddenField("InsertNewSensorControl", "do"));
+        $frm->add($mask);
+
+        return $frm;
+    }
+
+
+
     function getInsertMask($x, $y) {
         $mask = new Table(array("", "", ""));
         $mask->setSpacing(3);
@@ -123,11 +188,88 @@ class HomeControlMap extends Object {
     }
 
 
-    function getEditMask($id) {
 
+    function getEditMask($id) {
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
             array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
             "etage", "zimmer", "x", "y", "dimmer"), "", "", "", "id=" . $id);
+        $r = $dbTable->getRow(1);
+        $mask = new Table(array("", "", ""));
+        $mask->setSpacing(3);
+        $mask->addSpacer(0, 10);
+        $rTitle = $mask->createRow();
+        $rTitle->setAttribute(0, new Title("Objekt Bearbeiten"));
+        $rTitle->setSpawnAll(true);
+        $mask->addRow($rTitle);
+        $mask->addSpacer(0, 10);
+        $rZimmer = $mask->createRow();
+        $rZimmer->setAttribute(0, "Zimmer: ");
+        $rZimmer->setAttribute(1, $this->getZimmerCombo("Zimmer", $r->getNamedAttribute
+            ("zimmer")));
+        $rZimmer->addSpan(1, 2);
+        $mask->addRow($rZimmer);
+        $r4 = $mask->createRow();
+        $r4->setAttribute(0, "Geraete-Art: ");
+        $r4->setAttribute(1, new ComboBox("Art", getComboArrayBySql("SELECT id, name FROM homecontrol_art"),
+            $r->getNamedAttribute("control_art")));
+        $r4->addSpan(1, 2);
+        $mask->addRow($r4);
+        $r1 = $mask->createRow();
+        $r1->setAttribute(0, "Koordinaten: ");
+        $r1->setAttribute(1, new TextField("X", $r->getNamedAttribute("x"), 15, 4, false));
+        $r1->setAttribute(2, new TextField("Y", $r->getNamedAttribute("y"), 15, 4, false));
+        $mask->addRow($r1);
+        $r3 = $mask->createRow();
+        $r3->setAttribute(0, "Funk-ID 1/2: ");
+        $r3->setAttribute(1, $this->getFunkIdCombo("FunkId", false, $r->
+            getNamedAttribute("funk_id")));
+        $r3->setAttribute(2, $this->getFunkIdCombo("FunkId2", true, $r->
+            getNamedAttribute("funk_id2")));
+        $mask->addRow($r3);
+        $r2 = $mask->createRow();
+        $r2->setAttribute(0, "Name: ");
+        $r2->setAttribute(1, new TextField("Name", $r->getNamedAttribute("name"), 30, 20));
+        $r2->setAttribute(2, new Checkbox("dimmer", "Dimmer?", "J", $r->getNamedAttribute("dimmer")));
+        $mask->addRow($r2);
+        $mask->addSpacer(0, 20);
+        $r4 = $mask->createRow();
+        $r4->setAttribute(0, new Button("SaveEditedControl", "Speichern"));
+        $r4->setSpawnAll(true);
+        $mask->addRow($r4);
+        $mask->addSpacer(0, 10);
+        $frm = new Form();
+        $frm->add(new HiddenField("editControl", $_REQUEST['editControl']));
+        $frm->add(new HiddenField("RowId", $r->getNamedAttribute("rowid")));
+        $frm->add($mask);
+        $frmDel = new Form();
+        $frmDel->add(new Button("DelControl" . $r->getNamedAttribute("id"), "Entfernen"));
+        $frmDel->add(new HiddenField("removeId", $r->getNamedAttribute("id")));
+        $dv = new Div();
+        $dv->add($frm);
+        $dv->add($frmDel);
+        return $dv;
+    }
+
+
+    function getEditSensorMask($id) {
+
+        $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_sensor',
+                                        array(  "id", 
+                                                "name", 
+                                                "beschreibung", 
+                                                "status_sensor", 
+                                                "sensor_art", 
+                                                "etage", 
+                                                "zimmer", 
+                                                "x", 
+                                                "y",
+                                                "lastValue",
+                                                "lastSignal"
+                                                ), 
+                                        "ID, Name, Beschreibung, Status-Sensor?, Art, Etage, Zimmer, X, Y, Letzter Wert, Letztes Signal", 
+                                        "", 
+                                        "", 
+                                        "id=" . $id);
 
         $r = $dbTable->getRow(1);
 
@@ -137,7 +279,7 @@ class HomeControlMap extends Object {
         $mask->addSpacer(0, 10);
 
         $rTitle = $mask->createRow();
-        $rTitle->setAttribute(0, new Title("Objekt Bearbeiten"));
+        $rTitle->setAttribute(0, new Title("Sensor Bearbeiten"));
         $rTitle->setSpawnAll(true);
         $mask->addRow($rTitle);
 
@@ -145,49 +287,48 @@ class HomeControlMap extends Object {
 
         $rZimmer = $mask->createRow();
         $rZimmer->setAttribute(0, "Zimmer: ");
-        $rZimmer->setAttribute(1, $this->getZimmerCombo("Zimmer", $r->getNamedAttribute
-            ("zimmer")));
+        $rZimmer->setAttribute(1, $this->getZimmerCombo("zimmer", $r->getNamedAttribute("zimmer")));
         $rZimmer->addSpan(1, 2);
         $mask->addRow($rZimmer);
+        
+        $rId = $mask->createRow();
+        $rId->setAttribute(0, "Id: ");
+        $rId->setAttribute(1, new TextField("id", $r->getNamedAttribute("id"), 30, 11));
+        $rId->addSpan(1, 2);
+        $mask->addRow($rId);
 
         $r4 = $mask->createRow();
-        $r4->setAttribute(0, "Geraete-Art: ");
-        $r4->setAttribute(1, new ComboBox("Art", getComboArrayBySql("SELECT id, name FROM homecontrol_art"),
-            $r->getNamedAttribute("control_art")));
+        $r4->setAttribute(0, "Sensor-Art: ");
+        $r4->setAttribute(1, new ComboBox("sensor_art", getComboArrayBySql("SELECT id, name FROM homecontrol_sensor_arten"), $r->getNamedAttribute("sensor_art")));
         $r4->addSpan(1, 2);
         $mask->addRow($r4);
 
-        $r1 = $mask->createRow();
-        $r1->setAttribute(0, "Koordinaten: ");
-        $r1->setAttribute(1, new TextField("X", $r->getNamedAttribute("x"), 15, 4, false));
-        $r1->setAttribute(2, new TextField("Y", $r->getNamedAttribute("y"), 15, 4, false));
-        $mask->addRow($r1);
-
-        $r3 = $mask->createRow();
-        $r3->setAttribute(0, "Funk-ID 1/2: ");
-        $r3->setAttribute(1, $this->getFunkIdCombo("FunkId", false, $r->
-            getNamedAttribute("funk_id")));
-        $r3->setAttribute(2, $this->getFunkIdCombo("FunkId2", true, $r->
-            getNamedAttribute("funk_id2")));
-        $mask->addRow($r3);
 
         $r2 = $mask->createRow();
         $r2->setAttribute(0, "Name: ");
-        $r2->setAttribute(1, new TextField("Name", $r->getNamedAttribute("name"), 30, 20));
-        $r2->setAttribute(2, new Checkbox("dimmer", "Dimmer?", "J", $r->getNamedAttribute("dimmer")));
+        $r2->setAttribute(1, new TextField("name", $r->getNamedAttribute("name"), 30, 30));
+        $r2->addSpan(1, 2);
         $mask->addRow($r2);
+
+
+        $r1 = $mask->createRow();
+        $r1->setAttribute(0, "Koordinaten: ");
+        $r1->setAttribute(1, new TextField("x", $r->getNamedAttribute("x"), 15, 4, false));
+        $r1->setAttribute(2, new TextField("y", $r->getNamedAttribute("y"), 15, 4, false));
+        $mask->addRow($r1);
 
         $mask->addSpacer(0, 20);
 
         $r4 = $mask->createRow();
-        $r4->setAttribute(0, new Button("SaveEditedControl", "Speichern"));
+        $r4->setAttribute(0, new Button("SaveEditedSensor", "Speichern"));
         $r4->setSpawnAll(true);
         $mask->addRow($r4);
 
         $mask->addSpacer(0, 10);
 
         $frm = new Form();
-        $frm->add(new HiddenField("editControl", $_REQUEST['editControl']));
+        $frm->add(new HiddenField("editSensorControl", $_REQUEST['editSensorControl']));
+        $frm->add(new HiddenField("editSensor", $_REQUEST['editSensorControl']));
         $frm->add(new HiddenField("RowId", $r->getNamedAttribute("rowid")));
         $frm->add($mask);
 
@@ -248,13 +389,45 @@ class HomeControlMap extends Object {
         $frmEtage->add($cobEtage);
 
         $frmFullSwitch = $this->getZimmerFullSwitchNavigation();
+        
+        $frmSensorOrControlSwitch = $this->EDITMODE?$this->getSensorOrControlSwitch():new Text("");
 
         $row->setAttribute(0, "Etage:");
         $row->setAttribute(1, $frmEtage);
-        $row->setAttribute(2, "");
+        $row->setAttribute(2, $frmSensorOrControlSwitch);
         $row->setAttribute(3, ""); //$frmFullSwitch);
 
         return $mask;
+    }
+
+    
+    function getAnlageArt(){
+        return $_SESSION['AnlageArt'];
+    }
+    
+    
+    function checkSensorOrControlSwitch(){
+        if(isset($_REQUEST['rbgAnlageArt'])){
+            $_SESSION['AnlageArt'] = $_REQUEST['rbgAnlageArt']=="S"?"S":"C";
+        }
+        if(!isset($_SESSION['AnlageArt'])){
+            $_SESSION['AnlageArt']="C";
+        }
+    }
+    
+
+    function getSensorOrControlSwitch(){
+        $frmFullSwitch = new Form();
+        
+        $rbGroup = new RadiobuttonGroup("rbgAnlageArt");
+        $rbGroup->add("Geraet", "C", $_SESSION['AnlageArt']=="C");
+        $rbGroup->add("Sensor", "S", $_SESSION['AnlageArt']=="S");
+        $rbGroup->setHorizontal(true);
+        
+        $frmFullSwitch->add(new Text("Anlage-Art:"));
+        $frmFullSwitch->add($rbGroup);
+        
+        return $frmFullSwitch;
     }
 
 
@@ -265,19 +438,19 @@ class HomeControlMap extends Object {
             } else {
                 $_SESSION['aktEtage'] = 2;
             }
-        } else
+        } else {
             if (isset($_REQUEST['aktEtage'])) {
                 $_SESSION['aktEtage'] = $_REQUEST['aktEtage'];
             }
+        }
     }
 
 
     function handleControlEdit($dbTable) {
         // Neuen Eintrag anlegen
-        if ($_SESSION['aktEtage'] && isset($_REQUEST['Name']) && isset($_REQUEST['FunkId']) &&
-            isset($_REQUEST['Art'])) {
-            if (isset($_REQUEST['InsertNewControl']) && $_REQUEST['InsertNewControl'] ==
-                "do" && isset($_REQUEST['X']) && isset($_REQUEST['Y'])) {
+        if (isset($_SESSION['aktEtage']) && isset($_REQUEST['Name']) && isset($_REQUEST['FunkId']) && isset($_REQUEST['Art'])) {
+            
+            if (isset($_REQUEST['InsertNewControl']) && $_REQUEST['InsertNewControl'] == "do" && isset($_REQUEST['X']) && isset($_REQUEST['Y'])) {
                 $newRow = $dbTable->createRow();
                 $newRow->setNamedAttribute("name", strlen($_REQUEST['Name'])>0?$_REQUEST['Name']:"Tmp ".time());
                 $newRow->setNamedAttribute("x", $_REQUEST['X']);
@@ -314,6 +487,7 @@ class HomeControlMap extends Object {
                 $newRow->insertIntoDB();
                 return true;
             }
+
 
             // Existierenden Eintrag bearbeiten
             if (isset($_REQUEST['editControl']) && strlen($_REQUEST['editControl']) > 0) {
@@ -367,13 +541,76 @@ class HomeControlMap extends Object {
     }
 
 
+
+    function handleSensorEdit($dbTable) {
+        // Neuen Sensor anlegen
+        if (isset($_SESSION['aktEtage']) && isset($_REQUEST['name']) && isset($_REQUEST['id']) && isset($_REQUEST['sensor_art'])){
+             if(isset($_REQUEST['InsertNewSensorControl']) && $_REQUEST['InsertNewSensorControl'] == "do" && isset($_REQUEST['x']) && isset($_REQUEST['y'])) {
+                $newRow = $dbTable->createRow();
+                $newRow->setNamedAttribute("id", $_REQUEST['id']);
+                $newRow->setNamedAttribute("name", strlen($_REQUEST['name'])>0?$_REQUEST['name']:"Tmp ".time());
+                $newRow->setNamedAttribute("etage", $_SESSION['aktEtage']);
+                $newRow->setNamedAttribute("x", $_REQUEST['x']);
+                $newRow->setNamedAttribute("y", $_REQUEST['y']);
+                $newRow->setNamedAttribute("sensor_art", $_REQUEST['sensor_art']);
+                $newRow->setNamedAttribute("beschreibung", $_REQUEST['beschreibung']);
+    
+                if (isset($_REQUEST['zimmer'])) {
+                    $newRow->setNamedAttribute("zimmer", $_REQUEST['zimmer']);
+                } else {
+                    $newRow->setNamedAttribute("zimmer", null);
+                }
+    
+                $newRow->insertIntoDB();
+                return true;
+            }
+    
+            // Existierenden Eintrag bearbeiten
+            if (isset($_REQUEST['editSensor']) && strlen($_REQUEST['editSensor']) > 0) {
+                $newRow = $dbTable->getRowById($_REQUEST['editSensor']);
+                $newRow->setNamedAttribute("id", $_REQUEST['id']);
+                $newRow->setNamedAttribute("name", $_REQUEST['name']);
+                $newRow->setNamedAttribute("x", $_REQUEST['x']);
+                $newRow->setNamedAttribute("y", $_REQUEST['y']);
+                $newRow->setNamedAttribute("etage", $_SESSION['aktEtage']);
+                $newRow->setNamedAttribute("sensor_art", $_REQUEST['sensor_art']);
+    
+                if (isset($_REQUEST['zimmer'])) {
+                    $newRow->setNamedAttribute("zimmer", $_REQUEST['zimmer']);
+                } else {
+                    $newRow->setNamedAttribute("zimmer", null);
+                }
+    
+                if (isset($_REQUEST['beschreibung'])) {
+                    $newRow->setNamedAttribute("beschreibung", $_REQUEST['beschreibung']);
+                } else {
+                    $newRow->setNamedAttribute("beschreibung", null);
+                }
+                
+                $newRow->FORCE_ID_UPDATE=true;
+                $newRow->updateDB();
+    
+                return true;
+            }
+        }
+
+        if (isset($_REQUEST['removeId']) && isset($_REQUEST['DelControl' . $_REQUEST['removeId']]) &&
+            $_REQUEST['DelControl' . $_REQUEST['removeId']] == "Entfernen") {
+            $newRow = $dbTable->getRowById($_REQUEST['removeId']);
+            $newRow->deleteFromDb();
+            
+            return true;
+        }
+
+        return false;
+    }
+
+
+
     function postHandleControlEdit($dbTable) {
         // Neuen Eintrag anlegen
-        if (isset($_REQUEST['InsertNewControl']) && $_REQUEST['InsertNewControl'] ==
-            "do" && isset($_REQUEST['X']) && isset($_REQUEST['Y'])) {
-
+        if (isset($_REQUEST['InsertNewControl']) && $_REQUEST['InsertNewControl'] == "do" && isset($_REQUEST['X']) && isset($_REQUEST['Y'])) {
             if (!(isset($_REQUEST['Name']) && isset($_REQUEST['FunkId']) && isset($_REQUEST['Art']))) {
-
                 $mask = $this->getInsertMask($_REQUEST['X'], $_REQUEST['Y'] - $_SESSION['additionalLayoutHeight']);
                 $mask->show();
 
@@ -389,15 +626,47 @@ class HomeControlMap extends Object {
                 $dv->setHeight($this->CONTROL_IMAGE_HEIGHT);
                 $dv->add(new Text("Neu", 3, true, false, false, false));
                 $dv->show();
-
             }
         }
+        
+          // Neuen Sensor anlegen
+        if (isset($_REQUEST['InsertNewSensorControl']) && $_REQUEST['InsertNewSensorControl'] == "do") {
+            if (!(isset($_REQUEST['name']) && isset($_REQUEST['id']) && isset($_REQUEST['sensor_art']))) {
+                $mask = $this->getInsertSensorMask($_REQUEST['X'], $_REQUEST['Y'] - $_SESSION['additionalLayoutHeight']);
+                $mask->show();
 
+                $dv = new Div();
+                $dv->setVAlign("middle");
+                $dv->setAlign("center");
+                $dv->setBorder(3);
+                $dv->setStyle("border-color", "#ff2200");
+                $dv->setStyle("background-color", "#aacc00");
+                $dv->setXPos($_REQUEST['X']);
+                $dv->setYPos($_REQUEST['Y']);
+                $dv->setWidth($this->CONTROL_IMAGE_WIDTH);
+                $dv->setHeight($this->CONTROL_IMAGE_HEIGHT);
+                $dv->add(new Text("Neu", 3, true, false, false, false));
+                $dv->show();
+            }
+        }
+        
+
+  
         // Existierenden Eintrag bearbeiten
         if (isset($_REQUEST['editControl']) && strlen($_REQUEST['editControl']) > 0) {
             if (!(isset($_REQUEST['RowId']) && isset($_REQUEST['Name']) && isset($_REQUEST['FunkId']) &&
                 isset($_REQUEST['Art']))) {
                 $mask = $this->getEditMask($_REQUEST['editControl']);
+                $mask->show();
+            }
+        }
+
+          
+        // Existierenden Eintrag bearbeiten
+        if (isset($_REQUEST['editSensorControl']) && strlen($_REQUEST['editSensorControl']) > 0) {
+            if (!(isset($_REQUEST['RowId']) && isset($_REQUEST['name']) && isset($_REQUEST['sensor_art']) &&
+                isset($_REQUEST['sensor_art']))) {
+                $mask = $this->getEditSensorMask($_REQUEST['editSensorControl']);
                 $mask->show();
             }
         }
@@ -419,9 +688,11 @@ class HomeControlMap extends Object {
 
     }
 
-    function showMap($dbTable) {
+    function showMap($dbTable, $dbSensorTable) {
         $map = $this->getMap($dbTable);
         $map->show();
+        $sMap = $this->getSensorMap($dbSensorTable);
+        $sMap->show();
     }
 
 
@@ -448,6 +719,23 @@ class HomeControlMap extends Object {
 
             $ctrlItem = new HomeControlItem($currConfigRow, $this->EDITMODE);
             $dv->add($ctrlItem);
+        }
+
+        return $dv;
+    }
+
+
+    function getSensorMap($dbTable) {
+        $dv = new Div();
+
+        for ($i = 1; $i <= $dbTable->getRowCount(); $i++) {
+            $currConfigRow = $dbTable->getRow($i);
+
+            if($currConfigRow->getNamedAttribute("x")>0 || $currConfigRow->getNamedAttribute("y")>0){
+                $ctrlItem = new HomeControlSensor($currConfigRow, $this->EDITMODE);
+                $ctrlItem->setIconViewActive(true);
+                $dv->add($ctrlItem);
+            }
         }
 
         return $dv;
@@ -634,7 +922,7 @@ class HomeControlMap extends Object {
                 $actionLogRow->setNamedAttribute("zeit", $_REQUEST['tmstmp']);
                 $actionLogRow->insertIntoDB();
    
-                echo "Dimmer: ".$_REQUEST['dimmer'];
+                //echo "Dimmer: ".$_REQUEST['dimmer'];
                 
                 $dayInMillis = 86400000;
                 $dbActionLog->setWhere("zeit is null or zeit < " .($_REQUEST['tmstmp']-$dayInMillis) );
@@ -654,7 +942,8 @@ class HomeControlMap extends Object {
     * Zeigt die Karte mit allen Controls an.
     */
     function show() {
-
+        $this->checkSensorOrControlSwitch();
+        
         $this->handleEtage();
         
         $this->checkSwitch();
@@ -677,19 +966,49 @@ class HomeControlMap extends Object {
             array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
             "etage", "zimmer", "x", "y", "dimmer"), "", "", "", "etage=" . $_SESSION['aktEtage']);
         $dbTable->setNoInsertCols("id");
-        if ($this->handleControlEdit($dbTable)) {
-            $dbTable->refresh();
+        
+        $dbSensorTable = new DbTable(   $_SESSION['config']->DBCONNECT, 
+                                        'homecontrol_sensor',
+                                        array(  "id", 
+                                                "name", 
+                                                "beschreibung", 
+                                                "status_sensor", 
+                                                "sensor_art", 
+                                                "etage", 
+                                                "zimmer", 
+                                                "x", 
+                                                "y",
+                                                "lastValue",
+                                                "lastSignal"
+                                                ), 
+                                        "ID, Name, Beschreibung, Status-Sensor?, Art, Etage, Zimmer, X, Y, Letzter Wert, Letztes Signal", 
+                                        "", 
+                                        "etage, zimmer, name", 
+                                        "etage=" . $_SESSION['aktEtage']);
+        
+        if ($this->EDITMODE) {
+            if ($this->handleControlEdit($dbTable) || $this->handleSensorEdit($dbSensorTable)) {
+                $dbTable->refresh();
+            }
         }
-
+        
         $navBar = $this->getNavigationBar();
         $navBar->show();
 
-
         if ($this->EDITMODE) {
+
             echo "
     	  <script type=\"text/javascript\">
     		function Coords () {
-                    var Ziel = \"?InsertNewControl=do&X=\" + window.event.pageX + \"&Y=\" + window.event.pageY;
+                    var Ziel = \"?";
+
+            if($_SESSION['AnlageArt']=="S"){
+               echo "InsertNewSensorControl";
+            } else {
+               echo "InsertNewControl"; 
+            }
+                    
+            echo "=do&X=\" + window.event.pageX + \"&Y=\" + window.event.pageY;
                     window.location.href = Ziel;  
     		}
           </script>
@@ -697,7 +1016,7 @@ class HomeControlMap extends Object {
         }
 
 
-        $this->showMap($dbTable);
+        $this->showMap($dbTable, $dbSensorTable);
 
         $this->postHandleControlEdit($dbTable);
     }
