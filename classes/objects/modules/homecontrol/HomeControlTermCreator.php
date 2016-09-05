@@ -109,7 +109,11 @@ class HomeControlTermCreator extends Object {
         $condition = new ComboBoxBySql($_SESSION['config']->DBCONNECT, 
                          "SELECT value, name FROM homecontrol_condition ", 
                          "condition");
-        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor WHERE status_sensor!='J'", "sensor");
+        $sensorSql = "SELECT id, concat(name, ' (', IFNULL((SELECT name FROM homecontrol_etagen e WHERE e.id=s.etage),''), ' - ',"
+                    ." IFNULL((SELECT name FROM homecontrol_zimmer z WHERE z.id=s.zimmer),''), ')') "
+                    ." FROM homecontrol_sensor s WHERE (SELECT status_sensor_jn FROM homecontrol_sensor_arten WHERE id = s.sensor_art)!='J'";
+                         
+        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sensorSql, "sensor");
         $wertTxt   = new Textfield("value","",9,9);
         
         $t = new Table(array("","","","","",""));
@@ -172,7 +176,11 @@ class HomeControlTermCreator extends Object {
         $div = new Div ("createSensorStatus");
         
         $statusCbo = new Checkbox("status");
-        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor  WHERE status_sensor='J'", "sensor");
+        $sensorSql = "SELECT id, concat(name, ' (', IFNULL((SELECT name FROM homecontrol_etagen e WHERE e.id=s.etage),''), ' - ',"
+                    ." IFNULL((SELECT name FROM homecontrol_zimmer z WHERE z.id=s.zimmer),''), ')') "
+                    ." FROM homecontrol_sensor s WHERE (SELECT status_sensor_jn FROM homecontrol_sensor_arten WHERE id = s.sensor_art) ='J'";
+                     
+        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sensorSql, "sensor");
         
         $t = new Table(array("","","","","",""));
         $t->setAlignments(array("","","","","","right"));

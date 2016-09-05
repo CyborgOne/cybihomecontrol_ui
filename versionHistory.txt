@@ -1,4 +1,10 @@
 
+Version: 0.0.45
+---------------------
+neue Sensor-Grafiken
+Sensorauswahl: Angezeigter Name um Etage / Zimmer erweitert
+Sensor-Comboboxen bei Bedingungen repariert (Auswahl nach Status oder Werte-Sensor)
+
 Version: 0.0.44
 ---------------------
 Raumplan um Sensoren erweitert.

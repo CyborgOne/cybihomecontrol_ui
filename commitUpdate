@@ -34,6 +34,9 @@ echo "New Version: " $newVersion
 #-----------------------------------------------------------------
 git add classes
 git add includes
+git add scripts
+git add pics/*.png
+git add pics/*.jpg
 git add *.php
 git add functions
 git add *.sh

@@ -186,6 +186,7 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
     // Wenn alle Bedingungen erfüllt sind,
     // Geräte schalten. Bei reverseJN == "J"
     // negiert schalten.
+
     if($isValid || $reverseJN=="J"){    
         $sql = "SELECT id, regel_id, config_id, art_id, zimmer_id, etagen_id, funkwahl, on_off " .
             "FROM homecontrol_regeln_items WHERE regel_id=".$regelId . " " .
