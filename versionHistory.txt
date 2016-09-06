@@ -1,4 +1,7 @@
 
+Version: 0.0.48
+---------------------
+Logfiles f&uuml;r Schaltvorg&auml;nge und Sensordaten in Installationsskript integriert (anlegen und rechte setzen)
 Version: 0.0.47
 ---------------------
 SQL-Export Script fuer Installation erweitert

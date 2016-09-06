@@ -92,6 +92,10 @@ cp installFiles/crons/* /etc/cron.manual
 (crontab -l 2>/dev/null; echo "0   10 * * * /etc/cron.manual/homecontrol_motion_cleanup >> /var/log/homecontrol_motion_cleanup") | crontab -
 
 
+#Logfiles erzeugen
+echo > switch.log
+echo > signalIn.log
+
 #
 # Rechte anpassen
 #
@@ -106,3 +110,7 @@ sudo chmod 775 /var/www/cam_pics
 
 sudo chmod 755 /etc/cron.manual/* -R
 sudo chmod +x  /etc/cron.manual/* -R
+
+sudo chmod 775 /var/www/signalIn.log
+sudo chmod 775 /var/www/switch.log
+
