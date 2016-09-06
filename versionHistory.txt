@@ -1,4 +1,8 @@
 
+Version: 0.0.47
+---------------------
+SQL-Export Script fuer Installation erweitert
+
 Version: 0.0.46
 ---------------------
 - Anmeldung zum Schalten nur noch von extern (andere IP Range) notwendig

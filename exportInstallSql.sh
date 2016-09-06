@@ -80,8 +80,45 @@ mysqldump    --skip-opt --compatible=mysql40 --skip-comments --skip-set-charset 
 ########################################################
 
 # Admin User
-echo "INSERT INTO `user` (`id`, `Vorname`, `Nachname`, `Name`, `Geburtstag`, `Strasse`, `Plz`, `Ort`, `Email`, `Telefon`, `Fax`, `Handy`, `Icq`, `Aim`, `Homepage`, `User`, `Pw`, `Nation`, `Status`, `user_group_id`, `Newsletter`, `Signatur`, `Lastlogin`, `Posts`, `Beschreibung`, `pic`, `pnnotify`, `autoforumnotify`, `geaendert`, `emailJN`, `icqJN`, `telefonJN`, `Level`, `EP`, `Gold`, `Holz`, `Erz`, `Felsen`, `Wasser`, `Nahrung`, `aktiv`, `activationString`, `angelegt`, `clan_id`, `rasse_id`)             VALUES (1, 'Admini', 'Istrator', 'Admini Istrator', '0000-00-00', '-', '-', '-', '', '-', '', '-', '', NULL, '', 'admin', '21232f297a57a5a743894a0e4a801fc3', NULL, 'admin', 1, 'true', '', '2016-09-05 11:20:17', 0, NULL, 'unknown.jpg', 'Y', 'Y', '2016-09-05 09:20:17', 'N', 'N', 'N', 0, 0, 0, 0, 0, 0, 0, 0, 'J', NULL, '0000-00-00', NULL, 1);" 		>> $filename
+echo "INSERT INTO user (id, Vorname, Nachname, Name, Geburtstag, Strasse, Plz, Ort, Email, Telefon, Fax, Handy, Icq, Aim, Homepage, User, Pw, Nation, Status, user_group_id, Newsletter, Signatur, Lastlogin, Posts, Beschreibung, pic, pnnotify, autoforumnotify, geaendert, emailJN, icqJN, telefonJN, Level, EP, Gold, Holz, Erz, Felsen, Wasser, Nahrung, aktiv, activationString, angelegt, clan_id, rasse_id)             VALUES (1, 'Admini', 'Istrator', 'Admini Istrator', '0000-00-00', '-', '-', '-', '', '-', '', '-', '', NULL, '', 'admin', '21232f297a57a5a743894a0e4a801fc3', NULL, 'admin', 1, 'true', '', '2016-09-05 11:20:17', 0, NULL, 'unknown.jpg', 'Y', 'Y', '2016-09-05 09:20:17', 'N', 'N', 'N', 0, 0, 0, 0, 0, 0, 0, 0, 'J', NULL, '0000-00-00', NULL, 1);" 		>> $filename
 
 # PageConfig
+echo "INSERT INTO pageconfig VALUES" >> $filename
+echo "(1, 'pagetitel', 'Haussteuerung', 0, '2015-09-28 00:34:39', NULL)," >> $filename
+echo "(2, 'pageowner', 'SEITENINHABER', 0, '2013-01-08 02:32:07', NULL)," >> $filename
+echo "(3, 'background_pic', '', 0, '2008-09-18 15:19:00', NULL)," >> $filename
+echo "(4, 'banner_pic', 'pics/banner/13.jpg', 0, '2008-11-13 23:20:50', NULL)," >> $filename
+echo "(5, 'sessiontime', '0', 0, '0000-00-00 00:00:00', NULL)," >> $filename
+echo "(6, 'logging_aktiv', 'true', 0, '0000-00-00 00:00:00', NULL)," >> $filename
+echo "(7, 'debugoutput_aktiv', 'false', 0, '2008-10-25 11:37:21', NULL)," >> $filename
+echo "(11, 'classes_autoupdate', 'false', 0, '0000-00-00 00:00:00', NULL)," >> $filename
+echo "(12, 'pagedeveloper', 'Daniel Scheidler\r\n\r\n[fett]Email:[/fett]    support@smarthomeyourself.de\r\n', 0, '2013-01-08 02:39:44', NULL)," >> $filename
+echo "(13, 'pagedesigner', 'Daniel Scheidler', 0, '2013-01-08 02:40:04', NULL)," >> $filename
+echo "(15, 'background_repeat', 'repeat', 0, '0000-00-00 00:00:00', NULL)," >> $filename
+echo "(14, 'hauptmenu_button_image', 'pics/hauptmenu_button.jpg', 0, '0000-00-00 00:00:00', NULL)," >> $filename
+echo "(16, 'max_rowcount_for_dbtable', '25', 0, '2008-10-14 23:14:17', NULL)," >> $filename
+echo "(17, 'hauptmenu_button_image_hover', 'pics/hauptmenu_button_hover.jpg', 0, '2008-10-20 07:18:56', NULL)," >> $filename
+echo "(18, 'suchbegriffe', 'Haussteuerung, Arduino, Funk', 0, '2012-10-29 12:13:48', NULL)," >> $filename
+echo "(22, 'arduino_url', '192.168.1.12/rawCmd', 0, '2014-09-10 21:15:01', NULL)," >> $filename
+echo "(19, 'google_maps_API_key', '', 0, '2013-01-08 02:41:58', NULL)," >> $filename
+echo "(20, 'NotifyTargetMail', '', 0, '2015-08-30 23:10:27', 'Benachrichtigungs-Email')," >> $filename
+echo "(21, 'KontaktformularTargetMail', '', 0, '2013-01-08 02:33:52', NULL)," >> $filename
+echo "(23, 'timezoneadditional', '2', 0, '0000-00-00 00:00:00', NULL)," >> $filename
+echo "(24, 'loginForSwitchNeed', 'J', 0, '2016-09-06 16:56:48', 'Login zum schalten ben&ouml;tigt')," >> $filename
+echo "(26, 'abwesendSimulation', 'N', 0, '2016-08-10 20:53:28', 'Anwesenheits-Simulation')," >> $filename
+echo "(27, 'abwesendMotion', 'N', 0, '2015-08-26 22:46:27', 'Kamera-Bewegungserkennung')," >> $filename
+echo "(28, 'anwesendMotion', 'N', 0, '2016-08-10 20:50:02', 'Kamera-Bewegungserkennung')," >> $filename
+echo "(29, 'sessionDauer', '6000', 0, '2015-08-29 17:06:18', 'Zeit bis zum erneuten Login in Sekunden')," >> $filename
+echo "(30, 'motionDauer', '9', 0, '2015-09-28 00:37:09', 'Tage die Bewegungs-Bilder behalten')," >> $filename
+echo "(31, 'sensorlogDauer', '60', 0, '2015-08-28 07:03:00', 'Tage die Sensor-Log Daten behalten')," >> $filename
+echo "(32, 'abwesendAlarm', 'N', 0, '2016-08-10 20:50:09', NULL)," >> $filename
+echo "(33, 'currentMode', '2', 0, '2015-10-11 17:18:53', NULL)," >> $filename
+echo "(34, 'timelineDuration', '3', 0, '2015-09-28 00:33:59', 'Gibt an, wie viele Tage in der Timeline angezeigt werden sollen')," >> $filename
+echo "(35, 'loginForTimelinePauseNeed', 'J', 0, '2016-05-31 09:22:58', 'Gibt an, ob zum pausieren in der Timeline ein Login notwendig ist.')," >> $filename
+echo "(36, 'btSwitchActive', 'J', 0, '2016-09-02 22:37:16', 'Gibt an, ob ein BT-Switch eingesetzt wird/werden soll')," >> $filename
+echo "(37, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Wenn aktiviert, ist der Login zum schalten nur von Extern (abweichene IP Range) notwendig.');" >> $filename
 
-			
+echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=38;" >> $filename
+
+
+
