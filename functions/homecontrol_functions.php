@@ -9,58 +9,77 @@
   }
   
   function switchShortcut($arduinoUrl, $shortcutUrl){
-    $switchStatusCheck = true;
-    ob_implicit_flush(true);
-
-    // Nach Semikolon trennen, 
-    // um die einzelnen zu schaltenden Elemente zu erhalten
-    $fullConfigArray = explode(";",$shortcutUrl);    
+    $loginNeed        = getPageConfigParam($_SESSION['config']->DBCONNECT, "loginForSwitchNeed") == "J";
+    $loginExternOnly  = getPageConfigParam($_SESSION['config']->DBCONNECT, "loginExternOnly") == "J";
+    $loginOK          = ($_SESSION['config']->CURRENTUSER->STATUS == "admin" || $_SESSION['config']->CURRENTUSER->STATUS == "user");
     
-    foreach($fullConfigArray as $cfg){
-      // Nach Minus trennen um ID und STATUS zu erhalten.
-      $tmp    = explode("-",$cfg);
-
-      if(count($tmp)>=2){
-        $id     = $tmp[0];
-        $status = $tmp[1];
-        $dimmer = 0;
-        if(count($tmp)==3){
-            $dimmer = $tmp[2];
-            echo $dimmer;
-        }
-        if( strlen($id)>0 && $id>0 ){
-          $status = $status=="on"?"on":"off";
-  
-          // Wenn ausgeschaltet werden soll,
-          // negative ID übergeben
-          if($status == "off"){
-            $id = $id*(-1);
+    $clientIP = explode(".", $_SERVER['REMOTE_ADDR']);
+    $serverIP = explode(".",$_SERVER['SERVER_ADDR']);
+    
+    if (!$loginNeed || 
+          $loginOK  ||                   
+          ($loginExternOnly && ($serverIP[0]==$clientIP[0] && $serverIP[1]==$clientIP[1] && $serverIP[2]==$clientIP[2]))
+       ) {
+        $switchStatusCheck = true;
+        ob_implicit_flush(true);
+    
+        // Nach Semikolon trennen, 
+        // um die einzelnen zu schaltenden Elemente zu erhalten
+        $fullConfigArray = explode(";",$shortcutUrl);    
+        
+        foreach($fullConfigArray as $cfg){
+          // Nach Minus trennen um ID und STATUS zu erhalten.
+          $tmp    = explode("-",$cfg);
+    
+          if(count($tmp)>=2){
+            $id     = $tmp[0];
+            $status = $tmp[1];
+            $dimmer = 0;
+            if(count($tmp)==3){
+                $dimmer = $tmp[2];
+                echo $dimmer;
+            }
+            if( strlen($id)>0 && $id>0 ){
+              $status = $status=="on"?"on":"off";
+      
+              // Wenn ausgeschaltet werden soll,
+              // negative ID übergeben
+              if($status == "off"){
+                $id = $id*(-1);
+              }
+      
+    //          echo "<br>Switch-URL: " .$arduinoUrl."?schalte&" .$id;
+              $urlArr = parse_url($arduinoUrl);
+              $host = $urlArr['host'];
+    
+              $check = @fsockopen($host, 80); 
+              If ($check) { 
+                $retVal = file_get_contents( $arduinoUrl."?schalte=".$id."&dimm=".$dimmer );
+     
+                shell_exec("tail /var/www/signalIn.log -n 99 > /var/www/switch.cut");
+                shell_exec("mv /var/www/signalIn.cut /var/www/switch.log");
+                
+                $myfile = fopen("switch.log", "a+") or die("Unable to open file!");
+                fwrite($myfile, "\r\n (".date("d.M.Y H:i:s")."): " .$arduinoUrl."?schalte=".$id."&dimm=".$dimmer);
+                fclose($myfile);
+    
+                if(strpos(substr($retVal,0,50), "Warning")>0){
+                   $switchStatusCheck = false;
+                   echo "<b>Vorgang auf Grund eines unerwarteten Fehlers abgebrochen!</b><br><br>".$retVal;
+                   break;
+                } else {
+                   //echo "<br><font color='green'><b>schalte ".$id>=0?$id:($id*-1)." ".($status=="on"?"ein":"aus")."</b></font>";
+                } 
+              } else {
+                 echo "<br><font color='red'>KEINE VERBINDUNG<br><b>Vorgang abgebrochen!</b></font>";
+                 break;
+              }
+            }
+            //echo "<br>";
           }
-  
-//          echo "<br>Switch-URL: " .$arduinoUrl."?schalte&" .$id;
-          $urlArr = parse_url($arduinoUrl);
-          $host = $urlArr['host'];
-
-          $check = @fsockopen($host, 80); 
-          If ($check) { 
-            $retVal = file_get_contents( $arduinoUrl."?schalte=".$id."&dimm=".$dimmer );
- 
-            if(strpos(substr($retVal,0,50), "Warning")>0){
-               $switchStatusCheck = false;
-               echo "<b>Vorgang auf Grund eines unerwarteten Fehlers abgebrochen!</b><br><br>".$retVal;
-               break;
-            } else {
-               //echo "<br><font color='green'><b>schalte ".$id>=0?$id:($id*-1)." ".($status=="on"?"ein":"aus")."</b></font>";
-            } 
-          } else {
-             echo "<br><font color='red'>KEINE VERBINDUNG<br><b>Vorgang abgebrochen!</b></font>";
-             break;
-          }
+          ob_flush();
+          sleep(.7);
         }
-        //echo "<br>";
-      }
-      ob_flush();
-      sleep(.2);
     }
   }
 
@@ -171,15 +190,22 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
                                 "",
                                 "trigger_type=1 AND trigger_id=".$regelId);
     $isValid = true;
+    $allTriggerTermsValid = true;
     
     // Alle Regel-Bedingungen prüfen
     foreach($dbRegelTerms->ROWS as $rowRegelTerm){
+        echo "</br>";
         $validator = new HomeControlTermValidator($rowRegelTerm);
         if (!$validator->isValid()){
-            echo $rowRegelTerm->getNamedAttribute("id").": Fail<br/>";
+            echo "<br/>".$rowRegelTerm->getNamedAttribute("id").": Fail<br/>";
+            echo "TriggerJN: ".$rowRegelTerm->getNamedAttribute("trigger_jn")."</br>";
+            if($rowRegelTerm->getNamedAttribute("trigger_jn")=="J"){
+                $allTriggerTermsValid = false;
+            }
+
             $isValid = false;
         } else {
-            echo $rowRegelTerm->getNamedAttribute("id").": OK<br/>";
+            echo "</br>".$rowRegelTerm->getNamedAttribute("id").": OK<br/>";
         }
     }
 
@@ -187,7 +213,7 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
     // Geräte schalten. Bei reverseJN == "J"
     // negiert schalten.
 
-    if($isValid || $reverseJN=="J"){    
+    if($isValid || ($reverseJN=="J" && !$allTriggerTermsValid)){    
         $sql = "SELECT id, regel_id, config_id, art_id, zimmer_id, etagen_id, funkwahl, on_off " .
             "FROM homecontrol_regeln_items WHERE regel_id=".$regelId . " " .
             "ORDER BY on_off DESC, config_id DESC , zimmer_id DESC , etagen_id DESC ";
@@ -231,7 +257,7 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
         }
     }
 
-    echo $SHORTCUTS_URL_COMMAND."<br>";
+//    echo $SHORTCUTS_URL_COMMAND."<br>";
     
     return $SHORTCUTS_URL_COMMAND;
 }

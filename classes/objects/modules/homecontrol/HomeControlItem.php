@@ -200,10 +200,10 @@ class HomeControlItem extends Object {
         $divAus->setBackgroundColor("red");
         $divAus->setOverflow("hidden");
 
-        $lnkAn = new Link("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-            "?schalte=" . $this->FUNK_ID, $divAn, false, "arduinoSwitch");
-        $lnkAus = new Link("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-            "?schalte=-" . $this->FUNK_ID, $divAus, false, "arduinoSwitch");
+        $lnkAn = new Link( //"http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] ."?schalte=" . $this->FUNK_ID, $divAn, false, "arduinoSwitch"
+                         "?switchShortcut=".$this->FUNK_ID."-on", $divAn, false, "arduinoSwitch");
+        $lnkAus = new Link(//"http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] ."?schalte=-" . $this->FUNK_ID, $divAus, false, "arduinoSwitch"
+                          "?switchShortcut=".$this->FUNK_ID."-off", $divAus, false, "arduinoSwitch");
 
         $rowTtl->setAttribute(0, $lnkAn);
         $rowTtl->setAttribute(1, " ");
@@ -280,11 +280,10 @@ class HomeControlItem extends Object {
 
         $img = $this->getControlArtIcon(false);
 
-        $lnkAn = new Link("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-            "?schalte=" . $this->FUNK_ID, $divAn, false, "arduinoSwitch");
-        $lnkAus = new Link("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] .
-            "?schalte=-" . $this->FUNK_ID, $divAus, false, "arduinoSwitch");
-        
+        $lnkAn = new Link(//"http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] ."?schalte=" . $this->FUNK_ID, $divAn, false, "arduinoSwitch"
+                          "?switchShortcut=".$this->FUNK_ID."-on", $divAn, false, "arduinoSwitch");
+        $lnkAus = new Link(//"http://" . $_SESSION['config']->PUBLICVARS['arduino_url'] ."?schalte=-" . $this->FUNK_ID, $divAus, false, "arduinoSwitch"
+                          "?switchShortcut=".$this->FUNK_ID."-off", $divAus, false, "arduinoSwitch");
         $fDimmLvl="";
         if($this->isDimmable()){
             $fDimmLvl  = new Form();

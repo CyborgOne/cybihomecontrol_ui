@@ -30,16 +30,26 @@ class HomeControlTermEditor extends Object {
         $condition = new ComboBoxBySql($_SESSION['config']->DBCONNECT, 
                          "SELECT value, name FROM homecontrol_condition ", 
                          "condition");
-        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor ", "sensor");
-        $wertTxt   = new Textfield("value",$this->TERM_ROW->getNamedAttribute("value"),9,9);
-
-        $t = new Table(array("","","","",""));
+        $sensorSql = "SELECT id, concat(name, ' (', IFNULL((SELECT name FROM homecontrol_etagen e WHERE e.id=s.etage),''), ' - ',"
+                    ." IFNULL((SELECT name FROM homecontrol_zimmer z WHERE z.id=s.zimmer),''), ')') "
+                    ." FROM homecontrol_sensor s WHERE (SELECT status_sensor_jn FROM homecontrol_sensor_arten WHERE id = s.sensor_art)!='J' ORDER BY etage, zimmer, name";
+                         
+        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sensorSql, "sensor");
+        $sensorCbo->setStyle("width",200);
+   
+        $wertTxt     = new Textfield("value",$this->TERM_ROW->getNamedAttribute("value"),9,9);
+        
+        $triggerChb  = new Checkbox("trigger_jn","Trigger?","J",$this->TERM_ROW->getNamedAttribute("trigger_jn"));
+        $triggerChb->setToolTip("Gibt an, ob eine &Auml;nderung des Wertes einen Schaltvorgang aktiviert oder nur als Bedingung dient.");
+        
+        $t = new Table(array("","","","","",""));
         $r = $t->createRow();
         $r->setAttribute(0,"Wert");
         $r->setAttribute(1,$sensorCbo);
         $r->setAttribute(2,$condition);
         $r->setAttribute(3,$wertTxt);
-        $r->setAttribute(4,new Button("saveEditSensorWertTerm", " Speichern "));
+        $r->setAttribute(4,$triggerChb);
+        $r->setAttribute(5,new Button("saveEditSensorWertTerm", " Speichern "));
         $t->addRow($r);
 
         $rH = $t->createRow();
@@ -94,17 +104,26 @@ class HomeControlTermEditor extends Object {
         $div = new Div ("editSensorStatus");
         
         $statusCbo = new Checkbox("status", "", "J", $this->TERM_ROW->getNamedAttribute("status"));
-        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sensor ", "sensor", $this->TERM_ROW->getNamedAttribute("sensor_id"));
+        $sensorSql = "SELECT id, concat(name, ' (', IFNULL((SELECT name FROM homecontrol_etagen e WHERE e.id=s.etage),''), ' - ',"
+                    ." IFNULL((SELECT name FROM homecontrol_zimmer z WHERE z.id=s.zimmer),''), ')') "
+                    ." FROM homecontrol_sensor s WHERE (SELECT status_sensor_jn FROM homecontrol_sensor_arten WHERE id = s.sensor_art)='J' ORDER BY etage, zimmer, name";
+                         
+        $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sensorSql, "sensor");
+        $sensorCbo->setStyle("width",200);
         
-        $t = new Table(array("","","","","",""));
-        $t->setAlignments(array("","","","","","right"));
+        $triggerChb  = new Checkbox("trigger_jn","Trigger?","J",$this->TERM_ROW->getNamedAttribute("trigger_jn"));
+        $triggerChb->setToolTip("Gibt an, ob eine &Auml;nderung des Wertes einen Schaltvorgang aktiviert oder nur als Bedingung dient.");
+
+        $t = new Table(array("","","","","","",""));
+        $t->setAlignments(array("","","","right","","right","right"));
         $r = $t->createRow();
         $r->setAttribute(0, "Status");
         $r->setAttribute(1, $sensorCbo);
         $r->setAttribute(2, "=");
         $r->setAttribute(3, $statusCbo);
-        $r->setAttribute(4, "");
-        $r->setAttribute(5,new Button("saveEditSensorStatusTerm", " Speichern "));
+        $r->setAttribute(4, " ");
+        $r->setAttribute(5, $triggerChb);
+        $r->setAttribute(6,new Button("saveEditSensorStatusTerm", " Speichern "));
         $t->addRow($r);
         
         $rH = $t->createRow();
@@ -163,15 +182,19 @@ class HomeControlTermEditor extends Object {
                          "condition", $this->TERM_ROW->getNamedAttribute("termcondition"));
         $hourCob = new Combobox("stunde", getNumberComboArray(0,24), $this->TERM_ROW->getNamedAttribute("std"), " ");
         $minCob  = new Combobox("minute", getNumberComboArray(0,60), $this->TERM_ROW->getNamedAttribute("min"), " ");
-        
-        $t = new Table(array("","","","","",""));
+                
+        $triggerChb  = new Checkbox("trigger_jn","Trigger?","J",$this->TERM_ROW->getNamedAttribute("trigger_jn"));
+        $triggerChb->setToolTip("Gibt an, ob eine &Auml;nderung des Wertes einen Schaltvorgang aktiviert oder nur als Bedingung dient.");
+
+        $t = new Table(array("","","","","","",""));
         $r = $t->createRow();
         $r->setAttribute(0,"Uhrzeit");
         $r->setAttribute(1,$condition);
         $r->setAttribute(2,$hourCob);
         $r->setAttribute(3,":");
         $r->setAttribute(4,$minCob);
-        $r->setAttribute(5,new Button("saveEditTimeTerm", " Speichern "));
+        $r->setAttribute(5,$triggerChb);
+        $r->setAttribute(6,new Button("saveEditTimeTerm", " Speichern "));
         $t->addRow($r);
         
         $rH = $t->createRow();
@@ -233,7 +256,10 @@ class HomeControlTermEditor extends Object {
         $cboSa = new Checkbox("samstag", "", "J", $this->TERM_ROW->getNamedAttribute("samstag"));
         $cboSo = new Checkbox("sonntag", "", "J", $this->TERM_ROW->getNamedAttribute("sonntag"));
         
-        $t = new Table(array("Mo","Di","Mi","Do","Fr","Sa","So", ""));
+        $triggerChb  = new Checkbox("trigger_jn","","J",$this->TERM_ROW->getNamedAttribute("trigger_jn"));
+        $triggerChb->setToolTip("Gibt an, ob Bedingung für Reverse-Schaltungen geprüft werden soll.");
+
+        $t = new Table(array("Mo","Di","Mi","Do","Fr","Sa","So","",""));
         $t->setAlign("center");
         $r = $t->createRow();
         $r->setAttribute(0,"Montag");
@@ -243,7 +269,8 @@ class HomeControlTermEditor extends Object {
         $r->setAttribute(4,"Freitag");
         $r->setAttribute(5,"Samstag");
         $r->setAttribute(6,"Sonntag");
-        $r->setAttribute(7,"");
+        $r->setAttribute(7,"Trigger?");
+        $r->setAttribute(8,"");
         $t->addRow($r);
         
         $r = $t->createRow();
@@ -254,8 +281,8 @@ class HomeControlTermEditor extends Object {
         $r->setAttribute(4,$cboFr);
         $r->setAttribute(5,$cboSa);
         $r->setAttribute(6,$cboSo);
-
-        $r->setAttribute(7,new Button("saveEditWochentagTerm", " Speichern "));
+        $r->setAttribute(7,$triggerChb);
+        $r->setAttribute(8,new Button("saveEditWochentagTerm", " Speichern "));
         $t->addRow($r);
         
         $rH3 = $t->createRow();
@@ -330,7 +357,10 @@ class HomeControlTermEditor extends Object {
         }
         if (isset($_REQUEST['editWochentag']) && $_REQUEST['editWochentag']=="ok"){
             $this->TYPE = $this->TYPE_WOCHENTAG;
-        }                
+        }    
+        if (isset($_REQUEST['trigger_jn']) && $_REQUEST['trigger_jn']!="J"){
+            $_REQUEST['trigger_jn']="N";
+        }               
     }
     
     

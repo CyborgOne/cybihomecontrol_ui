@@ -104,7 +104,7 @@ if (isset($_SESSION['SelectedRegelToEdit']) && strlen($_SESSION['SelectedRegelTo
     $termDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_term',
         array("id", "trigger_id", "trigger_type", "config_id", "term_type", "sensor_id",
         "min", "std", "value", "termcondition", "status", "montag", "dienstag",
-        "mittwoch", "donnerstag", "freitag", "samstag", "sonntag", "order_nr", "and_or"),
+        "mittwoch", "donnerstag", "freitag", "samstag", "sonntag", "order_nr", "and_or", "lastSensorintervall", "trigger_jn"),
         "", "", "term_type,order_nr", 
         $where);
 

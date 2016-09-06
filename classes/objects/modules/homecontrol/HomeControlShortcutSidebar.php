@@ -197,11 +197,6 @@ class ShortcutSidebar extends Object {
             $this->showMobile();
             return;
         }
-        if (isset($_REQUEST['switchShortcut']) && strlen($_REQUEST['switchShortcut']) >
-            3) {
-            $this->executeShortcutURL($_REQUEST['switchShortcut']);
-        }
-
         $dvSc = new Div();
         $dvSc->setWidth("100%");
 
@@ -258,11 +253,6 @@ class ShortcutSidebar extends Object {
     }
 
     function showMobile() {
-        if (isset($_REQUEST['switchShortcut']) && strlen($_REQUEST['switchShortcut']) >
-            3) {
-            $this->executeShortcutURL($_REQUEST['switchShortcut']);
-        }
-
         $dvSc = new Div();
         $dvSc->setWidth("100%");
 
@@ -317,10 +307,6 @@ class ShortcutSidebar extends Object {
         }
 
         $dvSc->show();
-    }
-
-    function executeShortcutURL($shortcutUrl) {
-        switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'], $shortcutUrl);
     }
 
 }

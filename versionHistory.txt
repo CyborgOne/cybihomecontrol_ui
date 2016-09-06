@@ -1,4 +1,16 @@
 
+Version: 0.0.46
+---------------------
+- Anmeldung zum Schalten nur noch von extern (andere IP Range) notwendig
+- Logging von Sensordaten und Schaltvorgaengen integriert (letzten 100 Aktivitaeten)
+- Anmeldung zum Schalten auch in Mobiler Version aktiviert
+- Sensor-Auswertung fuer Automatisierungs-Bedingungen ueberarbeitet:
+- Schaltvorgaenge werden nun alle ueber den Server veranlasst und nicht mehr direkt der Funksender(Arduino) angesprochen. So sind auch Schaltvorgaenge aus externen Netzen moeglich, wenn nur der Webserver der Haussteuerung erreichbar ist.
+- Bedingungen sind nun einstellbar, ob fuer Reverse-Switch Bedingung relevant oder nicht.
+Beispiel:
+> Bedingung: Wenn Bewegungsmelder aktiv + Helligkeit < 30 dann Lampe ein.
+> Ist die Bedingung erfuellt, hat das zur Folge, dass der Licht-Wert durch das einschalten der Lampe >30 wird. Dadurch waere bisher das Licht wieder deaktiviert worden.
+> Nun kann man die Helligkeitsbedingung fuers Reversen (abschalten) deaktivieren. So darf die Bewegungs-Bedingung auf jeden Fall nicht erfuellt sein, damit dass Licht abgeschaltet wird.
 Version: 0.0.45
 ---------------------
 neue Sensor-Grafiken

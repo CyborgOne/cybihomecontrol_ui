@@ -49,7 +49,7 @@ function prepareTimerSwitchLink($hour, $min) {
                             "Id, Name, Reverse-Switch, Beschreibung",
                             "",
                             "",
-                            "id IN (SELECT trigger_id FROM homecontrol_term WHERE term_type IN (3,4) and trigger_type = 1) ");
+                            "id IN (SELECT trigger_id FROM homecontrol_term WHERE term_type IN (3,4) and trigger_type = 1  AND trigger_jn='J') ");
     
     foreach($dbRegeln->ROWS as $regelRow){
         $regelId = $regelRow->getNamedAttribute("id");

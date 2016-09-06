@@ -113,10 +113,6 @@ class Checkbox extends Object {
   }
 
 
-
-
-
-
   /**
    * zeigt die Checkboxs an
    */
@@ -124,7 +120,6 @@ class Checkbox extends Object {
     $x =  "<input id = '" .$this->NAME ."'  type='checkbox' name='".$this->NAME 
 	       ."' value = '" .$this->WERT ."' " .$this->getToolTipTag() ." ";
 	
-	 	
 	if($this->isDisabled()){
 	   $x .= " disabled ";
 	}
@@ -132,7 +127,10 @@ class Checkbox extends Object {
 		$x .= " checked ";
 	}
 	
-	
+    $x .=  $this->getStyleString();
+    
+	$x .=  $this->getToolTipTag();
+    
 	$x .= "> " .$this->TEXT." ";
 	
 	$text = new Text($x);

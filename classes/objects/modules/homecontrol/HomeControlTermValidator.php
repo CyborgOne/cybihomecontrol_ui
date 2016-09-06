@@ -20,12 +20,15 @@ class HomeControlTermValidator {
     
     function checkSensorStatus(){
         $sensorVal         = getDbValue("homecontrol_sensor", "lastValue", "id=".$this->TERM_ROW->getNamedAttribute("sensor_id"));         
+        $lastSensorSignal  = getDbValue("homecontrol_sensor", "lastSignal", "id=".$this->TERM_ROW->getNamedAttribute("sensor_id"));
         $checkSensorStatus = $this->TERM_ROW->getNamedAttribute("status");
-         
-        if($checkSensorStatus=="J"){
-            return $sensorVal>0;
+        
+        if($checkSensorStatus=="J" && $lastSensorSignal+10 > time() && $sensorVal>0){
+            echo "Sensor AN";
+            return true;
         } else {
-            return $sensorVal<=0;            
+            echo "Sensor AUS";
+            return false;            
         }
     }
 

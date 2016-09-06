@@ -42,7 +42,11 @@ class HomeControlTerm extends Object {
     private function getValue() {
         return $this->TERM_ROW->getNamedAttribute('value');
     }
-
+    
+    private function isTrigger() {
+        return $this->TERM_ROW->getNamedAttribute('trigger_jn')=="J";
+    }
+    
     private function getSensorId() {
         return $this->TERM_ROW->getNamedAttribute('sensor_id');
     }

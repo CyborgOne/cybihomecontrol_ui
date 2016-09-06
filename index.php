@@ -104,6 +104,10 @@
 
    include("header_index.php");
 
+   if (isset($_REQUEST['switchShortcut']) && strlen($_REQUEST['switchShortcut']) > 3) {
+         switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'], $_REQUEST['switchShortcut']);
+   }
+
    include("layout.php");
 
    include("foot.php");

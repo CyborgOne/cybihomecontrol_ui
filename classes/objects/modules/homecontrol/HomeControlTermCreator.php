@@ -111,10 +111,15 @@ class HomeControlTermCreator extends Object {
                          "condition");
         $sensorSql = "SELECT id, concat(name, ' (', IFNULL((SELECT name FROM homecontrol_etagen e WHERE e.id=s.etage),''), ' - ',"
                     ." IFNULL((SELECT name FROM homecontrol_zimmer z WHERE z.id=s.zimmer),''), ')') "
-                    ." FROM homecontrol_sensor s WHERE (SELECT status_sensor_jn FROM homecontrol_sensor_arten WHERE id = s.sensor_art)!='J'";
+                    ." FROM homecontrol_sensor s WHERE (SELECT status_sensor_jn FROM homecontrol_sensor_arten WHERE id = s.sensor_art)!='J' ORDER BY etage, zimmer, name";
                          
         $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sensorSql, "sensor");
+        $sensorCbo->setStyle("width",200);
+   
         $wertTxt   = new Textfield("value","",9,9);
+        
+        $triggerChb  = new Checkbox("trigger_jn","Trigger?","J");
+        $triggerChb->setToolTip("Gibt an, ob eine &Auml;nderung des Wertes einen Schaltvorgang aktiviert oder nur als Bedingung dient.");
         
         $t = new Table(array("","","","","",""));
         $r = $t->createRow();
@@ -123,7 +128,7 @@ class HomeControlTermCreator extends Object {
         $r->setAttribute(2,$condition);
         $r->setAttribute(3,$wertTxt);
         $r->setAttribute(4,new Button("saveCreateSensorWertTerm", "Bedingung hinzufuegen"));
-        $r->setAttribute(5,"");
+        $r->setAttribute(5,$triggerChb);
         $t->addRow($r);
         
         $rH = $t->createRow();
@@ -154,9 +159,9 @@ class HomeControlTermCreator extends Object {
             $orderNr = 1;
             $andOr    = "and";            
             
-            $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, value, termcondition, sensor_id, order_nr, and_or) " 
+            $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, value, termcondition, sensor_id, order_nr, and_or, trigger_jn) " 
                         ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 1" 
-                        .", '" .$_REQUEST['value'] ."', '" .$_REQUEST['condition'] ."', " .$_REQUEST['sensor'] .", " .$orderNr .", '" .$andOr ."' )";
+                        .", '" .$_REQUEST['value'] ."', '" .$_REQUEST['condition'] ."', " .$_REQUEST['sensor'] .", " .$orderNr .", '" .$andOr ."' , '" .$_REQUEST['trigger_jn'] ."' )";
             if($insert){              
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
               $this->TYPE = null;
@@ -178,10 +183,14 @@ class HomeControlTermCreator extends Object {
         $statusCbo = new Checkbox("status");
         $sensorSql = "SELECT id, concat(name, ' (', IFNULL((SELECT name FROM homecontrol_etagen e WHERE e.id=s.etage),''), ' - ',"
                     ." IFNULL((SELECT name FROM homecontrol_zimmer z WHERE z.id=s.zimmer),''), ')') "
-                    ." FROM homecontrol_sensor s WHERE (SELECT status_sensor_jn FROM homecontrol_sensor_arten WHERE id = s.sensor_art) ='J'";
+                    ." FROM homecontrol_sensor s WHERE (SELECT status_sensor_jn FROM homecontrol_sensor_arten WHERE id = s.sensor_art) ='J' ORDER BY etage, zimmer, name";
                      
         $sensorCbo = new ComboBoxBySql($_SESSION['config']->DBCONNECT, $sensorSql, "sensor");
-        
+        $sensorCbo->setStyle("width",200);
+
+        $triggerChb  = new Checkbox("trigger_jn","Trigger?","J");
+        $triggerChb->setToolTip("Gibt an, ob eine &Auml;nderung des Wertes einen Schaltvorgang aktiviert oder nur als Bedingung dient.");
+           
         $t = new Table(array("","","","","",""));
         $t->setAlignments(array("","","","","","right"));
         $r = $t->createRow();
@@ -189,7 +198,7 @@ class HomeControlTermCreator extends Object {
         $r->setAttribute(1, $sensorCbo);
         $r->setAttribute(2, "=");
         $r->setAttribute(3, $statusCbo);
-        $r->setAttribute(4, "");
+        $r->setAttribute(4, $triggerChb);
         $r->setAttribute(5, new Button("saveCreateSensorStatusTerm", "Bedingung hinzufuegen"));
         $t->addRow($r);
         
@@ -222,9 +231,9 @@ class HomeControlTermCreator extends Object {
             $orderNr = 1;
             $andOr    = "and";            
             
-            $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, status, sensor_id, order_nr, and_or) " 
+            $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, status, sensor_id, order_nr, and_or, trigger_jn) " 
                         ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 2, '" 
-                        .$_REQUEST['status'] ."', " .$_REQUEST['sensor'] .", " .$orderNr .", '" .$andOr ."' )";
+                        .$_REQUEST['status'] ."', " .$_REQUEST['sensor'] .", " .$orderNr .", '" .$andOr ."', '" .$_REQUEST['trigger_jn'] ."' )";
             if($insert){                        
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
               $this->TYPE = null;
@@ -250,6 +259,9 @@ class HomeControlTermCreator extends Object {
                          "condition");
         $hourCob = new Combobox("stunde", getNumberComboArray(0,24), 12, " ");
         $minCob  = new Combobox("minute", getNumberComboArray(0,60), 30, " ");
+
+        $triggerChb  = new Checkbox("trigger_jn","Trigger?","J");
+        $triggerChb->setToolTip("Gibt an, ob eine &Auml;nderung des Wertes einen Schaltvorgang aktiviert oder nur als Bedingung dient.");
         
         $t = new Table(array("","","","","","",""));
         $r = $t->createRow();
@@ -258,8 +270,8 @@ class HomeControlTermCreator extends Object {
         $r->setAttribute(2,$hourCob);
         $r->setAttribute(3,":");
         $r->setAttribute(4,$minCob);
-        $r->setAttribute(5,new Button("saveCreateTimeTerm", "Zeit-Bedingung hinzufuegen"));
-        $r->setAttribute(6,"");
+        $r->setAttribute(5,$triggerChb);
+        $r->setAttribute(6,new Button("saveCreateTimeTerm", "Zeit-Bedingung hinzufuegen"));
         $t->addRow($r);
         
         $rH = $t->createRow();
@@ -293,9 +305,9 @@ echo "saveCreateTimeTerm<br>";
             $orderNr = 1;
             $andOr    = "and";            
             
-            $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, min, std, termcondition, order_nr, and_or) " 
+            $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, min, std, termcondition, order_nr, and_or, trigger_jn) " 
                         ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 3, " 
-                        .$_REQUEST['minute'] .", " .$_REQUEST['stunde'] .", '" .$_REQUEST['condition'] ."', " .$orderNr .", '" .$andOr ."' )";
+                        .$_REQUEST['minute'] .", " .$_REQUEST['stunde'] .", '" .$_REQUEST['condition'] ."', " .$orderNr .", '" .$andOr ."', '" .$_REQUEST['trigger_jn'] ."' )";
             if($insert){   
                 echo $sqlInsert;
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
@@ -321,8 +333,11 @@ echo "saveCreateTimeTerm<br>";
         $cboFr = new Checkbox("freitag");
         $cboSa = new Checkbox("samstag");
         $cboSo = new Checkbox("sonntag");
+
+        $triggerChb  = new Checkbox("trigger_jn","","J");
+        $triggerChb->setToolTip("Gibt an, ob eine &Auml;nderung des Wertes einen Schaltvorgang aktiviert oder nur als Bedingung dient.");
         
-        $t = new Table(array("Mo","Di","Mi","Do","Fr","Sa","So", ""));
+        $t = new Table(array("Mo","Di","Mi","Do","Fr","Sa","So", "", ""));
         $t->setAlign("center");
         $r = $t->createRow();
         $r->setAttribute(0,"Montag");
@@ -332,6 +347,7 @@ echo "saveCreateTimeTerm<br>";
         $r->setAttribute(4,"Freitag");
         $r->setAttribute(5,"Samstag");
         $r->setAttribute(6,"Sonntag");
+        $r->setAttribute(7,"Trigger?");
         $t->addRow($r);
         
         $r = $t->createRow();
@@ -342,7 +358,8 @@ echo "saveCreateTimeTerm<br>";
         $r->setAttribute(4,$cboFr);
         $r->setAttribute(5,$cboSa);
         $r->setAttribute(6,$cboSo);
-        $r->setAttribute(7,new Button("saveCreateWochentagTerm", "Bedingung hinzufuegen"));
+        $r->setAttribute(7,$triggerChb);
+        $r->setAttribute(8,new Button("saveCreateWochentagTerm", "Bedingung hinzufuegen"));
         $t->addRow($r);
         
         $rH = $t->createRow();
@@ -380,10 +397,10 @@ echo "saveCreateTimeTerm<br>";
             $orderNr = 1;
             $andOr    = "and";            
             
-            $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, montag, dienstag, mittwoch, donnerstag, freitag, samstag, sonntag, order_nr, and_or) " 
+            $sqlInsert = "INSERT INTO homecontrol_term (trigger_id, trigger_subid, trigger_type, term_type, montag, dienstag, mittwoch, donnerstag, freitag, samstag, sonntag, order_nr, and_or, trigger_jn) " 
                         ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 4"
                         .", '".$_REQUEST['montag'] ."', '" .$_REQUEST['dienstag'] ."', '" .$_REQUEST['mittwoch'] ."', '" .$_REQUEST['donnerstag'] 
-                        ."', '" .$_REQUEST['freitag']  ."', '" .$_REQUEST['samstag'] ."', '" .$_REQUEST['sonntag'] ."', " .$orderNr .", '" .$andOr ."' )";
+                        ."', '" .$_REQUEST['freitag']  ."', '" .$_REQUEST['samstag'] ."', '" .$_REQUEST['sonntag'] ."', " .$orderNr .", '" .$andOr ."', '" .$_REQUEST['trigger_jn'] ."')";
             if($insert){                        
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
               $this->TYPE = null;

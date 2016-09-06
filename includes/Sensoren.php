@@ -8,7 +8,7 @@ $sensorDBTbl = new DbTable( $_SESSION['config']->DBCONNECT,
                             array("*"),
                             "",
                             "",
-                            "name",
+                            "etage, zimmer, name",
                             "");
 $cnt=0;           
 $bgCtr = 1;          
