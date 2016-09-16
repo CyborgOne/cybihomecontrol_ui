@@ -1,4 +1,13 @@
 
+Version: 0.0.49
+---------------------
+Der Server unterstützt nun mehrere Sender. Das Heist bei jedem Gerät kann individuell angegeben werden, an welchen Sender das Schalt-Signal gesendet werden soll.
+Sender können beliebig viele in den Basis-Einstellungen definiert werden.
+Aufrufe auf "http:/localhost..." unterbunden und durch direkte Behandlung ersetzt.
+DbTable bzgl Checkboxen beim anlegen von Datensätzen korrigiert.
+Zeitgesteuerte Ereignisse repariert.
+Logging von Sensordaten, Zeitgesteuerten Ereignissen und Schaltvorgängen integriert so wie eine Anzeige der Logdateien erstellt.
+
 Version: 0.0.48
 ---------------------
 Logfiles f&uuml;r Schaltvorg&auml;nge und Sensordaten in Installationsskript integriert (anlegen und rechte setzen)

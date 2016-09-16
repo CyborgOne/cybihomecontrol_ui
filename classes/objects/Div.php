@@ -6,6 +6,8 @@
 Class Div extends Object {
   public $OBJECTS;  /*Array of Objects*/
   private $OVERFLOW; 
+  private $OVERFLOWX; 
+  private $OVERFLOWY; 
   private $ID; 
 
  
@@ -23,10 +25,23 @@ Class Div extends Object {
     
     $this->ID = $id;
 	
-    if( isset($this->OVERFLOW) && strlen($this->OVERFLOW) > 0){
-      $this->setStyle("overflow", $this->OVERFLOW);
+    if( (isset($this->OVERFLOWX) && strlen($this->OVERFLOWX)>0) || (isset($this->OVERFLOWY) && strlen($this->OVERFLOWY)>0) ) {
+      if(isset($this->OVERFLOWX) && strlen($this->OVERFLOWX)>0){
+        $this->setStyle("overflow-x", $this->OVERFLOWX);
+      } else {
+        $this->setStyle("overflow-x", "auto");
+      } 
+      if(isset($this->OVERFLOWY) && strlen($this->OVERFLOWY)>0){
+        $this->setStyle("overflow-y", $this->OVERFLOWY);
+      } else {
+        $this->setStyle("overflow-y", "auto");
+      } 
+    } else {
+        if( isset($this->OVERFLOW) && strlen($this->OVERFLOW) > 0){
+          $this->setStyle("overflow", $this->OVERFLOW);
+        }
     }
-
+    
     if( isset($this->WIDTH) && $this->WIDTH > 0){
       $this->setStyle("width", $this->WIDTH);
     }
@@ -88,6 +103,9 @@ Class Div extends Object {
   	}
   }
 
+  /**
+   * @deprecated: setOverflowX() und setOverflowY() verwenden
+   */
   function setOverflow($w){
     if($w == "hidden") {
       $this->setStyle("overflow", "hidden"); 
@@ -101,6 +119,33 @@ Class Div extends Object {
 	}
   }
 
+  function setOverflowX($w){
+    if($w == "hidden") {
+      $this->setStyle("overflow-x", "hidden"); 
+
+	} else if($w == "visible") {
+         $this->setStyle("overflow-x", "visible");   
+   	} else if ($w == "scroll") { 
+         $this->setStyle("overflow-x",  "scroll");
+	} else { 
+         $this->setStyle("overflow-x", "auto");
+	}
+  }
+
+  function setOverflowY($w){
+    if($w == "hidden") {
+      $this->setStyle("overflow-y", "hidden"); 
+
+	} else if($w == "visible") {
+         $this->setStyle("overflow-y", "visible");   
+   	} else if ($w == "scroll") { 
+         $this->setStyle("overflow-y",  "scroll");
+	} else { 
+         $this->setStyle("overflow-y", "auto");
+	}
+  }
+
+  
 
   function setAlign($w){
     if($w == "center" || $w == "right") {

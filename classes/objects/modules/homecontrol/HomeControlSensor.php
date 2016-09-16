@@ -137,8 +137,18 @@ class HomeControlSensor extends Object{
    
    
     function getIconTooltip() {
-        $ttt = "<table cellspacing='10'><tr><td>" .$this->getSensorArtIconSrc(false,80) ."</td><td><center><b>" . $this->NAME ."</b></center><hr></br>" .$this->DESCRPT ."</td></tr>"; 
-        $ttt .= "<tr><td>" .$this->LASTVALUE ."</td><td align='right'>" .$this->LASTSIGNAL ."</td></tr>";
+        $ttt = "<table cellspacing='10'><tr><td>" .$this->getSensorArtIconSrc(false,80) ."</td><td><center><b>" . $this->NAME ."</b></center><hr></br>";
+        
+        if(strlen($this->ZIMMER)>0 ){
+            $ttt .= "<b>Zimmer:</b> ".getDbValue("homecontrol_zimmer", "name", "id=".$this->ZIMMER)."</br></br>";
+        }
+        
+        if(strlen($this->ETAGE)>0 ){
+            $ttt .= "<b>Etage:</b> ".getDbValue("homecontrol_etagen", "name", "id=".$this->ETAGE)."</br>";
+        }
+        
+        $ttt .= "</br>" .$this->DESCRPT ."</td></tr>"; 
+        $ttt .= "<tr><td>Zu letzt gemeldeter Wert: " .$this->LASTVALUE ."</td><td align='right'>gemeldet am: " .date("d.m.Y h:i:s", $this->LASTSIGNAL) ."</td></tr>";
         $ttt .= "<tr><td colspan=2 height='1px'> </td></tr>";  
         $ttt .= "</table>";
 

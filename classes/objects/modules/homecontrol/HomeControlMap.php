@@ -10,10 +10,14 @@ class HomeControlMap extends Object {
     public $LAYOUTART_TABLET = "TABLET";
     public $LAYOUTART_MOBILE = "MOBILE";
 
+
+
     function HomeControlMap($editModus = false, $layoutArt = "DESKTOP") {
         $this->EDITMODE = $editModus;
         $this->LAYOUT_ART = $layoutArt;
     }
+
+
 
 
     function getInsertSensorMask($x, $y) {
@@ -29,13 +33,10 @@ class HomeControlMap extends Object {
 
         $mask->addSpacer(0, 10);
 
-        $cobStatus = new Checkbox("status_sensor", "Status-Sensor?", "J", "N");
-        $cobStatus->setToolTip("Gibt an, ob der Sensor einen Status (1 oder 0) oder Werte von 0-1023 übermittelt");
-
         $rArt = $mask->createRow();
         $rArt->setAttribute(0, "Sensor-Art: ");
         $rArt->setAttribute(1, new ComboBox("sensor_art", getComboArrayBySql("SELECT id, name FROM homecontrol_sensor_arten")));
-        $rArt->setAttribute(2, $cobStatus);        
+        $rArt->setAttribute(2, "");        
         $mask->addRow($rArt);
         
         $rName = $mask->createRow();
@@ -52,8 +53,8 @@ class HomeControlMap extends Object {
 
         $rKoord = $mask->createRow();
         $rKoord->setAttribute(0, "Koordinaten: ");
-        $rKoord->setAttribute(1, new TextField("x", $x, 15, 4, true));
-        $rKoord->setAttribute(2, new TextField("y", $y, 15, 4, true));
+        $rKoord->setAttribute(1, new TextField("x", $x, 15, 4, false));
+        $rKoord->setAttribute(2, new TextField("y", $y, 15, 4, false));
         $mask->addRow($rKoord);
 
         $rZimmer = $mask->createRow();
@@ -108,8 +109,8 @@ class HomeControlMap extends Object {
 
         $rKoord = $mask->createRow();
         $rKoord->setAttribute(0, "Koordinaten: ");
-        $rKoord->setAttribute(1, new TextField("X", $x, 15, 4, true));
-        $rKoord->setAttribute(2, new TextField("Y", $y, 15, 4, true));
+        $rKoord->setAttribute(1, new TextField("X", $x, 15, 4, false));
+        $rKoord->setAttribute(2, new TextField("Y", $y, 15, 4, false));
         $mask->addRow($rKoord);
 
         $rFunk = $mask->createRow();
@@ -121,7 +122,9 @@ class HomeControlMap extends Object {
         $rName = $mask->createRow();
         $rName->setAttribute(0, "Name: ");
         $rName->setAttribute(1, new TextField("Name", "", 30, 30));
-        $rName->setAttribute(2, new Checkbox("dimmer", "Dimmer?", "J", "N"));
+        $cboDimm = new Checkbox("dimmer", "Dimmer?", "J", "N");
+        $cboDimm->setToolTip("Nur m&ouml;glich f&uuml;r BT-Switch Ger&auml;te (FunkID-Bereich: 307-386)");
+        $rName->setAttribute(2, $cboDimm);
         $mask->addRow($rName);
 
         $mask->addSpacer(0, 20);
@@ -194,59 +197,106 @@ class HomeControlMap extends Object {
             array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
             "etage", "zimmer", "x", "y", "dimmer"), "", "", "", "id=" . $id);
         $r = $dbTable->getRow(1);
-        $mask = new Table(array("", "", ""));
+
+        $txfName = new TextField("Name", $r->getNamedAttribute("name"), 30, 20);
+        $txfName->setToolTip("Angezeigter Name des Ger&auml;tes.");
+        
+        $txfX = new TextField("X", $r->getNamedAttribute("x"), 15, 4, false);
+        $txfX->setToolTip("X-Koordinate an der das Ger&auml;t im Raumplan angezeigt wird.");
+        
+        $txfY = new TextField("Y", $r->getNamedAttribute("y"), 15, 4, false);
+        $txfY->setToolTip("Y-Koordinate an der das Ger&auml;t im Raumplan angezeigt wird.");
+        
+        $cboDimm = new Checkbox("dimmer", "", "J", "N");
+        $cboDimm->setToolTip("Gibt an, ob es sich um einen dimmbaren Funkempfänger handelt. Nur m&ouml;glich f&uuml;r BT-Switch Ger&auml;te (FunkID-Bereich: 307-386)");
+        
+        $cobSender = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sender", "sender_id");
+        $cobSender->setToolTip("Gibt an welcher Sender zum Schalten des Ger&auml;tes verwendet wird.");
+        
+        $cobSignalId = $this->getFunkIdCombo("FunkId", false, $r->getNamedAttribute("funk_id"));
+        $cobSignalId->setToolTip("Die ID die an den Sender geschickt wird (z.B. Funk-ID oder Relais. Je nach dem was f&uuml;r ein Sender gew&auml;hlt ist");
+        
+        $cobZimmer = $this->getZimmerCombo("Zimmer", $r->getNamedAttribute("zimmer"));
+        $cobZimmer->setToolTip("Das Zimmer in dem sich das Ger&auml;t befindet.");
+        
+        $cobArt = new ComboBox("Art", getComboArrayBySql("SELECT id, name FROM homecontrol_art"), $r->getNamedAttribute("control_art"));
+        $cobArt->setToolTip("Bestimmt, welches Icon und Buttons f&uuml;r das Ger&auml;t angezeigt werden. ");
+        
+        $mask = new Table(array("", "", "", ""));
         $mask->setSpacing(3);
         $mask->addSpacer(0, 10);
+        
         $rTitle = $mask->createRow();
         $rTitle->setAttribute(0, new Title("Objekt Bearbeiten"));
         $rTitle->setSpawnAll(true);
         $mask->addRow($rTitle);
+        
         $mask->addSpacer(0, 10);
-        $rZimmer = $mask->createRow();
-        $rZimmer->setAttribute(0, "Zimmer: ");
-        $rZimmer->setAttribute(1, $this->getZimmerCombo("Zimmer", $r->getNamedAttribute
-            ("zimmer")));
-        $rZimmer->addSpan(1, 2);
-        $mask->addRow($rZimmer);
-        $r4 = $mask->createRow();
-        $r4->setAttribute(0, "Geraete-Art: ");
-        $r4->setAttribute(1, new ComboBox("Art", getComboArrayBySql("SELECT id, name FROM homecontrol_art"),
-            $r->getNamedAttribute("control_art")));
-        $r4->addSpan(1, 2);
-        $mask->addRow($r4);
-        $r1 = $mask->createRow();
-        $r1->setAttribute(0, "Koordinaten: ");
-        $r1->setAttribute(1, new TextField("X", $r->getNamedAttribute("x"), 15, 4, false));
-        $r1->setAttribute(2, new TextField("Y", $r->getNamedAttribute("y"), 15, 4, false));
-        $mask->addRow($r1);
-        $r3 = $mask->createRow();
-        $r3->setAttribute(0, "Funk-ID 1/2: ");
-        $r3->setAttribute(1, $this->getFunkIdCombo("FunkId", false, $r->
-            getNamedAttribute("funk_id")));
-        $r3->setAttribute(2, $this->getFunkIdCombo("FunkId2", true, $r->
-            getNamedAttribute("funk_id2")));
-        $mask->addRow($r3);
+        
         $r2 = $mask->createRow();
         $r2->setAttribute(0, "Name: ");
-        $r2->setAttribute(1, new TextField("Name", $r->getNamedAttribute("name"), 30, 20));
-        $r2->setAttribute(2, new Checkbox("dimmer", "Dimmer?", "J", $r->getNamedAttribute("dimmer")));
+        $r2->setAttribute(1, $txfName);
+        $r2->addSpan(2, 3);
         $mask->addRow($r2);
+
+        $rZimmer = $mask->createRow();
+        $rZimmer->setAttribute(0, "Zimmer: ");
+        $rZimmer->setAttribute(1, $cobZimmer);
+        $rZimmer->addSpan(1, 3);
+        $mask->addRow($rZimmer);
+
+        $mask->addSpacer(0,2);
+
+        $r1 = $mask->createRow();
+        $r1->setAttribute(0, "Koordinate X: ");
+        $r1->setAttribute(1, $txfX);
+        $r1->setAttribute(2, "Koordinate Y");
+        $r1->setAttribute(3, $txfY);
+        $mask->addRow($r1);
+
+        $mask->addSpacer(0,2);
+        
+        $r4 = $mask->createRow();
+        $r4->setAttribute(0, "Geraete-Art: ");
+        $r4->setAttribute(1, $cobArt);
+        $r4->setAttribute(2, "Dimmer?: ");
+        $r4->setAttribute(3, $cboDimm );
+        $mask->addRow($r4);
+
+        $mask->addSpacer(0,5);
+        
+        $r3 = $mask->createRow();
+        $r3->setAttribute(0, "Sender: ");
+        $r3->setAttribute(1, $cobSender);
+        $r3->setAttribute(2, "Signal-ID 1: ");
+        $r3->setAttribute(3, $cobSignalId);
+        //$r3->setAttribute(2, "Signal-ID 2: ");
+        //$r3->setAttribute(3, $this->getFunkIdCombo("FunkId2", true, $r->getNamedAttribute("funk_id2")));
+        $mask->addRow($r3);
+        
+        
         $mask->addSpacer(0, 20);
+        
         $r4 = $mask->createRow();
         $r4->setAttribute(0, new Button("SaveEditedControl", "Speichern"));
         $r4->setSpawnAll(true);
         $mask->addRow($r4);
+        
         $mask->addSpacer(0, 10);
+        
         $frm = new Form();
         $frm->add(new HiddenField("editControl", $_REQUEST['editControl']));
         $frm->add(new HiddenField("RowId", $r->getNamedAttribute("rowid")));
         $frm->add($mask);
+        
         $frmDel = new Form();
         $frmDel->add(new Button("DelControl" . $r->getNamedAttribute("id"), "Entfernen"));
         $frmDel->add(new HiddenField("removeId", $r->getNamedAttribute("id")));
+        
         $dv = new Div();
         $dv->add($frm);
         $dv->add($frmDel);
+        
         return $dv;
     }
 
@@ -285,24 +335,17 @@ class HomeControlMap extends Object {
 
         $mask->addSpacer(0, 10);
 
-        $rZimmer = $mask->createRow();
-        $rZimmer->setAttribute(0, "Zimmer: ");
-        $rZimmer->setAttribute(1, $this->getZimmerCombo("zimmer", $r->getNamedAttribute("zimmer")));
-        $rZimmer->addSpan(1, 2);
-        $mask->addRow($rZimmer);
-        
-        $rId = $mask->createRow();
-        $rId->setAttribute(0, "Id: ");
-        $rId->setAttribute(1, new TextField("id", $r->getNamedAttribute("id"), 30, 11));
-        $rId->addSpan(1, 2);
-        $mask->addRow($rId);
-
         $r4 = $mask->createRow();
         $r4->setAttribute(0, "Sensor-Art: ");
         $r4->setAttribute(1, new ComboBox("sensor_art", getComboArrayBySql("SELECT id, name FROM homecontrol_sensor_arten"), $r->getNamedAttribute("sensor_art")));
         $r4->addSpan(1, 2);
         $mask->addRow($r4);
 
+        $rId = $mask->createRow();
+        $rId->setAttribute(0, "Id: ");
+        $rId->setAttribute(1, new TextField("id", $r->getNamedAttribute("id"), 30, 11));
+        $rId->addSpan(1, 2);
+        $mask->addRow($rId);
 
         $r2 = $mask->createRow();
         $r2->setAttribute(0, "Name: ");
@@ -310,13 +353,18 @@ class HomeControlMap extends Object {
         $r2->addSpan(1, 2);
         $mask->addRow($r2);
 
-
         $r1 = $mask->createRow();
         $r1->setAttribute(0, "Koordinaten: ");
         $r1->setAttribute(1, new TextField("x", $r->getNamedAttribute("x"), 15, 4, false));
         $r1->setAttribute(2, new TextField("y", $r->getNamedAttribute("y"), 15, 4, false));
         $mask->addRow($r1);
 
+        $rZimmer = $mask->createRow();
+        $rZimmer->setAttribute(0, "Zimmer: ");
+        $rZimmer->setAttribute(1, $this->getZimmerCombo("zimmer", $r->getNamedAttribute("zimmer")));
+        $rZimmer->addSpan(1, 2);
+        $mask->addRow($rZimmer);
+        
         $mask->addSpacer(0, 20);
 
         $r4 = $mask->createRow();
@@ -335,7 +383,7 @@ class HomeControlMap extends Object {
 
         $frmDel = new Form();
         $frmDel->add(new Button("DelControl" . $r->getNamedAttribute("id"), "Entfernen"));
-        $frmDel->add(new HiddenField("removeId", $r->getNamedAttribute("id")));
+        $frmDel->add(new HiddenField("removeSensorId", $r->getNamedAttribute("id")));
 
         $dv = new Div();
         $dv->add($frm);
@@ -594,9 +642,9 @@ class HomeControlMap extends Object {
             }
         }
 
-        if (isset($_REQUEST['removeId']) && isset($_REQUEST['DelControl' . $_REQUEST['removeId']]) &&
-            $_REQUEST['DelControl' . $_REQUEST['removeId']] == "Entfernen") {
-            $newRow = $dbTable->getRowById($_REQUEST['removeId']);
+        if (isset($_REQUEST['removeSensorId']) && isset($_REQUEST['DelControl' . $_REQUEST['removeSensorId']]) &&
+            $_REQUEST['DelControl' . $_REQUEST['removeSensorId']] == "Entfernen") {
+            $newRow = $dbTable->getRowById($_REQUEST['removeSensorId']);
             $newRow->deleteFromDb();
             
             return true;
@@ -689,10 +737,10 @@ class HomeControlMap extends Object {
     }
 
     function showMap($dbTable, $dbSensorTable) {
-        $map = $this->getMap($dbTable);
-        $map->show();
         $sMap = $this->getSensorMap($dbSensorTable);
         $sMap->show();
+        $map = $this->getMap($dbTable);
+        $map->show();
     }
 
 
@@ -987,7 +1035,10 @@ class HomeControlMap extends Object {
                                         "etage=" . $_SESSION['aktEtage']);
         
         if ($this->EDITMODE) {
-            if ($this->handleControlEdit($dbTable) || $this->handleSensorEdit($dbSensorTable)) {
+            if($this->handleSensorEdit($dbSensorTable)){
+                $dbSensorTable->refresh();
+            }
+            if ($this->handleControlEdit($dbTable) ) {
                 $dbTable->refresh();
             }
         }
@@ -1023,7 +1074,7 @@ class HomeControlMap extends Object {
 
     
     function switchObject($id, $onOff, $dimm=0){
-        switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'],$id."-".$onOff.($dimm>0&&$dimm<17?"-".$dimm:""));
+        switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'],$id."-".$onOff.($dimm>0&&$dimm<17?"-".$dimm:""), $_SESSION['config']->DBCONNECT);
     }
 }
 

@@ -95,6 +95,8 @@ cp installFiles/crons/* /etc/cron.manual
 #Logfiles erzeugen
 echo > switch.log
 echo > signalIn.log
+echo > switch.cut
+echo > signalIn.cut
 
 #
 # Rechte anpassen
@@ -113,4 +115,6 @@ sudo chmod +x  /etc/cron.manual/* -R
 
 sudo chmod 775 /var/www/signalIn.log
 sudo chmod 775 /var/www/switch.log
+sudo chmod 775 /var/www/signalIn.cut
+sudo chmod 775 /var/www/switch.cut
 

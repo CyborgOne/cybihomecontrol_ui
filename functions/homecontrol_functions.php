@@ -8,19 +8,43 @@
 
   }
   
-  function switchShortcut($arduinoUrl, $shortcutUrl){
-    $loginNeed        = getPageConfigParam($_SESSION['config']->DBCONNECT, "loginForSwitchNeed") == "J";
-    $loginExternOnly  = getPageConfigParam($_SESSION['config']->DBCONNECT, "loginExternOnly") == "J";
-    $loginOK          = ($_SESSION['config']->CURRENTUSER->STATUS == "admin" || $_SESSION['config']->CURRENTUSER->STATUS == "user");
+  // TODO: $arduinoUrl wird eigtl nicht mehr benötigt da eh für jedes Device 
+  //       die ArduinoURL ermittelt werden muss, seit mehrere Sender möglich sind. 
+  function switchShortcut($arduinoUrl, $shortcutUrl, $dbConnect){
+    //echo "switchShortcut: ".$arduinoUrl." > ".$shortcutUrl."\n";
+    $loginNeed          = true;
+    $loginExternOnly    = false;
+    $loginOK            = false;
     
-    $clientIP = explode(".", $_SERVER['REMOTE_ADDR']);
-    $serverIP = explode(".",$_SERVER['SERVER_ADDR']);
+    try{
+        $loginNeed        = getPageConfigParam($dbConnect, "loginForSwitchNeed") == "J";
+    //    echo "Login needed: ".$loginNeed."\n";
+        $loginExternOnly  = getPageConfigParam($dbConnect, "loginExternOnly") == "J";
+    //    echo "Login extern only: ".$loginExternOnly."\n";
+        $loginOK          = isset($_SESSION['config'])&& isset($_SESSION['config']->CURRENTUSER)&&($_SESSION['config']->CURRENTUSER->STATUS == "admin" || $_SESSION['config']->CURRENTUSER->STATUS == "user");
+    //    echo "Login OK: ".$loginOK."\n";
+        
+        $clientIP = explode(".", $_SERVER['REMOTE_ADDR']);
+        $serverIP = explode(".",$_SERVER['SERVER_ADDR']);
+    } catch(Exception $ex){
+        echo $ex->getMessage()."\n";
+    }
+//    echo "client: ".$_SERVER['REMOTE_ADDR']."\n";
+//    echo "server: ".$_SERVER['SERVER_ADDR']."\n";
     
     if (!$loginNeed || 
           $loginOK  ||                   
           ($loginExternOnly && ($serverIP[0]==$clientIP[0] && $serverIP[1]==$clientIP[1] && $serverIP[2]==$clientIP[2]))
        ) {
         $switchStatusCheck = true;
+    
+        try {
+            shell_exec("tail /var/www/switch.log -n 99 > /var/www/switch.cut");
+            shell_exec("mv /var/www/switch.cut /var/www/switch.log");
+        } catch (Exception $e){
+             echo $e->getMessage(). "\n";
+        } 
+        
         ob_implicit_flush(true);
     
         // Nach Semikolon trennen, 
@@ -34,35 +58,42 @@
           if(count($tmp)>=2){
             $id     = $tmp[0];
             $status = $tmp[1];
+            $deviceId = $id; 
             $dimmer = 0;
             if(count($tmp)==3){
                 $dimmer = $tmp[2];
-                echo $dimmer;
             }
             if( strlen($id)>0 && $id>0 ){
               $status = $status=="on"?"on":"off";
-      
+              //echo $id."->".$status."<br>\n";      
               // Wenn ausgeschaltet werden soll,
               // negative ID übergeben
               if($status == "off"){
                 $id = $id*(-1);
               }
       
-    //          echo "<br>Switch-URL: " .$arduinoUrl."?schalte&" .$id;
+              //echo "\n<br>Switch-URL: " .$arduinoUrl."?schalte&" .$id;
               $urlArr = parse_url($arduinoUrl);
               $host = $urlArr['host'];
     
+              $senderUrl = getArduinoUrlForDeviceId($deviceId, $dbConnect);
+              $useSenderUrl = strlen($senderUrl)>0?$senderUrl:$arduinoUrl;
+              $urlArray = parse_url($useSenderUrl);
+              $host = $urlArray['host'];
+              
               $check = @fsockopen($host, 80); 
+              
               If ($check) { 
-                $retVal = file_get_contents( $arduinoUrl."?schalte=".$id."&dimm=".$dimmer );
-     
-                shell_exec("tail /var/www/signalIn.log -n 99 > /var/www/switch.cut");
-                shell_exec("mv /var/www/signalIn.cut /var/www/switch.log");
+                $retVal = file_get_contents( $useSenderUrl."?schalte=".$id."&dimm=".$dimmer );
                 
-                $myfile = fopen("switch.log", "a+") or die("Unable to open file!");
-                fwrite($myfile, "\r\n (".date("d.M.Y H:i:s")."): " .$arduinoUrl."?schalte=".$id."&dimm=".$dimmer);
-                fclose($myfile);
-    
+                try {
+                    $myfile = fopen("/var/www/switch.log", "a+") or die("Unable to open file!");
+                    fwrite($myfile, "(".date("d.M.Y - H:i:s")."): " .$useSenderUrl."?schalte=".$id."&dimm=".$dimmer."\n");
+                    fclose($myfile);
+                } catch (Exception $e){
+                     echo $e->getMessage(). "\n";
+                } 
+                    
                 if(strpos(substr($retVal,0,50), "Warning")>0){
                    $switchStatusCheck = false;
                    echo "<b>Vorgang auf Grund eines unerwarteten Fehlers abgebrochen!</b><br><br>".$retVal;
@@ -71,7 +102,7 @@
                    //echo "<br><font color='green'><b>schalte ".$id>=0?$id:($id*-1)." ".($status=="on"?"ein":"aus")."</b></font>";
                 } 
               } else {
-                 echo "<br><font color='red'>KEINE VERBINDUNG<br><b>Vorgang abgebrochen!</b></font>";
+                 echo "<br><font color='red'>KEINE VERBINDUNG zu: ".$host ."<br><b>Vorgang abgebrochen!</b></font>";
                  break;
               }
             }
@@ -109,7 +140,7 @@
  * Liefert den URL-String zum schalten aller Items  
  * 
  * Beispiel:
- * ?switchShortcut=10-off;100-off;101-off;104-off;91-off;103-off;2-off;110-off;111-off;112-off;113-off;114-off;3-off;120-off;121-off;  
+ * ?10-off;100-off;101-off;104-off;91-off;103-off;2-off;110-off;111-off;112-off;113-off;114-off;3-off;120-off;121-off;  
  */
 function getShortcutSwitchKeyForCron($con, $cronId){
     $sqlItems = "SELECT id, config_id, art_id, zimmer_id, etagen_id, funkwahl, on_off FROM homecontrol_cron_items WHERE cron_id=" .$cronId;
@@ -191,6 +222,7 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
                                 "trigger_type=1 AND trigger_id=".$regelId);
     $isValid = true;
     $allTriggerTermsValid = true;
+    $allNoTriggerTermsValid = true;
     
     // Alle Regel-Bedingungen prüfen
     foreach($dbRegelTerms->ROWS as $rowRegelTerm){
@@ -201,7 +233,7 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
             echo "TriggerJN: ".$rowRegelTerm->getNamedAttribute("trigger_jn")."</br>";
             if($rowRegelTerm->getNamedAttribute("trigger_jn")=="J"){
                 $allTriggerTermsValid = false;
-            }
+            } 
 
             $isValid = false;
         } else {
@@ -222,16 +254,16 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
         while ($row = mysql_fetch_array($result)) {
             $whereStmt = "";
             $onOff = $isValid?$row["on_off"]:($row["on_off"]=="on"?"off":"on");
-            
+
             if (strlen($row["config_id"]) > 0) {
                 $funkId = getConfigFunkId($row["config_id"], $onOff);
                 $SHORTCUTS_URL_COMMAND = addShortcutCommandItem($funkId, $onOff, $SHORTCUTS_URL_COMMAND);
             } else {
-    
+
                 if (strlen($row["art_id"]) > 0) {
                     $whereStmt = $whereStmt . " control_art=" . $row["art_id"];
                 }
-    
+
                 if (strlen($row["zimmer_id"]) > 0) {
                     if ($whereStmt != "") {
                         $whereStmt = $whereStmt . " AND ";
@@ -245,10 +277,10 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
                     }
                     $whereStmt = $whereStmt . " etage=" . $row["etagen_id"];
                 }
-    
+
                 $sqlConfig = "SELECT id, funk_id, funk_id2 FROM homecontrol_config " . "WHERE " .
                     $whereStmt;
-            
+
                 $resultConfig = $_SESSION['config']->DBCONNECT->executeQuery($sqlConfig);
                 while ($rowConfig = mysql_fetch_array($resultConfig)) {
                     $SHORTCUTS_URL_COMMAND = addShortcutCommandItem($rowConfig["funk_id"], $onOff, $SHORTCUTS_URL_COMMAND);
@@ -257,8 +289,6 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
         }
     }
 
-//    echo $SHORTCUTS_URL_COMMAND."<br>";
-    
     return $SHORTCUTS_URL_COMMAND;
 }
 
@@ -300,4 +330,26 @@ function getConfigFunkId($id, $status) {
 
 }
   
+  
+
+function getArduinoUrlForDeviceId($hcConfigId, $dbConnect){
+    $selectSenderIP = "SELECT ip FROM `homecontrol_sender` WHERE id = (SELECT sender_id FROM homecontrol_config WHERE id = " .$hcConfigId ." )";
+    $rslt = $dbConnect->executeQuery($selectSenderIP);
+    
+    if(isset($rslt['ip'])&&strlen($rslt['ip'])>0){
+        return "http://".$rslt['ip']."/rawCmd";
+    } else {
+        // Wenn keine Sender-IP zum Device ermittelt werden kann, Default holen.
+        $selectSenderIP = "SELECT ip FROM `homecontrol_sender` WHERE default_jn = 'J'";
+        $rslt = $dbConnect->executeQuery($selectSenderIP);
+        
+        if(isset($rslt['ip'])&&strlen($rslt['ip'])>0){
+            return "http://".$rslt['ip']."/rawCmd";
+        }
+    }
+    
+    // wird keine IP gefunden: FallBack auf altes Vorgehen
+    return "http://". getPageConfigParam($dbConnect, 'arduino_url');
+}
+
 ?>

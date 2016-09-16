@@ -6,6 +6,9 @@
  *  (c) by Daniel Scheidler   -   September 2014
  */
 include ("config/dbConnect.php");
+include ("classes/objects/database/DbConnect.php");
+
+include ("functions/global.php");
 include ("functions/homecontrol_functions.php");
 
 $con = new mysqli($DBHOST, $DBUSER, $DBPASS, $DBNAME);
@@ -14,6 +17,7 @@ if (!$con) {
     return;
 }
 
+// TODO: eigentlich nicht mehr notwendig
 $sqlA = "SELECT id, name, value FROM pageconfig WHERE name = 'arduino_url' ";
 $resultA = mysqli_query($con, $sqlA);
 $rA = mysqli_fetch_array($resultA);
@@ -68,16 +72,21 @@ $result = mysqli_query($con, $sql);
 
 //echo "Aktuelle Cron Anzahl: ".mysqli_num_rows($result)."<br><br>";
 if (mysqli_num_rows($result) > 0) {
-    echo "RUN HOMECONTROL-CRON: ".$currentDayName." ".$currentStd.":".$currentMin."\n";
+    echo "\nRUN HOMECONTROL-CRON: ".$currentDayName." ".$currentStd.":".$currentMin."\n";
 
+    $shortcutUrls = array();
     while ($row = mysqli_fetch_array($result)) {
-        if (isCronPaused($con,$row['id'])) {
+        if (isCronPaused($con, $row['id'])) {
             deleteCronPause($con,$row['id']);
         } else {
             $shortcutUrl = getShortcutSwitchKeyForCron($con, $row['id']);
-            echo $shortcutUrl;
-
-            switchShortcut($arduinoUrl, $shortcutUrl);
+            
+            $url =  parse_url(__FILE__);
+            $currPath = dirname($url['path']);
+            if(substr($currPath,strlen($currPath)-1) != "/" && strlen($currPath)>1){
+                $currPath .= "/";
+            }
+            $shortcutUrls[count($shortcutUrls)]=$shortcutUrl;
         }
     }
 }
@@ -85,6 +94,13 @@ if (mysqli_num_rows($result) > 0) {
 // ------------------------------
 
 mysqli_close($con);
+
+$dc = new DbConnect($DBHOST, $DBUSER, $DBPASS, $DBNAME);
+
+foreach($shortcutUrls as $shortcutUrl){
+  echo "Switch: ".$shortcutUrl."\n\n";
+  switchShortcut($arduinoUrl, $shortcutUrl, $dc);
+}
 
 // ------------------------------
 

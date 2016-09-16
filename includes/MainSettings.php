@@ -11,6 +11,29 @@ function getRowByName($rows, $name) {
     return false;
 }
 
+
+function checkDefaultSender($rows){
+    // doUpdate auf Default prüfen
+    foreach ($rows as $row) {
+        if(isset($_REQUEST["default_jn".$row->getNamedAttribute("rowid")]) && $_REQUEST["default_jn".$row->getNamedAttribute("rowid")]=="J"){
+            $doDelOldDefault = true;
+        }
+    }
+    
+    // doInsert auf Default prüfen
+    if(isset($_REQUEST["default_jn"]) && $_REQUEST["default_jn"]=="J"){
+        $doDelOldDefault = true;
+    }
+    
+    if($doDelOldDefault){
+        $resetDefaultSql = "UPDATE homecontrol_sender SET default_jn = 'N' WHERE default_jn = 'J'";
+        $_SESSION['config']->DBCONNECT->executeQuery($resetDefaultSql);
+    }
+}
+
+
+
+
 if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     CURRENTUSER->STATUS != "user") {
 
@@ -49,7 +72,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $sensorlogDauerRow = getRowByName($configDb->ROWS, "sensorlogDauer");
     $motionDauerRow = getRowByName($configDb->ROWS, "motionDauer");
     $sessionDauerRow = getRowByName($configDb->ROWS, "sessionDauer");
-    $arduinoUrlRow = getRowByName($configDb->ROWS, "arduino_url");
     $pagetitelRow = getRowByName($configDb->ROWS, "pagetitel");
     $notifyTargetMailRow = getRowByName($configDb->ROWS, "NotifyTargetMail");
     $timelineDurationRow = getRowByName($configDb->ROWS, "timelineDuration");
@@ -64,7 +86,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $sensorlogDauerName = 'value' . $sensorlogDauerRow->getNamedAttribute('id');
     $motionDauerName = 'value' . $motionDauerRow->getNamedAttribute('id');
     $sessionDauerName = 'value' . $sessionDauerRow->getNamedAttribute('id');
-    $arduinoUrlName = 'value' . $arduinoUrlRow->getNamedAttribute('id');
     $notifyTargetMailName = 'value' . $notifyTargetMailRow->getNamedAttribute('id');
     $pagetitelName = 'value' . $pagetitelRow->getNamedAttribute('id');
     $timelineDurationName = 'value' . $timelineDurationRow->getNamedAttribute('id');
@@ -109,7 +130,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $sensorlogDauerRow = getRowByName($configDb->ROWS, "sensorlogDauer");
         $motionDauerRow = getRowByName($configDb->ROWS, "motionDauer");
         $sessionDauerRow = getRowByName($configDb->ROWS, "sessionDauer");
-        $arduinoUrlRow = getRowByName($configDb->ROWS, "arduino_url");
         $pagetitelRow = getRowByName($configDb->ROWS, "pagetitel");
         $notifyTargetMailRow = getRowByName($configDb->ROWS, "NotifyTargetMail");
         $timelineDurationRow = getRowByName($configDb->ROWS, "timelineDuration");
@@ -128,7 +148,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $sensorlogDauer = $sensorlogDauerRow->getNamedAttribute('value');
     $motionDauer = $motionDauerRow->getNamedAttribute('value');
     $sessionDauer = $sessionDauerRow->getNamedAttribute('value');
-    $arduinoUrl = $arduinoUrlRow->getNamedAttribute('value');
     $notifyTargetMail = $notifyTargetMailRow->getNamedAttribute('value');
     $pagetitel = $pagetitelRow->getNamedAttribute('value');
     $timelineDuration = $timelineDurationRow->getNamedAttribute('value');
@@ -191,8 +210,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $txtPageTitel = new Text("Seiten-Titel");
     $txfPageTitel = new Textfield($pagetitelName, $pagetitel, 30, 50);
 
-    $txtArduinoUrl = new Text("Arduino URL (IP/rawCmd)");
-    $txfArduinoUrl = new Textfield($arduinoUrlName, $arduinoUrl, 30, 50);
 
     $txtNotifyTargetMail = new Text("Emailempfangs-Adresse");
     $txfNotifyTargetMail = new Textfield($notifyTargetMailName, $notifyTargetMail,
@@ -212,8 +229,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $rightDiv->add($divSensorlogDauer);
     $rightDiv->add(new Spacer(5));
     $rightDiv->add($divTimelineDuration);
-
-
+    
     $leftTab = new Table(array("", ""));
     $lT = $leftTab->createRow();
     $lT->setAttribute(0, $txtPageTitel);
@@ -224,23 +240,20 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $lN->setAttribute(0, $txtNotifyTargetMail);
     $lN->setAttribute(1, $txfNotifyTargetMail);
     $leftTab->addRow($lN);
+    
     $leftTab->addSpacer(0,20);
-    $lA = $leftTab->createRow();
-    $lA->setAttribute(0, $txtArduinoUrl);
-    $lA->setAttribute(1, $txfArduinoUrl);
-    $leftTab->addRow($lA);
-    $leftTab->addSpacer(0,10);
+    
     $lB = $leftTab->createRow();
     $lB->setSpawnAll(true);
     $lB->setAttribute(0, $chbBtSwitchActive);
     $leftTab->addRow($lB);
+    
+    $leftTab->addSpacer(0,20);
+    
 
 
     $tblMain = new Table(array("", ""));
     $rMainT0 = $tblMain->createRow();
-    
-    
-    
     $t1 = new Title("Generelle-Einstellungen");
     $t1->setAlign("left");
     $rMainT0->setAttribute(0, $t1);
@@ -251,8 +264,99 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $rMain0->setAttribute(1, $rightDiv);
     $tblMain->addRow($rMain0);
 
+    $tblMain->addSpacer(0,50);
 
-    $tblMain->addSpacer(0, 50);
+
+
+    $t2 = new Title("Sender-Einstellungen");
+    $t2->setAlign("left");
+    $rMainT1 = $tblMain->createRow();
+    $rMainT1->setSpawnAll(true);
+    $rMainT1->setAttribute(0, $t2);
+    $tblMain->addRow($rMainT1);
+
+    $dbTblSender = new DbTable($_SESSION['config']->DBCONNECT, 
+                                'homecontrol_sender', 
+                                array("name", "ip", "etage", "zimmer", "range_von", "range_bis", "default_jn"), 
+                                "Name, IP, Etage, Zimmer, Bereich von:, Bis, Standard?",
+                                "",
+                                "default_jn, name");
+    
+    $dbTblSender->setHeaderEnabled(true);
+    $dbTblSender->setDeleteInUpdate(true);
+    $dbTblSender->setColSizes(array("200", "40", "60", "90", "50", "50", "50"));
+    
+    $deleteMask=null;
+    if ($dbTblSender->isDeleteInUpdate()) {
+        $deleteMask = !$dbTblSender->doDeleteFromUpdatemask() ? null : $dbTblSender->doDeleteFromUpdatemask();
+    }
+    if ($deleteMask != null) {
+        $rDel = $tblMain->createRow();
+        $rDel->setAttribute(0, $deleteMask);
+        $rDel->setSpawnAll(true);
+        $tblMain->addRow($rDel);
+    }
+    
+    $newSwitchBtn = new Text("");
+    
+    // Neuer Eintrag
+    if (isset($_REQUEST['InsertIntoDBhomecontrol_sender']) && $_REQUEST['InsertIntoDBhomecontrol_sender'] == "Speichern") {
+        checkDefaultSender($dbTblSender->ROWS);
+
+        $dbTblSender->doInsert();
+        $dbTblSender->refresh();
+
+    } else if (isset($_REQUEST[$dbTblSender->getNewEntryButtonName()])) {
+
+            $dbTblSender->setBorder(0);
+            $insMsk = $dbTblSender->getInsertMask();
+            $hdnFld = $insMsk->getAttribute(1);
+            if ($hdnFld instanceof Hiddenfield) {
+                $insMsk->setAttribute(1, new Hiddenfield($dbTblSender->getNewEntryButtonName(), "-"));
+            }
+
+            $rNew = $tblMain->createRow();
+            $rNew->setAttribute(0, $insMsk);
+            $rNew->setSpawnAll(true);
+            $tblMain->addRow($rNew);
+            $tblMain->addSpacer(0,10);
+    } else {
+        $newSwitchBtn = $dbTblSender->getNewEntryButton("Neuen Sender anlegen");    
+    }
+
+    if (isset($_REQUEST["DbTableUpdate" . $dbTblSender->TABLENAME])) {
+        checkDefaultSender($dbTblSender->ROWS);
+        
+        $dbTblSender->doUpdate();
+    }
+    
+        
+    if ($dbTblSender->isDeleteInUpdate()) {
+        $deleteMask = $dbTblSender->doDeleteFromUpdatemask() ? null : $dbTblSender->doDeleteFromUpdatemask();
+        if ($deleteMask != null) {
+            $lS = $tblMain->createRow();
+            $lS->setSpawnAll(true);
+            $lS->setAttribute(0, $deleteMask);
+            $tblMain->addRow($lS);
+        }            
+    }
+
+    
+    $tblArduinoSwitches = $dbTblSender->getUpdateMask();
+    
+    $tblMain->addSpacer(0,20);
+
+    $lS = $tblMain->createRow();
+    $lS->setSpawnAll(true);
+    $lS->setAttribute(0, $tblArduinoSwitches);
+    $tblMain->addRow($lS);
+    
+    $lS = $tblMain->createRow();
+    $lS->setSpawnAll(true);
+    $lS->setAttribute(0, $newSwitchBtn);
+    $tblMain->addRow($lS);
+
+    $tblMain->addSpacer(0,50);
 
 
 

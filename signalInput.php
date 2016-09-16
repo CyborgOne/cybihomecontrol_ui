@@ -13,7 +13,11 @@ if (strlen($sensorId) <= 0 || strlen($sensorWert)<=0 ) {
   exitMissingValues();
 }
 
- 
+$lastVal = getDbValue("homecontrol_sensor", "lastValue", "id=".$sensorId);
+if($lastVal==$sensorWert){
+  exit("sensorWert unver&auml;ndert!");
+}
+
 // MySQL UPDATE
 $sql = "UPDATE homecontrol_sensor SET lastValue=" . $sensorWert .", lastSignal=" . time() .
        " WHERE id=" . $sensorId;
@@ -22,11 +26,8 @@ $result = $_SESSION['config']->DBCONNECT->executeQuery($sql);
 $sql = "INSERT INTO homecontrol_sensor_log(sensor_id, value, update_time) values (".$sensorId.",".$sensorWert.",".time().")";
 $result = $_SESSION['config']->DBCONNECT->executeQuery($sql);
 
-shell_exec("tail /var/www/signalIn.log -n 99 > /var/www/signalIn.cut");
-shell_exec("mv /var/www/signalIn.cut /var/www/signalIn.log");
-
 $myfile = fopen("signalIn.log", "a+") or die("Unable to open file!");
-fwrite($myfile, "\r\n Sensor: ".$sensorId." - Neuer Wert: ".$sensorWert ."(".date("d.M.Y H:i:s").")");
+fwrite($myfile, "\n".date("d.M.Y H:i:s").": " ."Sensor ".$sensorId."  aktualisiert von: ".$lastVal ." nach " .$sensorWert );
 fclose($myfile);
 
 
@@ -45,11 +46,11 @@ flush();
 
 // Wenn auszufuehrendes Kommando gefunden wurde, ausfuehren
 if(strlen($SENSOR_URL_COMMAND)>0){
-  echo "http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND;
+  switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'], $SENSOR_URL_COMMAND, $_SESSION['config']->DBCONNECT);
+ 
   $contents = file_get_contents("http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND);
   $myfile = fopen("signalIn.log", "a+") or die("Unable to open file!");
-  fwrite($myfile, "\r\n SCHALTUNG -> ".date("d.M.Y H:i:s").": ");
-  fwrite($myfile, $SENSOR_URL_COMMAND);
+  fwrite($myfile, "\n SCHALTUNG -> ".$SENSOR_URL_COMMAND);
   fclose($myfile);
 }
 
@@ -59,7 +60,7 @@ function exitMissingValues(){
 
 function prepareSensorSwitchLink($sensorId) {
     // Zuerst alle Config-IDs, Dann alle Zimmer und zum Schluss die Etagen bearbeiten.
-    // Durch die Methode addShortcutCommandItem($id, $status) wird gewährleistet dass jede ID nur einmal pro Vorgang geschaltet wird.
+    // Durch die Methode addShortcutCommandItem($id, $status) wird gewaehrleistet dass jede ID nur einmal pro Vorgang geschaltet wird.
     $SHORTCUTS_URL_COMMAND = "";
     
     // Alle Automatisierungs-Regeln die von der Sensor-Änderung betroffen sind holen
@@ -69,7 +70,7 @@ function prepareSensorSwitchLink($sensorId) {
                             "Id, Name, Reverse-Switch, Beschreibung",
                             "",
                             "",
-                            "id IN (SELECT trigger_id FROM homecontrol_term WHERE  trigger_type = 1 and term_type IN (1,2) and sensor_id = ".$sensorId." )"); // AND trigger_jn='J'
+                            "id IN (SELECT trigger_id FROM homecontrol_term WHERE  trigger_type = 1 and term_type IN (1,2) and sensor_id = ".$sensorId." AND trigger_jn='J')"); 
 
     foreach($dbRegeln->ROWS as $regelRow){
         $regelId = $regelRow->getNamedAttribute("id");

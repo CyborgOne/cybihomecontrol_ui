@@ -7,8 +7,8 @@ read databaseHost
 echo "Geben Sie den Datenbanknamen an"
 read databaseName
 
-now=$(date +"%m_%d_%Y")
-filename="installation_sql_$now.log"
+now=$(date +"%Y_%m_%d")
+filename="installation_sql_$now.sql"
 
 echo  > $filename
 
@@ -81,6 +81,7 @@ mysqldump    --skip-opt --compatible=mysql40 --skip-comments --skip-set-charset 
 
 # Admin User
 echo "INSERT INTO user (id, Vorname, Nachname, Name, Geburtstag, Strasse, Plz, Ort, Email, Telefon, Fax, Handy, Icq, Aim, Homepage, User, Pw, Nation, Status, user_group_id, Newsletter, Signatur, Lastlogin, Posts, Beschreibung, pic, pnnotify, autoforumnotify, geaendert, emailJN, icqJN, telefonJN, Level, EP, Gold, Holz, Erz, Felsen, Wasser, Nahrung, aktiv, activationString, angelegt, clan_id, rasse_id)             VALUES (1, 'Admini', 'Istrator', 'Admini Istrator', '0000-00-00', '-', '-', '-', '', '-', '', '-', '', NULL, '', 'admin', '21232f297a57a5a743894a0e4a801fc3', NULL, 'admin', 1, 'true', '', '2016-09-05 11:20:17', 0, NULL, 'unknown.jpg', 'Y', 'Y', '2016-09-05 09:20:17', 'N', 'N', 'N', 0, 0, 0, 0, 0, 0, 0, 0, 'J', NULL, '0000-00-00', NULL, 1);" 		>> $filename
+echo "ALTER TABLE user MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;" >> $filename
 
 # PageConfig
 echo "INSERT INTO pageconfig VALUES" >> $filename

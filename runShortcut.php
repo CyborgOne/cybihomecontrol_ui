@@ -1,7 +1,9 @@
 <?PHP
 include ("config/dbConnect.php");
-include ("functions/homecontrol_functions.php");
-if (!isset($_REQUEST['shortcutName']) ) {
+include ("classes/objects/database/DbConnect.php");
+
+include ("functions/global.php");
+include ("functions/homecontrol_functions.php");if (!isset($_REQUEST['shortcutName']) ) {
     parse_str($argv[1]);
 }
 
@@ -57,7 +59,8 @@ flush();
 
 // Wenn auszufuehrendes Kommando gefunden wurde, ausfuehren
 if(strlen($SENSOR_URL_COMMAND)>0){
-  $contents = file_get_contents("http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND);
+    $dc = new DbConnect($DBHOST, $DBUSER, $DBPASS, $DBNAME);
+    switchShortcut($arduinoUrl, $SENSOR_URL_COMMAND, $dc);
 }
 
 

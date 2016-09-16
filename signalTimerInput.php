@@ -31,7 +31,7 @@ flush();
 
 // Wenn auszufuehrendes Kommando gefunden wurde, ausfuehren
 if(strlen($SENSOR_URL_COMMAND)>0){
-  $contents = file_get_contents("http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND);
+//  $contents = file_get_contents("http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND);
 }
 
 

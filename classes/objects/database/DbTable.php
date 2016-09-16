@@ -261,7 +261,7 @@ class DbTable extends Object {
     }
 
     function getAlignments() {
-        return $this->ALIGNMENTS = $array;
+        return $this->ALIGNMENTS;
     }
     /**
      * legt fest, ob die Seitennavigation aktiviert werden soll. 
@@ -990,7 +990,7 @@ class DbTable extends Object {
                 if (strlen($statement) > $chkLen) {
                     $statement .= ", ";
                 }
-                if (strlen($fieldValue) == 0) {
+                if (strlen($fieldValue) == 0 && !((count($ev) == 2 && in_array('J', $ev) && in_array('N', $ev))) ) {
                     $fieldValue = $this->getDefaultValue($this->DEFAULTS, $fieldName);
                 }
 
@@ -1890,8 +1890,7 @@ class DbTable extends Object {
         //---------------------------------------------------
         // gesamte Tabelle einlesen um Feldtypen zu ermitteln
         //---------------------------------------------------
-        $stmnt = "SELECT " . $this->COLNAMESTRING . " FROM " . $this->TABLENAME .
-            " LIMIT 1 ";
+        $stmnt = "SELECT " . $this->COLNAMESTRING . " FROM " . $this->TABLENAME ." LIMIT 1 ";
         $result = $this->DBCONNECT->executeQuery($stmnt);
         $chk = 0;
         $sql = "";
@@ -1911,8 +1910,7 @@ class DbTable extends Object {
 
                     $ev = $this->getEnumValues($fieldName);
 
-                    if (($chk > 0 && isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) >= 0) || (count($ev) ==
-                        2 && (in_array('J', $ev) && in_array('N', $ev)))) {
+                    if ($chk > 0 && ((isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) >= 0) || (count($ev) == 2 && in_array('J', $ev) && in_array('N', $ev)))  ) {
                         $sql .= ", ";
                     }
                     if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) > 0) {
