@@ -203,42 +203,6 @@ INSERT INTO `default_combo_values` VALUES (50,'DatumTagzahl','31','31');
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL40' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE TABLE `pageconfig` (
-  `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `value` text NOT NULL,
-  `page_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  KEY `page_id` (`page_id`)
-);
-
-INSERT INTO `pageconfig` VALUES (1,'pagetitel','SmartHome yourself',0);
-INSERT INTO `pageconfig` VALUES (2,'pageowner','',0);
-INSERT INTO `pageconfig` VALUES (3,'background_pic','',0);
-INSERT INTO `pageconfig` VALUES (4,'banner_pic','',0);
-INSERT INTO `pageconfig` VALUES (5,'sessiontime','0',0);
-INSERT INTO `pageconfig` VALUES (6,'logging_aktiv','true',0);
-INSERT INTO `pageconfig` VALUES (7,'debugoutput_aktiv','false',0);
-INSERT INTO `pageconfig` VALUES (10,'classes_autoupdate','false',0);
-INSERT INTO `pageconfig` VALUES (11,'pagedeveloper','Daniel Scheidler',0);
-INSERT INTO `pageconfig` VALUES (12,'pagedesigner','Daniel Scheidler',0);
-INSERT INTO `pageconfig` VALUES (13,'hauptmenu_button_image','pics/hauptmenu_button.jpg',0);
-INSERT INTO `pageconfig` VALUES (14,'max_rowcount_for_dbtable','50',0);
-INSERT INTO `pageconfig` VALUES (15,'suchbegriffe','',0);
-INSERT INTO `pageconfig` VALUES (16,'NotifyTargetMail','',0);
-INSERT INTO `pageconfig` VALUES (17,'KontaktformularTargetMail','',0);
-INSERT INTO `pageconfig` VALUES (18,'changeMode','',0);
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL40' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE TABLE `fixtexte` (
   `id` int(11) NOT NULL,
   `name` varchar(20) NOT NULL DEFAULT '',
@@ -955,6 +919,27 @@ INSERT INTO `menu` VALUES (140,'Signale','Einstellungen','?menuParent=Einstellun
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL40' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE TABLE `pageconfig` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `value` text NOT NULL,
+  `page_id` int(11) NOT NULL DEFAULT '0',
+  `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `label` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `page_id` (`page_id`)
+);
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL40' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE TABLE `programm_gruppen` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -1295,6 +1280,7 @@ CREATE TABLE `user_groups` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 INSERT INTO user (id, Vorname, Nachname, Name, Geburtstag, Strasse, Plz, Ort, Email, Telefon, Fax, Handy, Icq, Aim, Homepage, User, Pw, Nation, Status, user_group_id, Newsletter, Signatur, Lastlogin, Posts, Beschreibung, pic, pnnotify, autoforumnotify, geaendert, emailJN, icqJN, telefonJN, Level, EP, Gold, Holz, Erz, Felsen, Wasser, Nahrung, aktiv, activationString, angelegt, clan_id, rasse_id)             VALUES (1, 'Admini', 'Istrator', 'Admini Istrator', '0000-00-00', '-', '-', '-', '', '-', '', '-', '', NULL, '', 'admin', '21232f297a57a5a743894a0e4a801fc3', NULL, 'admin', 1, 'true', '', '2016-09-05 11:20:17', 0, NULL, 'unknown.jpg', 'Y', 'Y', '2016-09-05 09:20:17', 'N', 'N', 'N', 0, 0, 0, 0, 0, 0, 0, 0, 'J', NULL, '0000-00-00', NULL, 1);
+ALTER TABLE user MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 INSERT INTO pageconfig VALUES
 (1, 'pagetitel', 'Haussteuerung', 0, '2015-09-28 00:34:39', NULL),
 (2, 'pageowner', 'SEITENINHABER', 0, '2013-01-08 02:32:07', NULL),
