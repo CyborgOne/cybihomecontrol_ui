@@ -1,4 +1,10 @@
 
+Version: 0.0.55
+---------------------
+SHYS-112:
+Sensor-Darstellung im Raumplan angepasst.
+Sensor-Icons sind nun kleiner und aktuelle Werte werden nun im Icon anstatt darunter angezeigt um Platz zu sparen.
+
 Version: 0.0.54
 ---------------------
 SHYS-113:

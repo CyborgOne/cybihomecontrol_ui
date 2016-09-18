@@ -21,8 +21,8 @@ class HomeControlSensor extends Object{
  
    private $EDIT_MODE = false;
    
-   private $CONTROL_IMAGE_WIDTH = 40;
-   private $CONTROL_IMAGE_HEIGHT = 40;
+   private $CONTROL_IMAGE_WIDTH = 26;
+   private $CONTROL_IMAGE_HEIGHT = 26;
    
    private $ICON_VIEW_ACTIVE = false;
     
@@ -112,26 +112,23 @@ class HomeControlSensor extends Object{
                 CONTROL_IMAGE_HEIGHT . "px;\">";
             echo $this->getSensorArtIconSrc();
             
-            if($this->LASTVALUE!=null){
-              echo "<center>".$this->LASTVALUE."</center>";   
-            }
-            
             echo "</a>";
         
+            if($this->LASTVALUE!=null){
+              echo "<div style=\"background-color:#dedede; position:absolute; left:" .$this->X ."px; top:" . ($this->Y + $_SESSION['additionalLayoutHeight'] + ($this->CONTROL_IMAGE_HEIGHT/2)) ."px;\"><center><b>".$this->LASTVALUE."</b></center></div>";   
+            }
+            
         } else {
             echo "<div style=\"position:absolute; left:" . $this->X . "px; top:" . ($this->
                 Y + $_SESSION['additionalLayoutHeight']) . "px; width:" . $this->
                 CONTROL_IMAGE_WIDTH . "px; height:" . $this->CONTROL_IMAGE_HEIGHT . "px;\">";
             
             echo $this->getSensorArtIconSrc();
-            
-            if($this->LASTVALUE!=null){
-              echo "<center>".$this->LASTVALUE."</center>";   
-            }
-            
             //$this->getSwitchButtons()->show();     
-                   
             echo "</div>";
+            if($this->LASTVALUE!=null){
+              echo "<div style=\"background-color:#dedede; position:absolute; left:" .($this->X + 3) ."px; top:" . ($this->Y + $_SESSION['additionalLayoutHeight'] + ($this->CONTROL_IMAGE_HEIGHT/2)) ."px;\"><center><b>".$this->LASTVALUE."</b></center></div>";   
+            }        
         }
    }
    
