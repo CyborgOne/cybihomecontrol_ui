@@ -520,7 +520,8 @@ class HomeControlMap extends Object {
             if (isset($_REQUEST['aktEtage'])) {
                 $_SESSION['aktEtage'] = $_REQUEST['aktEtage'];
             } else {
-                $_SESSION['aktEtage'] = 2;
+                $minId = getDbValue("homecontrol_etagen", "min(id)","id>0");
+                $_SESSION['aktEtage'] = strlen($minId)==0?"":$minId;
             }
         } else {
             if (isset($_REQUEST['aktEtage'])) {

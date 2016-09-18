@@ -1,4 +1,10 @@
 
+Version: 0.0.54
+---------------------
+SHYS-113:
+Etage mit kleinster ID wird nun automatisch im Raumplan gewählt, wenn noch keine Etage aktiv ist.
+(Bisher war Default 2)
+
 Version: 0.0.53
 ---------------------
 SHYS-111:
