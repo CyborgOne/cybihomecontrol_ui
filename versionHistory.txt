@@ -1,4 +1,8 @@
 
+Version: 0.0.50
+---------------------
+Datenbank Export-Script korrigiert.
+
 Version: 0.0.49
 ---------------------
 Der Server unterstützt nun mehrere Sender. Das Heist bei jedem Gerät kann individuell angegeben werden, an welchen Sender das Schalt-Signal gesendet werden soll.
