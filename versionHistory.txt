@@ -1,4 +1,9 @@
 
+Version: 0.0.53
+---------------------
+SHYS-111:
+Sensor-ID in Tooltip für Sensoren anzeigen
+
 Version: 0.0.52
 ---------------------
 SHYS-107:

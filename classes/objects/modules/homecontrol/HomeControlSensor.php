@@ -139,6 +139,10 @@ class HomeControlSensor extends Object{
     function getIconTooltip() {
         $ttt = "<table cellspacing='10'><tr><td>" .$this->getSensorArtIconSrc(false,80) ."</td><td><center><b>" . $this->NAME ."</b></center><hr></br>";
         
+        if(strlen($this->ID)>0 ){
+            $ttt .= "<b>ID:</b> ".$this->ID."</br></br>";
+        }
+                
         if(strlen($this->ZIMMER)>0 ){
             $ttt .= "<b>Zimmer:</b> ".getDbValue("homecontrol_zimmer", "name", "id=".$this->ZIMMER)."</br></br>";
         }

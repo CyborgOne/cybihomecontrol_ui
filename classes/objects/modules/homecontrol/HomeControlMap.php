@@ -83,7 +83,34 @@ class HomeControlMap extends Object {
 
 
     function getInsertMask($x, $y) {
-        $mask = new Table(array("", "", ""));
+        
+        
+        $txfName = new TextField("Name", "", 30, 20);
+        $txfName->setToolTip("Angezeigter Name des Ger&auml;tes.");
+        
+        $txfX = new TextField("X", $x, 15, 4, false);
+        $txfX->setToolTip("X-Koordinate an der das Ger&auml;t im Raumplan angezeigt wird.");
+        
+        $txfY = new TextField("Y", $y, 15, 4, false);
+        $txfY->setToolTip("Y-Koordinate an der das Ger&auml;t im Raumplan angezeigt wird.");
+        
+        $cboDimm = new Checkbox("dimmer", "", "J", "N");
+        $cboDimm->setToolTip("Gibt an, ob es sich um einen dimmbaren Funkempfänger handelt. Nur m&ouml;glich f&uuml;r BT-Switch Ger&auml;te (FunkID-Bereich: 307-386)");
+        
+        $cobSender = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, name FROM homecontrol_sender", "sender_id");
+        $cobSender->setToolTip("Gibt an welcher Sender zum Schalten des Ger&auml;tes verwendet wird.");
+        
+        $cobSignalId = $this->getFunkIdCombo("FunkId", false);
+        $cobSignalId->setToolTip("Die ID die an den Sender geschickt wird (z.B. Funk-ID oder Relais. Je nach dem was f&uuml;r ein Sender gew&auml;hlt ist");
+        
+        $cobZimmer = $this->getZimmerCombo("Zimmer");
+        $cobZimmer->setToolTip("Das Zimmer in dem sich das Ger&auml;t befindet.");
+        
+        $cobArt = new ComboBox("Art", getComboArrayBySql("SELECT id, name FROM homecontrol_art"));
+        $cobArt->setToolTip("Bestimmt, welches Icon und Buttons f&uuml;r das Ger&auml;t angezeigt werden. ");
+        
+        
+        $mask = new Table(array("", "", "", ""));
         $mask->setSpacing(3);
 
         $mask->addSpacer(0, 10);
@@ -92,41 +119,50 @@ class HomeControlMap extends Object {
         $rTitle->setAttribute(0, new Title("Neues Objekt Anlegen"));
         $rTitle->setSpawnAll(true);
         $mask->addRow($rTitle);
-
         $mask->addSpacer(0, 10);
+        
+        $r2 = $mask->createRow();
+        $r2->setAttribute(0, "Name: ");
+        $r2->setAttribute(1, $txfName);
+        $r2->addSpan(2, 3);
+        $mask->addRow($r2);
 
         $rZimmer = $mask->createRow();
         $rZimmer->setAttribute(0, "Zimmer: ");
-        $rZimmer->setAttribute(1, $this->getZimmerCombo("Zimmer"));
-        $rZimmer->addSpan(1, 2);
+        $rZimmer->setAttribute(1, $cobZimmer);
+        $rZimmer->addSpan(1, 3);
         $mask->addRow($rZimmer);
 
-        $rArt = $mask->createRow();
-        $rArt->setAttribute(0, "Geraete-Art: ");
-        $rArt->setAttribute(1, new ComboBox("Art", getComboArrayBySql("SELECT id, name FROM homecontrol_art")));
-        $rArt->addSpan(1, 2);
-        $mask->addRow($rArt);
+        $mask->addSpacer(0,2);
 
-        $rKoord = $mask->createRow();
-        $rKoord->setAttribute(0, "Koordinaten: ");
-        $rKoord->setAttribute(1, new TextField("X", $x, 15, 4, false));
-        $rKoord->setAttribute(2, new TextField("Y", $y, 15, 4, false));
-        $mask->addRow($rKoord);
+        $r1 = $mask->createRow();
+        $r1->setAttribute(0, "Koordinate X: ");
+        $r1->setAttribute(1, $txfX);
+        $r1->setAttribute(2, "Koordinate Y");
+        $r1->setAttribute(3, $txfY);
+        $mask->addRow($r1);
 
-        $rFunk = $mask->createRow();
-        $rFunk->setAttribute(0, "Funk-ID 1/2: ");
-        $rFunk->setAttribute(1, $this->getFunkIdCombo("FunkId", false));
-        $rFunk->setAttribute(2, $this->getFunkIdCombo("FunkId2", true));
-        $mask->addRow($rFunk);
+        $mask->addSpacer(0,2);
+        
+        $r4 = $mask->createRow();
+        $r4->setAttribute(0, "Geraete-Art: ");
+        $r4->setAttribute(1, $cobArt);
+        $r4->setAttribute(2, "Dimmer?: ");
+        $r4->setAttribute(3, $cboDimm );
+        $mask->addRow($r4);
 
-        $rName = $mask->createRow();
-        $rName->setAttribute(0, "Name: ");
-        $rName->setAttribute(1, new TextField("Name", "", 30, 30));
-        $cboDimm = new Checkbox("dimmer", "Dimmer?", "J", "N");
-        $cboDimm->setToolTip("Nur m&ouml;glich f&uuml;r BT-Switch Ger&auml;te (FunkID-Bereich: 307-386)");
-        $rName->setAttribute(2, $cboDimm);
-        $mask->addRow($rName);
-
+        $mask->addSpacer(0,5);
+        
+        $r3 = $mask->createRow();
+        $r3->setAttribute(0, "Sender: ");
+        $r3->setAttribute(1, $cobSender);
+        $r3->setAttribute(2, "Signal-ID 1: ");
+        $r3->setAttribute(3, $cobSignalId);
+        //$r3->setAttribute(2, "Signal-ID 2: ");
+        //$r3->setAttribute(3, $this->getFunkIdCombo("FunkId2", true, $r->getNamedAttribute("funk_id2")));
+        $mask->addRow($r3);
+        
+        
         $mask->addSpacer(0, 20);
 
         $rActions = $mask->createRow();
