@@ -1,4 +1,9 @@
 
+Version: 0.0.52
+---------------------
+SHYS-107:
+Beim anlegen einer neuen Etage wird nun die Standard-Grafik automatisch hinterlegt.
+
 Version: 0.0.51
 ---------------------
 SQL-File für Installation aktualisiert

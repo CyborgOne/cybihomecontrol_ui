@@ -53,6 +53,17 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     if (isset($_REQUEST['InsertIntoDBhomecontrol_etagen']) && $_REQUEST['InsertIntoDBhomecontrol_etagen'] ==
         "Speichern") {
         $scDbTable->doInsert();
+        
+        $getMaxSql = "SELECT max(id) maxId FROM homecontrol_etagen";
+        $rslt = $_SESSION['config']->DBCONNECT->executeQuery($getMaxSql);
+        $r = mysql_fetch_array($rslt);
+        
+        exec("cp /var/www/pics/default_etage.jpg /var/www/pics/raumplan/".$r['maxId'].".jpg");
+        
+        $getMaxSql = "UPDATE homecontrol_etagen SET pic = 'pics/raumplan/".$r['maxId'].".jpg' WHERE id = ".$r['maxId'];
+        $rslt = $_SESSION['config']->DBCONNECT->executeQuery($getMaxSql);
+        
+        $scDbTable->refresh();
     }
 
 
