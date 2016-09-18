@@ -1,4 +1,8 @@
 
+Version: 0.0.51
+---------------------
+SQL-File für Installation aktualisiert
+
 Version: 0.0.50
 ---------------------
 Datenbank Export-Script korrigiert.
