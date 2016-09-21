@@ -41,6 +41,8 @@
         try {
             shell_exec("tail /var/www/switch.log -n 99 > /var/www/switch.cut");
             shell_exec("mv /var/www/switch.cut /var/www/switch.log");
+            shell_exec("sudo chown pi:www-data /var/www/switch.log");
+            shell_exec("sudo chmod 775 /var/www/switch.log");
         } catch (Exception $e){
              echo $e->getMessage(). "\n";
         } 
@@ -73,8 +75,6 @@
               }
       
               //echo "\n<br>Switch-URL: " .$arduinoUrl."?schalte&" .$id;
-              $urlArr = parse_url($arduinoUrl);
-              $host = $urlArr['host'];
     
               $senderUrl = getArduinoUrlForDeviceId($deviceId, $dbConnect);
               $useSenderUrl = strlen($senderUrl)>0?$senderUrl:$arduinoUrl;
@@ -83,33 +83,36 @@
               
               $check = @fsockopen($host, 80); 
               
-              If ($check) { 
-                $retVal = file_get_contents( $useSenderUrl."?schalte=".$id."&dimm=".$dimmer );
-                
-                try {
-                    $myfile = fopen("/var/www/switch.log", "a+") or die("Unable to open file!");
-                    fwrite($myfile, "(".date("d.M.Y - H:i:s")."): " .$useSenderUrl."?schalte=".$id."&dimm=".$dimmer."\n");
-                    fclose($myfile);
-                } catch (Exception $e){
-                     echo $e->getMessage(). "\n";
-                } 
+              
+                  If ($check) { 
+                    $retVal = file_get_contents( $useSenderUrl."?schalte=".$id."&dimm=".$dimmer );
                     
-                if(strpos(substr($retVal,0,50), "Warning")>0){
-                   $switchStatusCheck = false;
-                   echo "<b>Vorgang auf Grund eines unerwarteten Fehlers abgebrochen!</b><br><br>".$retVal;
-                   break;
-                } else {
-                   //echo "<br><font color='green'><b>schalte ".$id>=0?$id:($id*-1)." ".($status=="on"?"ein":"aus")."</b></font>";
-                } 
-              } else {
-                 echo "<br><font color='red'>KEINE VERBINDUNG zu: ".$host ."<br><b>Vorgang abgebrochen!</b></font>";
-                 break;
-              }
+                    try {
+                        $myfile = fopen("/var/www/switch.log", "a+") or die("Unable to open switch.log!");
+                        fwrite($myfile, "(".date("d.M.Y - H:i:s")."): " .$useSenderUrl."?schalte=".$id."&dimm=".$dimmer."\n");
+                        fclose($myfile);
+                    } catch (Exception $e){
+                         echo $e->getMessage(). "\n";
+                    } 
+                        
+                    if(strpos(substr($retVal,0,50), "Warning")>0){
+                       $switchStatusCheck = false;
+                       echo "<b>Vorgang auf Grund eines unerwarteten Fehlers abgebrochen!</b><br><br>".$retVal;
+                       break;
+                    } else {
+                       //echo "<br><font color='green'><b>schalte ".$id>=0?$id:($id*-1)." ".($status=="on"?"ein":"aus")."</b></font>";
+                    } 
+                  } else {
+                     echo "<br><font color='red'>KEINE VERBINDUNG zu: ".$host ."<br><b>Vorgang abgebrochen!</b></font>";
+                     break;
+                  }
+                 
+                  
             }
             //echo "<br>";
           }
           ob_flush();
-          sleep(.7);
+          sleep(1);
         }
     }
   }

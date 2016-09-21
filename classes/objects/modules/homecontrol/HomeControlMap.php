@@ -5,7 +5,9 @@ class HomeControlMap extends Object {
     private $LAYOUT_ART = false;
     private $CONTROL_IMAGE_WIDTH = 40;
     private $CONTROL_IMAGE_HEIGHT = 40;
-
+    private $SENSOR_IMAGE_WIDTH = 26;
+    private $SENSOR_IMAGE_HEIGHT = 26;
+    
     public $LAYOUTART_DESKTOP = "DESKTOP";
     public $LAYOUTART_TABLET = "TABLET";
     public $LAYOUTART_MOBILE = "MOBILE";
@@ -728,9 +730,9 @@ class HomeControlMap extends Object {
                 $dv->setStyle("background-color", "#aacc00");
                 $dv->setXPos($_REQUEST['X']);
                 $dv->setYPos($_REQUEST['Y']);
-                $dv->setWidth($this->CONTROL_IMAGE_WIDTH);
-                $dv->setHeight($this->CONTROL_IMAGE_HEIGHT);
-                $dv->add(new Text("Neu", 3, true, false, false, false));
+                $dv->setWidth($this->SENSOR_IMAGE_WIDTH);
+                $dv->setHeight($this->SENSOR_IMAGE_HEIGHT);
+                $dv->add(new Text("Neu", 2, true, false, false, false));
                 $dv->show();
             }
         }

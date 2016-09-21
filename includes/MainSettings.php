@@ -76,6 +76,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $notifyTargetMailRow = getRowByName($configDb->ROWS, "NotifyTargetMail");
     $timelineDurationRow = getRowByName($configDb->ROWS, "timelineDuration");
     $btSwitchActiveRow = getRowByName($configDb->ROWS, "btSwitchActive");
+    $switchButtonsOnIconActiveRow = getRowByName($configDb->ROWS, "switchButtonsOnIconActive");
 
     $loginForSwitchNeedName = 'value' . $loginForSwitchNeedRow->getNamedAttribute('id');
     $loginForTimelinePauseNeedName = 'value' . $loginForTimelinePauseNeedRow->getNamedAttribute('id');
@@ -90,6 +91,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $pagetitelName = 'value' . $pagetitelRow->getNamedAttribute('id');
     $timelineDurationName = 'value' . $timelineDurationRow->getNamedAttribute('id');
     $btSwitchActiveName = 'value' . $btSwitchActiveRow->getNamedAttribute('id');
+    $switchButtonsOnIconActiveName = 'value' . $switchButtonsOnIconActiveRow->getNamedAttribute('id');
 
 
     // Checkboxen brauchen Sonderbehandlung da bei fehlender Auswahl kein Wert mitgegeben wird
@@ -114,6 +116,10 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$btSwitchActiveName])) {
         $_REQUEST[$btSwitchActiveName] = 'N';
     }
+    if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$switchButtonsOnIconActiveName])) {
+        $_REQUEST[$switchButtonsOnIconActiveName] = 'N';
+    }
+
 
     if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && $_REQUEST['DbTableUpdate' .
         $configDb->TABLENAME] == "Speichern") {
@@ -134,6 +140,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $notifyTargetMailRow = getRowByName($configDb->ROWS, "NotifyTargetMail");
         $timelineDurationRow = getRowByName($configDb->ROWS, "timelineDuration");
         $btSwitchActiveRow = getRowByName($configDb->ROWS, "btSwitchActive");
+        $switchButtonsOnIconActiveRow = getRowByName($configDb->ROWS, "switchButtonsOnIconActive");
     }
 
 
@@ -144,6 +151,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $abwesendSimulation = $abwesendSimulationRow->getNamedAttribute('value') == "J" ? "J" : "N";
     $abwesendMotion = $abwesendMotionRow->getNamedAttribute('value') == "J" ? "J" : "N";
     $btSwitchActive = $btSwitchActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";        
+    $switchButtonsOnIconActive = $switchButtonsOnIconActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";        
         
     $sensorlogDauer = $sensorlogDauerRow->getNamedAttribute('value');
     $motionDauer = $motionDauerRow->getNamedAttribute('value');
@@ -178,6 +186,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         "Kamera Bewegungserkennung?", "J", $anwesendMotion);
 
     $chbBtSwitchActive = new Checkbox($btSwitchActiveName, "Intertechno BT-Switch aktiv?","J", $btSwitchActive);
+
+    $chbSwitchButtonsOnIconActive = new Checkbox($switchButtonsOnIconActiveName, "Schalt-Buttons in Steuerung direkt sichtbar?","J", $switchButtonsOnIconActive);
+
 
     $cobTimelineDuration = new Combobox($timelineDurationName, array(1 => "1", 2 =>
         "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6"), $timelineDuration);
@@ -218,10 +229,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $rightDiv = new Div();
     $rightDiv->add($chbLoginSwitchNeed);
     $rightDiv->add(new Spacer(5));
-    $rightDiv->add($divSessionDauer);
-
-    $rightDiv->add(new Spacer(20));
     $rightDiv->add($chbLoginForTimelinePauseNeed);
+    $rightDiv->add(new Spacer(5));
+    $rightDiv->add($divSessionDauer);
 
     $rightDiv->add(new Spacer(20));
     $rightDiv->add($divMotionDauer);
@@ -248,6 +258,11 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $lB->setAttribute(0, $chbBtSwitchActive);
     $leftTab->addRow($lB);
     
+    $lS = $leftTab->createRow();
+    $lS->setSpawnAll(true);
+    $lS->setAttribute(0, $chbSwitchButtonsOnIconActive);
+    $leftTab->addRow($lS);
+    
     $leftTab->addSpacer(0,20);
     
 
@@ -264,9 +279,172 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $rMain0->setAttribute(1, $rightDiv);
     $tblMain->addRow($rMain0);
 
-    $tblMain->addSpacer(0,50);
+     $tblMain->addSpacer(0, 20);
+    $tblMain->addSpacer(1, 15);
+    $tblMain->addSpacer(0, 20);
+
+    $t2 = new Title("Anwesenheits-Einstellungen");
+    $t2->setAlign("left");
+    $rMainT1 = $tblMain->createRow();
+    $rMainT1->setSpawnAll(true);
+    $rMainT1->setAttribute(0, $t2);
+    $tblMain->addRow($rMainT1);
+
+    $tblMain->addSpacer(0, 10);
+
+    $rMain0 = $tblMain->createRow();
+    $rMain0->setAttribute(0, $chbAnwesendMotion);
+    $rMain0->setAttribute(1, "");
+    $tblMain->addRow($rMain0);
 
 
+    $tblMain->addSpacer(0, 20);
+    $tblMain->addSpacer(1, 15);
+    $tblMain->addSpacer(0, 20);
+
+
+    $t3 = new Title("Abwesenheits-Einstellungen");
+    $t3->setAlign("left");
+    $rMainT2 = $tblMain->createRow();
+    $rMainT2->setSpawnAll(true);
+    $rMainT2->setAttribute(0, $t3);
+    $tblMain->addRow($rMainT2);
+
+    $tblMain->addSpacer(0, 10);
+
+    $rMain1 = $tblMain->createRow();
+    $rMain1->setAttribute(0, $chbAbwesendAlarm);
+    $rMain1->setAttribute(1, $chbAbwesendSimulation);
+    $tblMain->addRow($rMain1);
+
+    $rMain2 = $tblMain->createRow();
+    $rMain2->setAttribute(0, $chbAbwesendMotion);
+    $rMain2->setAttribute(1, "");
+    $tblMain->addRow($rMain2);
+
+    $tblMain->addSpacer(0, 25);
+
+    $rMainOk = $tblMain->createRow();
+    $rMainOk->setSpawnAll(true);
+    $rMainOk->setAttribute(0, new Button("DbTableUpdatepageconfig", "Speichern"));
+    $tblMain->addRow($rMainOk);
+
+
+
+    /*
+    * NETZWERK
+    */
+    $network = new DivByInclude("includes/NetworkConfig.php", false);
+
+    $tblMain->addSpacer(0, 20);
+    $tblMain->addSpacer(1, 15);
+    $tblMain->addSpacer(0, 20);
+
+    $rMainNet = $tblMain->createRow();
+    $rMainNet->setSpawnAll(true);
+    $rMainNet->setAttribute(0, $network);
+    $tblMain->addRow($rMainNet);
+
+
+    $tblMain->addSpacer(0, 20);
+    $tblMain->addSpacer(1, 15);
+    $tblMain->addSpacer(0, 20);
+    
+    
+    
+    
+    $tS = new Title("Bewegungserkennung");
+    $tS->setAlign("left");
+    $rMainTs = $tblMain->createRow();
+    $rMainTs->setSpawnAll(true);
+    $rMainTs->setAttribute(0, $tS);
+    $tblMain->addRow($rMainTs);
+    $tblMain->addSpacer(0, 10);
+
+    $dvMotion = new Table(array("",""));
+    $fMotion = new Form();
+    // Dienst aktiv?
+    //echo exec("sudo pgrep -x motion", $output, $return);
+    //echo "/";
+    //print_r($output);
+    //echo"/".$return."/";
+    //echo "Ok, Motion-Detection-Process ist gestartet\n";
+    $fMotion->add(new Hiddenfield("Motion", isset($return) && $return==0 ? "off" : "on"));
+    $fMotion->add(new Button("ok", "Bewegungserkennung der Kamera " . (isset($return) && $return==0 ? "deaktivieren" : "aktivieren")));
+
+    $rMotion = $tblMain->createRow();
+    $rMotion->setSpawnAll(true);
+    $rMotion->setAttribute(0, $fMotion);
+
+    $tblMain->addRow($rMotion);
+    
+    
+    
+    $tblMain->addSpacer(0, 20);
+    $tblMain->addSpacer(1, 15);
+    $tblMain->addSpacer(0, 20);
+    
+        
+    
+    $tS = new Title("Sonstige Einstellungen");
+    $tS->setAlign("left");
+    $rMainTs = $tblMain->createRow();
+    $rMainTs->setSpawnAll(true);
+    $rMainTs->setAttribute(0, $tS);
+    $tblMain->addRow($rMainTs);
+    $tblMain->addSpacer(0, 10);
+
+    $fNoFrame = new Form();
+    $fNoFrame->add(new Hiddenfield("noFrame", $noFrameExists ? "off" : "on"));
+    $fNoFrame->add(new Button("ok", "Banner auf dieser IP " . ($noFrameExists ?
+        "einblenden" : "ausblenden")));
+
+    $rNoFrame = $tblMain->createRow();
+    $rNoFrame->setSpawnAll(true);
+    $rNoFrame->setAttribute(0, $fNoFrame);
+    $tblMain->addRow($rNoFrame);
+
+    $tblMain->addSpacer(0, 10);
+
+    $fRemoveCamPics = new Form();
+    $fRemoveCamPics->add(new Hiddenfield("removeCamPics", "dropIt"));
+    $fRemoveCamPics->add(new Button("ok", "Bewegungserkennungsbilder entfernen"));
+
+    $rRemoveCamPics = $tblMain->createRow();
+    $rRemoveCamPics->setSpawnAll(true);
+    $rRemoveCamPics->setAttribute(0, $fRemoveCamPics);
+    $tblMain->addRow($rRemoveCamPics);
+
+
+
+    $f = new Form();
+    $f->add(new Hiddenfield("UpdateAllMaskIsActive", "true"));
+    $f->add($tblMain);
+    $f->show();
+
+    if (isset($_REQUEST["removeCamPics"]) && $_REQUEST["removeCamPics"] == "dropIt") {
+        echo shell_exec("sudo rm " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) .
+            "/cam_pics/* -R");
+    }
+
+    if (isset($_REQUEST["Motion"]) && $_REQUEST["Motion"] == "on") {
+        echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/startMotionDetection.sh");
+    }
+
+    if (isset($_REQUEST["Motion"]) && $_REQUEST["Motion"] == "off") {
+        echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/stopMotionDetection.sh");
+    }
+
+
+
+
+
+
+
+    $tblMain = new Table(array("", ""));
+    $tblMain->addSpacer(0, 20);
+    $tblMain->addSpacer(1, 15);
+    $tblMain->addSpacer(0, 20);
 
     $t2 = new Title("Sender-Einstellungen");
     $t2->setAlign("left");
@@ -356,164 +534,16 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $lS->setAttribute(0, $newSwitchBtn);
     $tblMain->addRow($lS);
 
-    $tblMain->addSpacer(0,50);
-
-
-
-
-    $t2 = new Title("Anwesenheits-Einstellungen");
-    $t2->setAlign("left");
-    $rMainT1 = $tblMain->createRow();
-    $rMainT1->setSpawnAll(true);
-    $rMainT1->setAttribute(0, $t2);
-    $tblMain->addRow($rMainT1);
-
-    $tblMain->addSpacer(0, 10);
-
-    $rMain0 = $tblMain->createRow();
-    $rMain0->setAttribute(0, $chbAnwesendMotion);
-    $rMain0->setAttribute(1, "");
-    $tblMain->addRow($rMain0);
-
-
-    $tblMain->addSpacer(0, 50);
-
-
-
-
-    $t3 = new Title("Abwesenheits-Einstellungen");
-    $t3->setAlign("left");
-    $rMainT2 = $tblMain->createRow();
-    $rMainT2->setSpawnAll(true);
-    $rMainT2->setAttribute(0, $t3);
-    $tblMain->addRow($rMainT2);
-
-    $tblMain->addSpacer(0, 10);
-
-    $rMain1 = $tblMain->createRow();
-    $rMain1->setAttribute(0, $chbAbwesendAlarm);
-    $rMain1->setAttribute(1, $chbAbwesendSimulation);
-    $tblMain->addRow($rMain1);
-
-    $rMain2 = $tblMain->createRow();
-    $rMain2->setAttribute(0, $chbAbwesendMotion);
-    $rMain2->setAttribute(1, "");
-    $tblMain->addRow($rMain2);
-
-    $tblMain->addSpacer(0, 25);
-
-    $rMainOk = $tblMain->createRow();
-    $rMainOk->setSpawnAll(true);
-    $rMainOk->setAttribute(0, new Button("DbTableUpdatepageconfig", "Speichern"));
-    $tblMain->addRow($rMainOk);
-
-    /*
-    * NETZWERK
-    */
-    $network = new DivByInclude("includes/NetworkConfig.php", false);
 
     $tblMain->addSpacer(0, 20);
     $tblMain->addSpacer(1, 15);
     $tblMain->addSpacer(0, 20);
 
-    $rMainNet = $tblMain->createRow();
-    $rMainNet->setSpawnAll(true);
-    $rMainNet->setAttribute(0, $network);
-    $tblMain->addRow($rMainNet);
 
-
-    $tblMain->addSpacer(0, 20);
-    $tblMain->addSpacer(1, 15);
-    $tblMain->addSpacer(0, 20);
     
-    
-    
-    
-    $tS = new Title("Bewegungserkennung");
-    $tS->setAlign("left");
-    $rMainTs = $tblMain->createRow();
-    $rMainTs->setSpawnAll(true);
-    $rMainTs->setAttribute(0, $tS);
-    $tblMain->addRow($rMainTs);
-    $tblMain->addSpacer(0, 10);
-
-    $dvMotion = new Table(array("",""));
-    $fMotion = new Form();
-    // Dienst aktiv?
-    //echo exec("sudo pgrep -x motion", $output, $return);
-    //echo "/";
-    //print_r($output);
-    //echo"/".$return."/";
-    //echo "Ok, Motion-Detection-Process ist gestartet\n";
-    $fMotion->add(new Hiddenfield("Motion", isset($return) && $return==0 ? "off" : "on"));
-    $fMotion->add(new Button("ok", "Bewegungserkennung der Kamera " . (isset($return) && $return==0 ? "deaktivieren" : "aktivieren")));
-
-    $rMotion = $tblMain->createRow();
-    $rMotion->setSpawnAll(true);
-    $rMotion->setAttribute(0, $fMotion);
-
-    $tblMain->addRow($rMotion);
-    
-    
-    
-    $tblMain->addSpacer(0, 20);
-    $tblMain->addSpacer(1, 15);
-    $tblMain->addSpacer(0, 20);
-    
-        
-    
-    $tS = new Title("Sonstige Einstellungen");
-    $tS->setAlign("left");
-    $rMainTs = $tblMain->createRow();
-    $rMainTs->setSpawnAll(true);
-    $rMainTs->setAttribute(0, $tS);
-    $tblMain->addRow($rMainTs);
-    $tblMain->addSpacer(0, 10);
-
-    $fNoFrame = new Form();
-    $fNoFrame->add(new Hiddenfield("noFrame", $noFrameExists ? "off" : "on"));
-    $fNoFrame->add(new Button("ok", "Banner auf dieser IP " . ($noFrameExists ?
-        "einblenden" : "ausblenden")));
-
-    $rNoFrame = $tblMain->createRow();
-    $rNoFrame->setSpawnAll(true);
-    $rNoFrame->setAttribute(0, $fNoFrame);
-    $tblMain->addRow($rNoFrame);
-
-    $tblMain->addSpacer(0, 10);
-
-    $fRemoveCamPics = new Form();
-    $fRemoveCamPics->add(new Hiddenfield("removeCamPics", "dropIt"));
-    $fRemoveCamPics->add(new Button("ok", "Bewegungserkennungsbilder entfernen"));
-
-    $rRemoveCamPics = $tblMain->createRow();
-    $rRemoveCamPics->setSpawnAll(true);
-    $rRemoveCamPics->setAttribute(0, $fRemoveCamPics);
-    $tblMain->addRow($rRemoveCamPics);
-
-    $tblMain->addSpacer(0, 15);
-    $tblMain->addSpacer(1, 25);
-
-
-
     $f = new Form();
-    $f->add(new Hiddenfield("UpdateAllMaskIsActive", "true"));
     $f->add($tblMain);
     $f->show();
-
-    if (isset($_REQUEST["removeCamPics"]) && $_REQUEST["removeCamPics"] == "dropIt") {
-        echo shell_exec("sudo rm " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) .
-            "/cam_pics/* -R");
-    }
-
-    if (isset($_REQUEST["Motion"]) && $_REQUEST["Motion"] == "on") {
-        echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/startMotionDetection.sh");
-    }
-
-    if (isset($_REQUEST["Motion"]) && $_REQUEST["Motion"] == "off") {
-        echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/stopMotionDetection.sh");
-    }
-
 
 }
 

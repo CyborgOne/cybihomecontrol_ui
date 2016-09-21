@@ -139,12 +139,13 @@ echo "(26, 'motionDauer', '9', 0, '2015-09-28 00:37:09', 'Tage die Bewegungs-Bil
 echo "(27, 'sensorlogDauer', '60', 0, '2015-08-28 07:03:00', 'Tage die Sensor-Log Daten behalten')," >> $filename
 echo "(28, 'abwesendAlarm', 'N', 0, '2016-08-10 20:50:09', NULL)," >> $filename
 echo "(29, 'currentMode', '2', 0, '2015-10-11 17:18:53', NULL)," >> $filename
-echo "(30, 'timelineDuration', '3', 0, '2015-09-28 00:33:59', 'Gibt an, wie viele Tage in der Timeline angezeigt werden sollen')," >> $filename
+echo "(30, 'timelineDuration', '3', 0, '2015-09-28 00:33:59', 'Wie viele Tage sollen in der Timeline angezeigt werden?')," >> $filename
 echo "(31, 'loginForTimelinePauseNeed', 'J', 0, '2016-05-31 09:22:58', 'Gibt an, ob zum pausieren in der Timeline ein Login notwendig ist.')," >> $filename
-echo "(32, 'btSwitchActive', 'J', 0, '2016-09-02 22:37:16', 'Gibt an, ob ein BT-Switch eingesetzt wird/werden soll')," >> $filename
-echo "(33, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Wenn aktiviert, ist der Login zum schalten nur von Extern (abweichene IP Range) notwendig.');" >> $filename
+echo "(32, 'btSwitchActive', 'J', 0, '2016-09-02 22:37:16', 'Gibt an, ob ein BT-Switch eingesetzt wird.')," >> $filename
+echo "(33, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Login zum schalten nur bei abweichender IP Range notwendig')," >> $filename
+echo "(34, 'switchButtonsOnIconActive', 'J', 0, '0000-00-00 00:00:00', 'Buttons in der Steuerung direkt sichtbar?');" >> $filename
 
-echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=38;" >> $filename
+echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=35;" >> $filename
 
 
 ########################################################
@@ -153,7 +154,6 @@ echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCR
 #
 ########################################################
 
-########################################################
 # Cron View
 ########################################################
 # 0 (für Sonntag) bis 6 (für Samstag)
@@ -168,7 +168,6 @@ echo "union SELECT 'Samstag', 6, hc5.* FROM homecontrol_cron hc5 WHERE samstag =
 echo "union SELECT 'Sonntag', 0, hc6.* FROM homecontrol_cron hc6 WHERE sonntag = 'J';"         >> $filename
 
 
-########################################################
 # Regel View
 ########################################################
 #echo "drop view if exists homecontrol_regel_item_view;"                                         >> $filename
@@ -178,7 +177,6 @@ echo "FROM homecontrol_regeln r, homecontrol_regeln_items i"                    
 echo "WHERE r.id = i.regel_id;"                                                                  >> $filename
 
 
-########################################################
 # Shortcut View
 ########################################################
 #echo "drop view if exists homecontrol_shortcutview;"                                                                         >> $filename

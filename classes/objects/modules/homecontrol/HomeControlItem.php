@@ -375,8 +375,10 @@ class HomeControlItem extends Object {
                 Y + $_SESSION['additionalLayoutHeight']) . "px; width:" . $this->
                 CONTROL_IMAGE_WIDTH . "px; height:" . $this->CONTROL_IMAGE_HEIGHT . "px;\">";
             echo $this->getControlArtIconSrc();
-
-            $this->getSwitchButtons()->show();            
+            
+            if($_SESSION['config']->PUBLICVARS['switchButtonsOnIconActive']=="J"){
+                $this->getSwitchButtons()->show(); 
+            }
             echo "</div>";
             
             if($this->DIMMER=="J"){

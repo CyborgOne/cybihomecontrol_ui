@@ -3,7 +3,9 @@ include ("config/dbConnect.php");
 include ("classes/objects/database/DbConnect.php");
 
 include ("functions/global.php");
-include ("functions/homecontrol_functions.php");if (!isset($_REQUEST['shortcutName']) ) {
+include ("functions/homecontrol_functions.php");
+
+if (!isset($_REQUEST['shortcutName']) ) {
     parse_str($argv[1]);
 }
 

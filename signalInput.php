@@ -26,7 +26,7 @@ $result = $_SESSION['config']->DBCONNECT->executeQuery($sql);
 $sql = "INSERT INTO homecontrol_sensor_log(sensor_id, value, update_time) values (".$sensorId.",".$sensorWert.",".time().")";
 $result = $_SESSION['config']->DBCONNECT->executeQuery($sql);
 
-$myfile = fopen("signalIn.log", "a+") or die("Unable to open file!");
+$myfile = fopen("signalIn.log", "a+") or die("Unable to open signalIn.log!");
 fwrite($myfile, "\n".date("d.M.Y H:i:s").": " ."Sensor ".$sensorId."  aktualisiert von: ".$lastVal ." nach " .$sensorWert );
 fclose($myfile);
 
@@ -49,7 +49,7 @@ if(strlen($SENSOR_URL_COMMAND)>0){
   switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'], $SENSOR_URL_COMMAND, $_SESSION['config']->DBCONNECT);
  
   $contents = file_get_contents("http://localhost/?switchShortcut=" . $SENSOR_URL_COMMAND);
-  $myfile = fopen("signalIn.log", "a+") or die("Unable to open file!");
+  $myfile = fopen("signalIn.log", "a+") or die("Unable to open signalIn.log!");
   fwrite($myfile, "\n SCHALTUNG -> ".$SENSOR_URL_COMMAND);
   fclose($myfile);
 }

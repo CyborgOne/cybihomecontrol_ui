@@ -1,4 +1,9 @@
 
+Version: 0.0.56
+---------------------
+SHYS-117: Sensoren beim anlegen an Größe anpassen
+SHYS-96: Buttons in Steuerung optional (In Basis-Einstellungen steuerbar)
+
 Version: 0.0.55
 ---------------------
 SHYS-112:
