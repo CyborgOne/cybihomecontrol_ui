@@ -1,4 +1,8 @@
 
+Version: 0.0.57
+---------------------
+SHYS-16 - Benutzerverwaltung in Basiseinstellungen
+
 Version: 0.0.56
 ---------------------
 SHYS-117: Sensoren beim anlegen an Größe anpassen

@@ -352,199 +352,23 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     
     
     
-    
-    $tS = new Title("Bewegungserkennung");
-    $tS->setAlign("left");
-    $rMainTs = $tblMain->createRow();
-    $rMainTs->setSpawnAll(true);
-    $rMainTs->setAttribute(0, $tS);
-    $tblMain->addRow($rMainTs);
-    $tblMain->addSpacer(0, 10);
-
-    $dvMotion = new Table(array("",""));
-    $fMotion = new Form();
-    // Dienst aktiv?
-    //echo exec("sudo pgrep -x motion", $output, $return);
-    //echo "/";
-    //print_r($output);
-    //echo"/".$return."/";
-    //echo "Ok, Motion-Detection-Process ist gestartet\n";
-    $fMotion->add(new Hiddenfield("Motion", isset($return) && $return==0 ? "off" : "on"));
-    $fMotion->add(new Button("ok", "Bewegungserkennung der Kamera " . (isset($return) && $return==0 ? "deaktivieren" : "aktivieren")));
-
-    $rMotion = $tblMain->createRow();
-    $rMotion->setSpawnAll(true);
-    $rMotion->setAttribute(0, $fMotion);
-
-    $tblMain->addRow($rMotion);
-    
-    
-    
-    $tblMain->addSpacer(0, 20);
-    $tblMain->addSpacer(1, 15);
-    $tblMain->addSpacer(0, 20);
-    
-        
-    
-    $tS = new Title("Sonstige Einstellungen");
-    $tS->setAlign("left");
-    $rMainTs = $tblMain->createRow();
-    $rMainTs->setSpawnAll(true);
-    $rMainTs->setAttribute(0, $tS);
-    $tblMain->addRow($rMainTs);
-    $tblMain->addSpacer(0, 10);
-
-    $fNoFrame = new Form();
-    $fNoFrame->add(new Hiddenfield("noFrame", $noFrameExists ? "off" : "on"));
-    $fNoFrame->add(new Button("ok", "Banner auf dieser IP " . ($noFrameExists ?
-        "einblenden" : "ausblenden")));
-
-    $rNoFrame = $tblMain->createRow();
-    $rNoFrame->setSpawnAll(true);
-    $rNoFrame->setAttribute(0, $fNoFrame);
-    $tblMain->addRow($rNoFrame);
-
-    $tblMain->addSpacer(0, 10);
-
-    $fRemoveCamPics = new Form();
-    $fRemoveCamPics->add(new Hiddenfield("removeCamPics", "dropIt"));
-    $fRemoveCamPics->add(new Button("ok", "Bewegungserkennungsbilder entfernen"));
-
-    $rRemoveCamPics = $tblMain->createRow();
-    $rRemoveCamPics->setSpawnAll(true);
-    $rRemoveCamPics->setAttribute(0, $fRemoveCamPics);
-    $tblMain->addRow($rRemoveCamPics);
-
-
 
     $f = new Form();
     $f->add(new Hiddenfield("UpdateAllMaskIsActive", "true"));
     $f->add($tblMain);
     $f->show();
 
-    if (isset($_REQUEST["removeCamPics"]) && $_REQUEST["removeCamPics"] == "dropIt") {
-        echo shell_exec("sudo rm " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) .
-            "/cam_pics/* -R");
-    }
 
-    if (isset($_REQUEST["Motion"]) && $_REQUEST["Motion"] == "on") {
-        echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/startMotionDetection.sh");
-    }
-
-    if (isset($_REQUEST["Motion"]) && $_REQUEST["Motion"] == "off") {
-        echo shell_exec("sudo exec " . dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME']) ."/stopMotionDetection.sh");
-    }
-
-
-
-
-
-
-
-    $tblMain = new Table(array("", ""));
-    $tblMain->addSpacer(0, 20);
-    $tblMain->addSpacer(1, 15);
-    $tblMain->addSpacer(0, 20);
-
-    $t2 = new Title("Sender-Einstellungen");
-    $t2->setAlign("left");
-    $rMainT1 = $tblMain->createRow();
-    $rMainT1->setSpawnAll(true);
-    $rMainT1->setAttribute(0, $t2);
-    $tblMain->addRow($rMainT1);
-
-    $dbTblSender = new DbTable($_SESSION['config']->DBCONNECT, 
-                                'homecontrol_sender', 
-                                array("name", "ip", "etage", "zimmer", "range_von", "range_bis", "default_jn"), 
-                                "Name, IP, Etage, Zimmer, Bereich von:, Bis, Standard?",
-                                "",
-                                "default_jn, name");
+    include ("OtherSettings.inc.php");
     
-    $dbTblSender->setHeaderEnabled(true);
-    $dbTblSender->setDeleteInUpdate(true);
-    $dbTblSender->setColSizes(array("200", "40", "60", "90", "50", "50", "50"));
-    
-    $deleteMask=null;
-    if ($dbTblSender->isDeleteInUpdate()) {
-        $deleteMask = !$dbTblSender->doDeleteFromUpdatemask() ? null : $dbTblSender->doDeleteFromUpdatemask();
-    }
-    if ($deleteMask != null) {
-        $rDel = $tblMain->createRow();
-        $rDel->setAttribute(0, $deleteMask);
-        $rDel->setSpawnAll(true);
-        $tblMain->addRow($rDel);
-    }
-    
-    $newSwitchBtn = new Text("");
-    
-    // Neuer Eintrag
-    if (isset($_REQUEST['InsertIntoDBhomecontrol_sender']) && $_REQUEST['InsertIntoDBhomecontrol_sender'] == "Speichern") {
-        checkDefaultSender($dbTblSender->ROWS);
+    include ("NetworkConfig.inc.php");
 
-        $dbTblSender->doInsert();
-        $dbTblSender->refresh();
+    include ("SenderConfig.inc.php");
 
-    } else if (isset($_REQUEST[$dbTblSender->getNewEntryButtonName()])) {
+    include ("UserConfig.inc.php");
 
-            $dbTblSender->setBorder(0);
-            $insMsk = $dbTblSender->getInsertMask();
-            $hdnFld = $insMsk->getAttribute(1);
-            if ($hdnFld instanceof Hiddenfield) {
-                $insMsk->setAttribute(1, new Hiddenfield($dbTblSender->getNewEntryButtonName(), "-"));
-            }
-
-            $rNew = $tblMain->createRow();
-            $rNew->setAttribute(0, $insMsk);
-            $rNew->setSpawnAll(true);
-            $tblMain->addRow($rNew);
-            $tblMain->addSpacer(0,10);
-    } else {
-        $newSwitchBtn = $dbTblSender->getNewEntryButton("Neuen Sender anlegen");    
-    }
-
-    if (isset($_REQUEST["DbTableUpdate" . $dbTblSender->TABLENAME])) {
-        checkDefaultSender($dbTblSender->ROWS);
-        
-        $dbTblSender->doUpdate();
-    }
-    
-        
-    if ($dbTblSender->isDeleteInUpdate()) {
-        $deleteMask = $dbTblSender->doDeleteFromUpdatemask() ? null : $dbTblSender->doDeleteFromUpdatemask();
-        if ($deleteMask != null) {
-            $lS = $tblMain->createRow();
-            $lS->setSpawnAll(true);
-            $lS->setAttribute(0, $deleteMask);
-            $tblMain->addRow($lS);
-        }            
-    }
-
-    
-    $tblArduinoSwitches = $dbTblSender->getUpdateMask();
-    
-    $tblMain->addSpacer(0,20);
-
-    $lS = $tblMain->createRow();
-    $lS->setSpawnAll(true);
-    $lS->setAttribute(0, $tblArduinoSwitches);
-    $tblMain->addRow($lS);
-    
-    $lS = $tblMain->createRow();
-    $lS->setSpawnAll(true);
-    $lS->setAttribute(0, $newSwitchBtn);
-    $tblMain->addRow($lS);
-
-
-    $tblMain->addSpacer(0, 20);
-    $tblMain->addSpacer(1, 15);
-    $tblMain->addSpacer(0, 20);
-
-
-    
-    $f = new Form();
-    $f->add($tblMain);
-    $f->show();
-
+    $spc = new Spacer();
+    $spc->show();
 }
 
 ?>

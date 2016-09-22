@@ -69,7 +69,8 @@ class DbTable extends Object {
     private $UPDATE_USERID_ON_INSERT = true;
     private $UPDATE_USERID_ON_UPDATE = false;
     private $TEXTEDITOR_ENABLED = true;
-
+    
+    private $ADDITIONAL_UPDATE_FIELDS = array();
 
     function isUpdateUserIdOnInsert() {
         return $this->UPDATE_USERID_ON_INSERT;
@@ -95,6 +96,11 @@ class DbTable extends Object {
         $this->TEXTEDITOR_ENABLED = $bool;
     }
 
+    function setAdditionalUpdateFields($formFieldArray){
+        $this->ADDITIONAL_UPDATE_FIELDS = $formFieldArray;
+    }
+    
+    
     /**
      * DbTable($con, $tbname="", $cols=array("*"), $labels="", $defaults="", $o="", $w="")
      *  
@@ -1293,8 +1299,7 @@ class DbTable extends Object {
             $table->setAlignments($this->ALIGNMENTS);
         }
 
-        if (isset($_REQUEST["showUpdateMask" . $this->TABLENAME]) && strlen($_REQUEST["showUpdateMask" .
-            $this->TABLENAME]) > 0) {
+        if (isset($_REQUEST["showUpdateMask" . $this->TABLENAME]) && strlen($_REQUEST["showUpdateMask" .$this->TABLENAME]) > 0) {
             $r = $table->createRow();
             $r->setSpawnAll(true);
             $r->setAttribute(0, $this->getSingleUpdateMask($_REQUEST["showUpdateMask" . $this->
@@ -1770,7 +1775,7 @@ class DbTable extends Object {
         for ($i = 0; $i < mysql_num_fields($result) - 1; $i++) {
             $fieldName = mysql_field_name($result, $i);
 
-            $arrChk = array_search($fieldName, $this->NOINSERTCOLS);
+            $arrChk = array_search($fieldName, $this->NOUPDATECOLS);
             if (strlen($arrChk) == 0) {
                 $r = $table->createRow();
 
@@ -1858,9 +1863,17 @@ class DbTable extends Object {
                 $table->addRow($r);
             }
         }
+        
+        foreach($this->ADDITIONAL_UPDATE_FIELDS as $label=>$field){
+                $r = $table->createRow();
+                $r->setAttribute(0, $label);
+                $r->setAttribute(1, $field);
+                $table->addRow($r);
+        }
 
         $okButton = new Button("DbTableUpdate" . $this->TABLENAME, "Speichern");
         $r = $table->createRow();
+        $r->setSpawnAll(true);
         $r->setAttribute(0, $okButton);
         $table->addRow($r);
 
@@ -1944,7 +1957,7 @@ class DbTable extends Object {
                     //   }
 
                     $sql = $sql . " WHERE id = " . $rowId;
-                    //      echo $sql."<br>";
+                          echo $sql."<br>";
                     $this->DBCONNECT->executeQuery($sql);
 
                     $updateDo = true;

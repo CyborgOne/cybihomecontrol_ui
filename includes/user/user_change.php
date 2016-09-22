@@ -140,29 +140,27 @@ echo "
 		  </td>
 		</tr>
 
-   	    <tr height='25'>
+   	    <tr height='5'>
 		  <td colspan='2'>
 		  </td>
 		</tr>
 
 ";
 
-if ($_SESSION['config']->CURRENTUSER->STATUS=='admin')
-{
-  echo "		
-		
-		<tr>
-		  <td>
-		    Status:<br>
-		  </td>
-		  <td>
-		    <input type='text' name='Status' size='7' maxlength='5' value='" .$usrrow['Status'] ."'>
-		  </td>
-		</tr>
-	";
+if ($_SESSION['config']->CURRENTUSER->STATUS=='admin'){
+    $cobStatus = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, title FROM userstatus", "Status", $_SESSION['config']->CURRENTUSER->STATUS);
+    $r = new Row(array("",""));
+    $r->setAttribute(0,"Status: ");
+    $r->setAttribute(1,$cobStatus);
+    $r->show();
 }
 
 echo "
+   	    <tr height='5'>
+		  <td colspan='2'>
+		  </td>
+		</tr>
+
 		<tr>
 		  <td>
 		    Neues Passwort:<br>
