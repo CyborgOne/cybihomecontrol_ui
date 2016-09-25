@@ -4,27 +4,11 @@
  *  Script für Minütigen Cron-Job um Zeitgesteuerte Schaltvorgänge durchzuführen
  *
  *  (c) by Daniel Scheidler   -   September 2014
- */
-include ("config/dbConnect.php");
-include ("classes/objects/database/DbConnect.php");
-
-include ("functions/global.php");
-include ("functions/homecontrol_functions.php");
-
-$con = new mysqli($DBHOST, $DBUSER, $DBPASS, $DBNAME);
-if (!$con) {
-    echo "Failed to connect to MySQL: ";
-    return;
-}
-
-// TODO: eigentlich nicht mehr notwendig
-$sqlA = "SELECT id, name, value FROM pageconfig WHERE name = 'arduino_url' ";
-$resultA = mysqli_query($con, $sqlA);
-$rA = mysqli_fetch_array($resultA);
-$arduinoUrl = "http://".$rA['value'];
+*/
+include("init.php");
+$arduinoUrl = "";
 
 // ------------------------------
-
 
 $currentDayNumber = date('w', strtotime('today'));
 $currentStd = date('G', strtotime('now'));
@@ -59,6 +43,24 @@ switch ($currentDayNumber) {
         break;
 }
 
+if(!checkAction("cron_".$currentStd.":".$currentMin.":".$currentDayName)){
+    echo "cron_" .$currentDayName ." " .date("d.M.Y") .":" .$currentStd .":" .$currentMin. " --- bereits ausgef&uuml;hrt\n";
+    return;
+}
+echo "Check: cron_" .$currentDayName ." " .date("d.M.Y") .":" .$currentStd .":" .$currentMin ."\n";
+
+if(strlen($_SESSION['config']->PUBLICVARS['gmailAdress'])>0 && strlen($_SESSION['config']->PUBLICVARS['gmailAppPassword'])>0 ){
+  $in    = connectToGmailInbox($_SESSION['config']->PUBLICVARS['gmailAdress'], $_SESSION['config']->PUBLICVARS['gmailAppPassword']);
+  $mails = getMailsFromGmailInbox($in);
+  $unreadMails = getEmailCount($in, $mails, true);
+  closeGmailInbox($in);
+//  echo "Ungelesene Mails: ".$unreadMails."\n";
+  
+  // Anzahl ungelesener Mails in Sensor-Tabelle speichern
+  if(checkSensorInputMissingValues()){
+     refreshSensorValue($_SESSION['config']->DBCONNECT, 999999999, $unreadMails);
+  }
+}
 
 // Aktueller Wochentag muss übereinstimmen
 $whereStmtCurrCron = strtolower($currentDayName)."='J'";
@@ -68,11 +70,12 @@ $whereStmtCurrCron .= " and stunde=".$currentStd." and minute=".$currentMin;
 
 // Betroffene Cron-Einträge selektieren
 $sql = "SELECT id, name, beschreibung FROM homecontrol_cron WHERE ".$whereStmtCurrCron;
-$result = mysqli_query($con, $sql);
+$result =  $_SESSION['config']->DBCONNECT->executeQuery($sql);
 
 //echo "Aktuelle Cron Anzahl: ".mysqli_num_rows($result)."<br><br>";
-if (mysqli_num_rows($result) > 0) {
-    echo "\nRUN HOMECONTROL-CRON: ".$currentDayName." ".$currentStd.":".$currentMin."\n";
+$ts = isset($_REQUEST['tmstmp'])?$_REQUEST['tmstmp']:"";
+if (mysqli_num_rows($result) > 0 ) {
+    echo "\nRUN HOMECONTROL-CRON: ".$currentDayName." ".$currentStd.":".$currentMin."-".time()."\n";
 
     $shortcutUrls = array();
     while ($row = mysqli_fetch_array($result)) {

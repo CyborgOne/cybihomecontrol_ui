@@ -157,7 +157,7 @@ class DbRow extends Object{
     if(count($this->COLNAMES)>0){
     	$chk=0;
         $i=0;
-		foreach($this->COLNAMES as $cn){
+	foreach($this->COLNAMES as $cn){
           if(strlen($this->getAttribute($i))>0){
     	      if($chk>0){
     	 	    $COLNAMESTRING .= ", ";
@@ -166,7 +166,7 @@ class DbRow extends Object{
     	      $chk++;
           }
           $i++;
-	    }
+	}
     } 
 	
 	if(strlen($COLNAMESTRING)==0){
@@ -186,7 +186,7 @@ class DbRow extends Object{
 	}	
 	
 	$sql .= ") ";
-
+//echo $sql;
 	$_SESSION['config']->DBCONNECT->executeQuery($sql);
   }
 

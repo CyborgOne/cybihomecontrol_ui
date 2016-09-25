@@ -1,4 +1,11 @@
 
+Version: 0.0.58
+---------------------
+Mail-Sensor in Anzeige (Etagen-unabhängig)
+Signal-Input als Methode ausgelagert
+Anzahl ungelesener Mails abfragen von GMail Account (Imap)
+SignalInput brach Cron ab. korrigiert.
+
 Version: 0.0.57
 ---------------------
 SHYS-16 - Benutzerverwaltung in Basiseinstellungen

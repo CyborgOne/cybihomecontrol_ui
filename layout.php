@@ -8,8 +8,9 @@
 $detect = new Mobile_Detect();
 
 $bannerWidth = 780;
+$bannerHeight = 195;
 $mainSizeInternal = 620;
-$_SESSION['additionalLayoutHeight'] = 195;
+$_SESSION['additionalLayoutHeight'] = $bannerHeight;
 
 $mainHeight = 390;
 $mainWidth = $mainSizeInternal;
@@ -102,6 +103,8 @@ if(!$noFrameLayout){
 }
 
   
+
+
 
 $modeSwitchComboTbl = new Table(array(""));
 $modeSwitchComboTbl->setWidth(100);
@@ -288,5 +291,28 @@ $layoutTable->show();
     
 $arduinoFrame = new IFrame($_SESSION['config'], "arduinoSwitch", -1, -1, 1, 1, 0);
 $arduinoFrame->show();
+
+
+
+// MailSensor
+$dbSensorTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_sensor',
+                             array(  "*" ), 
+                             "", 
+                             "", 
+                             "", 
+                             "id=999999999");
+
+if(count($dbSensorTable->ROWS)>0){
+    $mailSensorRow = $dbSensorTable->getRow(1);
+    $mailSensor = new HomeControlSensor($mailSensorRow, false);
+    $x = 15;
+    $y = $bannerHeight-10;
+    echo "<div style=\"position:absolute; left:" .$x ."px; top:" .$y ."px; width:26px; height:26px;\">";
+    echo $mailSensor->getSensorArtIconSrc();
+    echo "</div>";
+    if($mailSensor->getLastValue()!=null){
+      echo "<div style=\"background-color:#dedede; position:absolute; left:" .($x + 5) ."px; top:" . ($y  + ($mailSensor->getControlImageHeight()/2)-3) ."px;\"><center><font size=2><b>".$mailSensor->getLastValue()."</b></font></center></div>";   
+    }        
+}
 
 ?>

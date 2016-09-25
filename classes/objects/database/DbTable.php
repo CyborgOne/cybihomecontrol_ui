@@ -1957,7 +1957,7 @@ class DbTable extends Object {
                     //   }
 
                     $sql = $sql . " WHERE id = " . $rowId;
-                          echo $sql."<br>";
+                          //echo $sql."<br>";
                     $this->DBCONNECT->executeQuery($sql);
 
                     $updateDo = true;

@@ -36,10 +36,10 @@
   }
 
     function checkAction($chkVal){
-        $w = "";
+        $w = "chkVal='".$chkVal."'";
         
-        if( $_SESSION['config']->CURRENTUSER->USERID != null ){
-           $w = "user_id=".$_SESSION['config']->CURRENTUSER->USERID; 
+        if(isset($_SESSION['config']) && $_SESSION['config']->CURRENTUSER->USERID != null ){
+           $w = " and user_id=".$_SESSION['config']->CURRENTUSER->USERID; 
         }
         $dbTblTest = new DbTable($_SESSION['config']->DBCONNECT, 
                                  "chkActions",
@@ -49,21 +49,20 @@
                                  "id desc",
                                  $w
                                   );
-         
+
         if ( $dbTblTest->getRowCount() > 0 ) {
-            
             $r = $dbTblTest->getRow(1);
-            
+
             if ($r->getNamedAttribute("chkVal") == $chkVal ) {
                 return false;
-            } else {
-                $r = $dbTblTest->createRow();
-                $r->setNamedAttribute("user_id", $_SESSION['config']->CURRENTUSER->USERID );
-                $r->setNamedAttribute("chkVal", $chkVal);
-                $r->insertIntoDB();
-            }
+            } 
         }
-                
+        
+        $r = $dbTblTest->createRow();
+        $r->setNamedAttribute("user_id", $_SESSION['config']->CURRENTUSER->USERID );
+        $r->setNamedAttribute("chkVal", $chkVal);
+        $r->insertIntoDB();
+
         return true;
     }
     

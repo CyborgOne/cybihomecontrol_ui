@@ -38,15 +38,7 @@
        ) {
         $switchStatusCheck = true;
     
-        try {
-            shell_exec("tail /var/www/switch.log -n 99 > /var/www/switch.cut");
-            shell_exec("mv /var/www/switch.cut /var/www/switch.log");
-            shell_exec("sudo chown pi:www-data /var/www/switch.log");
-            shell_exec("sudo chmod 775 /var/www/switch.log");
-        } catch (Exception $e){
-             echo $e->getMessage(). "\n";
-        } 
-        
+       
         ob_implicit_flush(true);
     
         // Nach Semikolon trennen, 
@@ -247,7 +239,6 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
     // Wenn alle Bedingungen erfüllt sind,
     // Geräte schalten. Bei reverseJN == "J"
     // negiert schalten.
-
     if($isValid || ($reverseJN=="J" && !$allTriggerTermsValid)){    
         $sql = "SELECT id, regel_id, config_id, art_id, zimmer_id, etagen_id, funkwahl, on_off " .
             "FROM homecontrol_regeln_items WHERE regel_id=".$regelId . " " .
@@ -354,5 +345,77 @@ function getArduinoUrlForDeviceId($hcConfigId, $dbConnect){
     // wird keine IP gefunden: FallBack auf altes Vorgehen
     return "http://". getPageConfigParam($dbConnect, 'arduino_url');
 }
+
+
+
+function prepareSensorSwitchLink($sensorId) {
+    // Zuerst alle Config-IDs, Dann alle Zimmer und zum Schluss die Etagen bearbeiten.
+    // Durch die Methode addShortcutCommandItem($id, $status) wird gewaehrleistet dass jede ID nur einmal pro Vorgang geschaltet wird.
+    $SHORTCUTS_URL_COMMAND = "";
+    
+    // Alle Automatisierungs-Regeln die von der Sensor-Änderung betroffen sind holen
+    $dbRegeln = new DbTable($_SESSION['config']->DBCONNECT,
+                            "homecontrol_regeln",
+                            array("id", "name", "reverse_switch", "beschreibung"),
+                            "Id, Name, Reverse-Switch, Beschreibung",
+                            "",
+                            "",
+                            "id IN (SELECT trigger_id FROM homecontrol_term WHERE  trigger_type = 1 and term_type IN (1,2) and sensor_id = ".$sensorId." AND trigger_jn='J')"); 
+
+    foreach($dbRegeln->ROWS as $regelRow){
+        $regelId = $regelRow->getNamedAttribute("id");
+        $SHORTCUTS_URL_COMMAND = checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $regelRow->getNamedAttribute("reverse_switch"));
+    }
+    
+    return $SHORTCUTS_URL_COMMAND;
+}
+
+
+
+function refreshSensorValue($con, $sensorId, $sensorWert){
+    $SHORTCUTS_URL_COMMAND = "";
+    
+    $lastVal = getDbValue("homecontrol_sensor", "lastValue", "id=".$sensorId);
+    if($lastVal==$sensorWert){
+      return;
+    }
+    
+    // MySQL UPDATE
+    $sql = "UPDATE homecontrol_sensor SET lastValue=" . $sensorWert .", lastSignal=" . time() .
+           " WHERE id=" . $sensorId;
+    $result = $con->executeQuery($sql);
+    
+    $sql = "INSERT INTO homecontrol_sensor_log(sensor_id, value, update_time) values (".$sensorId.",".$sensorWert.",".time().")";
+    $result = $con->executeQuery($sql);
+    
+    $myfile = fopen("signalIn.log", "a+") or die("Unable to open signalIn.log!");
+    fwrite($myfile, "".date("d.M.Y H:i:s").": " ."Sensor ".$sensorId."  aktualisiert von: ".$lastVal ." nach " .$sensorWert ."\n");
+    fclose($myfile);
+    
+    
+    
+    // URL-Aufruf ermitteln
+    // Wenn keine Schaltvorgaenge notwendig sind (nur Status-Update)
+    // wird ein Leerstring zurueckgeliefert
+    $SENSOR_URL_COMMAND = prepareSensorSwitchLink($sensorId);
+    
+    // HTML-Daten an Browser senden,
+    // bevor Schaltvorgaenge ausgeloest werden.
+    ob_implicit_flush();
+    ob_end_flush();
+    flush();
+    
+    
+    // Wenn auszufuehrendes Kommando gefunden wurde, ausfuehren
+    if(strlen($SENSOR_URL_COMMAND)>0){
+      switchShortcut("", $SENSOR_URL_COMMAND, $con);
+    
+      $myfile = fopen("signalIn.log", "a+") or die("Unable to open signalIn.log!");
+      fwrite($myfile, "SCHALTUNG -> ".$SENSOR_URL_COMMAND."\n");
+      fclose($myfile);
+    }
+}
+
+
 
 ?>

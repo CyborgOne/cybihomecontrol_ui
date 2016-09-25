@@ -12,7 +12,7 @@ CREATE TABLE `action_log` (
   `request_dump` text NOT NULL,
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=2;
+)   AUTO_INCREMENT=3;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -302,7 +302,7 @@ CREATE TABLE `homecontrol_config` (
   `dimmer` set('J','N') NOT NULL DEFAULT 'N',
   `sender_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=27;
+)   AUTO_INCREMENT=29;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -330,7 +330,7 @@ CREATE TABLE `homecontrol_cron` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hc_cron_name_uk` (`name`)
-)   AUTO_INCREMENT=8;
+)   AUTO_INCREMENT=5;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -389,7 +389,7 @@ CREATE TABLE `homecontrol_etagen` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_uk` (`name`)
-)   AUTO_INCREMENT=6;
+)   AUTO_INCREMENT=10;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -500,7 +500,7 @@ CREATE TABLE `homecontrol_sender` (
   `default_jn` enum('J','N') NOT NULL DEFAULT 'N',
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=8;
+)   AUTO_INCREMENT=2;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -523,10 +523,10 @@ CREATE TABLE `homecontrol_sensor` (
   `sensor_art` int(11) NOT NULL,
   `x` int(11) NOT NULL,
   `y` int(11) NOT NULL,
-  `etage` int(11) NOT NULL,
+  `etage` int(11) DEFAULT NULL,
   `zimmer` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=47640;
+)   AUTO_INCREMENT=2147483648;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -544,11 +544,11 @@ CREATE TABLE `homecontrol_sensor_arten` (
   `status_sensor_jn` set('J','N') NOT NULL DEFAULT 'N',
   `pic` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=7;
+)   AUTO_INCREMENT=8;
 
 LOCK TABLES `homecontrol_sensor_arten` WRITE;
 /*!40000 ALTER TABLE `homecontrol_sensor_arten` DISABLE KEYS */;
-INSERT INTO `homecontrol_sensor_arten` VALUES (1,'Bewegungsmelder','J','pics/Bewegungsmelder.png'),(2,'Temperatur-Sensor','N','pics/TemperaturSensor.png'),(3,'Helligkeits-Sensor','N','pics/HelligkeitsSensor.png'),(4,'Regen-Sensor','J','pics/RegenSensor.png'),(5,'Rauchsensor','N','pics/RauchSensor.png'),(6,'Luftfeuchtigkeitssensor','N','pics/LuftfeuchtigkeitsSensor.png');
+INSERT INTO `homecontrol_sensor_arten` VALUES (1,'Bewegungsmelder','J','pics/Bewegungsmelder.png'),(2,'Temperatur-Sensor','N','pics/TemperaturSensor.png'),(3,'Helligkeits-Sensor','N','pics/HelligkeitsSensor.png'),(4,'Regen-Sensor','J','pics/RegenSensor.png'),(5,'Rauchsensor','N','pics/RauchSensor.png'),(6,'Luftfeuchtigkeitssensor','N','pics/LuftfeuchtigkeitsSensor.png'),(7,'Ungelesene Emails','N','pics/mailSensor.png');
 /*!40000 ALTER TABLE `homecontrol_sensor_arten` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -875,7 +875,7 @@ CREATE TABLE `pageconfig` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `page_id` (`page_id`)
-)   AUTO_INCREMENT=38;
+)   AUTO_INCREMENT=41;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1100,7 +1100,7 @@ CREATE TABLE `user` (
   `Felsen` double NOT NULL,
   `Wasser` double NOT NULL,
   `Nahrung` double NOT NULL,
-  `aktiv` set('J','N') NOT NULL DEFAULT 'N',
+  `aktiv` enum('J','N') NOT NULL DEFAULT 'N',
   `activationString` varchar(255) DEFAULT NULL,
   `angelegt` date NOT NULL COMMENT 'timestamp angelegt',
   `clan_id` int(11) DEFAULT NULL,
@@ -1108,7 +1108,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `User` (`User`),
   KEY `Name` (`Name`(8))
-)   AUTO_INCREMENT=2;
+)   AUTO_INCREMENT=3;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1214,11 +1214,16 @@ INSERT INTO pageconfig VALUES
 (27, 'sensorlogDauer', '60', 0, '2015-08-28 07:03:00', 'Tage die Sensor-Log Daten behalten'),
 (28, 'abwesendAlarm', 'N', 0, '2016-08-10 20:50:09', NULL),
 (29, 'currentMode', '2', 0, '2015-10-11 17:18:53', NULL),
-(30, 'timelineDuration', '3', 0, '2015-09-28 00:33:59', 'Gibt an, wie viele Tage in der Timeline angezeigt werden sollen'),
+(30, 'timelineDuration', '3', 0, '2015-09-28 00:33:59', 'Wie viele Tage sollen in der Timeline angezeigt werden?'),
 (31, 'loginForTimelinePauseNeed', 'J', 0, '2016-05-31 09:22:58', 'Gibt an, ob zum pausieren in der Timeline ein Login notwendig ist.'),
-(32, 'btSwitchActive', 'J', 0, '2016-09-02 22:37:16', 'Gibt an, ob ein BT-Switch eingesetzt wird/werden soll'),
-(33, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Wenn aktiviert, ist der Login zum schalten nur von Extern (abweichene IP Range) notwendig.');
-ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=38;
+(32, 'btSwitchActive', 'J', 0, '2016-09-02 22:37:16', 'Gibt an, ob ein BT-Switch eingesetzt wird.'),
+(33, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Login zum schalten nur bei abweichender IP Range notwendig'),
+(34, 'switchButtonsOnIconActive', 'J', 0, '0000-00-00 00:00:00', 'Buttons in der Steuerung direkt sichtbar?'),
+(35, 'gmailAdress', '', 0, '0000-00-00 00:00:00', 'Email fur Gmail Abfragen (ungelesene Mails etc)'),
+(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen (https://security.google.com/settings/security/apppasswords)');
+ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;
+INSERT INTO homecontrol_sensor (id, name, beschreibung, status_sensor, geaendert, lastSignal, lastValue, sensor_art, x, y, etage, zimmer) VALUES 
+('999999999', 'UnreadMailsInInbox', 'Anzahl der Mails im G-Mail Posteingang', 'N', '2016-09-22 00:00:00', 0, 0, 7, 0, 0, null, null);
 create view homecontrol_cronview as 
 SELECT 'Montag'  wochentag, 1 tagnr, hc.* FROM homecontrol_cron hc WHERE montag = 'J'
 union SELECT 'Dienstag', 2, hc1.* FROM homecontrol_cron hc1 WHERE dienstag = 'J'

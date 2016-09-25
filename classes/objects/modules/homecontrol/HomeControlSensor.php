@@ -83,7 +83,34 @@ class HomeControlSensor extends Object{
    function getSensorname(){
       return $this->SENSORNAME;
    }
+      
+   function getLastValue(){
+      return $this->LASTVALUE;
+   }
+         
+   function getControlImageHeight(){
+      return $this->CONTROL_IMAGE_HEIGHT;
+   }
+         
+   function getControlImageWidth(){
+      return $this->CONTROL_IMAGE_WIDTH;
+   }
    
+   function setX($x){
+      $this->X = $x;
+   }
+   
+   function getX(){
+      return $this->X;
+   }
+   
+   function setY($y){
+      $this->Y = $y;
+   }
+   
+   function getY(){
+      return $this->Y;
+   }
    
     /**
      *  Liefert das Grafik-Symbol zurück (Image),

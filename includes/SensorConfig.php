@@ -53,7 +53,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
                             "Id, Name, Status-Sensor, Beschreibung",
                             "",
                             "name",
-                            "");
+                            "id!=999999999"); // GMail Sensor ausblenden
+
     $sensorDBTbl->setAlignments(array("left", "left", "center", "right"));
     $sensorDBTbl->setDeleteInUpdate(true);
     $sensorDBTbl->setReadOnlyCols(array("id","geaendert", "lastSignal", "lastValue"));

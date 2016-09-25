@@ -108,7 +108,7 @@ echo "INSERT INTO user (id, Vorname, Nachname, Name, Geburtstag, Strasse, Plz, O
 echo "ALTER TABLE user MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;" >> $filename
 
 
-# PageConfig
+# PageConfig (id, name, value, page_id, geaendert, label)
 echo "INSERT INTO pageconfig VALUES" >> $filename
 echo "(1, 'pagetitel', 'Haussteuerung', 0, '2015-09-28 00:34:39', NULL)," >> $filename
 echo "(2, 'pageowner', 'SEITENINHABER', 0, '2013-01-08 02:32:07', NULL)," >> $filename
@@ -143,9 +143,18 @@ echo "(30, 'timelineDuration', '3', 0, '2015-09-28 00:33:59', 'Wie viele Tage so
 echo "(31, 'loginForTimelinePauseNeed', 'J', 0, '2016-05-31 09:22:58', 'Gibt an, ob zum pausieren in der Timeline ein Login notwendig ist.')," >> $filename
 echo "(32, 'btSwitchActive', 'J', 0, '2016-09-02 22:37:16', 'Gibt an, ob ein BT-Switch eingesetzt wird.')," >> $filename
 echo "(33, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Login zum schalten nur bei abweichender IP Range notwendig')," >> $filename
-echo "(34, 'switchButtonsOnIconActive', 'J', 0, '0000-00-00 00:00:00', 'Buttons in der Steuerung direkt sichtbar?');" >> $filename
+echo "(34, 'switchButtonsOnIconActive', 'J', 0, '0000-00-00 00:00:00', 'Buttons in der Steuerung direkt sichtbar?')," >> $filename
+echo "(35, 'gmailAdress', '', 0, '0000-00-00 00:00:00', 'Email fur Gmail Abfragen (ungelesene Mails etc)')," >> $filename
+echo "(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen (https://security.google.com/settings/security/apppasswords)');" >> $filename
 
-echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=35;" >> $filename
+echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;" >> $filename
+
+
+echo "INSERT INTO homecontrol_sensor (id, name, beschreibung, status_sensor, geaendert, lastSignal, lastValue, sensor_art, x, y, etage, zimmer) VALUES " >> $filename
+echo "('999999999', 'UnreadMailsInInbox', 'Anzahl der Mails im G-Mail Posteingang', 'N', '2016-09-22 00:00:00', 0, 0, 7, 0, 0, null, null);" >> $filename
+
+
+
 
 
 ########################################################

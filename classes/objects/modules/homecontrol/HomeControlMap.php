@@ -340,6 +340,9 @@ class HomeControlMap extends Object {
 
 
     function getEditSensorMask($id) {
+	if($id == 999999999){
+		return new Text("Sensor 999999999 kann nicht Bearbeitet werden, da es eine Systemkomponente ist!");
+	}
 
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_sensor',
                                         array(  "id", 
@@ -630,6 +633,10 @@ class HomeControlMap extends Object {
 
 
     function handleSensorEdit($dbTable) {
+	if($_REQUEST['id'] == 999999999 || $_REQUEST['editSensor'] == 999999999 ){
+		return new Text("Sensor-ID 999999999 ist ung&uuml;ltig, da es eine Systemkomponente ist!");
+	}
+
         // Neuen Sensor anlegen
         if (isset($_SESSION['aktEtage']) && isset($_REQUEST['name']) && isset($_REQUEST['id']) && isset($_REQUEST['sensor_art'])){
              if(isset($_REQUEST['InsertNewSensorControl']) && $_REQUEST['InsertNewSensorControl'] == "do" && isset($_REQUEST['x']) && isset($_REQUEST['y'])) {
@@ -683,6 +690,10 @@ class HomeControlMap extends Object {
 
         if (isset($_REQUEST['removeSensorId']) && isset($_REQUEST['DelControl' . $_REQUEST['removeSensorId']]) &&
             $_REQUEST['DelControl' . $_REQUEST['removeSensorId']] == "Entfernen") {
+	    
+            if($_REQUEST['removeSensorId'] == 999999999 ){
+		return new Text("Sensor-ID 999999999 ist ung&uuml;ltig, da es eine Systemkomponente ist!");
+            }
             $newRow = $dbTable->getRowById($_REQUEST['removeSensorId']);
             $newRow->deleteFromDb();
             
