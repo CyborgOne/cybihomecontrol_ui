@@ -301,7 +301,7 @@ class HomeControlTermCreator extends Object {
     private function checkTimeTermCreatorMask($insert=true){
         if (isset($_REQUEST['saveCreateTimeTerm']) && strlen($_REQUEST['saveCreateTimeTerm'])>0 
           && strlen($_REQUEST['stunde'])>0 && strlen($_REQUEST['minute'])>0 && strlen($_REQUEST['condition'])>0 ){
-echo "saveCreateTimeTerm<br>";
+//echo "saveCreateTimeTerm<br>";
             $orderNr = 1;
             $andOr    = "and";            
             
@@ -309,7 +309,7 @@ echo "saveCreateTimeTerm<br>";
                         ."VALUES (" .$this->TRIGGER_ID .", " .$this->TRIGGER_SUBID .", " .$this->TRIGGER_TYPE .", 3, " 
                         .$_REQUEST['minute'] .", " .$_REQUEST['stunde'] .", '" .$_REQUEST['condition'] ."', " .$orderNr .", '" .$andOr ."', '" .$_REQUEST['trigger_jn'] ."' )";
             if($insert){   
-                echo $sqlInsert;
+//                echo $sqlInsert;
               $_SESSION['config']->DBCONNECT->executeQuery($sqlInsert);
               $this->TYPE = null;
               $_REQUEST['saveCreateTimeTerm'] = null;
