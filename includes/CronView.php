@@ -46,7 +46,6 @@ $scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_cronview',
 $t = new Title("Timeline");
 $t->show();
 
-
 $tbl = new Table(array("", "", ""));
 $tbl->setBackgroundColorChange(true);
 

@@ -1,4 +1,8 @@
 
+Version: 0.0.59
+---------------------
+Timeline pausieren und pause entfernen korrigiert.
+
 Version: 0.0.58
 ---------------------
 Mail-Sensor in Anzeige (Etagen-unabhängig)

@@ -71,11 +71,10 @@ class HomeControlCron {
     }
 
     function checkPauseLink() {
-        if (isset($_REQUEST['pauseCron']) && $_REQUEST['pauseCron'] == $this->getId()) {
+        if (isset($_REQUEST['pauseCron']) && $_REQUEST['pauseCron'] == $this->getId() && $this->isNextExecutionCron()) {
             $this->setPause(true);
         }
-        if (isset($_REQUEST['unpauseCron']) && $_REQUEST['unpauseCron'] == $this->getId
-            ()) {
+        if (isset($_REQUEST['unpauseCron']) && $_REQUEST['unpauseCron'] == $this->getId() && $this->isNextExecutionCron()) {
             $this->setPause(false);
         }
     }
@@ -142,8 +141,7 @@ class HomeControlCron {
         $sql = "";
 
         if ($b === true) {
-            $sql = "INSERT INTO homecontrol_cron_pause (cron_id, pause_time) VALUES (" . $this->
-                getId() . "," . time() . ")";
+            $sql = "INSERT INTO homecontrol_cron_pause (cron_id, pause_time) VALUES (" . $this->getId() . "," . time() . ")";
         } else {
             $sql = "DELETE FROM homecontrol_cron_pause WHERE cron_id=" . $this->getId();
         }
