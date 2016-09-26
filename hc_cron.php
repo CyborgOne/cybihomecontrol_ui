@@ -1,7 +1,7 @@
 <?PHP
 
 /**
- *  Script für Minütigen Cron-Job um Zeitgesteuerte Schaltvorgänge durchzuführen
+ *  Script f?r Min?tigen Cron-Job um Zeitgesteuerte Schaltvorg?nge durchzuf?hren
  *
  *  (c) by Daniel Scheidler   -   September 2014
 */
@@ -62,27 +62,27 @@ if(strlen($_SESSION['config']->PUBLICVARS['gmailAdress'])>0 && strlen($_SESSION[
   }
 }
 
-// Aktueller Wochentag muss übereinstimmen
+// Aktueller Wochentag muss ?bereinstimmen
 $whereStmtCurrCron = strtolower($currentDayName)."='J'";
 
-// Aktuelle Uhrzeit muss übereinstimmen
+// Aktuelle Uhrzeit muss ?bereinstimmen
 $whereStmtCurrCron .= " and stunde=".$currentStd." and minute=".$currentMin;
 
-// Betroffene Cron-Einträge selektieren
+// Betroffene Cron-Eintr?ge selektieren
 $sql = "SELECT id, name, beschreibung FROM homecontrol_cron WHERE ".$whereStmtCurrCron;
 $result =  $_SESSION['config']->DBCONNECT->executeQuery($sql);
 
 //echo "Aktuelle Cron Anzahl: ".mysqli_num_rows($result)."<br><br>";
 $ts = isset($_REQUEST['tmstmp'])?$_REQUEST['tmstmp']:"";
-if (mysqli_num_rows($result) > 0 ) {
+if (mysql_num_rows($result) > 0 ) {
     echo "\nRUN HOMECONTROL-CRON: ".$currentDayName." ".$currentStd.":".$currentMin."-".time()."\n";
 
     $shortcutUrls = array();
-    while ($row = mysqli_fetch_array($result)) {
-        if (isCronPaused($con, $row['id'])) {
-            deleteCronPause($con,$row['id']);
+    while ($row = mysql_fetch_array($result)) {
+        if (isCronPaused($_SESSION['config']->DBCONNECT, $row['id'])) {
+            deleteCronPause($_SESSION['config']->DBCONNECT, $row['id']);
         } else {
-            $shortcutUrl = getShortcutSwitchKeyForCron($con, $row['id']);
+            $shortcutUrl = getShortcutSwitchKeyForCron($_SESSION['config']->DBCONNECT, $row['id']);
             
             $url =  parse_url(__FILE__);
             $currPath = dirname($url['path']);
@@ -96,13 +96,9 @@ if (mysqli_num_rows($result) > 0 ) {
 
 // ------------------------------
 
-mysqli_close($con);
-
-$dc = new DbConnect($DBHOST, $DBUSER, $DBPASS, $DBNAME);
-
 foreach($shortcutUrls as $shortcutUrl){
   echo "Switch: ".$shortcutUrl."\n\n";
-  switchShortcut($arduinoUrl, $shortcutUrl, $dc);
+  switchShortcut($arduinoUrl, $shortcutUrl, $_SESSION['config']->DBCONNECT);
 }
 
 // ------------------------------
@@ -110,14 +106,14 @@ foreach($shortcutUrls as $shortcutUrl){
 
 function isCronPaused($con,$id) {
     $sql = "SELECT 'X' FROM homecontrol_cron_pause WHERE cron_id = ".$id;
-    $result = mysqli_query($con, $sql);
-    return mysqli_num_rows($result) > 0;
+    $result = $con->executeQuery($sql);
+    return mysql_num_rows($result) > 0;
 }
 
 
 function deleteCronPause($con,$id) {
     $sql = "DELETE FROM homecontrol_cron_pause WHERE cron_id = ".$id;
-    $result = mysqli_query($con, $sql);
+    $result = $con->executeQuery($sql);
 }
 
 ?>

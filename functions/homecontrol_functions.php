@@ -8,8 +8,8 @@
 
   }
   
-  // TODO: $arduinoUrl wird eigtl nicht mehr benötigt da eh für jedes Device 
-  //       die ArduinoURL ermittelt werden muss, seit mehrere Sender möglich sind. 
+  // TODO: $arduinoUrl wird eigtl nicht mehr ben?tigt da eh f?r jedes Device 
+  //       die ArduinoURL ermittelt werden muss, seit mehrere Sender m?glich sind. 
   function switchShortcut($arduinoUrl, $shortcutUrl, $dbConnect){
     //echo "switchShortcut: ".$arduinoUrl." > ".$shortcutUrl."\n";
     $loginNeed          = true;
@@ -61,7 +61,7 @@
               $status = $status=="on"?"on":"off";
               //echo $id."->".$status."<br>\n";      
               // Wenn ausgeschaltet werden soll,
-              // negative ID übergeben
+              // negative ID ?bergeben
               if($status == "off"){
                 $id = $id*(-1);
               }
@@ -139,16 +139,16 @@
  */
 function getShortcutSwitchKeyForCron($con, $cronId){
     $sqlItems = "SELECT id, config_id, art_id, zimmer_id, etagen_id, funkwahl, on_off FROM homecontrol_cron_items WHERE cron_id=" .$cronId;
-    $resultItems = mysqli_query($con, $sqlItems);
+    $resultItems = $con->executeQuery($sqlItems);
     $shortcutUrl = ""; //" "?switchShortcut=";
     
-    while($row = mysqli_fetch_array($resultItems)) {
-      // Wenn ConfigId angegeben ist, diese hinzufügen
+    while($row = mysql_fetch_array($resultItems)) {
+      // Wenn ConfigId angegeben ist, diese hinzuf?gen
       $whereStmt = "";
       if( strlen($row['config_id'])>0 ){
           $whereStmt .= "id=" .$row['config_id'];
       } else {
-        // Ansonsten die entsprechenden Geräte auswählen und alle hinzufügen
+        // Ansonsten die entsprechenden Ger?te ausw?hlen und alle hinzuf?gen
         if( strlen($row['art_id'])>0 ){
           if($whereStmt!=""){
             $whereStmt .= " AND ";
@@ -172,8 +172,8 @@ function getShortcutSwitchKeyForCron($con, $cronId){
       }
 
       $sqlSubItems = "SELECT id, funk_id, funk_id2 FROM homecontrol_config WHERE " .$whereStmt;
-      $resultSubItems = mysqli_query($con, $sqlSubItems);
-      while($rowSub = mysqli_fetch_array($resultSubItems)) {
+      $resultSubItems = $con->executeQuery($sqlSubItems);
+      while($rowSub = mysql_fetch_array($resultSubItems)) {
         $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($row['on_off'])>0?$row['on_off']:"off") .";";
       }      
     }
@@ -219,7 +219,7 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
     $allTriggerTermsValid = true;
     $allNoTriggerTermsValid = true;
     
-    // Alle Regel-Bedingungen prüfen
+    // Alle Regel-Bedingungen pr?fen
     foreach($dbRegelTerms->ROWS as $rowRegelTerm){
         echo "</br>";
         $validator = new HomeControlTermValidator($rowRegelTerm);
@@ -236,8 +236,8 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
         }
     }
 
-    // Wenn alle Bedingungen erfüllt sind,
-    // Geräte schalten. Bei reverseJN == "J"
+    // Wenn alle Bedingungen erf?llt sind,
+    // Ger?te schalten. Bei reverseJN == "J"
     // negiert schalten.
     if($isValid || ($reverseJN=="J" && !$allTriggerTermsValid)){    
         $sql = "SELECT id, regel_id, config_id, art_id, zimmer_id, etagen_id, funkwahl, on_off " .
@@ -291,7 +291,7 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
 
 
 /**
- * Wenn ID nicht schon enthalten ist, Einstellungs-Werte übernehmen
+ * Wenn ID nicht schon enthalten ist, Einstellungs-Werte ?bernehmen
  */
 function addShortcutCommandItem($funkId, $status, $command) {
 
@@ -353,7 +353,7 @@ function prepareSensorSwitchLink($sensorId) {
     // Durch die Methode addShortcutCommandItem($id, $status) wird gewaehrleistet dass jede ID nur einmal pro Vorgang geschaltet wird.
     $SHORTCUTS_URL_COMMAND = "";
     
-    // Alle Automatisierungs-Regeln die von der Sensor-Änderung betroffen sind holen
+    // Alle Automatisierungs-Regeln die von der Sensor-?nderung betroffen sind holen
     $dbRegeln = new DbTable($_SESSION['config']->DBCONNECT,
                             "homecontrol_regeln",
                             array("id", "name", "reverse_switch", "beschreibung"),
@@ -417,5 +417,15 @@ function refreshSensorValue($con, $sensorId, $sensorWert){
 }
 
 
+function checkSensorInputMissingValues(){
+  if (!isset($_REQUEST['sensorId']) || !isset($_REQUEST['sensorWert']) ) {
+    return false;
+  } else {
+    if (strlen($_REQUEST['sensorId']) <= 0 || strlen($_REQUEST['sensorWert'])<=0 ) {
+      return false;
+    }
+  }
+  return true;
+}
 
 ?>

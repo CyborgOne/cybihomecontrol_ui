@@ -106,7 +106,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $table->addSpacer(0,15);
 
 
-    $msk = $scDbTable->getSingleUpdateMask($_SESSION['SelectedAlarmToEdit']);
+    $msk = isset($_SESSION['SelectedAlarmToEdit'])?$scDbTable->getSingleUpdateMask($_SESSION['SelectedAlarmToEdit']):new Text("");
     
     $rAuswahl = $table->createRow();
     $rAuswahl->setAttribute(0, $msk);

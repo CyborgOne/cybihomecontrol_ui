@@ -10,16 +10,4 @@ refreshSensorValue($_SESSION['config']->DBCONNECT, $_REQUEST['sensorId'], $_REQU
 
 
 
-
-function checkSensorInputMissingValues(){
-  if (!isset($_REQUEST['sensorId']) || !isset($_REQUEST['sensorWert']) ) {
-    return false;
-  } else {
-    if (strlen($_REQUEST['sensorId']) <= 0 || strlen($_REQUEST['sensorWert'])<=0 ) {
-      return false;
-    }
-  }
-  return true;
-}
-
 ?>

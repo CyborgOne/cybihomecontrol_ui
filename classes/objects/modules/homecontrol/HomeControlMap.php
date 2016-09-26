@@ -633,7 +633,7 @@ class HomeControlMap extends Object {
 
 
     function handleSensorEdit($dbTable) {
-	if($_REQUEST['id'] == 999999999 || $_REQUEST['editSensor'] == 999999999 ){
+	if((isset($_REQUEST['id']) && $_REQUEST['id'] == 999999999) || (isset($_REQUEST['editSensor'])&& $_REQUEST['editSensor'] == 999999999 )){
 		return new Text("Sensor-ID 999999999 ist ung&uuml;ltig, da es eine Systemkomponente ist!");
 	}
 

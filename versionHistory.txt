@@ -1,4 +1,8 @@
 
+Version: 0.0.61
+---------------------
+nachbesserung cron und sensor-handling
+
 Version: 0.0.60
 ---------------------
 sql ausgabe bei Bedingung anlegen entfernt

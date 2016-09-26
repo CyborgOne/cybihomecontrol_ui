@@ -39,7 +39,7 @@
         $w = "chkVal='".$chkVal."'";
         
         if(isset($_SESSION['config']) && $_SESSION['config']->CURRENTUSER->USERID != null ){
-           $w = " and user_id=".$_SESSION['config']->CURRENTUSER->USERID; 
+           $w .= " and user_id=".$_SESSION['config']->CURRENTUSER->USERID; 
         }
         $dbTblTest = new DbTable($_SESSION['config']->DBCONNECT, 
                                  "chkActions",

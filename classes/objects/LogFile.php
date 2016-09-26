@@ -72,9 +72,7 @@ class LogFile extends Object {
     function showFullname(){
         $fp = new Text($this->getPath(), 3, true);
         
-        $urlArr = parse_url($arduinoUrl);
-        $host = $urlArr['host'];
-        
+       
         $btnDel = new Button("clearLog", "Log leeren");
         $hdnDel = new Hiddenfield("clearLogFile", $this->FULLPATH);
         
@@ -118,7 +116,7 @@ class LogFile extends Object {
     
     
     function checkClearLogAction(){
-        if($_REQUEST['clearLog'] == "Log leeren"){
+        if(isset($_REQUEST['clearLog']) && $_REQUEST['clearLog'] == "Log leeren"){
             if($_REQUEST['clearLogFile']==$this->FULLPATH){
                 try {
                     $myfile = fopen($this->FULLPATH, "w") or die("Unable to open file!");

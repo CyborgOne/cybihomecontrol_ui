@@ -359,13 +359,11 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $f->show();
 
 
-    include ("OtherSettings.inc.php");
-    
-    include ("NetworkConfig.inc.php");
+    include ("includes/OtherSettings.inc.php");
+   
+    include ("includes/SenderConfig.inc.php");
 
-    include ("SenderConfig.inc.php");
-
-    include ("UserConfig.inc.php");
+    include ("includes/UserConfig.inc.php");
 
     $spc = new Spacer();
     $spc->show();
