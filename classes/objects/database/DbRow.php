@@ -220,8 +220,11 @@ class DbRow extends Object{
 	
 	for($i=0;$i<count($this->COLNAMES);$i++){
 		if($this->COLNAMES[$i] != "id" || $this->FORCE_ID_UPDATE){
-		  $sql .= $this->COLNAMES[$i] ." = '" .$this->getAttribute($i) ."' ";
-  		  
+		  if(strlen($this->getAttribute($i))>0){
+            $sql .= $this->COLNAMES[$i] ." = '" .$this->getAttribute($i) ."' ";
+  		  }else{
+  		    $sql .= $this->COLNAMES[$i] ." = null ";
+  		  }
 		  if($i+1<count($this->COLNAMES)){
 			$sql .= ", ";
 		  }
