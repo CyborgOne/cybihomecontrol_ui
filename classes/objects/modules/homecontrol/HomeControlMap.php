@@ -435,16 +435,15 @@ class HomeControlMap extends Object {
 
 
     function getZimmerCombo($name, $default = null) {
-        $combo = new ComboBox($name, getComboArrayBySql("SELECT null,' ' FROM dual UNION SELECT id, name FROM homecontrol_zimmer WHERE etage_id=" .
-            $_SESSION['aktEtage'] . " "), $default);
+        $combo = new ComboBox($name, getComboArrayBySql("SELECT null,' ' FROM dual UNION SELECT id, name FROM homecontrol_zimmer WHERE etage_id=" 
+                                                    .(isset($_SESSION['aktEtage']) && strlen($_SESSION['aktEtage'])>0?$_SESSION['aktEtage']:"-1") . " "), $default);
 
         return $combo;
     }
 
 
     function getEtagenCombo($name, $default = null) {
-        $combo = new ComboBox($name, getComboArrayBySql("SELECT null,' ' FROM dual UNION SELECT id, name FROM homecontrol_etagen "),
-            $default);
+        $combo = new ComboBox($name, getComboArrayBySql("SELECT null,' ' FROM dual UNION SELECT id, name FROM homecontrol_etagen "), $default);
 
         return $combo;
     }
@@ -778,12 +777,16 @@ class HomeControlMap extends Object {
     }
 
     function getEtagenImagePath() {
-        $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_etagen',
-            array("pic"), "", "", "", "id=" . $_SESSION['aktEtage']);
-        $row = $dbTable->getRow(1);
-
-        return $row->getNamedAttribute("pic");
-
+        if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
+            $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_etagen',
+                array("pic"), "", "", "", "id=" . $_SESSION['aktEtage']);
+            $row = $dbTable->getRow(1);
+    
+            return $row->getNamedAttribute("pic");
+            
+        } else {
+            return "/pics/default_etage.jpg";
+        }
     }
 
     function showMap($dbTable, $dbSensorTable) {
@@ -894,51 +897,52 @@ class HomeControlMap extends Object {
         $layoutRow = $layoutTable->createRow();
         $layoutTable->addRow($layoutRow);
 
-
-        $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
-            array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-            "etage", "zimmer", "x", "y", "dimmer"), "", "", "zimmer", "etage=" . $_SESSION['aktEtage']);
-
-        $currCol = 0;
-        $zimmer = null;
-        foreach ($dbTable->ROWS as $row) {
-            if ($currCol >= $columnCount) {
-                $currCol = 0;
-                $layoutTable->addSpacer(0, 7);
-                $layoutTable->addSpacer(1, 2);
-                $layoutTable->addSpacer(0, 7);
-                $layoutRow = $layoutTable->createRow();
-                $layoutTable->addRow($layoutRow);
+        if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
+            $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
+                array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
+                "etage", "zimmer", "x", "y", "dimmer"), "", "", "zimmer", "etage=" . $_SESSION['aktEtage']);
+    
+            $currCol = 0;
+            $zimmer = null;
+            foreach ($dbTable->ROWS as $row) {
+                if ($currCol >= $columnCount) {
+                    $currCol = 0;
+                    $layoutTable->addSpacer(0, 7);
+                    $layoutTable->addSpacer(1, 2);
+                    $layoutTable->addSpacer(0, 7);
+                    $layoutRow = $layoutTable->createRow();
+                    $layoutTable->addRow($layoutRow);
+                }
+    
+                if ($zimmer != $row->getNamedAttribute("zimmer")) {
+                    //zimmer
+                    $zimmer = $row->getNamedAttribute("zimmer");
+                    $currCol = 0;
+    
+                    $layoutTable->addSpacer(0, 25);
+    
+                    $layoutRow = $layoutTable->createRow();
+                    $layoutTable->addRow($layoutRow);
+                    $iT = new Text($this->getZimmerName($zimmer), "7", true);
+                    $iTFt = $iT->getFonttype();
+                    $iTFt->setColor("#7babdb");
+                    $iT->setFonttype($iTFt);
+                    $layoutRow->setAttribute(0, $iT);
+                    $layoutTable->addSpacer(0, 15);
+                    $layoutTable->addSpacer(1, 2);
+                    $layoutTable->addSpacer(0, 15);
+                    $layoutRow = $layoutTable->createRow();
+                    $layoutTable->addRow($layoutRow);
+                }
+    
+                $hcItem = new HomeControlItem($row, false);
+                $switchComp = $hcItem->getMobileSwitch();
+                $layoutRow->setAttribute($currCol, $switchComp);
+    
+                $currCol++;
             }
-
-            if ($zimmer != $row->getNamedAttribute("zimmer")) {
-                //zimmer
-                $zimmer = $row->getNamedAttribute("zimmer");
-                $currCol = 0;
-
-                $layoutTable->addSpacer(0, 25);
-
-                $layoutRow = $layoutTable->createRow();
-                $layoutTable->addRow($layoutRow);
-                $iT = new Text($this->getZimmerName($zimmer), "7", true);
-                $iTFt = $iT->getFonttype();
-                $iTFt->setColor("#7babdb");
-                $iT->setFonttype($iTFt);
-                $layoutRow->setAttribute(0, $iT);
-                $layoutTable->addSpacer(0, 15);
-                $layoutTable->addSpacer(1, 2);
-                $layoutTable->addSpacer(0, 15);
-                $layoutRow = $layoutTable->createRow();
-                $layoutTable->addRow($layoutRow);
-            }
-
-            $hcItem = new HomeControlItem($row, false);
-            $switchComp = $hcItem->getMobileSwitch();
-            $layoutRow->setAttribute($currCol, $switchComp);
-
-            $currCol++;
         }
-
+        
         return $layoutTable;
     }
 
@@ -1060,66 +1064,70 @@ class HomeControlMap extends Object {
         // ungültige Layout-Art korrigieren auf Default (Desktop)
         $this->LAYOUT_ART = $this->LAYOUTART_DESKTOP;
 
-        $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
-            array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-            "etage", "zimmer", "x", "y", "dimmer"), "", "", "", "etage=" . $_SESSION['aktEtage']);
-        $dbTable->setNoInsertCols("id");
-        
-        $dbSensorTable = new DbTable(   $_SESSION['config']->DBCONNECT, 
-                                        'homecontrol_sensor',
-                                        array(  "id", 
-                                                "name", 
-                                                "beschreibung", 
-                                                "status_sensor", 
-                                                "sensor_art", 
-                                                "etage", 
-                                                "zimmer", 
-                                                "x", 
-                                                "y",
-                                                "lastValue",
-                                                "lastSignal"
-                                                ), 
-                                        "ID, Name, Beschreibung, Status-Sensor?, Art, Etage, Zimmer, X, Y, Letzter Wert, Letztes Signal", 
-                                        "", 
-                                        "etage, zimmer, name", 
-                                        "etage=" . $_SESSION['aktEtage']);
-        
-        if ($this->EDITMODE) {
-            if($this->handleSensorEdit($dbSensorTable)){
-                $dbSensorTable->refresh();
-            }
-            if ($this->handleControlEdit($dbTable) ) {
-                $dbTable->refresh();
+        if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
+            $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
+                array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
+                "etage", "zimmer", "x", "y", "dimmer"), "", "", "", "etage=" . $_SESSION['aktEtage']);
+            $dbTable->setNoInsertCols("id");
+            
+            $dbSensorTable = new DbTable(   $_SESSION['config']->DBCONNECT, 
+                                            'homecontrol_sensor',
+                                            array(  "id", 
+                                                    "name", 
+                                                    "beschreibung", 
+                                                    "status_sensor", 
+                                                    "sensor_art", 
+                                                    "etage", 
+                                                    "zimmer", 
+                                                    "x", 
+                                                    "y",
+                                                    "lastValue",
+                                                    "lastSignal"
+                                                    ), 
+                                            "ID, Name, Beschreibung, Status-Sensor?, Art, Etage, Zimmer, X, Y, Letzter Wert, Letztes Signal", 
+                                            "", 
+                                            "etage, zimmer, name", 
+                                            "etage=" . $_SESSION['aktEtage']);
+            
+            if ($this->EDITMODE) {
+                if($this->handleSensorEdit($dbSensorTable)){
+                    $dbSensorTable->refresh();
+                }
+                if ($this->handleControlEdit($dbTable) ) {
+                    $dbTable->refresh();
+                }
             }
         }
-        
+
         $navBar = $this->getNavigationBar();
         $navBar->show();
 
-        if ($this->EDITMODE) {
-
-            echo "
-    	  <script type=\"text/javascript\">
-    		function Coords () {
-                    var Ziel = \"?";
-
-            if($_SESSION['AnlageArt']=="S"){
-               echo "InsertNewSensorControl";
-            } else {
-               echo "InsertNewControl"; 
+        if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
+            if ($this->EDITMODE) {
+    
+                echo "
+        	  <script type=\"text/javascript\">
+        		function Coords () {
+                        var Ziel = \"?";
+    
+                if($_SESSION['AnlageArt']=="S"){
+                   echo "InsertNewSensorControl";
+                } else {
+                   echo "InsertNewControl"; 
+                }
+                        
+                echo "=do&X=\" + window.event.pageX + \"&Y=\" + window.event.pageY;
+                        window.location.href = Ziel;  
+        		}
+              </script>
+                ";
             }
-                    
-            echo "=do&X=\" + window.event.pageX + \"&Y=\" + window.event.pageY;
-                    window.location.href = Ziel;  
-    		}
-          </script>
-            ";
+    
+    
+            $this->showMap($dbTable, $dbSensorTable);
+    
+            $this->postHandleControlEdit($dbTable);
         }
-
-
-        $this->showMap($dbTable, $dbSensorTable);
-
-        $this->postHandleControlEdit($dbTable);
     }
 
     
