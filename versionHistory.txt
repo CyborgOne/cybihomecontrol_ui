@@ -1,4 +1,9 @@
 
+Version: 0.0.63
+---------------------
+SQL export:
+zu lange kommentare gekürzt
+
 Version: 0.0.62
 ---------------------
 SHYS-123

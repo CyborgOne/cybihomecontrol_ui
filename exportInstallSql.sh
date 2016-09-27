@@ -139,13 +139,14 @@ echo "(26, 'motionDauer', '9', 0, '2015-09-28 00:37:09', 'Tage die Bewegungs-Bil
 echo "(27, 'sensorlogDauer', '60', 0, '2015-08-28 07:03:00', 'Tage die Sensor-Log Daten behalten')," >> $filename
 echo "(28, 'abwesendAlarm', 'N', 0, '2016-08-10 20:50:09', NULL)," >> $filename
 echo "(29, 'currentMode', '2', 0, '2015-10-11 17:18:53', NULL)," >> $filename
-echo "(30, 'timelineDuration', '3', 0, '2015-09-28 00:33:59', 'Wie viele Tage sollen in der Timeline angezeigt werden?')," >> $filename
-echo "(31, 'loginForTimelinePauseNeed', 'J', 0, '2016-05-31 09:22:58', 'Gibt an, ob zum pausieren in der Timeline ein Login notwendig ist.')," >> $filename
-echo "(32, 'btSwitchActive', 'J', 0, '2016-09-02 22:37:16', 'Gibt an, ob ein BT-Switch eingesetzt wird.')," >> $filename
-echo "(33, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Login zum schalten nur bei abweichender IP Range notwendig')," >> $filename
-echo "(34, 'switchButtonsOnIconActive', 'J', 0, '0000-00-00 00:00:00', 'Buttons in der Steuerung direkt sichtbar?')," >> $filename
-echo "(35, 'gmailAdress', '', 0, '0000-00-00 00:00:00', 'Email fur Gmail Abfragen (ungelesene Mails etc)')," >> $filename
-echo "(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen (https://security.google.com/settings/security/apppasswords)');" >> $filename
+echo "(30, 'timelineDuration', '3', 0, '2015-09-28 00:33:59', 'Anzahl Tage in Timeline')," >> $filename
+echo "(31, 'loginForTimelinePauseNeed', 'J', 0, '2016-05-31 09:22:58', 'Login zum pausieren in Timeline')," >> $filename
+echo "(32, 'btSwitchActive', 'J', 0, '2016-09-02 22:37:16', 'BT-Switch im Einsatz?')," >> $filename
+echo "(33, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Login nur von extern')," >> $filename
+echo "(34, 'switchButtonsOnIconActive', 'J', 0, '0000-00-00 00:00:00', 'Buttons in Steuerung sichtbar?')," >> $filename
+echo "(35, 'gmailAdress', '', 0, '0000-00-00 00:00:00', 'Email fur Gmail Abfragen')," >> $filename
+echo "(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen');" >> $filename 
+#(https://security.google.com/settings/security/apppasswords)
 
 echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;" >> $filename
 
