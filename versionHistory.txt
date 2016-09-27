@@ -1,4 +1,8 @@
 
+Version: 0.0.64
+---------------------
+Anlegen neuer Geräte verursachte fehler bei sender_id
+
 Version: 0.0.63
 ---------------------
 SQL export:

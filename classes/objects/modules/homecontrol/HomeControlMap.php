@@ -233,7 +233,7 @@ class HomeControlMap extends Object {
     function getEditMask($id) {
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
             array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-            "etage", "zimmer", "x", "y", "dimmer"), "", "", "", "id=" . $id);
+            "etage", "zimmer", "x", "y", "dimmer", "sender_id"), "", "", "", "id=" . $id);
         $r = $dbTable->getRow(1);
 
         $txfName = new TextField("Name", $r->getNamedAttribute("name"), 30, 20);
@@ -546,6 +546,7 @@ class HomeControlMap extends Object {
                 $newRow->setNamedAttribute("y", $_REQUEST['Y']);
                 $newRow->setNamedAttribute("etage", $_SESSION['aktEtage']);
                 $newRow->setNamedAttribute("funk_id", $_REQUEST['FunkId']);
+                $newRow->setNamedAttribute("sender_id", $_REQUEST['sender_id']);
                 $newRow->setNamedAttribute("control_art", $_REQUEST['Art']);
 
                 if (isset($_REQUEST['Zimmer'])) {
