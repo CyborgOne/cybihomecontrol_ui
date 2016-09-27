@@ -901,7 +901,7 @@ class HomeControlMap extends Object {
         if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
             $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
                 array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-                "etage", "zimmer", "x", "y", "dimmer"), "", "", "zimmer", "etage=" . $_SESSION['aktEtage']);
+                "etage", "zimmer", "x", "y", "dimmer", "sender_id"), "", "", "zimmer", "etage=" . $_SESSION['aktEtage']);
     
             $currCol = 0;
             $zimmer = null;
@@ -963,7 +963,7 @@ class HomeControlMap extends Object {
 
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
             array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-            "etage", "zimmer", "x", "y"), "", "", "etage, name", "");
+            "etage", "zimmer", "x", "y", "sender_id"), "", "", "etage, name", "");
 
         $currCol = $colCount;
         $layoutRow = null;
@@ -1068,7 +1068,7 @@ class HomeControlMap extends Object {
         if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
             $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
                 array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-                "etage", "zimmer", "x", "y", "dimmer"), "", "", "", "etage=" . $_SESSION['aktEtage']);
+                "etage", "zimmer", "x", "y", "dimmer", "sender_id"), "", "", "", "etage=" . $_SESSION['aktEtage']);
             $dbTable->setNoInsertCols("id");
             
             $dbSensorTable = new DbTable(   $_SESSION['config']->DBCONNECT, 
