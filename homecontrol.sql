@@ -9,7 +9,7 @@ CREATE TABLE `action_log` (
   `sessionid` varchar(50) NOT NULL,
   `userid` int(11) NOT NULL,
   `zeit` int(30) NOT NULL,
-  `request_dump` text NOT NULL,
+  `request_dump` text,
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 )   AUTO_INCREMENT=3;
@@ -389,7 +389,7 @@ CREATE TABLE `homecontrol_etagen` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_uk` (`name`)
-)   AUTO_INCREMENT=10;
+)   AUTO_INCREMENT=13;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
