@@ -780,11 +780,10 @@ class HomeControlMap extends Object {
     function getEtagenImagePath() {
         if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
             $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_etagen',
-                array("pic"), "", "", "", "id=" . $_SESSION['aktEtage']);
+                                   array("pic"), "", "", "", "id=" . $_SESSION['aktEtage']);
             $row = $dbTable->getRow(1);
-    
-            return $row->getNamedAttribute("pic");
-            
+
+            return $row!=null?$row->getNamedAttribute("pic"):"/pics/default_etage.jpg";
         } else {
             return "/pics/default_etage.jpg";
         }
@@ -796,7 +795,6 @@ class HomeControlMap extends Object {
         $map = $this->getMap($dbTable);
         $map->show();
     }
-
 
     function getMap($dbTable) {
         $dv = new Div();
@@ -825,7 +823,6 @@ class HomeControlMap extends Object {
 
         return $dv;
     }
-
 
     function getSensorMap($dbTable) {
         $dv = new Div();
