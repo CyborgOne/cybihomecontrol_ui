@@ -292,7 +292,7 @@ CREATE TABLE `homecontrol_config` (
   `name` varchar(30) NOT NULL,
   `funk_id` int(3) NOT NULL,
   `funk_id2` int(3) DEFAULT NULL,
-  `beschreibung` text NOT NULL,
+  `beschreibung` text,
   `control_art` int(11) NOT NULL DEFAULT '1',
   `etage` int(3) NOT NULL DEFAULT '0',
   `zimmer` int(11) DEFAULT NULL,
@@ -302,7 +302,7 @@ CREATE TABLE `homecontrol_config` (
   `dimmer` set('J','N') NOT NULL DEFAULT 'N',
   `sender_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=29;
+)   AUTO_INCREMENT=30;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -518,11 +518,11 @@ CREATE TABLE `homecontrol_sensor` (
   `beschreibung` text,
   `status_sensor` enum('J','N') NOT NULL COMMENT 'J: Sensor der nur einen Status (1 oder 0) zurückliefert',
   `geaendert` timestamp NOT NULL,
-  `lastSignal` int(30) NOT NULL,
-  `lastValue` int(9) NOT NULL,
+  `lastSignal` int(30) DEFAULT NULL,
+  `lastValue` int(9) DEFAULT NULL,
   `sensor_art` int(11) NOT NULL,
-  `x` int(11) NOT NULL,
-  `y` int(11) NOT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
   `etage` int(11) DEFAULT NULL,
   `zimmer` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -583,7 +583,7 @@ DROP TABLE IF EXISTS `homecontrol_shortcut`;
 CREATE TABLE `homecontrol_shortcut` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
-  `beschreibung` text NOT NULL,
+  `beschreibung` text,
   `show_shortcut` enum('J','N') NOT NULL DEFAULT 'J',
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
@@ -636,7 +636,7 @@ CREATE TABLE `homecontrol_term` (
   `min` int(2) DEFAULT NULL,
   `std` int(2) DEFAULT NULL,
   `value` int(9) DEFAULT NULL,
-  `termcondition` varchar(50) NOT NULL,
+  `termcondition` varchar(50) DEFAULT NULL,
   `status` set('J','N') DEFAULT NULL,
   `montag` set('J','N') NOT NULL DEFAULT 'N',
   `dienstag` set('J','N') NOT NULL DEFAULT 'N',
@@ -648,7 +648,7 @@ CREATE TABLE `homecontrol_term` (
   `order_nr` int(5) NOT NULL,
   `and_or` set('and','or') NOT NULL DEFAULT 'and',
   `geaendert` timestamp NOT NULL,
-  `lastSensorintervall` int(8) NOT NULL,
+  `lastSensorintervall` int(8) DEFAULT NULL,
   `trigger_jn` set('J','N') NOT NULL DEFAULT 'J',
   PRIMARY KEY (`id`),
   KEY `trigger_id` (`trigger_id`)
@@ -1092,19 +1092,8 @@ CREATE TABLE `user` (
   `emailJN` enum('J','N') NOT NULL DEFAULT 'N',
   `icqJN` enum('J','N') NOT NULL DEFAULT 'J',
   `telefonJN` enum('J','N') NOT NULL DEFAULT 'N',
-  `Level` double NOT NULL,
-  `EP` double NOT NULL,
-  `Gold` double NOT NULL,
-  `Holz` double NOT NULL,
-  `Erz` double NOT NULL,
-  `Felsen` double NOT NULL,
-  `Wasser` double NOT NULL,
-  `Nahrung` double NOT NULL,
   `aktiv` enum('J','N') NOT NULL DEFAULT 'N',
   `activationString` varchar(255) DEFAULT NULL,
-  `angelegt` date NOT NULL COMMENT 'timestamp angelegt',
-  `clan_id` int(11) DEFAULT NULL,
-  `rasse_id` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `User` (`User`),
   KEY `Name` (`Name`(8))

@@ -12,12 +12,13 @@
     $dbTblBenutzer = new DbTable($_SESSION['config']->DBCONNECT, 
                                 'user', 
                                 array("Vorname", "Nachname", "User", "Status", "aktiv", "Pw"), 
-                                "Vorname, Nachname, Benutzername, Status, Aktiv?",
+                                "Vorname, Nachname, Benutzername, Status, Aktiv?, Passwort",
                                 "",
                                 "Nachname, Vorname");
     
     $dbTblBenutzer->setHeaderEnabled(true);
     $dbTblBenutzer->setDeleteInUpdate(true);
+    $dbTblBenutzer->setInvisibleCols(array("Pw"));
     $dbTblBenutzer->setNoUpdateCols(array("Pw"));
     $dbTblBenutzer->setColSizes(array("200", "40", "60", "90", "50", "50"));
 

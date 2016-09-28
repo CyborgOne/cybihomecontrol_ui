@@ -50,6 +50,7 @@ class DbTable extends Object {
 
     var $NOINSERTCOLS; // Array welches die Spalten enthält die aus Insert ausgenommen werden sollen
     var $NOUPDATECOLS; // Array welches die Spalten enthält die nicht änderbar sein sollen
+    var $INVISIBLECOLS; // Array welches die Spalten enthält die nicht angezeigt werden sollen
     var $READONLYCOLS; // Array welches die Spaltennamen enthält die nicht änderbar sein sollen
 
     var $TOCHECK; // String der mit Kommas getrennt alle Spaltennamen enthält, die Pflichtfelder darstellen
@@ -148,9 +149,10 @@ class DbTable extends Object {
         }
 
 
-        $this->NOINSERTCOLS = array();
-        $this->NOUPDATECOLS = array();
-        $this->READONLYCOLS = array();
+        $this->NOINSERTCOLS  = array();
+        $this->NOUPDATECOLS  = array();
+        $this->READONLYCOLS  = array();
+        $this->INVISIBLECOLS = array();
         $this->DEFAULT_HIDDEN_FIELDS = new Container();
 
         // Falls keine Spaltennamen übergeben -> ALLE ermitteln
@@ -446,6 +448,16 @@ class DbTable extends Object {
         $this->NOUPDATECOLS = $c;
     }
 
+    function setInvisibleCols($c) {
+        $this->INVISIBLECOLS = $c;
+    }
+
+    function isInvisibleCol($name) {
+        if(strlen($name)<=0 || count($this->INVISIBLECOLS)<=0){
+            return false;
+        }
+        return existsValueInArray($name, $this->INVISIBLECOLS);
+    }
 
     function isNoUpdateCol($name) {
         if(strlen($name)<=0 || count($this->NOUPDATECOLS)<=0){
@@ -1415,7 +1427,11 @@ class DbTable extends Object {
                         }
                     }
 
-                    $r->setAttribute($ia, $txt);
+                    if(!$this->isInvisibleCol($this->COLNAMES[$ia])){
+                        $r->setAttribute($ia, $txt);
+                    } else {
+                        $r->setAttribute($ia, " ");
+                    }                    
             }
 
             $tblBtns = new Table(array("", ""));
@@ -2197,34 +2213,33 @@ class DbTable extends Object {
                 $row = $this->ROWS[$ir];
                 $val = "";
                 $t = "";
-                if (strlen($row->getAttribute($ia)) > 0) {
-                    $val = getDbComboValue($this->TABLENAME, $this->COLNAMES[$ia], $row->
-                        getAttribute($ia));
-                }
-
-                // Wenn DbCombo definiert wurde wird der passende Text zum Code der Spalte angezeigt
-                if (strlen($val) > 0) {
-                    $t = $val;
+                if(!$this->isInvisibleCol($this->COLNAMES[$ia])){
+                    if (strlen($row->getAttribute($ia)) > 0) {
+                        $val = getDbComboValue($this->TABLENAME, $this->COLNAMES[$ia], $row->
+                            getAttribute($ia));
+                    }
+    
+                    // Wenn DbCombo definiert wurde wird der passende Text zum Code der Spalte angezeigt
+                    if (strlen($val) > 0) {
+                        $t = $val;
+                    } else {
+                        $t = $row->getAttribute($ia);
+                    }
+    
+                    if (strtolower($this->COLNAMES[$ia]) == "email") {
+                        $txt = $row->getAttribute($ia);
+    
+                        $tmp = new Text($txt);
+                        $tmp->setFilter(false);
+    
+                        $r->setAttribute($ia, new Link("mailto:" . $txt, $tmp));
+                    } else {
+                        $r->setAttribute($ia, new Text($t));
+                    }
                 } else {
-                    $t = $row->getAttribute($ia);
+                    $r->setAttribute($ia, " ");
                 }
-
-
-                if (strtolower($this->COLNAMES[$ia]) == "email") {
-                    $txt = $row->getAttribute($ia);
-
-                    $tmp = new Text($txt);
-                    $tmp->setFilter(false);
-
-                    $r->setAttribute($ia, new Link("mailto:" . $txt, $tmp));
-                } else {
-
-                    $r->setAttribute($ia, new Text($t));
-
-                }
-
             }
-
             $table->addRow($r);
         }
 
