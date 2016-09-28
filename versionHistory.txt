@@ -1,10 +1,7 @@
 
 Version: 0.0.65
 ---------------------
-
-Version: 0.0.65
----------------------
-
+SHYS-125: Unread Mail Icon Position bei ausgeblendetem Banner korrigiert
 Version: 0.0.64
 ---------------------
 Anlegen neuer Geräte verursachte fehler bei sender_id

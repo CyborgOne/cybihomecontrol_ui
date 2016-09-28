@@ -431,7 +431,7 @@ CREATE TABLE `homecontrol_noframe` (
   `ip` varchar(15) NOT NULL,
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=5;
+)   AUTO_INCREMENT=6;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

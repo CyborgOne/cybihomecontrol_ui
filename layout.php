@@ -100,6 +100,7 @@ if(!$noFrameLayout){
     $layoutTable->addRow($contentLayoutRow1);
 } else {
     $_SESSION['additionalLayoutHeight'] = 15;
+    $bannerHeight = $_SESSION['additionalLayoutHeight'];
 }
 
   
