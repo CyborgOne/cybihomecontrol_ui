@@ -33,7 +33,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $ln = new Line();
 
     $scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_etagen',
-        array("name", "pic"), "Name, Raumplan", "", "name", "");
+        array("name", "pic"), "Name, Raumplan", "pic = 'pics/default_etage.jpg'", "name", "");
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
     $scDbTable->setNoInsertCols(array("pic"));
@@ -54,14 +54,13 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         "Speichern") {
         $scDbTable->doInsert();
         
-        $getMaxSql = "SELECT max(id) maxId FROM homecontrol_etagen";
-        $rslt = $_SESSION['config']->DBCONNECT->executeQuery($getMaxSql);
-        $r = mysql_fetch_array($rslt);
-        
-        exec("cp /var/www/pics/default_etage.jpg /var/www/pics/raumplan/".$r['maxId'].".jpg");
-        
-        $getMaxSql = "UPDATE homecontrol_etagen SET pic = 'pics/raumplan/".$r['maxId'].".jpg' WHERE id = ".$r['maxId'];
-        $rslt = $_SESSION['config']->DBCONNECT->executeQuery($getMaxSql);
+ //       $getMaxSql = "SELECT max(id) maxId FROM homecontrol_etagen";
+ //       $rslt = $_SESSION['config']->DBCONNECT->executeQuery($getMaxSql);
+ //       $r = mysql_fetch_array($rslt);     
+ //       exec("cp /var/www/pics/default_etage.jpg /var/www/pics/raumplan/".$r['maxId'].".jpg");
+ //       $getMaxSql = "UPDATE homecontrol_etagen SET pic = 'pics/raumplan/".$r['maxId'].".jpg' WHERE id = ".$r['maxId'];
+ //       //$getMaxSql = "UPDATE homecontrol_etagen SET pic = 'pics/default_etage.jpg' WHERE id = ".$r['maxId'];
+ //       $rslt = $_SESSION['config']->DBCONNECT->executeQuery($getMaxSql);
         
         $scDbTable->refresh();
     }
@@ -111,7 +110,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
             
             $imgRaumplan = new Image(getDbValue("homecontrol_etagen", "pic", "id=".$rowId));
         } else {
-            $imgRaumplan = new Image($etagenRow->getNamedAttribute("pic"));
+            $imgRaumplan = new Image(getEtagenImagePath($rowId));
         }
         $imgRaumplan->setGenerated(false);
         $imgRaumplan->setWidth(140);
@@ -253,6 +252,16 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
     $form->show();
     
+}
+
+
+
+function getEtagenImagePath($etage) {
+    $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_etagen',
+                           array("id, pic"), "", "", "", "id=" . $etage);
+    $row = $dbTable->getRow(1);
+
+    return $row!=null?$row->getNamedAttribute("pic"):"/pics/default_etage.jpg";
 }
 
 ?>

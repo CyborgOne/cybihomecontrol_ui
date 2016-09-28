@@ -1042,6 +1042,13 @@ class HomeControlMap extends Object {
     * Zeigt die Karte mit allen Controls an.
     */
     function show() {
+        $dbArr = getComboArrayBySql("select id, name from homecontrol_sender");
+        if(count($dbArr) <= 0){
+            $msg = new Message("Kein Sender vorhanden", "Legen Sie zuerst unter *Einstellungen - Basis* mindestens einen Sender an.");
+            $msg->show();
+            return;
+        }
+        
         $this->checkSensorOrControlSwitch();
         
         $this->handleEtage();
