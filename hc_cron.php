@@ -43,7 +43,7 @@ switch ($currentDayNumber) {
         break;
 }
 
-if(!checkAction("cron_".$currentStd.":".$currentMin.":".$currentDayName)){
+if(!checkAction("cron_" .$currentDayName ." " .date("d.M.Y") ." - " .$currentStd .":" .$currentMin)){
     echo "cron_" .$currentDayName ." " .date("d.M.Y") .":" .$currentStd .":" .$currentMin. " --- bereits ausgef&uuml;hrt\n";
     return;
 }
