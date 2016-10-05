@@ -1,4 +1,12 @@
 
+Version: 0.2.1
+---------------------
+Crons wurden wegen fehlerhafter Prüfung nach einer Woche nicht mehr ausgeführt.
+
+Version: 0.2.1
+---------------------
+Crons wurden wegen fehlerhafter Prüfung nach einer Woche nicht mehr ausgeführt.
+
 Version: 0.0.65
 ---------------------
 SHYS-125: Unread Mail Icon Position bei ausgeblendetem Banner korrigiert
