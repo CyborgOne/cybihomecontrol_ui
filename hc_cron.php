@@ -61,10 +61,10 @@ $result =  $_SESSION['config']->DBCONNECT->executeQuery($sql);
 
 //echo "Aktuelle Cron Anzahl: ".mysqli_num_rows($result)."<br><br>";
 $ts = isset($_REQUEST['tmstmp'])?$_REQUEST['tmstmp']:"";
+$shortcutUrls = array();
 if (mysql_num_rows($result) > 0 ) {
     echo "\nRUN HOMECONTROL-CRON: ".$currentDayName." ".$currentStd.":".$currentMin."-".time()."\n";
 
-    $shortcutUrls = array();
     while ($row = mysql_fetch_array($result)) {
         if (isCronPaused($_SESSION['config']->DBCONNECT, $row['id'])) {
             deleteCronPause($_SESSION['config']->DBCONNECT, $row['id']);
