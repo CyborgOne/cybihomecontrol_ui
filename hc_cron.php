@@ -39,7 +39,7 @@ switch ($currentDayNumber) {
         $currentDayName = "Freitag";
         break;
     case 6:
-        $currentDayName = "Samstag";
+        $currentDayName = "Samstag"; 
         break;
 }
 
@@ -48,19 +48,6 @@ if(!checkAction("cron_" .$currentDayName ." " .date("d.M.Y") ." - " .$currentStd
     return;
 }
 echo "Check: cron_" .$currentDayName ." " .date("d.M.Y") .":" .$currentStd .":" .$currentMin ."\n";
-
-if(strlen($_SESSION['config']->PUBLICVARS['gmailAdress'])>0 && strlen($_SESSION['config']->PUBLICVARS['gmailAppPassword'])>0 ){
-  $in    = connectToGmailInbox($_SESSION['config']->PUBLICVARS['gmailAdress'], $_SESSION['config']->PUBLICVARS['gmailAppPassword']);
-  $mails = getMailsFromGmailInbox($in);
-  $unreadMails = getEmailCount($in, $mails, true);
-  closeGmailInbox($in);
-//  echo "Ungelesene Mails: ".$unreadMails."\n";
-  
-  // Anzahl ungelesener Mails in Sensor-Tabelle speichern
-  if(checkSensorInputMissingValues()){
-     refreshSensorValue($_SESSION['config']->DBCONNECT, 999999999, $unreadMails);
-  }
-}
 
 // Aktueller Wochentag muss ?bereinstimmen
 $whereStmtCurrCron = strtolower($currentDayName)."='J'";
