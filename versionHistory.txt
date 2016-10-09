@@ -1,7 +1,7 @@
 
-Version: 0.2.1
+Version: 0.2.2
 ---------------------
-Crons wurden wegen fehlerhafter Prüfung nach einer Woche nicht mehr ausgeführt.
+Funksender IP Ermittlung nachgebessert
 
 Version: 0.2.1
 ---------------------

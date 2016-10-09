@@ -329,19 +329,21 @@ function getConfigFunkId($id, $status) {
 function getArduinoUrlForDeviceId($hcConfigId, $dbConnect){
     $selectSenderIP = "SELECT ip FROM `homecontrol_sender` WHERE id = (SELECT sender_id FROM homecontrol_config WHERE id = " .$hcConfigId ." )";
     $rslt = $dbConnect->executeQuery($selectSenderIP);
+    $r = mysql_fetch_array($rslt); 
     
-    if(isset($rslt['ip'])&&strlen($rslt['ip'])>0){
-        return "http://".$rslt['ip']."/rawCmd";
+    if(isset($r['ip'])&&strlen($r['ip'])>0){
+        return "http://".$r['ip']."/rawCmd";
     } else {
         // Wenn keine Sender-IP zum Device ermittelt werden kann, Default holen.
         $selectSenderIP = "SELECT ip FROM `homecontrol_sender` WHERE default_jn = 'J'";
         $rslt = $dbConnect->executeQuery($selectSenderIP);
+        $r = mysql_fetch_array($rslt); 
         
-        if(isset($rslt['ip'])&&strlen($rslt['ip'])>0){
-            return "http://".$rslt['ip']."/rawCmd";
+        if(isset($r['ip'])&&strlen($r['ip'])>0){
+            return "http://".$r['ip']."/rawCmd";
         }
     }
-    
+
     // wird keine IP gefunden: FallBack auf altes Vorgehen
     return "http://". getPageConfigParam($dbConnect, 'arduino_url');
 }
