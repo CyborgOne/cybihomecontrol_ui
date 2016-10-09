@@ -1046,92 +1046,92 @@ class HomeControlMap extends Object {
         if(count($dbArr) <= 0){
             $msg = new Message("Kein Sender vorhanden", "Legen Sie zuerst unter *Einstellungen - Basis* mindestens einen Sender an.");
             $msg->show();
-            return;
-        }
-        
-        $this->checkSensorOrControlSwitch();
-        
-        $this->handleEtage();
-        
-        $this->checkSwitch();
-        
-        if ($this->LAYOUT_ART == $this->LAYOUTART_MOBILE) {
-            $this->showMobileView();
-            return;
-        }
-
-        if ($this->LAYOUT_ART == $this->LAYOUTART_TABLET) {
-            $this->showTabletView();
-            return;
-        }
-
-
-        // ungültige Layout-Art korrigieren auf Default (Desktop)
-        $this->LAYOUT_ART = $this->LAYOUTART_DESKTOP;
-
-        if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
-            $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
-                array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
-                "etage", "zimmer", "x", "y", "dimmer", "sender_id"), "", "", "", "etage=" . $_SESSION['aktEtage']);
-            $dbTable->setNoInsertCols("id");
+        } else {
             
-            $dbSensorTable = new DbTable(   $_SESSION['config']->DBCONNECT, 
-                                            'homecontrol_sensor',
-                                            array(  "id", 
-                                                    "name", 
-                                                    "beschreibung", 
-                                                    "status_sensor", 
-                                                    "sensor_art", 
-                                                    "etage", 
-                                                    "zimmer", 
-                                                    "x", 
-                                                    "y",
-                                                    "lastValue",
-                                                    "lastSignal"
-                                                    ), 
-                                            "ID, Name, Beschreibung, Status-Sensor?, Art, Etage, Zimmer, X, Y, Letzter Wert, Letztes Signal", 
-                                            "", 
-                                            "etage, zimmer, name", 
-                                            "etage=" . $_SESSION['aktEtage']);
+            $this->checkSensorOrControlSwitch();
             
-            if ($this->EDITMODE) {
-                if($this->handleSensorEdit($dbSensorTable)){
-                    $dbSensorTable->refresh();
-                }
-                if ($this->handleControlEdit($dbTable) ) {
-                    $dbTable->refresh();
-                }
+            $this->handleEtage();
+            
+            $this->checkSwitch();
+            
+            if ($this->LAYOUT_ART == $this->LAYOUTART_MOBILE) {
+                $this->showMobileView();
+                return;
             }
-        }
-
-        $navBar = $this->getNavigationBar();
-        $navBar->show();
-
-        if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
-            if ($this->EDITMODE) {
     
-                echo "
-        	  <script type=\"text/javascript\">
-        		function Coords () {
-                        var Ziel = \"?";
-    
-                if($_SESSION['AnlageArt']=="S"){
-                   echo "InsertNewSensorControl";
-                } else {
-                   echo "InsertNewControl"; 
-                }
-                        
-                echo "=do&X=\" + window.event.pageX + \"&Y=\" + window.event.pageY;
-                        window.location.href = Ziel;  
-        		}
-              </script>
-                ";
+            if ($this->LAYOUT_ART == $this->LAYOUTART_TABLET) {
+                $this->showTabletView();
+                return;
             }
     
     
-            $this->showMap($dbTable, $dbSensorTable);
+            // ungültige Layout-Art korrigieren auf Default (Desktop)
+            $this->LAYOUT_ART = $this->LAYOUTART_DESKTOP;
     
-            $this->postHandleControlEdit($dbTable);
+            if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
+                $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
+                    array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
+                    "etage", "zimmer", "x", "y", "dimmer", "sender_id"), "", "", "", "etage=" . $_SESSION['aktEtage']);
+                $dbTable->setNoInsertCols("id");
+                
+                $dbSensorTable = new DbTable(   $_SESSION['config']->DBCONNECT, 
+                                                'homecontrol_sensor',
+                                                array(  "id", 
+                                                        "name", 
+                                                        "beschreibung", 
+                                                        "status_sensor", 
+                                                        "sensor_art", 
+                                                        "etage", 
+                                                        "zimmer", 
+                                                        "x", 
+                                                        "y",
+                                                        "lastValue",
+                                                        "lastSignal"
+                                                        ), 
+                                                "ID, Name, Beschreibung, Status-Sensor?, Art, Etage, Zimmer, X, Y, Letzter Wert, Letztes Signal", 
+                                                "", 
+                                                "etage, zimmer, name", 
+                                                "etage=" . $_SESSION['aktEtage']);
+                
+                if ($this->EDITMODE) {
+                    if($this->handleSensorEdit($dbSensorTable)){
+                        $dbSensorTable->refresh();
+                    }
+                    if ($this->handleControlEdit($dbTable) ) {
+                        $dbTable->refresh();
+                    }
+                }
+            }
+    
+            $navBar = $this->getNavigationBar();
+            $navBar->show();
+    
+            if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
+                if ($this->EDITMODE) {
+        
+                    echo "
+            	  <script type=\"text/javascript\">
+            		function Coords () {
+                            var Ziel = \"?";
+        
+                    if($_SESSION['AnlageArt']=="S"){
+                       echo "InsertNewSensorControl";
+                    } else {
+                       echo "InsertNewControl"; 
+                    }
+                            
+                    echo "=do&X=\" + window.event.pageX + \"&Y=\" + window.event.pageY;
+                            window.location.href = Ziel;  
+            		}
+                  </script>
+                    ";
+                }
+        
+        
+                $this->showMap($dbTable, $dbSensorTable);
+        
+                $this->postHandleControlEdit($dbTable);
+            }
         }
     }
 
