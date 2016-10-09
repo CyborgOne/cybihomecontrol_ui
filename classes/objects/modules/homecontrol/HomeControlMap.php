@@ -1045,7 +1045,6 @@ class HomeControlMap extends Object {
         $dbArr = getComboArrayBySql("select id, name from homecontrol_sender");
         if(count($dbArr) <= 0){
             $msg = new Message("Kein Sender vorhanden", "Legen Sie zuerst unter *Einstellungen - Basis* mindestens einen Sender an.");
-            $msg->show();
         } else {
             
             $this->checkSensorOrControlSwitch();
