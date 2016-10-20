@@ -80,11 +80,10 @@
                     $retVal = file_get_contents( $useSenderUrl."?schalte=".$id."&dimm=".$dimmer );
                     
                     try {
-                        $myfile = fopen("/var/www/switch.log", "a+") or die("Unable to open switch.log!");
+                        $myfile = fopen("/var/www/switch.log", "a+");
                         fwrite($myfile, "(".date("d.M.Y - H:i:s")."): " .$useSenderUrl."?schalte=".$id."&dimm=".$dimmer."\n");
                         fclose($myfile);
                     } catch (Exception $e){
-                         echo $e->getMessage(). "\n";
                     } 
                         
                     if(strpos(substr($retVal,0,50), "Warning")>0){
@@ -99,7 +98,6 @@
                      break;
                   }
                  
-                  
             }
             //echo "<br>";
           }
@@ -390,9 +388,12 @@ function refreshSensorValue($con, $sensorId, $sensorWert){
     $sql = "INSERT INTO homecontrol_sensor_log(sensor_id, value, update_time) values (".$sensorId.",".$sensorWert.",".time().")";
     $result = $con->executeQuery($sql);
     
-    $myfile = fopen("signalIn.log", "a+") or die("Unable to open signalIn.log!");
-    fwrite($myfile, "".date("d.M.Y H:i:s").": " ."Sensor ".$sensorId."  aktualisiert von: ".$lastVal ." nach " .$sensorWert ."\n");
-    fclose($myfile);
+    try{
+      $myfile = fopen("signalIn.log", "a+");
+      fwrite($myfile, "".date("d.M.Y H:i:s").": " ."Sensor ".$sensorId."  aktualisiert von: ".$lastVal ." nach " .$sensorWert ."\n");
+      fclose($myfile);
+    } catch(Exception $e) {
+    }
     
     
     
@@ -411,10 +412,13 @@ function refreshSensorValue($con, $sensorId, $sensorWert){
     // Wenn auszufuehrendes Kommando gefunden wurde, ausfuehren
     if(strlen($SENSOR_URL_COMMAND)>0){
       switchShortcut("", $SENSOR_URL_COMMAND, $con);
-    
-      $myfile = fopen("signalIn.log", "a+") or die("Unable to open signalIn.log!");
-      fwrite($myfile, "SCHALTUNG -> ".$SENSOR_URL_COMMAND."\n");
-      fclose($myfile);
+      
+      try{  
+        $myfile = fopen("signalIn.log", "a+");
+        fwrite($myfile, "SCHALTUNG -> ".$SENSOR_URL_COMMAND."\n");
+        fclose($myfile);
+      } catch(Exception $e) {
+      }
     }
 }
 
