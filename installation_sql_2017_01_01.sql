@@ -1405,8 +1405,8 @@ INSERT INTO pageconfig VALUES
 (35, 'gmailAdress', '', 0, '0000-00-00 00:00:00', 'Email fur Gmail Abfragen'),
 (36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen');
 ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;
-INSERT INTO homecontrol_sensor (id, name, beschreibung, status_sensor, geaendert, lastSignal, lastValue, sensor_art, x, y, etage, zimmer) VALUES 
-('999999999', 'UnreadMailsInInbox', 'Anzahl der Mails im G-Mail Posteingang', 'N', '2016-09-22 00:00:00', 0, 0, 7, 0, 0, null, null);
+INSERT INTO homecontrol_sensor (id, name, beschreibung, geaendert, lastSignal, lastValue, sensor_art, x, y, etage, zimmer) VALUES 
+('999999999', 'UnreadMailsInInbox', 'Anzahl der Mails im G-Mail Posteingang',  '2016-09-22 00:00:00', 0, 0, 7, 0, 0, null, null);
 create view homecontrol_cronview as 
 SELECT 'Montag'  wochentag, 1 tagnr, hc.* FROM homecontrol_cron hc WHERE montag = 'J'
 union SELECT 'Dienstag', 2, hc1.* FROM homecontrol_cron hc1 WHERE dienstag = 'J'

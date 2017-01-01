@@ -1,4 +1,8 @@
 
+Version: 0.2.6
+---------------------
+sql update
+
 Version: 0.2.5
 ---------------------
 sql aktualisierung

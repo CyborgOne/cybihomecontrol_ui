@@ -160,8 +160,8 @@ echo "(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur G
 echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;" >> $filename
 
 
-echo "INSERT INTO homecontrol_sensor (id, name, beschreibung, status_sensor, geaendert, lastSignal, lastValue, sensor_art, x, y, etage, zimmer) VALUES " >> $filename
-echo "('999999999', 'UnreadMailsInInbox', 'Anzahl der Mails im G-Mail Posteingang', 'N', '2016-09-22 00:00:00', 0, 0, 7, 0, 0, null, null);" >> $filename
+echo "INSERT INTO homecontrol_sensor (id, name, beschreibung, geaendert, lastSignal, lastValue, sensor_art, x, y, etage, zimmer) VALUES " >> $filename
+echo "('999999999', 'UnreadMailsInInbox', 'Anzahl der Mails im G-Mail Posteingang',  '2016-09-22 00:00:00', 0, 0, 7, 0, 0, null, null);" >> $filename
 
 
 
