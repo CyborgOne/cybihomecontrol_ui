@@ -1,4 +1,8 @@
 
+Version: 0.2.5
+---------------------
+sql aktualisierung
+
 Version: 0.2.4
 ---------------------
 SQL incl neuen Tabellen für dynamische Parameter
