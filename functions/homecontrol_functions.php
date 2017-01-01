@@ -22,16 +22,8 @@
               $fixParams = array();
               $defaultLogicParams = array();
               $switchParams = array();
-              // Alle Parameter zur ConfigID holen
-/*              $sql = "SELECT id, senderTypId, name, optional, fix, default_logic FROM homecontrol_sender_typen_parameter WHERE senderTypId=(
-                        SELECT s.senderTypId 
-                          FROM homecontrol_sender s, homecontrol_config c 
-                         WHERE s.id = c.sender_id
-                           and c.id = " .$_REQUEST['switchConfigId'] ." 
-                     )";
-              $rslt = $dbConnect->executeQuery($sql);
-*/                    
 
+              // Alle Parameter zur ConfigID holen
               $paramTable = new DbTable($dbConnect, "homecontrol_sender_typen_parameter", array('*'), "", "", "", "senderTypId=(SELECT s.senderTypId FROM homecontrol_sender s, homecontrol_config c WHERE s.id = c.sender_id AND c.id = " .$_REQUEST['switchConfigId'] .")");      
               
               $lastSenderTyp = "";
@@ -412,7 +404,8 @@ function getShortcutSwitchKeyByName($shortcutName){
     $resultSubItems = mysql_query($sqlSubItems);
     $shortcutUrl = "";
     while($rowSub = mysql_fetch_array($resultSubItems)) {
-      $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
+    // TODO:
+    //      $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
     }      
     return $shortcutUrl;
 }
@@ -423,7 +416,8 @@ function getShortcutSwitchKeyById($con, $shortcutId){
     $resultSubItems = mysql_query($sqlSubItems);
     $shortcutUrl = "";
     while($rowSub = mysql_fetch_array($resultSubItems)) {
-      $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
+    // TODO:
+    //     $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
     }      
     return $shortcutUrl;
 }
@@ -495,8 +489,7 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
                     $whereStmt = $whereStmt . " etage=" . $row["etagen_id"];
                 }
 
-                $sqlConfig = "SELECT id, funk_id, funk_id2 FROM homecontrol_config " . "WHERE " .
-                    $whereStmt;
+                $sqlConfig = "SELECT id, funk_id, funk_id2 FROM homecontrol_config " . "WHERE " .$whereStmt;
 
                 $resultConfig = $_SESSION['config']->DBCONNECT->executeQuery($sqlConfig);
                 while ($rowConfig = mysql_fetch_array($resultConfig)) {

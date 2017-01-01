@@ -91,10 +91,8 @@ class HomeControlAlarmgeber{
 
         $img = $this->getControlArtIcon(false);
 
-        $lnkAn = new Link("http://" . $this->IP
-            ."?schalte=on", $divAn, false, "arduinoSwitch");
-        $lnkAus = new Link("http://" .$this->IP 
-            ."?schalte=-" . $this->FUNK_ID, $divAus, false, "arduinoSwitch");
+        $lnkAn = new Link("http://" .$this->IP."?schalte=on", $divAn, false, "arduinoSwitch");
+        $lnkAus = new Link("http://" .$this->IP."?schalte=off", $divAus, false, "arduinoSwitch");
 
         $rowTtl->setAttribute(0, $img);
         $rowTtl->setAttribute(1, $txtName);

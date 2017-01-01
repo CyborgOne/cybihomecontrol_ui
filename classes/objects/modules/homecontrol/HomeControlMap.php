@@ -201,30 +201,9 @@ class HomeControlMap extends Object {
     }
 
 
-    function getUsedFunkIds() {
-        $arr = array();
-
-        $sql = "SELECT funk_id, funk_id2 FROM homecontrol_config";
-        $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sql);
-
-        while ($row = mysql_fetch_array($rslt)) {
-            if (strlen($row['funk_id']) > 0) {
-                $arr[$row['funk_id']] = $row['funk_id'];
-            }
-
-            if (strlen($row['funk_id2']) > 0) {
-                $arr[$row['funk_id2']] = $row['funk_id2'];
-            }
-        }
-
-        return $arr;
-    }
-
-
-
     function getEditMask($id) {
         $dbTable = new DbTable( $_SESSION['config']->DBCONNECT, 'homecontrol_config',
-                                array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
+                                array("id", "name", "beschreibung", "control_art",
                                 "etage", "zimmer", "x", "y", "dimmer", "sender_id"), "", "", "", "id=" . $id);
         $r = $dbTable->getRow(1);
         $controlItem = new HomeControlItem($r);
@@ -244,9 +223,6 @@ class HomeControlMap extends Object {
         
         $cboDimm = new Checkbox("dimmer", "", "J", "N");
         $cboDimm->setToolTip("Gibt an, ob es sich um einen dimmbaren Funkempfänger handelt. Nur m&ouml;glich f&uuml;r BT-Switch Ger&auml;te (FunkID-Bereich: 307-386)");
-        
-        $cobSignalId = $this->getFunkIdCombo("FunkId", false, $r->getNamedAttribute("funk_id"));
-        $cobSignalId->setToolTip("Die ID die an den Sender geschickt wird (z.B. Funk-ID oder Relais. Je nach dem was f&uuml;r ein Sender gew&auml;hlt ist");
         
         $cobZimmer = $this->getZimmerCombo("Zimmer", $r->getNamedAttribute("zimmer"));
         $cobZimmer->setToolTip("Das Zimmer in dem sich das Ger&auml;t befindet.");
@@ -298,8 +274,7 @@ class HomeControlMap extends Object {
         $r4->addSpan(1,3);
         $r4->setAttribute(0, "Geraete-Art: ");
         $r4->setAttribute(1, $cobArt);
-//        $r4->setAttribute(2, "Dimmer?: ");
-//        $r4->setAttribute(3, $cboDimm );
+
         $mask->addRow($r4);
 
         $mask->addSpacer(0,5);
@@ -907,7 +882,7 @@ class HomeControlMap extends Object {
 
         if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
             $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
-                array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
+                array("id", "name", "beschreibung", "control_art",
                 "etage", "zimmer", "x", "y", "dimmer", "sender_id"), "", "", "zimmer", "etage=" . $_SESSION['aktEtage']);
     
             $currCol = 0;
@@ -969,7 +944,7 @@ class HomeControlMap extends Object {
         $this->handleEtage();
 
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
-            array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
+            array("id", "name", "beschreibung", "control_art",
             "etage", "zimmer", "x", "y", "sender_id"), "", "", "etage, name", "");
 
         $currCol = $colCount;
@@ -1011,6 +986,7 @@ class HomeControlMap extends Object {
 
 
     function checkSwitch(){
+      if(isset($_REQUEST['switchConfigId']) && strlen($_REQUEST['switchConfigId'])>0){
         if(isset($_REQUEST['schalte']) && $_REQUEST['schalte']!=0){
             $dbActionLog = new DbTable($_SESSION['config']->DBCONNECT, 
                                        "action_log", 
@@ -1040,9 +1016,12 @@ class HomeControlMap extends Object {
                 foreach($dbActionLog->ROWS as $r){
                     $r->deleteFromDb();
                 }
-                $this->switchObject(isset($_REQUEST['schalte'])&&$_REQUEST['schalte']>0?$_REQUEST['schalte']:-$_REQUEST['schalte'], $_REQUEST['schalte']>0?"on":"off", isset($_REQUEST['dimmer'])?$_REQUEST['dimmer']:0);            
+                if(isset($_REQUEST['schalte'])&&$_REQUEST['schalte']>0){
+                    $this->switchObject(isset($_REQUEST['schalte'])&&$_REQUEST['schalte']>0?$_REQUEST['schalte']:-$_REQUEST['schalte'], $_REQUEST['schalte']>0?"on":"off", isset($_REQUEST['dimmer'])?$_REQUEST['dimmer']:0);
+                }            
             }
         }
+      }
     }
 
 
@@ -1079,7 +1058,7 @@ class HomeControlMap extends Object {
     
             if(isset($_SESSION['aktEtage'])&&strlen($_SESSION['aktEtage'])>0){
                 $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_config',
-                    array("id", "name", "funk_id", "funk_id2", "beschreibung", "control_art",
+                    array("id", "name", "beschreibung", "control_art",
                     "etage", "zimmer", "x", "y", "dimmer", "sender_id"), "", "", "", "etage=" . $_SESSION['aktEtage']);
                 $dbTable->setNoInsertCols("id");
                 
@@ -1145,7 +1124,9 @@ class HomeControlMap extends Object {
 
     
     function switchObject($id, $onOff, $dimm=0){
-        switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'],$id."-".$onOff.($dimm>0&&$dimm<17?"-".$dimm:""), $_SESSION['config']->DBCONNECT);
+        if($id>0 && strlen($onOff)>0){
+            switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'],$id."-".$onOff.($dimm>0&&$dimm<17?"-".$dimm:""), $_SESSION['config']->DBCONNECT);
+        }
     }
 }
 

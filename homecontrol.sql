@@ -12,7 +12,7 @@ CREATE TABLE `action_log` (
   `request_dump` text,
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=20;
+)   AUTO_INCREMENT=8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -90,7 +90,7 @@ CREATE TABLE `default_combo_values` (
 
 LOCK TABLES `default_combo_values` WRITE;
 /*!40000 ALTER TABLE `default_combo_values` DISABLE KEYS */;
-INSERT INTO `default_combo_values` VALUES (1,'tage','1','Montag'),(2,'tage','2','Dienstag'),(3,'tage','3','Mittwoch'),(4,'tage','4','Donnerstag'),(5,'tage','5','Freitag'),(6,'tage','6','Samstag'),(7,'tage','7','Sonntag'),(8,'Monate','1','Januar'),(9,'Monate','2','Februar'),(10,'Monate','3','MÃ¤rz'),(11,'Monate','4','April'),(12,'Monate','5','Mai'),(13,'Monate','6','Juni'),(14,'Monate','7','Juli'),(15,'Monate','8','August'),(16,'Monate','9','September'),(17,'Monate','10','Oktober'),(18,'Monate','11','November'),(19,'Monate','12','Dezember'),(20,'DatumTagzahl','1','1'),(21,'DatumTagzahl','2','2'),(22,'DatumTagzahl','3','3'),(23,'DatumTagzahl','4','4'),(24,'DatumTagzahl','5','5'),(25,'DatumTagzahl','6','6'),(26,'DatumTagzahl','7','7'),(27,'DatumTagzahl','8','8'),(28,'DatumTagzahl','9','9'),(29,'DatumTagzahl','10','10'),(30,'DatumTagzahl','11','11'),(31,'DatumTagzahl','12','12'),(32,'DatumTagzahl','13','13'),(33,'DatumTagzahl','14','14'),(34,'DatumTagzahl','15','15'),(35,'DatumTagzahl','16','16'),(36,'DatumTagzahl','17','17'),(37,'DatumTagzahl','18','18'),(38,'DatumTagzahl','19','19'),(39,'DatumTagzahl','20','20'),(40,'DatumTagzahl','21','21'),(41,'DatumTagzahl','22','22'),(42,'DatumTagzahl','23','23'),(43,'DatumTagzahl','24','24'),(44,'DatumTagzahl','25','25'),(45,'DatumTagzahl','26','26'),(46,'DatumTagzahl','27','27'),(47,'DatumTagzahl','28','28'),(48,'DatumTagzahl','29','29'),(49,'DatumTagzahl','30','30'),(50,'DatumTagzahl','31','31'),(51,'onOff','on','Aktivieren'),(52,'onOff','off','Deaktivieren'),(53,'relaisEinAus','Einschalten','Einschalten'),(54,'relaisEinAus','Ausschalten','Ausschalten');
+INSERT INTO `default_combo_values` VALUES (1,'tage','1','Montag'),(2,'tage','2','Dienstag'),(3,'tage','3','Mittwoch'),(4,'tage','4','Donnerstag'),(5,'tage','5','Freitag'),(6,'tage','6','Samstag'),(7,'tage','7','Sonntag'),(8,'Monate','1','Januar'),(9,'Monate','2','Februar'),(10,'Monate','3','März'),(11,'Monate','4','April'),(12,'Monate','5','Mai'),(13,'Monate','6','Juni'),(14,'Monate','7','Juli'),(15,'Monate','8','August'),(16,'Monate','9','September'),(17,'Monate','10','Oktober'),(18,'Monate','11','November'),(19,'Monate','12','Dezember'),(20,'DatumTagzahl','1','1'),(21,'DatumTagzahl','2','2'),(22,'DatumTagzahl','3','3'),(23,'DatumTagzahl','4','4'),(24,'DatumTagzahl','5','5'),(25,'DatumTagzahl','6','6'),(26,'DatumTagzahl','7','7'),(27,'DatumTagzahl','8','8'),(28,'DatumTagzahl','9','9'),(29,'DatumTagzahl','10','10'),(30,'DatumTagzahl','11','11'),(31,'DatumTagzahl','12','12'),(32,'DatumTagzahl','13','13'),(33,'DatumTagzahl','14','14'),(34,'DatumTagzahl','15','15'),(35,'DatumTagzahl','16','16'),(36,'DatumTagzahl','17','17'),(37,'DatumTagzahl','18','18'),(38,'DatumTagzahl','19','19'),(39,'DatumTagzahl','20','20'),(40,'DatumTagzahl','21','21'),(41,'DatumTagzahl','22','22'),(42,'DatumTagzahl','23','23'),(43,'DatumTagzahl','24','24'),(44,'DatumTagzahl','25','25'),(45,'DatumTagzahl','26','26'),(46,'DatumTagzahl','27','27'),(47,'DatumTagzahl','28','28'),(48,'DatumTagzahl','29','29'),(49,'DatumTagzahl','30','30'),(50,'DatumTagzahl','31','31'),(51,'onOff','on','Aktivieren'),(52,'onOff','off','Deaktivieren'),(53,'relaisEinAus','Einschalten','Einschalten'),(54,'relaisEinAus','Ausschalten','Ausschalten');
 /*!40000 ALTER TABLE `default_combo_values` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,7 +153,7 @@ CREATE TABLE `homecontrol_alarm` (
   `foto_senden_jn` enum('J','N') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-)   AUTO_INCREMENT=2;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -290,8 +290,6 @@ DROP TABLE IF EXISTS `homecontrol_config`;
 CREATE TABLE `homecontrol_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
-  `funk_id` int(3) NOT NULL,
-  `funk_id2` int(3) DEFAULT NULL,
   `beschreibung` text,
   `control_art` int(11) NOT NULL DEFAULT '1',
   `etage` int(3) NOT NULL DEFAULT '0',
@@ -302,7 +300,7 @@ CREATE TABLE `homecontrol_config` (
   `dimmer` set('J','N') NOT NULL DEFAULT 'N',
   `sender_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=32;
+)   AUTO_INCREMENT=2;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -367,7 +365,7 @@ CREATE TABLE `homecontrol_cron` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hc_cron_name_uk` (`name`)
-)   AUTO_INCREMENT=6;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -391,7 +389,7 @@ CREATE TABLE `homecontrol_cron_items` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cron_item_uk` (`cron_id`,`config_id`,`zimmer_id`,`etagen_id`)
-)   AUTO_INCREMENT=10;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -431,7 +429,7 @@ CREATE TABLE `homecontrol_editoren` (
 
 LOCK TABLES `homecontrol_editoren` WRITE;
 /*!40000 ALTER TABLE `homecontrol_editoren` DISABLE KEYS */;
-INSERT INTO `homecontrol_editoren` VALUES (1,'RGB Farbwahl','HomeControlRGBColorEditor','BenÃ¶tigt 3 Zahlen-Parameter (0 bis 255)','pics/transparentpixel.gif','2016-10-27 01:15:52'),(2,'Dimmer-Slider','HomeControlSliderVonBisEditor','BenÃ¶tigt einen Zahlen-Parameter (von/bis)','pics/transparentpixel.gif','2016-10-26 01:13:16'),(3,'Slider','HomeControlSliderVonBisEditor','','pics/transparentpixel.gif','2016-10-27 01:18:06'),(4,'Relais Funk-Switch','RelaisFunkSwitchEditor','','pics/transparentpixel.gif','2016-12-21 23:43:35');
+INSERT INTO `homecontrol_editoren` VALUES (1,'RGB Farbwahl','HomeControlRGBColorEditor','BenÃ¶tigt 3 Zahlen-Parameter (0 bis 255)','pics/transparentpixel.gif','2017-01-01 15:16:35'),(2,'Dimmer-Slider','HomeControlSliderVonBisEditor','BenÃ¶tigt einen Zahlen-Parameter (von/bis)','pics/transparentpixel.gif','2017-01-01 15:16:35'),(3,'Slider','HomeControlSliderVonBisEditor','','pics/transparentpixel.gif','2016-10-27 01:18:06'),(4,'Relais Funk-Switch','RelaisFunkSwitchEditor','','pics/transparentpixel.gif','2016-12-21 23:43:35');
 /*!40000 ALTER TABLE `homecontrol_editoren` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -502,7 +500,7 @@ CREATE TABLE `homecontrol_etagen` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_uk` (`name`)
-)   AUTO_INCREMENT=13;
+)   AUTO_INCREMENT=5;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -525,7 +523,7 @@ CREATE TABLE `homecontrol_modes` (
 
 LOCK TABLES `homecontrol_modes` WRITE;
 /*!40000 ALTER TABLE `homecontrol_modes` DISABLE KEYS */;
-INSERT INTO `homecontrol_modes` VALUES (1,'default','N','Standard-Modus (Einträge gelten für alle Modes)'),(2,'anwesend','J','Anwesenheits-Modus'),(3,'abwesend','J','Abwesenheits-Modus'),(4,'urlaub','J','Urlaubs-Modus');
+INSERT INTO `homecontrol_modes` VALUES (1,'default','N','Standard-Modus (Eintr?ge gelten f?r alle Modes)'),(2,'anwesend','J','Anwesenheits-Modus'),(3,'abwesend','J','Abwesenheits-Modus'),(4,'urlaub','J','Urlaubs-Modus');
 /*!40000 ALTER TABLE `homecontrol_modes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -544,7 +542,7 @@ CREATE TABLE `homecontrol_noframe` (
   `ip` varchar(15) NOT NULL,
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=5;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -564,7 +562,7 @@ CREATE TABLE `homecontrol_regeln` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-)   AUTO_INCREMENT=2;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -588,7 +586,7 @@ CREATE TABLE `homecontrol_regeln_items` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   KEY `regel_id` (`regel_id`)
-)   AUTO_INCREMENT=15;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -631,7 +629,7 @@ CREATE TABLE `homecontrol_sender_parameter_values` (
   `value` varchar(100) NOT NULL,
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=29;
+)   AUTO_INCREMENT=30;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -672,7 +670,7 @@ CREATE TABLE `homecontrol_sender_typen_parameter` (
   `name` varchar(50) NOT NULL,
   `parameterArtId` int(11) NOT NULL,
   `geaendert` timestamp NOT NULL,
-  `fix` enum('J','N') NOT NULL DEFAULT 'J' COMMENT 'Gibt an, ob der Wert bezogen aufs Gerät statisch ist oder in der Steuerung änderbar sein soll',
+  `fix` enum('J','N') NOT NULL DEFAULT 'J' COMMENT 'Gibt an, ob der Wert bezogen aufs Ger?t statisch ist oder in der Steuerung ?nderbar sein soll',
   `default_logic` enum('J','N') NOT NULL DEFAULT 'N' COMMENT 'Wenn J wird zum ausschalten der Wert mit -1 multipliziert. Es sollte sich also um einen Zahlenwert handeln',
   `optional` enum('J','N') NOT NULL DEFAULT 'N',
   PRIMARY KEY (`id`),
@@ -729,7 +727,7 @@ CREATE TABLE `homecontrol_sender_typen_parameter_optional` (
   `param_id` int(11) NOT NULL,
   `active` set('J','N') NOT NULL DEFAULT 'J',
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=7;
+)   AUTO_INCREMENT=8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -754,7 +752,7 @@ CREATE TABLE `homecontrol_sensor` (
   `etage` int(11) DEFAULT NULL,
   `zimmer` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=2147483648;
+)   AUTO_INCREMENT=1000000000;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -817,7 +815,7 @@ CREATE TABLE `homecontrol_shortcut` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-)   AUTO_INCREMENT=4;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -842,7 +840,7 @@ CREATE TABLE `homecontrol_shortcut_items` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `shortcut_item_uk` (`shortcut_id`,`config_id`,`zimmer_id`,`etagen_id`),
   KEY `shortcut_id` (`shortcut_id`)
-)   AUTO_INCREMENT=9;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -881,7 +879,7 @@ CREATE TABLE `homecontrol_term` (
   `trigger_jn` set('J','N') NOT NULL DEFAULT 'J',
   PRIMARY KEY (`id`),
   KEY `trigger_id` (`trigger_id`)
-)   AUTO_INCREMENT=6;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -945,7 +943,7 @@ CREATE TABLE `homecontrol_zimmer` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_etage_uk` (`name`,`etage_id`)
-)   AUTO_INCREMENT=14;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -969,7 +967,7 @@ CREATE TABLE `kopftexte` (
 
 LOCK TABLES `kopftexte` WRITE;
 /*!40000 ALTER TABLE `kopftexte` DISABLE KEYS */;
-INSERT INTO `kopftexte` VALUES (1,'start','\r\n','Treffpunkt','2010-02-20 17:15:19'),(3,'forum','Hier im Forum habt ihr die MÃ¶glichkeit alles nach Themen-Gruppiert zu besprechen.\r\n\r\nWenn euch Themengruppen fehlen sollten, wendet euch einfach an einen der Administratoren.\r\n\r\n','Treffpunkt','2008-10-12 12:26:47'),(4,'todo','Hier seht ihr eine Ãœbersicht aller noch ausstehenden Ã„nderungen an der Seite.\r\n\r\nWenn euch auch noch etwas auffÃ¤llt, was falsch lÃ¤uft oder was an Informationen fehlt, tragt es doch einfach hier ein.\r\n\r\nDie Entwicklung wird sich schnellstmÃ¶glich damit befassen.\r\nWird der Vorschlag fÃ¼r sinnvoll angesehen, wird er auch so gut und so schnell es geht umgesetzt!\r\n\r\n',NULL,'2008-10-15 01:20:47'),(5,'test','testing',NULL,'0000-00-00 00:00:00'),(6,'kontakt','Wenn Sie uns eine Nachricht zukommen lassen mÃ¶chten, haben Sie mit diesem Formular die mÃ¶glichkeit uns eine Email schreiben.\r\nWir werden uns schnellstmÃ¶glich mit Ihnen in Verbindung setzen.\r\n',NULL,'0000-00-00 00:00:00'),(9,'bbUpload','In diesem Bereich kÃ¶nnt Ihr eure eigenen Bilder ins Bilderbuch einfÃ¼gen.\r\n\r\n[fett]1. rechtsklick \"Add New Folder\"  um ein neues Verzeichniss anzulegen.[/fett]\r\nDer Name dieses Verzeichnisses wird spÃ¤ter im Bilderbuch als Name der Bildergruppe angezeigt.\r\n\r\n[fett]2. das neue Verzeichniss auswÃ¤hlen und \"Dateien hinzufÃ¼gen\"[/fett]\r\n\r\n[fett]3. In der Vorschau die Bilder Ã¼berprÃ¼fen und ggf. in JPG oder PNG Konvertieren oder aus der Liste entfernen[/fett]\r\n\r\n[fett]4. Bilder \"Hochladen\"[/fett]\r\n\r\n[red][fett]Achtung![/fett] Ein spÃ¤teres auswÃ¤hlen der angelegten Kategorie ist nach dem Hochladen nicht mehr mÃ¶glich! Es kÃ¶nnen nachtrÃ¤glich somit keine Bilder mehr hinzugefÃ¼gt werden.[/red]\r\n\r\n','Bilder','2009-03-17 00:19:25');
+INSERT INTO `kopftexte` VALUES (1,'start','\r\n','Treffpunkt','2010-02-20 17:15:19'),(3,'forum','Hier im Forum habt ihr die Möglichkeit alles nach Themen-Gruppiert zu besprechen.\r\n\r\nWenn euch Themengruppen fehlen sollten, wendet euch einfach an einen der Administratoren.\r\n\r\n','Treffpunkt','2008-10-12 12:26:47'),(4,'todo','Hier seht ihr eine Übersicht aller noch ausstehenden Änderungen an der Seite.\r\n\r\nWenn euch auch noch etwas auffällt, was falsch läuft oder was an Informationen fehlt, tragt es doch einfach hier ein.\r\n\r\nDie Entwicklung wird sich schnellstmöglich damit befassen.\r\nWird der Vorschlag für sinnvoll angesehen, wird er auch so gut und so schnell es geht umgesetzt!\r\n\r\n',NULL,'2008-10-15 01:20:47'),(5,'test','testing',NULL,'0000-00-00 00:00:00'),(6,'kontakt','Wenn Sie uns eine Nachricht zukommen lassen möchten, haben Sie mit diesem Formular die möglichkeit uns eine Email schreiben.\r\nWir werden uns schnellstmöglich mit Ihnen in Verbindung setzen.\r\n',NULL,'0000-00-00 00:00:00'),(9,'bbUpload','In diesem Bereich könnt Ihr eure eigenen Bilder ins Bilderbuch einfügen.\r\n\r\n[fett]1. rechtsklick \"Add New Folder\"  um ein neues Verzeichniss anzulegen.[/fett]\r\nDer Name dieses Verzeichnisses wird später im Bilderbuch als Name der Bildergruppe angezeigt.\r\n\r\n[fett]2. das neue Verzeichniss auswählen und \"Dateien hinzufügen\"[/fett]\r\n\r\n[fett]3. In der Vorschau die Bilder überprüfen und ggf. in JPG oder PNG Konvertieren oder aus der Liste entfernen[/fett]\r\n\r\n[fett]4. Bilder \"Hochladen\"[/fett]\r\n\r\n[red][fett]Achtung![/fett] Ein späteres auswählen der angelegten Kategorie ist nach dem Hochladen nicht mehr möglich! Es können nachträglich somit keine Bilder mehr hinzugefügt werden.[/red]\r\n\r\n','Bilder','2009-03-17 00:19:25');
 /*!40000 ALTER TABLE `kopftexte` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1047,7 +1045,7 @@ CREATE TABLE `lookupwerte` (
 
 LOCK TABLES `lookupwerte` WRITE;
 /*!40000 ALTER TABLE `lookupwerte` DISABLE KEYS */;
-INSERT INTO `lookupwerte` VALUES (1,'terminserie','serienmuster','1','TÃ¤glich','','de',0,'Y'),(2,'terminserie','serienmuster','2','WÃ¶chentlich','','de',0,'N'),(3,'terminserie','serienmuster','3','Monatlich','','de',0,'N'),(4,'terminserie','serienmuster','4','JÃ¤hrlich','','de',0,'N'),(6,'homecontrol_shortcut_items','on_off','on','Einschalten','','de',0,'N'),(7,'homecontrol_shortcut_items','on_off','off','Ausschalten','','de',0,'J'),(8,'homecontrol_cron_items','on_off','on','Einschalten','','de',0,'N'),(9,'homecontrol_cron_items','on_off','off','Ausschalten','','de',0,'J'),(10,'homecontrol_sensor_items','on_off','on','Einschalten','','de',0,'N'),(11,'homecontrol_sensor_items','on_off','off','Ausschalten','','de',0,'J'),(12,'homecontrol_shortcutview','on_off','on','Einschalten','','de',0,'N'),(13,'homecontrol_shortcutview','on_off','off','Ausschalten','','de',0,'J'),(14,'homecontrol_alarm_items','on_off','on','Einschalten','','de',0,'N'),(15,'homecontrol_alarm_items','on_off','off','Ausschalten','','de',0,'J'),(16,'homecontrol_regeln_items','on_off','off','Ausschalten','','de',0,'J'),(17,'homecontrol_regeln_items','on_off','on','Einschalten','','de',0,'N');
+INSERT INTO `lookupwerte` VALUES (1,'terminserie','serienmuster','1','Täglich','','de',0,'Y'),(2,'terminserie','serienmuster','2','Wöchentlich','','de',0,'N'),(3,'terminserie','serienmuster','3','Monatlich','','de',0,'N'),(4,'terminserie','serienmuster','4','Jährlich','','de',0,'N'),(6,'homecontrol_shortcut_items','on_off','on','Einschalten','','de',0,'N'),(7,'homecontrol_shortcut_items','on_off','off','Ausschalten','','de',0,'J'),(8,'homecontrol_cron_items','on_off','on','Einschalten','','de',0,'N'),(9,'homecontrol_cron_items','on_off','off','Ausschalten','','de',0,'J'),(10,'homecontrol_sensor_items','on_off','on','Einschalten','','de',0,'N'),(11,'homecontrol_sensor_items','on_off','off','Ausschalten','','de',0,'J'),(12,'homecontrol_shortcutview','on_off','on','Einschalten','','de',0,'N'),(13,'homecontrol_shortcutview','on_off','off','Ausschalten','','de',0,'J'),(14,'homecontrol_alarm_items','on_off','on','Einschalten','','de',0,'N'),(15,'homecontrol_alarm_items','on_off','off','Ausschalten','','de',0,'J'),(16,'homecontrol_regeln_items','on_off','off','Ausschalten','','de',0,'J'),(17,'homecontrol_regeln_items','on_off','on','Einschalten','','de',0,'N');
 /*!40000 ALTER TABLE `lookupwerte` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1080,7 +1078,7 @@ CREATE TABLE `menu` (
 
 LOCK TABLES `menu` WRITE;
 /*!40000 ALTER TABLE `menu` DISABLE KEYS */;
-INSERT INTO `menu` VALUES (116,'Shortcuts','Einstellungen','?menuParent=Einstellungen&run=shortcutConfig','admin','_top','Hier können die Schnellwahl Aktionen konfiguriert werden.',85,'Hauptmenue','2015-09-28 23:37:15'),(105,'Login','','?run=login',NULL,'_top','Hier können Sie sich an- oder abmelden',0,'Fussmenue','2014-07-20 20:26:34'),(115,'Geraete','Einstellungen','?menuParent=Einstellungen&run=homeconfig','admin','_top','Hier können die Geräte konfiguriert werden.',20,'Hauptmenue','2016-10-25 21:14:20'),(117,'Shortcuts','','?menuParent=Shortcuts&run=shortcuts','','_top','Konfigurierte Modi mit einem Klick',10,'Mobilmenue','2015-01-01 21:19:24'),(133,'Alarmanlage','Einstellungen','?menuParent=Einstellungen&run=alarmConfig','admin','_top','Hier können die Einstellungen für das Verhalten der Alarmanlage konfiguriert werden.',90,'Hauptmenue','2015-08-23 19:05:47'),(119,'Zeitplan','Einstellungen','?menuParent=Einstellungen&run=cronConfig','admin','_top','Hier können die automatischen Jobs konfiguriert werden.',50,'Hauptmenue','2015-09-28 23:35:34'),(120,'Sensoren','Einstellungenxx','?menuParent=Einstellungen&run=sensorConfig','xxxx','_top','Hier können die Aktionen für Sensoren konfiguriert werden.',30,'Hauptmenue','2016-08-17 01:52:27'),(121,'Einstellungen','','?menuParent=Einstellungen&run=mainSettings','admin','_top','Hier kann das gesamte System konfiguriert werden',200,'Kopfmenue','2015-08-27 23:37:34'),(122,'Steuerung','','?menuParent=Steuerung&run=start',NULL,'_top','',10,'Kopfmenue','2015-03-16 07:15:44'),(124,'Steuerung','','?menuParent=Steuerung&run=start','','_top','Steuerung',0,'Mobilmenue','2015-01-01 21:18:40'),(126,'Sensoren','','?menuParent=Sensoren&run=sensorList','','_top','Sensoren',5,'Mobilmenue','2015-01-05 09:09:19'),(127,'Sensorwerte','','?menuParent=Sensorwerte&run=sensorList','','_top','Sensoren',150,'Kopfmenue','2016-09-25 18:50:42'),(128,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der nächsten 24 Stunden angezeigt und können für die nächste Ausführung pausiert werden.',50,'Kopfmenue','2015-08-23 19:04:06'),(129,'Sensor-Log','','?menuParent=Sensor-Log&run=sensorlogView',NULL,'_top','Hier werden die Logdaten der Sensoren angezeigt',70,'Kopfmenue','2014-11-11 22:09:42'),(130,'Gebaeude','Einstellungen','?menuParent=Einstellungen&run=gebaeudeConfig','admin','_top','Hier werden die Etagen und Raeume konfiguriert',10,'Hauptmenue','2016-10-25 21:14:24'),(131,'Basis','Einstellungen','?menuParent=Einstellungen&run=mainSettings','admin','_top','Basis-Einstellungen',1,'Hauptmenue','2015-08-25 23:06:41'),(134,'Cam','','?menuParent=Cam&run=camPics','admin','_top','Bewegungserkennung - Bilder',9999,'Kopfmenue','2016-09-25 13:20:21'),(135,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der nächsten 24 Stunden angezeigt und können für die nächste Ausführung pausiert werden.',50,'Mobilmenue','2015-08-23 19:04:06'),(136,'Automatisierung','Einstellungen','?menuParent=Einstellungen&run=automationConfig','admin','_top','In diesem Bereich werden Automatisierungen in Abhängigkeit der Sensorwerte konfiguriert.',85,'Hauptmenue','2015-09-28 23:35:34'),(137,'Passwort vergessen','','?run=userRequestPw',NULL,'_top','',9999,'need','2015-10-15 22:34:29'),(138,'','','?run=changeMyProfile',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(139,'cc','','run=userpicUpload',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(141,'Parameter','Einstellungen','?menuParent=Einstellungen&run=parameterConfig','admin','_top','',190,'Hauptmenue','2016-10-25 23:43:29'),(142,'Editoren','Einstellungen','?menuParent=Einstellungen&run=editorConfig','admin','_top','',200,'Hauptmenue','2016-10-25 21:14:35');
+INSERT INTO `menu` VALUES (105,'Login','','?run=login',NULL,'_top','Hier k?nnen Sie sich an- oder abmelden',0,'Fussmenue','2014-07-20 20:26:34'),(115,'Geraete','Einstellungen','?menuParent=Einstellungen&run=homeconfig','admin','_top','Hier k?nnen die Ger?te konfiguriert werden.',20,'Hauptmenue','2016-10-25 21:14:20'),(116,'Shortcuts','Einstellungen','?menuParent=Einstellungen&run=shortcutConfig','admin','_top','Hier k?nnen die Schnellwahl Aktionen konfiguriert werden.',85,'Hauptmenue','2015-09-28 23:37:15'),(117,'Shortcuts','','?menuParent=Shortcuts&run=shortcuts','','_top','Konfigurierte Modi mit einem Klick',10,'Mobilmenue','2015-01-01 21:19:24'),(119,'Zeitplan','Einstellungen','?menuParent=Einstellungen&run=cronConfig','admin','_top','Hier k?nnen die automatischen Jobs konfiguriert werden.',50,'Hauptmenue','2015-09-28 23:35:34'),(120,'Sensoren','Einstellungenxx','?menuParent=Einstellungen&run=sensorConfig','xxxx','_top','Hier k?nnen die Aktionen f?r Sensoren konfiguriert werden.',30,'Hauptmenue','2016-08-17 01:52:27'),(121,'Einstellungen','','?menuParent=Einstellungen&run=mainSettings','admin','_top','Hier kann das gesamte System konfiguriert werden',200,'Kopfmenue','2015-08-27 23:37:34'),(122,'Steuerung','','?menuParent=Steuerung&run=start',NULL,'_top','',10,'Kopfmenue','2015-03-16 07:15:44'),(124,'Steuerung','','?menuParent=Steuerung&run=start','','_top','Steuerung',0,'Mobilmenue','2015-01-01 21:18:40'),(126,'Sensoren','','?menuParent=Sensoren&run=sensorList','','_top','Sensoren',5,'Mobilmenue','2015-01-05 09:09:19'),(127,'Sensorwerte','','?menuParent=Sensorwerte&run=sensorList','','_top','Sensoren',150,'Kopfmenue','2016-09-25 18:50:42'),(128,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Kopfmenue','2015-08-23 19:04:06'),(129,'Sensor-Log','','?menuParent=Sensor-Log&run=sensorlogView',NULL,'_top','Hier werden die Logdaten der Sensoren angezeigt',70,'Kopfmenue','2014-11-11 22:09:42'),(130,'Gebaeude','Einstellungen','?menuParent=Einstellungen&run=gebaeudeConfig','admin','_top','Hier werden die Etagen und Raeume konfiguriert',10,'Hauptmenue','2016-10-25 21:14:24'),(131,'Basis','Einstellungen','?menuParent=Einstellungen&run=mainSettings','admin','_top','Basis-Einstellungen',1,'Hauptmenue','2015-08-25 23:06:41'),(133,'Alarmanlage','Einstellungen','?menuParent=Einstellungen&run=alarmConfig','admin','_top','Hier k?nnen die Einstellungen f?r das Verhalten der Alarmanlage konfiguriert werden.',90,'Hauptmenue','2015-08-23 19:05:47'),(134,'Cam','','?menuParent=Cam&run=camPics','admin','_top','Bewegungserkennung - Bilder',9999,'Kopfmenue','2016-09-25 13:20:21'),(135,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Mobilmenue','2015-08-23 19:04:06'),(136,'Automatisierung','Einstellungen','?menuParent=Einstellungen&run=automationConfig','admin','_top','In diesem Bereich werden Automatisierungen in Abh?ngigkeit der Sensorwerte konfiguriert.',85,'Hauptmenue','2015-09-28 23:35:34'),(137,'Passwort vergessen','','?run=userRequestPw',NULL,'_top','',9999,'need','2015-10-15 22:34:29'),(138,'','','?run=changeMyProfile',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(139,'cc','','run=userpicUpload',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(141,'Parameter','Einstellungen','?menuParent=Einstellungen&run=parameterConfig','admin','_top','',190,'Hauptmenue','2016-10-25 23:43:29'),(142,'Editoren','Einstellungen','?menuParent=Einstellungen&run=editorConfig','admin','_top','',200,'Hauptmenue','2016-10-25 21:14:35');
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1104,7 +1102,7 @@ CREATE TABLE `pageconfig` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `page_id` (`page_id`)
-)   AUTO_INCREMENT=41;
+)   AUTO_INCREMENT=37;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1127,7 +1125,7 @@ CREATE TABLE `programm_gruppen` (
 
 LOCK TABLES `programm_gruppen` WRITE;
 /*!40000 ALTER TABLE `programm_gruppen` DISABLE KEYS */;
-INSERT INTO `programm_gruppen` VALUES (3,'Bilder','Alles was zum Bilderbuch gehÃ¶rt','0000-00-00 00:00:00'),(4,'Einstellungen','Einstellungsmasken und Administrative Links','0000-00-00 00:00:00'),(5,'Allgemeines','Hier kommt alles rein, was generell zur VerfÃ¼gung steht','0000-00-00 00:00:00'),(6,'Mein Profil','Alles rund ums Userprofil','0000-00-00 00:00:00');
+INSERT INTO `programm_gruppen` VALUES (3,'Bilder','Alles was zum Bilderbuch gehört','0000-00-00 00:00:00'),(4,'Einstellungen','Einstellungsmasken und Administrative Links','0000-00-00 00:00:00'),(5,'Allgemeines','Hier kommt alles rein, was generell zur Verfügung steht','0000-00-00 00:00:00'),(6,'Mein Profil','Alles rund ums Userprofil','0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `programm_gruppen` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1153,7 +1151,7 @@ CREATE TABLE `public_vars` (
 
 LOCK TABLES `public_vars` WRITE;
 /*!40000 ALTER TABLE `public_vars` DISABLE KEYS */;
-INSERT INTO `public_vars` VALUES (1,'texte','impressum','Inhalt des Onlineangebotes','Der Autor Ã¼bernimmt keinerlei GewÃ¤hr fÃ¼r die AktualitÃ¤t, Korrektheit, VollstÃ¤ndigkeit oder QualitÃ¤t der bereitgestellten Informationen. HaftungsansprÃ¼che gegen den Autor, welche sich auf SchÃ¤den materieller oder ideeller Art beziehen, die durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollstÃ¤ndiger Informationen verursacht wurden, sind grundsÃ¤tzlich ausgeschlossen, sofern seitens des Autors kein nachweislich vorsÃ¤tzliches oder grob fahrlÃ¤ssiges Verschulden vorliegt. Alle Angebote sind freibleibend und unverbindlich. Der Autor behÃ¤lt es sich ausdrÃ¼cklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte AnkÃ¼ndigung zu verÃ¤ndern, zu ergÃ¤nzen, zu lÃ¶schen oder die VerÃ¶ffentlichung zeitweise oder endgÃ¼ltig einzustellen.',1),(2,'texte','impressum','Verweise und Links','Bei direkten oder indirekten Verweisen auf fremde Webseiten (\"Hyperlinks\"), die auÃŸerhalb des Verantwortungsbereiches des Autors liegen, wÃ¼rde eine Haftungsverpflichtung ausschlieÃŸlich in dem Fall in Kraft treten, in dem der Autor von den Inhalten Kenntnis hat und es ihm technisch mÃ¶glich und zumutbar wÃ¤re, die Nutzung im Falle rechtswidriger Inhalte zu verhindern. Der Autor erklÃ¤rt hiermit ausdrÃ¼cklich, dass zum Zeitpunkt der Linksetzung keine illegalen Inhalte auf den zu verlinkenden Seiten erkennbar waren. Auf die aktuelle und zukÃ¼nftige Gestaltung, die Inhalte oder die Urheberschaft der gelinkten/verknÃ¼pften Seiten hat der Autor keinerlei Einfluss. Deshalb distanziert er sich hiermit ausdrÃ¼cklich von allen Inhalten aller gelinkten /verknÃ¼pften Seiten, die nach der Linksetzung verÃ¤ndert wurden. Diese Feststellung gilt fÃ¼r alle innerhalb des eigenen Internetangebotes gesetzten Links und Verweise sowie fÃ¼r FremdeintrÃ¤ge in vom Autor eingerichteten GÃ¤stebÃ¼chern, Diskussionsforen, Linkverzeichnissen, Mailinglisten und in allen anderen Formen von Datenbanken, auf deren Inhalt externe Schreibzugriffe mÃ¶glich sind. FÃ¼r illegale, fehlerhafte oder unvollstÃ¤ndige Inhalte und insbesondere fÃ¼r SchÃ¤den, die aus der Nutzung oder Nichtnutzung solcherart dargebotener Informationen entstehen, haftet allein der Anbieter der Seite, auf welche verwiesen wurde, nicht derjenige, der Ã¼ber Links auf die jeweilige VerÃ¶ffentlichung lediglich verweist.\r\n',2),(3,'texte','impressum','Urheber- und Kennzeichenrecht','Der Autor ist bestrebt, in allen Publikationen die Urheberrechte der verwendeten Grafiken, Tondokumente, Videosequenzen und Texte zu beachten, von ihm selbst erstellte Grafiken, Tondokumente, Videosequenzen und Texte zu nutzen oder auf lizenzfreie Grafiken, Tondokumente, Videosequenzen und Texte zurÃ¼ckzugreifen. Alle innerhalb des Internetangebotes genannten und ggf. durch Dritte geschÃ¼tzten Marken- und Warenzeichen unterliegen uneingeschrÃ¤nkt den Bestimmungen des jeweils gÃ¼ltigen Kennzeichenrechts und den Besitzrechten der jeweiligen eingetragenen EigentÃ¼mer. Allein aufgrund der bloÃŸen Nennung ist nicht der Schluss zu ziehen, dass Markenzeichen nicht durch Rechte Dritter geschÃ¼tzt sind! Das Copyright fÃ¼r verÃ¶ffentlichte, vom Autor selbst erstellte Objekte bleibt allein beim Autor der Seiten. Eine VervielfÃ¤ltigung oder Verwendung solcher Grafiken, Tondokumente, Videosequenzen und Texte in anderen elektronischen oder gedruckten Publikationen ist ohne ausdrÃ¼ckliche Zustimmung des Autors nicht gestattet.',3),(4,'texte','impressum','Datenschutz','Sofern innerhalb des Internetangebotes die MÃ¶glichkeit zur Eingabe persÃ¶nlicher oder geschÃ¤ftlicher Daten (Kontodaten, Namen, Anschriften) besteht, so erfolgt die Preisgabe dieser Daten seitens des Nutzers auf ausdrÃ¼cklich freiwilliger Basis. Die Inanspruchnahme und Bezahlung aller angebotenen Dienste ist - soweit technisch mÃ¶glich und zumutbar - auch ohne Angabe solcher Daten bzw. unter Angabe anonymisierter Daten oder eines Pseudonyms gestattet. Die Nutzung der im Rahmen des Impressums oder vergleichbarer Angaben verÃ¶ffentlichten Kontaktdaten wie Postanschriften, Telefon- und Faxnummern sowie Emailadressen durch Dritte zur Ãœbersendung von nicht ausdrÃ¼cklich angeforderten Informationen ist nicht gestattet. Rechtliche Schritte gegen die Versender von sogenannten Spam-Mails bei VerstÃ¶ssen gegen dieses Verbot sind ausdrÃ¼cklich vorbehalten.',4),(5,'texte','impressum','Rechtswirksamkeit','Sofern Teile oder einzelne Formulierungen dieses Textes der geltenden Rechtslage nicht, nicht mehr oder nicht vollstÃ¤ndig entsprechen sollten, bleiben die Ã¼brigen Teile des Dokumentes in ihrem Inhalt und ihrer GÃ¼ltigkeit davon unberÃ¼hrt.',5);
+INSERT INTO `public_vars` VALUES (1,'texte','impressum','Inhalt des Onlineangebotes','Der Autor übernimmt keinerlei Gewähr für die Aktualität, Korrektheit, Vollständigkeit oder Qualität der bereitgestellten Informationen. Haftungsansprüche gegen den Autor, welche sich auf Schäden materieller oder ideeller Art beziehen, die durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollständiger Informationen verursacht wurden, sind grundsätzlich ausgeschlossen, sofern seitens des Autors kein nachweislich vorsätzliches oder grob fahrlässiges Verschulden vorliegt. Alle Angebote sind freibleibend und unverbindlich. Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen.',1),(2,'texte','impressum','Verweise und Links','Bei direkten oder indirekten Verweisen auf fremde Webseiten (\"Hyperlinks\"), die außerhalb des Verantwortungsbereiches des Autors liegen, würde eine Haftungsverpflichtung ausschließlich in dem Fall in Kraft treten, in dem der Autor von den Inhalten Kenntnis hat und es ihm technisch möglich und zumutbar wäre, die Nutzung im Falle rechtswidriger Inhalte zu verhindern. Der Autor erklärt hiermit ausdrücklich, dass zum Zeitpunkt der Linksetzung keine illegalen Inhalte auf den zu verlinkenden Seiten erkennbar waren. Auf die aktuelle und zukünftige Gestaltung, die Inhalte oder die Urheberschaft der gelinkten/verknüpften Seiten hat der Autor keinerlei Einfluss. Deshalb distanziert er sich hiermit ausdrücklich von allen Inhalten aller gelinkten /verknüpften Seiten, die nach der Linksetzung verändert wurden. Diese Feststellung gilt für alle innerhalb des eigenen Internetangebotes gesetzten Links und Verweise sowie für Fremdeinträge in vom Autor eingerichteten Gästebüchern, Diskussionsforen, Linkverzeichnissen, Mailinglisten und in allen anderen Formen von Datenbanken, auf deren Inhalt externe Schreibzugriffe möglich sind. Für illegale, fehlerhafte oder unvollständige Inhalte und insbesondere für Schäden, die aus der Nutzung oder Nichtnutzung solcherart dargebotener Informationen entstehen, haftet allein der Anbieter der Seite, auf welche verwiesen wurde, nicht derjenige, der über Links auf die jeweilige Veröffentlichung lediglich verweist.\r\n',2),(3,'texte','impressum','Urheber- und Kennzeichenrecht','Der Autor ist bestrebt, in allen Publikationen die Urheberrechte der verwendeten Grafiken, Tondokumente, Videosequenzen und Texte zu beachten, von ihm selbst erstellte Grafiken, Tondokumente, Videosequenzen und Texte zu nutzen oder auf lizenzfreie Grafiken, Tondokumente, Videosequenzen und Texte zurückzugreifen. Alle innerhalb des Internetangebotes genannten und ggf. durch Dritte geschützten Marken- und Warenzeichen unterliegen uneingeschränkt den Bestimmungen des jeweils gültigen Kennzeichenrechts und den Besitzrechten der jeweiligen eingetragenen Eigentümer. Allein aufgrund der bloßen Nennung ist nicht der Schluss zu ziehen, dass Markenzeichen nicht durch Rechte Dritter geschützt sind! Das Copyright für veröffentlichte, vom Autor selbst erstellte Objekte bleibt allein beim Autor der Seiten. Eine Vervielfältigung oder Verwendung solcher Grafiken, Tondokumente, Videosequenzen und Texte in anderen elektronischen oder gedruckten Publikationen ist ohne ausdrückliche Zustimmung des Autors nicht gestattet.',3),(4,'texte','impressum','Datenschutz','Sofern innerhalb des Internetangebotes die Möglichkeit zur Eingabe persönlicher oder geschäftlicher Daten (Kontodaten, Namen, Anschriften) besteht, so erfolgt die Preisgabe dieser Daten seitens des Nutzers auf ausdrücklich freiwilliger Basis. Die Inanspruchnahme und Bezahlung aller angebotenen Dienste ist - soweit technisch möglich und zumutbar - auch ohne Angabe solcher Daten bzw. unter Angabe anonymisierter Daten oder eines Pseudonyms gestattet. Die Nutzung der im Rahmen des Impressums oder vergleichbarer Angaben veröffentlichten Kontaktdaten wie Postanschriften, Telefon- und Faxnummern sowie Emailadressen durch Dritte zur Übersendung von nicht ausdrücklich angeforderten Informationen ist nicht gestattet. Rechtliche Schritte gegen die Versender von sogenannten Spam-Mails bei Verstössen gegen dieses Verbot sind ausdrücklich vorbehalten.',4),(5,'texte','impressum','Rechtswirksamkeit','Sofern Teile oder einzelne Formulierungen dieses Textes der geltenden Rechtslage nicht, nicht mehr oder nicht vollständig entsprechen sollten, bleiben die übrigen Teile des Dokumentes in ihrem Inhalt und ihrer Gültigkeit davon unberührt.',5);
 /*!40000 ALTER TABLE `public_vars` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1181,7 +1179,7 @@ CREATE TABLE `run_links` (
 
 LOCK TABLES `run_links` WRITE;
 /*!40000 ALTER TABLE `run_links` DISABLE KEYS */;
-INSERT INTO `run_links` VALUES (12,'impressum','includes/Impressum.php','mainpage','',0,'0000-00-00 00:00:00'),(1,'start','includes/Startseite.php','mainpage','',0,'2010-02-20 15:16:00'),(19,'changeMyProfile','includes/user/user_change.php','mainpage','',6,'2008-09-11 21:49:04'),(20,'doUserpicUpload','includes/user/userpic_upload2.php','mainpage','',0,'0000-00-00 00:00:00'),(21,'userpicUpload','includes/user/userpic_upload.php','mainpage','',0,'0000-00-00 00:00:00'),(22,'userRequestPw','includes/user/user_request_pw.php','mainpage','',0,'0000-00-00 00:00:00'),(24,'showUserList','includes/user/user_liste.php','mainpage','',0,'2010-02-20 15:16:00'),(29,'showUserProfil','includes/user/show_userprofil.php','mainpage','',0,'0000-00-00 00:00:00'),(30,'userListe','includes/user/user_liste.php','mainpage','',0,'0000-00-00 00:00:00'),(36,'login','includes/Login.php','mainpage','',0,'2008-11-16 21:08:45'),(41,'redaktionsgruppe','includes/empty.php','mainpage','',1,'2010-02-20 15:16:00'),(52,'shortcutConfig','includes/ShortcutConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(50,'imageUploaderPopup','includes/ImageUploaderPopup.php','mainpage','',0,'2009-06-27 09:01:28'),(51,'homeconfig','includes/ControlConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(53,'shortcuts','includes/ShortcutSidebar.php','mainpage','',0,'2012-12-31 01:39:15'),(2,'mobile_start','mobile_includes/Startseite.php','mainpage','',0,'2010-02-20 15:16:00'),(54,'cronConfig','includes/CronConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(55,'sensorConfig','includes/SensorConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(56,'sensoren','includes/SensorenEdit.php','mainpage','',0,'0000-00-00 00:00:00'),(57,'sensorList','includes/Sensoren.php','mainpage','',0,'0000-00-00 00:00:00'),(58,'cronView','includes/CronView.php','mainpage','',0,'0000-00-00 00:00:00'),(59,'sensorlogView','includes/SensorLogViewer.php','mainpage','',0,'0000-00-00 00:00:00'),(60,'gebaeudeConfig','includes/GebaeudeConfig.php','mainpage','',0,'2015-08-23 18:58:17'),(61,'mainSettings','includes/MainSettings.php','mainpage','',0,'0000-00-00 00:00:00'),(62,'network','includes/NetworkConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(63,'alarmConfig','includes/AlarmConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(64,'camPics','includes/CamPics.php','mainpage','',0,'0000-00-00 00:00:00'),(66,'automationConfig','includes/AutomationConfig.php','mainpage','',0,'2010-02-20 15:16:00'),(67,'alarmgeberConfig','includes/AlarmgeberConfig.php','mainpage','',0,'2010-02-20 15:16:00'),(68,'mobile_shortcuts','mobile_includes/ShortcutSidebar.php','mainpage','',0,'2010-02-20 15:16:00'),(69,'logView','includes/LogView.php','mainpage','',0,'0000-00-00 00:00:00'),(70,'parameterConfig','includes/ParameterConfig.php','mainpage','',0,'2016-10-25 21:11:56'),(71,'editorConfig','includes/EditorenConfig.php','mainpage','',0,'2016-10-25 23:21:00');
+INSERT INTO `run_links` VALUES (1,'start','includes/Startseite.php','mainpage','',0,'2010-02-20 15:16:00'),(2,'mobile_start','mobile_includes/Startseite.php','mainpage','',0,'2010-02-20 15:16:00'),(12,'impressum','includes/Impressum.php','mainpage','',0,'0000-00-00 00:00:00'),(19,'changeMyProfile','includes/user/user_change.php','mainpage','',6,'2008-09-11 21:49:04'),(20,'doUserpicUpload','includes/user/userpic_upload2.php','mainpage','',0,'0000-00-00 00:00:00'),(21,'userpicUpload','includes/user/userpic_upload.php','mainpage','',0,'0000-00-00 00:00:00'),(22,'userRequestPw','includes/user/user_request_pw.php','mainpage','',0,'0000-00-00 00:00:00'),(24,'showUserList','includes/user/user_liste.php','mainpage','',0,'2010-02-20 15:16:00'),(29,'showUserProfil','includes/user/show_userprofil.php','mainpage','',0,'0000-00-00 00:00:00'),(30,'userListe','includes/user/user_liste.php','mainpage','',0,'0000-00-00 00:00:00'),(36,'login','includes/Login.php','mainpage','',0,'2008-11-16 21:08:45'),(41,'redaktionsgruppe','includes/empty.php','mainpage','',1,'2010-02-20 15:16:00'),(50,'imageUploaderPopup','includes/ImageUploaderPopup.php','mainpage','',0,'2009-06-27 09:01:28'),(51,'homeconfig','includes/ControlConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(52,'shortcutConfig','includes/ShortcutConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(53,'shortcuts','includes/ShortcutSidebar.php','mainpage','',0,'2012-12-31 01:39:15'),(54,'cronConfig','includes/CronConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(55,'sensorConfig','includes/SensorConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(56,'sensoren','includes/SensorenEdit.php','mainpage','',0,'0000-00-00 00:00:00'),(57,'sensorList','includes/Sensoren.php','mainpage','',0,'0000-00-00 00:00:00'),(58,'cronView','includes/CronView.php','mainpage','',0,'0000-00-00 00:00:00'),(59,'sensorlogView','includes/SensorLogViewer.php','mainpage','',0,'0000-00-00 00:00:00'),(60,'gebaeudeConfig','includes/GebaeudeConfig.php','mainpage','',0,'2015-08-23 18:58:17'),(61,'mainSettings','includes/MainSettings.php','mainpage','',0,'0000-00-00 00:00:00'),(62,'network','includes/NetworkConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(63,'alarmConfig','includes/AlarmConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(64,'camPics','includes/CamPics.php','mainpage','',0,'0000-00-00 00:00:00'),(66,'automationConfig','includes/AutomationConfig.php','mainpage','',0,'2010-02-20 15:16:00'),(67,'alarmgeberConfig','includes/AlarmgeberConfig.php','mainpage','',0,'2010-02-20 15:16:00'),(68,'mobile_shortcuts','mobile_includes/ShortcutSidebar.php','mainpage','',0,'2010-02-20 15:16:00'),(69,'logView','includes/LogView.php','mainpage','',0,'0000-00-00 00:00:00'),(70,'parameterConfig','includes/ParameterConfig.php','mainpage','',0,'2016-10-25 21:11:56'),(71,'editorConfig','includes/EditorenConfig.php','mainpage','',0,'2016-10-25 23:21:00');
 /*!40000 ALTER TABLE `run_links` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1256,7 +1254,7 @@ CREATE TABLE `tags` (
 
 LOCK TABLES `tags` WRITE;
 /*!40000 ALTER TABLE `tags` DISABLE KEYS */;
-INSERT INTO `tags` VALUES (1,'cybi','<a href=\'http://www.cyborgone.de\' target=\'cybi\'><img src=\'http://cyborgone.de/pics/banner13.gif\' width=\'200\' border=\'0\'></a>','n'),(2,'fett','<b>','J'),(3,'/fett','</b>','J'),(4,'unter','<u>','J'),(5,'/unter','</u>','J'),(6,'normal','<font size=\'2\'>','J'),(7,'/normal','</font>','J'),(8,'klein','<font size=\'1\'>','J'),(9,'/klein','</font>','J'),(10,'mittel','<font size=\'3\'>','J'),(11,'/mittel','</font>','J'),(12,'blue','<font color=\'blue\'>','J'),(13,'red','<font color=\'red\'>','J'),(14,'green','<font color=\'green\'>','J'),(15,'gray','<font color=\'gray\'>','J'),(16,'/gray','</font>','J'),(17,'/red','</font>','J'),(18,'/blue','</font>','J'),(19,'/green','</font>','J'),(20,'quote','<table border=\'1\' cellpadding=\'0\' cellspacing=\'0\'><tr><td class=\'zitat\'><i>','N'),(21,'hr','<hr>','J'),(22,'/quote','</i></td></tr></table>','N'),(23,'changed','<br><br><i><u><b>GeÃ¤ndert:','N'),(24,'/changed','</b></u></i>','N'),(25,'bild_500','<img src=\'','J'),(26,'/bild_500','\' width=\'500\'>','J'),(28,'bild_150','<img src=\'','J'),(29,'/bild_150','\' width=\'150\'>','J'),(30,'code','<textarea cols=\'70\' rows=\'10\' readonly>','J'),(31,'/code','</textarea>','N'),(32,'yellow','<font color=\'yellow\'>','N'),(33,'/yellow','</font>','N'),(34,'groÃŸ','<font size=\'4\'>','J'),(35,'/groÃŸ','</font>','J'),(36,'mitte','<center>',NULL),(37,'/mitte','</center>',NULL);
+INSERT INTO `tags` VALUES (1,'cybi','<a href=\'http://www.cyborgone.de\' target=\'cybi\'><img src=\'http://cyborgone.de/pics/banner13.gif\' width=\'200\' border=\'0\'></a>','n'),(2,'fett','<b>','J'),(3,'/fett','</b>','J'),(4,'unter','<u>','J'),(5,'/unter','</u>','J'),(6,'normal','<font size=\'2\'>','J'),(7,'/normal','</font>','J'),(8,'klein','<font size=\'1\'>','J'),(9,'/klein','</font>','J'),(10,'mittel','<font size=\'3\'>','J'),(11,'/mittel','</font>','J'),(12,'blue','<font color=\'blue\'>','J'),(13,'red','<font color=\'red\'>','J'),(14,'green','<font color=\'green\'>','J'),(15,'gray','<font color=\'gray\'>','J'),(16,'/gray','</font>','J'),(17,'/red','</font>','J'),(18,'/blue','</font>','J'),(19,'/green','</font>','J'),(20,'quote','<table border=\'1\' cellpadding=\'0\' cellspacing=\'0\'><tr><td class=\'zitat\'><i>','N'),(21,'hr','<hr>','J'),(22,'/quote','</i></td></tr></table>','N'),(23,'changed','<br><br><i><u><b>Geändert:','N'),(24,'/changed','</b></u></i>','N'),(25,'bild_500','<img src=\'','J'),(26,'/bild_500','\' width=\'500\'>','J'),(28,'bild_150','<img src=\'','J'),(29,'/bild_150','\' width=\'150\'>','J'),(30,'code','<textarea cols=\'70\' rows=\'10\' readonly>','J'),(31,'/code','</textarea>','N'),(32,'yellow','<font color=\'yellow\'>','N'),(33,'/yellow','</font>','N'),(34,'groß','<font size=\'4\'>','J'),(35,'/groß','</font>','J'),(36,'mitte','<center>',NULL),(37,'/mitte','</center>',NULL);
 /*!40000 ALTER TABLE `tags` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1276,7 +1274,7 @@ CREATE TABLE `update_log` (
   `descr` text NOT NULL,
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=11;
+)  ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1326,7 +1324,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `User` (`User`),
   KEY `Name` (`Name`(8))
-)   AUTO_INCREMENT=3;
+)   AUTO_INCREMENT=2;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1347,7 +1345,7 @@ CREATE TABLE `userstatus` (
 
 LOCK TABLES `userstatus` WRITE;
 /*!40000 ALTER TABLE `userstatus` DISABLE KEYS */;
-INSERT INTO `userstatus` VALUES ('gast','Gast'),('user','Hauptbenutzer'),('admin','Administrator');
+INSERT INTO `userstatus` VALUES ('admin','Administrator'),('gast','Gast'),('user','Hauptbenutzer');
 /*!40000 ALTER TABLE `userstatus` ENABLE KEYS */;
 UNLOCK TABLES;
 

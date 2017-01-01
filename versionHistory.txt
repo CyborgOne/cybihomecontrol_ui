@@ -1,4 +1,9 @@
 
+Version: 0.2.9
+---------------------
+nachbesserung:
+Funk_id aus config-db-tbl
+
 Version: 0.2.8
 ---------------------
 sql nachbesserung
