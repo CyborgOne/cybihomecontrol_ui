@@ -1,12 +1,237 @@
 <?PHP
   
+  
+    
+  function checkUrlParameter($dbConnect){
+      checkDefaultUrlParameter($dbConnect);
+      checkEditorUrlParameter($dbConnect);
+  }
+  
+   
+  /**
+   * Prüfung für URL-Parameter der Standard-Steuerung 
+   * (Kein besonderer Editor definiert)
+   */
+  function checkDefaultUrlParameter($dbConnect){
+      if(isset($_REQUEST['switchConfigId']) && strlen($_REQUEST['switchConfigId'])>0){
+          $dbTblItem = new DbTable($dbConnect, "homecontrol_config", array('*'), "", "", "", "id=".$_REQUEST['switchConfigId']);
+            if($dbTblItem->getRowCount()>0){
+              $configItem = new HomeControlItem($dbTblItem->getRow(1));
+              $allParams = array();
+              $optionalParams = array();
+              $fixParams = array();
+              $defaultLogicParams = array();
+              $switchParams = array();
+              // Alle Parameter zur ConfigID holen
+/*              $sql = "SELECT id, senderTypId, name, optional, fix, default_logic FROM homecontrol_sender_typen_parameter WHERE senderTypId=(
+                        SELECT s.senderTypId 
+                          FROM homecontrol_sender s, homecontrol_config c 
+                         WHERE s.id = c.sender_id
+                           and c.id = " .$_REQUEST['switchConfigId'] ." 
+                     )";
+              $rslt = $dbConnect->executeQuery($sql);
+*/                    
+
+              $paramTable = new DbTable($dbConnect, "homecontrol_sender_typen_parameter", array('*'), "", "", "", "senderTypId=(SELECT s.senderTypId FROM homecontrol_sender s, homecontrol_config c WHERE s.id = c.sender_id AND c.id = " .$_REQUEST['switchConfigId'] .")");      
+              
+              $lastSenderTyp = "";
+              $switchUrl = "";
+             
+              $allParamsSet = true;
+              foreach($paramTable->ROWS as $row){
+                $allParams[count($allParams)] = $row->getNamedAttribute('name');
+                $optional  = false;
+                $fix  = false;
+                $default_logic = false;
+                
+                $val = isset($_REQUEST[$row->getNamedAttribute('name')])?$_REQUEST[$row->getNamedAttribute('name')]:"";
+                //echo "Check ".$row->getNamedAttribute('name')." = " .$val ."</br>";
+
+                if($row->getNamedAttribute("optional")=="J"){
+                    $optionalParams[count($optionalParams)] = $row->getNamedAttribute('name');
+                    $optional = true;
+                }
+                if($row->getNamedAttribute("fix")=="J"){
+                    $fixParams[count($fixParams)] = $row->getNamedAttribute('name');
+                    $fix = true;
+                }
+                if($row->getNamedAttribute("default_logic")=="J"){
+                    $defaultLogicParams[count($defaultLogicParams)] = $row->getNamedAttribute('name');
+                    $default_logic = true;
+                }
+                
+                $value="";
+                if(isset($_REQUEST[$row->getNamedAttribute('name')]) && strlen($_REQUEST[$row->getNamedAttribute('name')])>0){
+                    $value = $default_logic?$_REQUEST[$row->getNamedAttribute('name') .$_REQUEST[$row->getNamedAttribute('name')]]:$_REQUEST[$row->getNamedAttribute('name')];
+                    //echo "Wert: ".$value."</br>";
+                    if(strlen($switchUrl)>0){
+                        $switchUrl .= "&";
+                    }
+                    $switchUrl .= $row->getNamedAttribute('name')."=".$value;
+                    $switchParams[count($switchParams)] = array($row, $value);
+                }  
+
+                if( strlen($value)<=0 ){
+                    if(!$optional && $configItem->isParameterOptionalActive($row->getNamedAttribute('id'))){
+                        $allParamsSet=false;
+                    }
+                }
+              }
+              //echo "Alle notwendigen Parameter gesetzt? ". ($allParamsSet?"Ja":"Nein")."</br>";
+              
+              if($allParamsSet){
+                $senderUrl = getArduinoUrlForDeviceId($_REQUEST['switchConfigId'], $dbConnect);
+                $useSenderUrl = strlen($senderUrl)>0?$senderUrl:$arduinoUrl;
+                $urlArray = parse_url($useSenderUrl);
+                $host = $urlArray['host'];
+                $check = @fsockopen($host, 80); 
+              
+                If ($check) { 
+                    ob_implicit_flush(true);
+                //echo $useSenderUrl."?".$switchUrl."</br>";
+                    try {
+                        $retVal = file_get_contents( $useSenderUrl."?".$switchUrl );
+                    } catch(Exception $e){
+                        echo "FEHLER BEIM SCHALTEN!";
+                    }
+                } 
+                
+                foreach($switchParams as $p){
+                    $pRow = $p[0];
+                    $pValue = $p[1];
+                    //echo "refresh ".$pRow->getNamedAttribute("name") ." = ".$pValue."<br>";
+                    if($pRow->getNamedAttribute("fix")!="J" && $pRow->getNamedAttribute("default_logic")!="J"){
+                        $configItem->setParameterValue($pRow, $configItem->CONFIG_ROW, $pValue);
+                    }
+                }
+                          
+                try {
+                    $myfile = fopen("/var/www/switch.log", "a+");
+                    fwrite($myfile, "(".date("d.M.Y - H:i:s")."): " .$useSenderUrl."?".$switchUrl."\n");
+                    fclose($myfile);
+                } catch (Exception $e){
+                }
+              }
+          }
+          ob_flush();
+      }
+  }
+  
+  // TODO: URL Parameter für definierte Editoren prüfen
+  function checkEditorUrlParameter($dbConnect){
+        
+  }
+
+  
+  function switchDevice($configId, $dbConnect){
+    //echo "switchShortcut: ".$arduinoUrl." > ".$shortcutUrl."\n";
+    $loginNeed          = true;
+    $loginExternOnly    = false;
+    $loginOK            = false;
+    
+    try{
+        $loginNeed        = getPageConfigParam($dbConnect, "loginForSwitchNeed") == "J";
+    //    echo "Login needed: ".$loginNeed."\n";
+        $loginExternOnly  = getPageConfigParam($dbConnect, "loginExternOnly") == "J";
+    //    echo "Login extern only: ".$loginExternOnly."\n";
+        $loginOK          = isset($_SESSION['config'])&& isset($_SESSION['config']->CURRENTUSER)&&($_SESSION['config']->CURRENTUSER->STATUS == "admin" || $_SESSION['config']->CURRENTUSER->STATUS == "user");
+    //    echo "Login OK: ".$loginOK."\n";
+        
+        $clientIP = explode(".", $_SERVER['REMOTE_ADDR']);
+        $serverIP = explode(".",$_SERVER['SERVER_ADDR']);
+    } catch(Exception $ex){
+        echo $ex->getMessage()."\n";
+    }
+//    echo "client: ".$_SERVER['REMOTE_ADDR']."\n";
+//    echo "server: ".$_SERVER['SERVER_ADDR']."\n";
+    
+    if (!$loginNeed || 
+          $loginOK  ||                   
+          ($loginExternOnly && ($serverIP[0]==$clientIP[0] && $serverIP[1]==$clientIP[1] && $serverIP[2]==$clientIP[2]))
+       ) {
+        $switchStatusCheck = true;
+    
+       
+        ob_implicit_flush(true);
+    
+        // Nach Semikolon trennen, 
+        // um die einzelnen zu schaltenden Elemente zu erhalten
+        $fullConfigArray = explode(";",$shortcutUrl);    
+        
+        foreach($fullConfigArray as $cfg){
+          // Nach Minus trennen um ID und STATUS zu erhalten.
+          $tmp    = explode("-",$cfg);
+    
+          if(count($tmp)>=2){
+            $id     = $tmp[0];
+            $status = $tmp[1];
+            $deviceId = $id; 
+            $dimmer = 0;
+            if(count($tmp)==3){
+                $dimmer = $tmp[2];
+            }
+            if( strlen($id)>0 && $id>0 ){
+              $status = $status=="on"?"on":"off";
+              //echo $id."->".$status."<br>\n";      
+              // Wenn ausgeschaltet werden soll,
+              // negative ID ?bergeben
+              if($status == "off"){
+                $id = $id*(-1);
+              }
+      
+              //echo "\n<br>Switch-URL: " .$arduinoUrl."?schalte&" .$id;
+    
+              $senderUrl = getArduinoUrlForDeviceId($deviceId, $dbConnect);
+              $useSenderUrl = strlen($senderUrl)>0?$senderUrl:$arduinoUrl;
+              $urlArray = parse_url($useSenderUrl);
+              $host = $urlArray['host'];
+              
+              $check = @fsockopen($host, 80); 
+          
+          
+              If ($check) { 
+                $retVal = file_get_contents( $useSenderUrl."?schalte=".$id."&dimm=".$dimmer );
+                
+                try {
+                    $myfile = fopen("/var/www/switch.log", "a+");
+                    fwrite($myfile, "(".date("d.M.Y - H:i:s")."): " .$useSenderUrl."?schalte=".$id."&dimm=".$dimmer."\n");
+                    fclose($myfile);
+                } catch (Exception $e){
+                } 
+                    
+                if(strpos(substr($retVal,0,50), "Warning")>0){
+                   $switchStatusCheck = false;
+                   echo "<b>Vorgang auf Grund eines unerwarteten Fehlers abgebrochen!</b><br><br>".$retVal;
+                   break;
+                } else {
+                   //echo "<br><font color='green'><b>schalte ".$id>=0?$id:($id*-1)." ".($status=="on"?"ein":"aus")."</b></font>";
+                } 
+              } else {
+                 echo "<br><font color='red'>KEINE VERBINDUNG zu: ".$host ."<br><b>Vorgang abgebrochen!</b></font>";
+                 break;
+              }
+                 
+            }
+            //echo "<br>";
+          }
+          ob_flush();
+          sleep(1);
+        }
+    }
+  }
+
+
+
+  
+  
+  
   function getSensorName($id){
     $sql = "SELECT name FROM homecontrol_sensor WHERE id = ".$id;
     $result = mysql_query($sql);
     $row = mysql_fetch_array($result);
     return $row['name'];
-
   }
+  
   
   // TODO: $arduinoUrl wird eigtl nicht mehr ben?tigt da eh f?r jedes Device 
   //       die ArduinoURL ermittelt werden muss, seit mehrere Sender m?glich sind. 
@@ -315,7 +540,6 @@ function getConfigFunkId($id, $status) {
         } else {
             return $rowConfig["funk_id"];
         }
-
 
         return "";
     }

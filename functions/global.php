@@ -72,9 +72,16 @@
 
 
   function getLookupWerte($dbConnect, $tab, $col){
-    //Liefert den angeforderten Wert aus der Lookupwerte - Tabelle
-
     $sql = "select * from lookupwerte where tab_name = '" .$tab ."' and col_name = '" .$col ."' ";
+    $res = $dbConnect->executeQuery($sql);
+
+    return $res;    
+  }
+
+
+
+  function getLookupWert($dbConnect, $tab, $col, $code){
+    $sql = "SELECT * FROM lookupwerte WHERE tab_name = '" .$tab ."' AND col_name = '" .$col ."' AND code='".$code."'";
     $res = $dbConnect->executeQuery($sql);
 
     return $res;    

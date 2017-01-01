@@ -68,13 +68,12 @@ class Combobox extends Object {
   function  show(){
 	echo " <select id = '" .$this->NAME ."'  NAME=\"" .$this->NAME ."\" size=\"1\" ";
     
-    
-    
     if($this->DIREKTSELECT){
 	 echo " onchange=\"this.form.submit();\" ";	
 	}
 	
 	echo $this->getToolTipTag();
+    
     echo $this->getStyleString();
 
 	echo  "> ";
@@ -82,9 +81,9 @@ class Combobox extends Object {
     $isselected=false;
 
     if ( strlen($this->getNullValue())>0 || count($this->CBARRAY)==0 ){
-	    echo "  <option value='' ";
+	    echo "  <option value=\"\" ";
         
-        if( '' == $this->DEFAULT ){
+        if( "" == $this->DEFAULT ){
             echo "selected";
     	    $isselected="true";
         }
@@ -105,7 +104,7 @@ class Combobox extends Object {
        
       echo "  <option value='" .$htmlKEY ."' ";
       
-      if( $KEY == $this->DEFAULT ){
+      if(!$isselected && $KEY == $this->DEFAULT ){
         echo "selected";
 	    $isselected="true";
       }

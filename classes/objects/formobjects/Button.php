@@ -2,14 +2,15 @@
 //FileNAME: Button.php
 
 class Button extends Object {
-  var $NAME;
+  var $ID;
   var $VALUE;
   var $ONCLICK;
   var $WIDTH;
   var $HEIGHT;
   var $ONCLICKTYPE;
   
-  function Button($name, $value, $onClick=''){
+  function Button($name, $value, $onClick='', $id=''){
+    $this->ID = strlen($id)>0?$id:$name;
     $this->NAME = $name;
     $this->VALUE = $value;
     $this->ONCLICK = $onClick;
@@ -25,51 +26,34 @@ class Button extends Object {
   }
 
 
-  function Show(){
+  function show(){
     if(strlen($this->ONCLICK)>0){
        $this->showOnKlickButton();
     } else {
-	$this->showForForm();
+	   $this->showSubmitButton();
     }
- 
   }
 
-  function showForForm(){
+  function showSubmitButton(){
 	echo "<INPUT   TYPE='SUBMIT'  ";
     
 	if(strlen($this->NAME)>0){
 	  echo " NAME='" .$this->NAME ."' ";
-         echo " id='" .$this->NAME ."' ";
-
-       }  
-	
-	echo " VALUE='" .$this->VALUE ."' ";
+      echo " id='" .$this->ID ."' ";
+    }  
+       	
+    echo " VALUE='" .$this->VALUE ."' ";
     
-	echo $this->getToolTipTag();
+    echo $this->getToolTipTag();
 
-/*       echo "style=\" ";
-
-       if($this->XPOS>=0 && $this->YPOS>=0){        
-         echo " position:absolute; top:" .$this->YPOS ."px; left:" .$this->XPOS ."px; ";
-       }
-       if($this->WIDTH>=0 && $this->HEIGHT >=0){        
-         if($this->WIDTH != 0 && $this->HEIGHT != 0){  
-           echo " width:" .$this->WIDTH ."px; height:" .$this->HEIGHT ."px; ";
-         } else {
-           echo " display: none; ";  
-         }
-       } else {
-
-       }
-*/
-       $this->showStyles();
+    $this->showStyles();
        
-       echo " \" >";
+    echo ">";
   }
 
   function showOnKlickButton(){
     echo "	
- 	<input type    = '" .$this->ONCLICKTYPE ."' 
+ 	   <input type    = '" .$this->ONCLICKTYPE ."' 
               name    = '" .$this->NAME  ."' 
               value   = '" .$this->VALUE  ."'
               onClick = \""  .$this->ONCLICK ."\" ";
@@ -86,7 +70,7 @@ class Button extends Object {
       echo " width:" .$this->WIDTH ."px; height:" .$this->HEIGHT ."px;  ";
     }
 
-       echo "\" >";
+    echo "\" >";
   }
 
 }
@@ -96,7 +80,7 @@ class Button extends Object {
 
 
 
-/*
+/* TODO:
  Formularen kann man statt eines SUBMIT auch ein IMAGE als Absendeknopf installieren. Dies sieht dann so aus:
 
 <input type="image" src="meinbild.png" name="sub" />

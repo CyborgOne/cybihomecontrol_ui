@@ -3,6 +3,50 @@
 #
 # (c) by Daniel Scheidler      Aug 2015
 
+# Sicherstellen dass automatisches commit-handling nur auf Master-Branche erfolgt. 
+# Andere Branches muessen gemerged werden!
+
+git checkout master
+#-----------------------------------------------------------------
+#  GIT - Dateien adden und commiten
+#-----------------------------------------------------------------
+git add classes
+git add includes
+git add scripts
+git add pics/*.png
+git add pics/*.jpg
+git add *.php
+git add functions
+git add *.sh
+git add *.sql
+git add commitUpdate
+git add *.txt
+
+
+
+#-----------------------------------------------------------------
+#  Versions-History ===>>> Eingabe der Beschreibung
+#-----------------------------------------------------------------
+
+if [ -f versionHistory.tmp ];
+then
+  rm versionHistory.tmp
+fi
+
+git status
+
+echo  " "
+echo  "Geben Sie die Anpassungen des Commits an: "
+echo  "Beenden Sie die Eingabe mit 2x Enter (also einer Leerzeile)"
+while read changes 
+do
+   if  [ ${#changes} -gt 0 ]; then
+      echo "$changes"        >> versionHistory.tmp
+   else
+      break
+   fi
+done
+
 #-----------------------------------------------------------------
 #  Versions-Nummer rauf zählen
 #-----------------------------------------------------------------
@@ -27,46 +71,9 @@ echo $newVersion > version.txt
 echo "New Version: " $newVersion
 
 
-
-
 #-----------------------------------------------------------------
-#  GIT - Dateien adden und commiten
+#  Versionsinformationen speichern
 #-----------------------------------------------------------------
-git add classes
-git add includes
-git add scripts
-git add pics/*.png
-git add pics/*.jpg
-git add *.php
-git add functions
-git add *.sh
-git add *.sql
-git add commitUpdate
-git add *.txt
-
-
-
-#-----------------------------------------------------------------
-#  Versions-History ===>>> Eingabe der Beschreibung
-#-----------------------------------------------------------------
-if [ -f versionHistory.tmp ];
-then
-  rm versionHistory.tmp
-fi
-
-git status
-echo  
-echo  "Geben Sie die Anpassungen des Commits an: "
-echo  "Beenden Sie die Eingabe mit 2x Enter (also einer Leerzeile)"
-while read changes 
-do
-   if  [ ${#changes} -gt 0 ]; then
-      echo "$changes"        >> versionHistory.tmp
-   else
-      break
-   fi
-done
-
 cat versionHistory.txt       >  versionHistory.old
 
 echo ""                      >  versionHistory.txt
@@ -76,7 +83,8 @@ cat versionHistory.tmp       >> versionHistory.txt
 
 cat versionHistory.old       >> versionHistory.txt
 
-git add versionHistory.txt
+git add *.txt
+
 #-----------------------------------------------------------------
 
 

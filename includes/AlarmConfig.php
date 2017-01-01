@@ -1,6 +1,7 @@
 <?PHP
 
 $t = new Title("Alarmanlagen Einstellungen");
+$t->setAlign("left");
 $t->show();
 
 doUpdateAlarm();
@@ -100,7 +101,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $table->addSpacer(0,15);
         $rTitle = $table->createRow();
-        $rTitle->setAttribute(0, new Title("Grundeinstellung"));
+        $ttl = new Title("Grundeinstellung");
+        $ttl->setAlign("left");
+        $rTitle->setAttribute(0, $ttl);
         $rTitle->setSpawnAll(true);
         $table->addRow($rTitle);
         $table->addSpacer(0,15);
@@ -162,7 +165,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $table->addSpacer(0,15);
         $r1Title = $table->createRow();
-        $r1Title->setAttribute(0, new Title("Ggf. zu Schaltende Objekte"));
+        $ttlS = new Title("Ggf. zu Schaltende Objekte");
+        $ttlS->setAlign("left");
+        $r1Title->setAttribute(0, $ttlS);
         $r1Title->setSpawnAll(true);
         $table->addRow($r1Title);
         $table->addSpacer(0,15);
@@ -190,7 +195,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
         $table->addSpacer(0,15);
         $r2Title = $table->createRow();
-        $r2Title->setAttribute(0, new Title("Ausloesende Bedingungen"));
+        $ttl2 = new Title("Ausloesende Bedingungen");
+        $ttl2->setAlign("left");
+        $r2Title->setAttribute(0, $ttl2);
         $r2Title->setSpawnAll(true);
         $table->addRow($r2Title);
         $table->addSpacer(0,15);

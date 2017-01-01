@@ -20,7 +20,8 @@ $regelDbTbl   = new HcRegelnDbTable($_SESSION['config']->DBCONNECT,
 
 $regelDbTbl->setDeleteInUpdate(true);
 $regelDbTbl->setNoInsertCols(array("id", "beschreibung"));
-$regelDbTbl->setNoUpdateCols(array("id"));
+$regelDbTbl->setNoInsertCols(array("id"));
+$regelDbTbl->setInvisibleCols(array("id"));
 $regelDbTbl->setDefaults("reverse_switch='J'");
 $regelDbTbl->setHeaderEnabled(true);
 $regelDbTbl->setTexteditorEndabled(false);
@@ -109,7 +110,7 @@ if (isset($_SESSION['SelectedRegelToEdit']) && strlen($_SESSION['SelectedRegelTo
         $where);
 
     $termDbTable->setReadOnlyCols(array("id"));
-    $termDbTable->setNoInsertCols(array("id"));
+    $termDbTable->setInvisibleCols(array("id"));
     $termDbTable->setDeleteInUpdate(true);
     $termDbTable->setHeaderEnabled(true);
     $termDbTable->setWidth("100%");
@@ -165,13 +166,14 @@ if (isset($_SESSION['SelectedRegelToEdit']) && strlen($_SESSION['SelectedRegelTo
     // -------------------------------------------
     
     $regelItemsDbTable = new DbTable($_SESSION['config']->DBCONNECT,
-        'homecontrol_regeln_items', array("config_id", "art_id", "zimmer_id",
-        "etagen_id", "on_off", "regel_id", "id"),
-        "Objekt, Objekt-Art, Zimmer, Etage, An/Aus", "regel_id=" . $_SESSION['SelectedRegelToEdit'],
-        "config_id DESC, zimmer_id DESC, etagen_id DESC", "regel_id=" . $_SESSION['SelectedRegelToEdit']);
+                                    'homecontrol_regeln_items', 
+                                    array("config_id", "art_id", "zimmer_id", "etagen_id", "on_off", "regel_id", "id"),
+                                    "Objekt, Objekt-Art, Zimmer, Etage, An/Aus", 
+                                    "regel_id=" . $_SESSION['SelectedRegelToEdit'],
+                                    "config_id DESC, zimmer_id DESC, etagen_id DESC", 
+                                    "regel_id=" . $_SESSION['SelectedRegelToEdit']);
     
-    $regelItemsDbTable->setReadOnlyCols(array("id"));
-    $regelItemsDbTable->setNoInsertCols(array("id"));
+    $regelItemsDbTable->setInvisibleCols(array("id", "regel_id"));
     $regelItemsDbTable->setNoUpdateCols(array("regel_id", "id"));
     $regelItemsDbTable->setDeleteInUpdate(true);
     $regelItemsDbTable->setHeaderEnabled(true);

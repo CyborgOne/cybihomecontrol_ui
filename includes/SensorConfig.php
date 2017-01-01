@@ -49,13 +49,13 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
     $sensorDBTbl = new HcSensorDbTable( $_SESSION['config']->DBCONNECT, 
                             "homecontrol_sensor", 
-                            array("id", "name", "status_sensor", "beschreibung"),
-                            "Id, Name, Status-Sensor, Beschreibung",
+                            array("id", "name", "beschreibung"),
+                            "Id, Name,  Beschreibung",
                             "",
                             "name",
                             "id!=999999999"); // GMail Sensor ausblenden
 
-    $sensorDBTbl->setAlignments(array("left", "left", "center", "right"));
+    $sensorDBTbl->setAlignments(array("left", "left", "right"));
     $sensorDBTbl->setDeleteInUpdate(true);
     $sensorDBTbl->setReadOnlyCols(array("id","geaendert", "lastSignal", "lastValue"));
 //    $sensorDBTbl->setNoInsertCols(array("geaendert", "lastSignal", "lastValue"));

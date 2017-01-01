@@ -11,8 +11,8 @@
 
     $dbTblSender = new DbTable($_SESSION['config']->DBCONNECT, 
                                 'homecontrol_sender', 
-                                array("name", "ip", "etage", "zimmer", "range_von", "range_bis", "default_jn"), 
-                                "Name, IP, Etage, Zimmer, Bereich von:, Bis, Standard?",
+                                array("name", "ip", "etage", "zimmer", "senderTypId", "default_jn"), 
+                                "Name, IP, Etage, Zimmer, Typ, Standard?",
                                 "",
                                 "default_jn, name");
     

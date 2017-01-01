@@ -11,7 +11,9 @@ function getRowByName($rows, $name) {
     return false;
 }
 
-
+/**
+ * stellt sicher, dass immer nur ein Default existiert
+ */ 
 function checkDefaultSender($rows){
     // doUpdate auf Default prüfen
     foreach ($rows as $row) {

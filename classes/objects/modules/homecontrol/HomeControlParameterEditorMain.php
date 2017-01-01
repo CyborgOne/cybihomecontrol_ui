@@ -1,0 +1,135 @@
+<?PHP
+
+/**
+ * Basis-Klasse für Parameter-Editor Objekte
+ * Diese klasse dient als Grundlage zum ableiten alternativer Editoren für Parameter
+ * (Beispiel: RGB-Controller -> Color-Chooser anstelle von 3 Textfeldern) 
+ */
+ class HomeControlParameterEditorMain extends Object {
+   private $PARAMETER_ARRAY = array();
+   var $HC_ITEM;
+   var $SENDER;
+   var $SENDERTYP;
+   private $ID;
+   private $CLASSNAME;
+   private $DESCR;
+   private $PIC;
+   
+   
+   function HomeControlParameterEditorMain($editorRow, $controlItem){
+        /* Den Inhalt des Konstruktors in abgeleiteten Konstruktoren einfügen */
+        $this->setControl($controlItem);
+        $this->SENDER = $this->getControl()->getSender();
+        $this->SENDERTYP = $this->SENDER->getTyp();
+        
+        $this->ID        = $editorRow->getNamedAttribute("id");
+        $this->CLASSNAME = $editorRow->getNamedAttribute("classname");
+        $this->DESCR     = $editorRow->getNamedAttribute("descr");
+        $this->PIC       = $editorRow->getNamedAttribute("pic");
+   } 
+   
+   
+   
+   
+   /**
+    * @override
+    */
+   function isActivated(){
+   }
+   
+   
+   /**
+    * @override
+    */
+   function isUsable(){
+     return false;
+   }
+   
+   /**
+    * @override
+    */
+   function getEditMask(){
+     $dv = new Div();
+     return $dv;
+   }
+   
+   
+   
+   
+   
+   
+   
+   function getClassname(){
+     return $this->CLASSNAME;
+   }
+
+   function setClassname($c){
+     $this->CLASSNAME = $c;
+   }
+   
+   function setPic($p){
+     $this->PIC = $p;
+   }
+   
+   function getPic(){
+     return $this->PIC;
+   }
+   
+   function getId(){
+     return $this->ID;
+   }
+
+   function setId($p){
+     $this->ID = $p;
+   }
+   
+   
+   function getDescr(){
+     return $this->DESCR;
+   }
+
+   function setDescr($d){
+     $this->DESCR = $d;
+   }
+   
+      
+   function getSender(){
+     return $this->SENDER;
+   }
+   
+   function getControl(){
+     return $this->HC_ITEM;
+   }
+   
+   function setControl($controlItem){
+     $this->HC_ITEM = $controlItem;
+   }
+   
+   function getSenderTyp(){
+     return $this->SENDERTYP;
+   }
+   
+   
+   
+   function getSenderParameterName($editorParamName){
+     $sql =  "SELECT name FROM homecontrol_sender_typen_parameter WHERE id=("
+            ." SELECT sender_param_id FROM homecontrol_control_parameter_zu_editor WHERE editor_param_id=(SELECT id FROM homecontrol_editor_parameter WHERE name = '" .$editorParamName ."')"
+            .")";
+
+     $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sql);
+     if(mysql_numrows($rslt)>0){
+         $r = mysql_fetch_array($rslt);
+         
+         return isset($r['name'])?$r['name']:null;
+     }
+     return null;
+   }
+   
+   function show(){
+     $msk = $this->getEditMask();
+     $msk->show();
+   }
+ }
+ 
+ 
+ ?>

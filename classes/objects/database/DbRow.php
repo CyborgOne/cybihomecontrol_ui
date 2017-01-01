@@ -7,9 +7,10 @@ class DbRow extends Object{
   var $FONTTYPES;  // Array welches die Schriftformatierung fÃÂÃÂÃÂÃÂ¼r einzelne Spalten vorgibt
   private $TABLENAME;
   private $FIELDNAMES; 
-  var $FORCE_ID_UPDATE=false; 
+  var $FORCE_ID_UPDATE=false;
+  private $DELETE_IN_UPDATE=false; 
   
-  function DbRow($colNamesArray, $TableName, $fldNames){
+  function DbRow($colNamesArray, $TableName, $fldNames, $delInUpdate=false){
   	$this->TABLENAME = $TableName;
     $this->ROW = array();
     $this->setColNames($colNamesArray);
@@ -29,11 +30,21 @@ class DbRow extends Object{
 			$COLNAMESTRING = "*";
 		}
 	
-    
+    $this->DELETE_IN_UPDATE = $delInUpdate;
     $this->FIELDNAMES = $fldNames;
     $this->prepareFonts();
   }
 
+
+
+  function setDeleteInUpdate($b){
+    $this->DELETE_IN_UPDATE = $b;
+  }
+
+  function isDeleteInUpdate(){
+    return $this->DELETE_IN_UPDATE;
+  }
+  
 
   function prepareFonts(){
      //legt Standard-Fonttypes an
@@ -232,7 +243,7 @@ class DbRow extends Object{
 	}	
 	
 	$sql .= " WHERE id = ".$this->getNamedAttribute("rowid");
-
+//echo $sql;
 	$_SESSION['config']->DBCONNECT->executeQuery($sql);
   }
 

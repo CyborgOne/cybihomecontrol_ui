@@ -5,7 +5,7 @@
 
   function getDbValue($tab, $col, $where){
     //Liefert die angeforderten Werte aus der public_vars - Tabelle als Array ($title=>$text)
-    $sql    = "select " .$col ." from " .$tab ." where " .$where ." limit 1 ";
+    $sql    = "select " .$col ." from " .$tab .(strlen($where)>0?" where " .$where ." limit 1 ":"");
 
     $res = $_SESSION['config']->DBCONNECT->executeQuery($sql);
     $row = mysql_fetch_array($res);

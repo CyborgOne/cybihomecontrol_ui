@@ -90,6 +90,11 @@ class Form  extends Object{
     if(strlen($this->TARGET)>0){
        echo " target='" .$this->TARGET  ."' ";    
     }
+    
+    if(strlen($this->NAME)>0){
+       echo " id='" .$this->NAME  ."' ";    
+       echo " name='" .$this->NAME  ."' ";    
+    }
 
     if(strlen($this->PARAMS)>0){
        echo $this->PARAMS ;    

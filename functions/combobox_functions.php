@@ -44,7 +44,8 @@
     } else {
 	  	$sqlComboData    .=  " ORDER BY 2";
     }
-//	 echo $sqlComboData;
+
+	// echo $sqlComboData;
      
 //wird nun nachträglich erledigt wegen Filter auf null in getdbcombovalue//    $sqlComboData    .=  " UNION SELECT ' ', ' ' FROM dual";
 //Combobox-Daten laden    
@@ -63,7 +64,7 @@
 	}
     
 	$ret[''] = " ";
-    
+  
     return $ret;    
   }
 
@@ -72,7 +73,7 @@
 
 
   function getDbComboWhereStatement($rowDbCombo,$currentRow=null){
-     $ret = $rowDbCombo['combo_where'];
+       $ret = $rowDbCombo['combo_where'];
      
      
        $tmp = split ( '#', $ret );
@@ -83,7 +84,7 @@
 		 $whereValue = "";
 		 
 		 if($currentRow != null){    
-		     $tmpTbl = new DbTable($_SESSION['config']->DBCONNECT, $rowDbCombo['tab_name'], array("*"),"","", "id=".$currentRow["rowid"] );
+		     $tmpTbl = new DbTable($_SESSION['config']->DBCONNECT, $rowDbCombo['tab_name'], array("*"),"","", "id=".$currentRow->getNamedAttribute("rowid") );
 		     $tmpRow = $tmpTbl->getRow(1);
 		     
 			 $whereValue = $tmpRow->getNamedAttribute($currRowFieldName);
@@ -94,10 +95,20 @@
 		 if(sizeof($tmp)>2) {
 			$ret .= $tmp[2];
 		 }	
-		 
-		 $ret = "";
 	 }
-	 
+     
+     $tmpSess = split('\$', $ret);
+	   if( sizeof($tmpSess) > 1 ){
+	     $sessFieldName = $tmpSess[1];
+	     
+		 $whereValue = $_SESSION[$sessFieldName];
+		 
+ 		 $ret = $tmpSess[0] ." '" .$whereValue ."' ";
+		 
+		 if(sizeof($tmpSess)>2) {
+			$ret .= $tmpSess[2];
+		 }	
+	 }
 	 
 	 return $ret;
   }
@@ -173,7 +184,7 @@
       $ret[''] = " ";	
     }
 
-    for($i=$von;$i<$bis;$i++){
+    for($i=$von;$i<=$bis;$i++){
     	$code  = $i;
     	$value = $i;
     	

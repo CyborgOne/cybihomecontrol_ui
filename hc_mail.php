@@ -49,7 +49,7 @@ if(strlen($_SESSION['config']->PUBLICVARS['gmailAdress'])>0 && strlen($_SESSION[
   $mails = getMailsFromGmailInbox($in);
   $unreadMails = getEmailCount($in, $mails, true);
   closeGmailInbox($in);
-//  echo "Ungelesene Mails: ".$unreadMails."\n";
+ // echo "Ungelesene Mails: ".$unreadMails."\n";
   
   // Anzahl ungelesener Mails in Sensor-Tabelle speichern
   if(checkSensorInputMissingValues()){

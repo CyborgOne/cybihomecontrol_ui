@@ -314,6 +314,14 @@ class Style {
   function getStyle($styleName){
 	return $this->STYLEATTRS[$styleName];
   }
+  
+  function getStyles(){
+	return $this->STYLEATTRS;
+  }
+  
+  function setStyles($styles){
+	$this->STYLEATTRS = $styles;
+  }
 
   function setStyle($name, $value){
 	$this->STYLEATTRS[$name] = $value;
