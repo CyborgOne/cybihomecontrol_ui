@@ -650,6 +650,12 @@ CREATE TABLE `homecontrol_sender_typen` (
   PRIMARY KEY (`id`)
 )   AUTO_INCREMENT=7;
 
+LOCK TABLES `homecontrol_sender_typen` WRITE;
+/*!40000 ALTER TABLE `homecontrol_sender_typen` DISABLE KEYS */;
+INSERT INTO `homecontrol_sender_typen` VALUES (1,'Standard Funksender incl. BT-Switch','0000-00-00 00:00:00'),(2,'RGB Stripe Controller','2016-10-25 21:57:47'),(3,'Standard Funksender ohne BT-Switch','0000-00-00 00:00:00'),(6,'Relais-Switch Funksender','2016-12-21 23:19:51');
+/*!40000 ALTER TABLE `homecontrol_sender_typen` ENABLE KEYS */;
+UNLOCK TABLES;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -673,6 +679,12 @@ CREATE TABLE `homecontrol_sender_typen_parameter` (
   UNIQUE KEY `senderTypId` (`senderTypId`,`name`)
 )   AUTO_INCREMENT=11;
 
+LOCK TABLES `homecontrol_sender_typen_parameter` WRITE;
+/*!40000 ALTER TABLE `homecontrol_sender_typen_parameter` DISABLE KEYS */;
+INSERT INTO `homecontrol_sender_typen_parameter` VALUES (1,1,'schalte',7,'2016-10-12 01:36:33','J','J','N'),(2,1,'dimm',9,'2016-10-24 23:41:20','N','N','J'),(3,3,'schalte',8,'2016-10-25 22:55:27','J','J','N'),(4,2,'red',1,'2016-10-12 00:52:44','N','N','N'),(5,2,'green',1,'2016-10-12 00:52:44','N','N','N'),(6,2,'blue',1,'2016-10-12 00:52:44','N','N','N'),(8,6,'relaisId',10,'2016-12-21 23:35:00','J','N','N'),(10,6,'relaisStatus',12,'2016-12-27 01:47:25','N','N','J');
+/*!40000 ALTER TABLE `homecontrol_sender_typen_parameter` ENABLE KEYS */;
+UNLOCK TABLES;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -694,6 +706,12 @@ CREATE TABLE `homecontrol_sender_typen_parameter_arten` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
 )   AUTO_INCREMENT=13;
+
+LOCK TABLES `homecontrol_sender_typen_parameter_arten` WRITE;
+/*!40000 ALTER TABLE `homecontrol_sender_typen_parameter_arten` DISABLE KEYS */;
+INSERT INTO `homecontrol_sender_typen_parameter_arten` VALUES (1,'Zahl 0-255',0,255,NULL,NULL,NULL,'0000-00-00 00:00:00'),(2,'String (50)',NULL,NULL,0,50,NULL,'0000-00-00 00:00:00'),(3,'Zahl (0-100)',0,100,NULL,NULL,NULL,'0000-00-00 00:00:00'),(4,'OnOff',NULL,NULL,NULL,NULL,'onOff','0000-00-00 00:00:00'),(5,'Wochentage',NULL,NULL,NULL,NULL,'tage','0000-00-00 00:00:00'),(6,'Monate',NULL,NULL,NULL,NULL,'Monate','0000-00-00 00:00:00'),(7,'Funk ID incl. BT-Switch',1,386,NULL,NULL,NULL,'0000-00-00 00:00:00'),(8,'Funk ID ohne BT-Switch',1,290,NULL,NULL,NULL,'0000-00-00 00:00:00'),(9,'Dimmer',0,15,NULL,NULL,NULL,'2016-12-26 02:15:31'),(10,'Zahl 0 oder 1',0,1,NULL,NULL,NULL,'2016-12-21 23:39:58'),(11,'Zahl 0 bis 7',0,7,NULL,NULL,NULL,'2016-12-21 23:22:35'),(12,'Relais-Status',NULL,NULL,NULL,NULL,'relaisEinAus','2016-12-21 23:41:51');
+/*!40000 ALTER TABLE `homecontrol_sender_typen_parameter_arten` ENABLE KEYS */;
+UNLOCK TABLES;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
