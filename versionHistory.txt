@@ -1,4 +1,9 @@
 
+Version: 0.2.4
+---------------------
+SQL incl neuen Tabellen für dynamische Parameter
+SQL-Export angepasst
+
 Version: 0.2.3
 ---------------------
 Neue Parameterlogik
