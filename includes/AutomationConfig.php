@@ -20,9 +20,8 @@ $regelDbTbl   = new HcRegelnDbTable($_SESSION['config']->DBCONNECT,
 
 $regelDbTbl->setDeleteInUpdate(true);
 $regelDbTbl->setNoInsertCols(array("id", "beschreibung"));
-$regelDbTbl->setNoInsertCols(array("id"));
+$regelDbTbl->setNoUpdateCols(array("id"));
 $regelDbTbl->setInvisibleCols(array("id"));
-$regelDbTbl->setDefaults("reverse_switch='J'");
 $regelDbTbl->setHeaderEnabled(true);
 $regelDbTbl->setTexteditorEndabled(false);
 
@@ -30,8 +29,7 @@ $table = new Table(array("", ""));
 $table->setColSizes(array(150));
 
 // Neuer Eintrag
-if (isset($_REQUEST['InsertIntoDB'.$regelDbTbl->TABLENAME]) && $_REQUEST['InsertIntoDB'.$regelDbTbl->TABLENAME] ==
-    "Speichern") {
+if (isset($_REQUEST['InsertIntoDB'.$regelDbTbl->TABLENAME]) && $_REQUEST['InsertIntoDB'.$regelDbTbl->TABLENAME] == "Speichern") {
 
     $regelDbTbl->doInsert();
     $regelDbTbl->refresh();
@@ -53,21 +51,24 @@ if (isset($_REQUEST['InsertIntoDB'.$regelDbTbl->TABLENAME]) && $_REQUEST['Insert
     $table->addSpacer(0,10);
 }
 
-$form = new Form();
+
+if (isset($_REQUEST["DbTableUpdate" . $regelDbTbl->TABLENAME])) {
+    $regelDbTbl->doUpdate();
+}
+
 
 $updMsk = $regelDbTbl->getUpdateMask();
+$updMsk->show();
 
-$form->add($table);
-$form->add($updMsk);
+$formT = new Form();
+$formT->add($table);
+$formT->show();
+
+$form = new Form();
 $form->add(new Spacer(10));
 $form->add($regelDbTbl->getNewEntryButton("Neue Regel anlegen"));
 $form->add($spc);
-
 $form->show();
-
-
-
-
 
 // -------------------------------------------
 //                 BEDINGUNGEN

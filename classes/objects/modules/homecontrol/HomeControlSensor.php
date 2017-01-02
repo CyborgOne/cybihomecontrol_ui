@@ -176,7 +176,11 @@ class HomeControlSensor extends Object{
         }
         
         $ttt .= "</br>" .$this->DESCRPT ."</td></tr>"; 
-        $ttt .= "<tr><td>Zu letzt gemeldeter Wert: " .$this->LASTVALUE ."</td><td align='right'>gemeldet am: " .date("d.m.Y h:i:s", $this->LASTSIGNAL) ."</td></tr>";
+
+        if(strlen($this->LASTVALUE)>0 && strlen($this->LASTSIGNAL)>0){    
+            $ttt .= "<tr><td>Zu letzt gemeldeter Wert: " .$this->LASTVALUE ."</td><td align='right'>gemeldet am: " .date("d.m.Y h:i:s", $this->LASTSIGNAL) ."</td></tr>";
+        }
+        
         $ttt .= "<tr><td colspan=2 height='1px'> </td></tr>";  
         $ttt .= "</table>";
 
