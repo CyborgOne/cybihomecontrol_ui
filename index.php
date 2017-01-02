@@ -6,6 +6,8 @@
 */
    include_once("init.php"); 
    
+   $_SESSION['mainpanelheight'] = 600;
+   
    $runLinkTarget = "mainpage";    
     
    /** ------------------------------------

@@ -11,7 +11,7 @@ class Row extends Object {
   var $COLNAMES;   // Array welches die Namen der Spalten enthÃÂÃÂÃÂÃÂ¤lt 
   var $FONTTYPES;  // Array welches die Schriftformatierung fÃÂÃÂÃÂÃÂ¼r einzelne Spalten vorgibt
   var $BACKGROUNDS;  // Array welches die Hintergrund-Dateinamen fÃÂÃÂÃÂÃÂ¼r einzelne Zelle vorgibt
-  var $COLSIZES;
+  var $COLSIZES = array();
   var $ALIGNMENTS;
   var $HEADER;     // true/false  => th oder td
   var $PADDING;

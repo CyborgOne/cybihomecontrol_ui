@@ -13,7 +13,7 @@ class Table extends Object {
 
   var $ROWS;       // Array of Objects welches die Objecte enthÃÂÃÂÃÂÃÂ¤lt 
   var $COLNAMES;   // Array welches die Namen der Spalten enthÃÂÃÂÃÂÃÂ¤lt 
-  var $COLSIZES;
+  var $COLSIZES = array();
   var $ALIGNMENTS;
 
   var $ONCLICK;
@@ -124,6 +124,7 @@ class Table extends Object {
     }
   }
 
+
   function setHeadEnabled($b){
      if($b == true){
        if(!$this->HEADER_ENABLED){
@@ -165,7 +166,11 @@ class Table extends Object {
   function createRow(){
     $r = new Row($this->COLNAMES);
     $r->setFontTypes($this->FONTTYPES);
-    $r->setColsizes($this->COLSIZES);
+    
+    if(count($this->COLSIZES)>0){
+      $r->setColsizes($this->COLSIZES);
+    }
+    
     $r->setAlignments($this->ALIGNMENTS);
     $r->setPadding($this->getPadding());
     $r->setSpacing($this->getSpacing());
@@ -182,6 +187,7 @@ class Table extends Object {
      $this->ROWS[count($this->ROWS)] = $row;
   }
 
+
   function addSpacer($height=1, $spacing=5){
      $s = $this->createRow();
      $s->setHeight($spacing);
@@ -190,7 +196,7 @@ class Table extends Object {
      $s->setAttribute(0,$l);
      $s->setSpawnAll(true);
      $this->addRow($s);
-     
+
      // damit changeColor passt
      $spcR = $this->createRow();
      $spcR->setHeight(0);
@@ -200,8 +206,10 @@ class Table extends Object {
 
   function setColSizes($array){
     foreach($this->ROWS as $r) {
-     $r->COLSIZES= $array;
-	}  
+      if($r!=null){
+        $r->COLSIZES = $array;
+      }
+	} 
     $this->COLSIZES = $array;
   }
 
