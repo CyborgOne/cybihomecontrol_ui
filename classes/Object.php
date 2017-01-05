@@ -243,7 +243,7 @@ class Object extends Style {
 	$this->setStyle("background-color", $color);
   }
     
-  function getBackgroundColor(){
+  function getBackgroundColor($color){
 	$this->getStyle("background-color");
   }
   

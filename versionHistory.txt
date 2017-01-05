@@ -1,9 +1,4 @@
 
-Version: 0.2.10
----------------------
-Shortcuts auf neues Parameter-System umgestellt
-Ausführen der Shortcuts fehlt noch
-
 Version: 0.2.9
 ---------------------
 nachbesserung:

@@ -30,17 +30,13 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
     $scDbTable  = new DbTable($_SESSION['config']->DBCONNECT,
                             'homecontrol_shortcut',
-                            array( "id", "name", "beschreibung", "show_shortcut" ) , 
-                            "Id, Name, Beschreibung, Shortcut anzeigen",
+                            array(  "name", "beschreibung", "show_shortcut" ) , 
+                            "Name, Beschreibung, Shortcut anzeigen",
 			                "",
                             "name",
                             "");
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
-    $scDbTable->setInvisibleCols(array("id"));
-    $scDbTable->setNoInsertCols(array("id"));
-    $scDbTable->setNoUpdateCols(array("id"));
-    
     $scDbTable->setWidth("100%");
 
     $spc->show();
@@ -118,19 +114,17 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 // Zuordnung ausgewählt
 
     if( isset($_SESSION['SelectedShortcutToEdit']) && strlen($_SESSION['SelectedShortcutToEdit'])>0 ){
-        $shortcut = new HomeControlShortcut($scDbTable->getRowById($_SESSION['SelectedShortcutToEdit']));
-        
+
         $scItemsDbTable  = new DbTable($_SESSION['config']->DBCONNECT,
                                        'homecontrol_shortcut_items', 
-	                                array("config_id", "art_id", "zimmer_id", "etagen_id",  "shortcut_id" ) , 
-                                       "Objekt, Objekt-Art, Zimmer, Etage",
+	                                array("config_id", "art_id", "zimmer_id", "etagen_id", "on_off", "shortcut_id" ) , 
+                                       "Objekt, Objekt-Art, Zimmer, Etage, An/Aus",
                                        "shortcut_id=".$_SESSION['SelectedShortcutToEdit'],
                                        "config_id DESC, zimmer_id DESC, etagen_id DESC",
                                        "shortcut_id=".$_SESSION['SelectedShortcutToEdit']);
 
         $scItemsDbTable->setReadOnlyCols(array("id"));
         $scItemsDbTable->setNoUpdateCols(array("shortcut_id"));
-        $scItemsDbTable->setInvisibleCols(array("shortcut_id"));
         $scItemsDbTable->setDeleteInUpdate(true);
         $scItemsDbTable->setHeaderEnabled(true);
         $scItemsDbTable->setWidth("100%");
@@ -168,97 +162,17 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
         $table->addSpacer(0,10);
 
-        $rZuordnung = $table->createRow();
-        $rZuordnung->setAttribute(0, $scItemsDbTable->getNewEntryButton());
-        $rZuordnung->setSpawnAll(true);
-        $table->addRow($rZuordnung);
-
+        $newItemBtn = $scItemsDbTable->getNewEntryButton();
         $form->add($table);
-
-        $table->addSpacer(0, 10);
-        $table->addSpacer(1, 0);
-        $table->addSpacer(0, 20);
-
+        $form->add($newItemBtn);
+        $form->add(new Spacer());
     } else {
         $form->add($table);
+        $form->add(new Spacer());
     }
 
-    $form->add(new Spacer());
+    
     $form->show();
-    
-    
-    
-
-    // --------------------------------------------------
-    //  Parameter
-    // --------------------------------------------------
-    $tblItems = new Table(array(""));
-    $tblItems->setAlign("left");
-              
-    $ttlZuord = new Title("Parameter festlegen");
-    $ttlZuord->setAlign("left");
-
-    $rTitle = $tblItems->createRow();
-    $rTitle->setAttribute(0, $ttlZuord);
-    $rTitle->setSpawnAll(true);
-    $tblItems->addRow($rTitle);
-
-    $tblItems->addSpacer(0, 10);
-    
-    
-    $shortcutItemRows = $shortcut->getItemRowsForShortcut();
-    foreach($shortcutItemRows as $shortcutItemRow){
-        $rItem = $tblItems->createRow();
-        $ttl = new Title($shortcutItemRow->getNamedAttribute("name"));
-        $ttl->setAlign("left");
-        $rItem->setAttribute(0, $ttl);
-        $tblItems->addRow($rItem);
-
-        $itm = new HomeControlItem($shortcutItemRow);
-        $itmParams = $itm->getAllParameter();
-
-        $paramTbl = new Table(array("", ""));
-        $paramTbl->setColSizes(array("50%", "50%"));
-        foreach($itmParams as $itmParam){
-            if((!$itmParam->isFix()||$itmParam->isDefaultLogic()) && (!$itmParam->isOptional() || $itm->isParameterOptionalActive($itmParam->getId()))){
-                $paramPrefix = "s".$shortcut->getId()."_".$itmParam->getId()."_".$itm->getId()."_";
-                if (isset($_REQUEST["saveParameters"]) && $_REQUEST["saveParameters"] == "Parameter speichern" &&
-                    isset($_REQUEST[$paramPrefix.$itmParam->getName()]) && strlen($_REQUEST[$paramPrefix.$itmParam->getName()])>0 ){
-                        $itm->setParameterValueForShortcut($itmParam->getRow(), $itm->getRow(), $shortcut->getId(), $_REQUEST[$paramPrefix.$itmParam->getName()]);
-                }
-
-                $val = $itm->getParameterValueForShortcut($itmParam->getRow(), $shortcut->getId());
-
-                $valueEditObject="";
-                if($itmParam->isDefaultLogic()){
-                    $tAn=$itm->getDefaultLogicAnText();
-                    $tAus=$itm->getDefaultLogicAusText();
-
-                    $valueEditObject = new Combobox($paramPrefix.$itmParam->getName(), array($tAn=>$tAn,$tAus=>$tAus) , $val);
-                } else {
-                    $valueEditObject = $itm->getSender()->getTyp()->getEditParameterValueObject($itmParam->getRow(), $val, $paramPrefix, $val);
-                }
-    
-                $rParam = $paramTbl->createRow();
-                $rParam->setAttribute(0, new Text($itmParam->getName(), 3));
-                $rParam->setAttribute(1, $valueEditObject);
-                $paramTbl->addRow($rParam);
-            }
-        }
-
-        $rItem = $tblItems->createRow();
-        $rItem->setAttribute(0, $paramTbl);
-        $tblItems->addRow($rItem);
-
-        $tblItems->addSpacer(0, 10);
-    }
-
-    $frmParams = new Form();
-    $frmParams->add($tblItems);
-    $frmParams->add(new Button("saveParameters", "Parameter speichern"));
-    $frmParams->add(new Spacer());
-    $frmParams->show();
-
 
 }
 

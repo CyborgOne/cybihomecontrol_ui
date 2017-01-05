@@ -10,16 +10,16 @@
  *
  *  $tbname ist der Tabellenname der Datenbanktabelle
  *
- *  $cols erwartet ein String-Array welches die Namen der Gewï¿½nschten Spalten enthï¿½lt. (Default = "*")
+ *  $cols erwartet ein String-Array welches die Namen der Gewünschten Spalten enthält. (Default = "*")
  *
- *  $labels sind die Lables die in der Tabelle fï¿½r die Spalten angezeigt werden sollen. 
+ *  $labels sind die Lables die in der Tabelle für die Spalten angezeigt werden sollen. 
  *          Die Angabe kann hier sowohl als String-Array als auch in einem String durch Kommas getrennt erfolgen.
  *          Wird $labels gesetzt werden nur so viele Spalten angezeigt wie Labels angegeben sind!!!
  *          so lassen sich einfach Spalten ausblenden aber die Daten trotzdem laden.
  *   !!! ACHTUNG !!!
- *          Die auszublendenen Spalten mï¿½ssen nach den anzuzeigenden Spalten stehen, da ansonsten die Zuordnung der Labels nicht mehr mit den Spalten ï¿½bereinstimmt.
+ *          Die auszublendenen Spalten müssen nach den anzuzeigenden Spalten stehen, da ansonsten die Zuordnung der Labels nicht mehr mit den Spalten übereinstimmt.
  *
- *  $defaults gibt die gewï¿½nschte Default-Werte fï¿½r das einfï¿½gen von neuen Zeilen an.
+ *  $defaults gibt die gewünschte Default-Werte für das einfügen von neuen Zeilen an.
  *          Bspl.: "spaltenname1 = 'neuer Default', spaltenname2 = 'noch ein Default' "
  *
  *  $o  gibt die Sortierung an.
@@ -30,7 +30,7 @@
  */
 
 class DbTable extends Object {
-    var $ROWS; // Array welches die Zeilen(Row) enthï¿½lt
+    var $ROWS; // Array welches die Zeilen(Row) enthält
     var $DBCONNECT;
     var $TABLENAME;
     var $COLNAMES;
@@ -48,14 +48,14 @@ class DbTable extends Object {
 
     var $MAX_ROWS_TO_FETCH;
 
-    var $NOINSERTCOLS; // Array welches die Spalten enthï¿½lt die aus Insert ausgenommen werden sollen
-    var $NOUPDATECOLS; // Array welches die Spalten enthï¿½lt die nicht ï¿½nderbar sein sollen
-    var $INVISIBLECOLS; // Array welches die Spalten enthï¿½lt die nicht angezeigt werden sollen
-    var $READONLYCOLS; // Array welches die Spaltennamen enthï¿½lt die nicht ï¿½nderbar sein sollen
+    var $NOINSERTCOLS; // Array welches die Spalten enthält die aus Insert ausgenommen werden sollen
+    var $NOUPDATECOLS; // Array welches die Spalten enthält die nicht änderbar sein sollen
+    var $INVISIBLECOLS; // Array welches die Spalten enthält die nicht angezeigt werden sollen
+    var $READONLYCOLS; // Array welches die Spaltennamen enthält die nicht änderbar sein sollen
 
-    var $TOCHECK; // String der mit Kommas getrennt alle Spaltennamen enthï¿½lt, die Pflichtfelder darstellen
+    var $TOCHECK; // String der mit Kommas getrennt alle Spaltennamen enthält, die Pflichtfelder darstellen
     var $COLNAMESTRING;
-    var $FONTTYPES; // Array welches die Schriftformatierung fï¿½r einzelne Spalten vorgibt
+    var $FONTTYPES; // Array welches die Schriftformatierung für einzelne Spalten vorgibt
     var $HEAD_ENABLED;
     private $DELETE_IN_UPDATE; //boolean der angibt ob ein Button zum entfernen in der UPDATE-Maske angezeigt werden soll
     var $CURRENT_PAGE;
@@ -156,7 +156,7 @@ class DbTable extends Object {
         $this->INVISIBLECOLS = array();
         $this->DEFAULT_HIDDEN_FIELDS = new Container();
 
-        // Falls keine Spaltennamen ï¿½bergeben -> ALLE ermitteln
+        // Falls keine Spaltennamen übergeben -> ALLE ermitteln
         if ($this->COLNAMES[0] == "*") {
             $stmnt = "SELECT *, id as rowid FROM " . $this->TABLENAME . " LIMIT 1 ";
             $result = $this->DBCONNECT->executeQuery($stmnt);
@@ -184,7 +184,7 @@ class DbTable extends Object {
         }
 
         //-----------------------------
-        // ÃƒÂƒÃ‚ÂƒÃƒÂ‚Ã‚ÂƒÃƒÂƒÃ‚Â‚ÃƒÂ‚Ã‚Âœbergebene Labels prï¿½fen
+        // ÃƒÂƒÃ‚ÂƒÃƒÂ‚Ã‚ÂƒÃƒÂƒÃ‚Â‚ÃƒÂ‚Ã‚Âœbergebene Labels prüfen
         // und falls nicht gesetzt
         // automatisch setzen.
         //-----------------------------
@@ -239,7 +239,7 @@ class DbTable extends Object {
     }
 
     /**
-     * fï¿½gt den angegebenen Default-String 
+     * fügt den angegebenen Default-String 
      * zu dem aktuellen hinzu.
      */
     function addDefault($defVal) {
@@ -273,7 +273,7 @@ class DbTable extends Object {
     }
     /**
      * legt fest, ob die Seitennavigation aktiviert werden soll. 
-     * (beim ï¿½berschreiten von MAX_ROWS_TO_FETCH)
+     * (beim überschreiten von MAX_ROWS_TO_FETCH)
      */
     function setLimitActive($bool) {
         $this->LIMIT_ACTIVE = $bool === true ? true : false;
@@ -288,7 +288,7 @@ class DbTable extends Object {
 
     /**
      * legt fest, ob die Seitennavigation aktiviert werden soll. 
-     * (beim ï¿½berschreiten von MAX_ROWS_TO_FETCH)
+     * (beim überschreiten von MAX_ROWS_TO_FETCH)
      */
     function isLimitActive() {
         return $this->LIMIT_ACTIVE === true ? true : false;
@@ -349,9 +349,9 @@ class DbTable extends Object {
 
 
     /**
-     *  prï¿½ft die Tabelle auf die Struktur (vorhandensein von *id* und *geaendert*)
+     *  prüft die Tabelle auf die Struktur (vorhandensein von *id* und *geaendert*)
      *  wenn diese Spalten nicht vorhanden sind werden sie angelegt 
-     *  (autoincrement und timestamp on update damit keine probleme auftreten kï¿½nnen)
+     *  (autoincrement und timestamp on update damit keine probleme auftreten können)
      */
     function checkTableStructure() {
         if (!$this->existsColumn("id")) {
@@ -366,7 +366,7 @@ class DbTable extends Object {
 
 
     /**
-     * Prï¿½ft ob eine Spalte entsprechend dem ï¿½bergebenen String existiert
+     * Prüft ob eine Spalte entsprechend dem übergebenen String existiert
      */
     function existsColumn($columnName) {
         $result = mysql_query("SHOW COLUMNS FROM " . $this->getTableName() . " LIKE '" .
@@ -380,7 +380,7 @@ class DbTable extends Object {
 
 
     /**
-     * Fï¿½gt der Datenbanktabelle eine neue Spalte hinzu
+     * Fügt der Datenbanktabelle eine neue Spalte hinzu
      */
     function addColumn($columnName, $type = "varchar(100)", $params = "") {
         if (strpos($this->TABLENAME, ",") == false) {
@@ -411,7 +411,7 @@ class DbTable extends Object {
 
     /**
      * setzt die Order-By Clause 
-     * Die Sortierbedingung wird als String ï¿½bergeben.  Bspl: " id ASC, value DESC ..."
+     * Die Sortierbedingung wird als String übergeben.  Bspl: " id ASC, value DESC ..."
      */
     function setOrderBy($o) {
         if (strlen($o) > 0) {
@@ -527,7 +527,7 @@ class DbTable extends Object {
 
     /**
      * Im unterschied zu getRowCount() wird hier nicht
-     * die Lï¿½nge des Arrays abgefragt sondern
+     * die Länge des Arrays abgefragt sondern
      * ein direkter SELECT count(*) FROM tablename ausgewertet 
      */
     function getRealRowCount() {
@@ -546,7 +546,7 @@ class DbTable extends Object {
 
 
     /**
-     * fï¿½gt die ï¿½bergebene Row ins aktuelle Table-Objekt ein.
+     * fügt die übergebene Row ins aktuelle Table-Objekt ein.
      * 
      * KEINE ÃƒÂƒÃ‚ÂƒÃƒÂ‚Ã‚ÂƒÃƒÂƒÃ‚Â‚ÃƒÂ‚Ã‚ÂœBERNAHME IN DIE DATENBANK!!! 
      */
@@ -578,7 +578,7 @@ class DbTable extends Object {
 
         $limitFrom = ($this->CURRENT_PAGE - 1) * $this->getMaxRowsToFetch();
 
-        //SQL zusammenbauen fï¿½r aktualisierung
+        //SQL zusammenbauen für aktualisierung
         $stmt = "SELECT " . $this->COLNAMESTRING . ", " . $preTabAlias .
             "id as rowid FROM " . $this->TABLENAME . " " . $this->getWhere() . $this->
             ORDERBY;
@@ -655,7 +655,7 @@ class DbTable extends Object {
 
 
     /**
-     * Liefert die angeforderte Row zurï¿½ck
+     * Liefert die angeforderte Row zurück
      * @param $index int > 0 
      * @return Row   
      */
@@ -667,7 +667,7 @@ class DbTable extends Object {
 
 
     /**
-     * Liefert die aktuelle Border-Breite zurï¿½ck
+     * Liefert die aktuelle Border-Breite zurück
      * @return int   
      */
     function getBorder() {
@@ -700,7 +700,7 @@ class DbTable extends Object {
         if (is_array($names)) {
             $this->COLNAMES = $names;
         } else {
-            echo " Es wurde ein falsches Objekt an die Methode **setColNames** ï¿½bergeben (benï¿½tigt ARRAY)<br>
+            echo " Es wurde ein falsches Objekt an die Methode **setColNames** übergeben (benötigt ARRAY)<br>
               -> " . $this->TABLENAME . "
             ";
         }
@@ -708,11 +708,11 @@ class DbTable extends Object {
     }
 
     /**
-     * die Methode prï¿½ft die ÃƒÂƒÃ‚ÂƒÃƒÂ‚Ã‚ÂƒÃƒÂƒÃ‚Â‚ÃƒÂ‚Ã‚Âœbergabewerte der Einfï¿½gen-Maske auf Vollstï¿½ndigkeit
-     * Geprï¿½ft werden nur Spalten, die als toCheck* angegeben wurden
+     * die Methode prüft die ÃƒÂƒÃ‚ÂƒÃƒÂ‚Ã‚ÂƒÃƒÂƒÃ‚Â‚ÃƒÂ‚Ã‚Âœbergabewerte der Einfügen-Maske auf Vollständigkeit
+     * Geprüft werden nur Spalten, die als toCheck* angegeben wurden
      * 
      * *toCheck: 
-     * Spalten kï¿½nnen mit der Methode setToCheck(String) als Pflichtfelder definiert werden    
+     * Spalten können mit der Methode setToCheck(String) als Pflichtfelder definiert werden    
      */
 
     function checkInsertValue() {
@@ -760,7 +760,7 @@ class DbTable extends Object {
     //  EINGABEMASKE + VERARBEITUNG
     //----------------------------------------------------------------------
     /**
-     * Zeigt die Standard Eingabemaske an und fï¿½hrt wenn nï¿½tig doInsert() aus.  
+     * Zeigt die Standard Eingabemaske an und führt wenn nötig doInsert() aus.  
      */
 
     function showInsertMask() {
@@ -783,7 +783,7 @@ class DbTable extends Object {
 
 
     /**
-     * Liefert den Default-Wert zum ï¿½bergebenen Spaltennamen zurï¿½ck
+     * Liefert den Default-Wert zum übergebenen Spaltennamen zurück
      * 
      * @param $string  Defaultwerte als String. SQL-Konform, komma-getrennt    
      * @param $id      Spaltenname    
@@ -881,11 +881,11 @@ class DbTable extends Object {
                     $r = $table->createRow();
                     $o = "";
     
-                    // in der Datenbank fï¿½r dieses Datenbankfeld
+                    // in der Datenbank für dieses Datenbankfeld
                     // definierte LookupWerteArray laden (wenn vorhanden)
                     $lookups = getLookupWerte($_SESSION['config']->DBCONNECT, $this->TABLENAME, $fieldName);
     
-                    // in der Datenbank fï¿½r dieses Datenbankfeld
+                    // in der Datenbank für dieses Datenbankfeld
                     // definierte Combobox laden (wenn vorhanden)
                     $dbCombo = getDbComboArray($this->TABLENAME, $fieldName);
     
@@ -1000,7 +1000,7 @@ class DbTable extends Object {
             ORDERBY . " LIMIT 1 ";
         $result = $this->DBCONNECT->executeQuery($stmnt);
 
-        // Prï¿½fung der Pflichtfelder
+        // Prüfung der Pflichtfelder
         if (!$this->checkInsertValue()) {
             $e = new Message("Fehlende Eingabe", "Es wurden nicht alle Werte eingegeben!", $backLink =
                 '');
@@ -1034,12 +1034,12 @@ class DbTable extends Object {
                 $fieldValue = str_replace("\\", "\\\\", $fieldValue);
                 $fieldValue = str_replace("'", "\'", $fieldValue);
 
-                // Feld gefï¿½llt?
+                // Feld gefüllt?
                 if (strlen($fieldValue) == 0) {
                     if (strpos(mysql_field_flags($result, $i), "enum") > 0) {
                         $ev = $this->getEnumValues($fieldName);
                         if (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
-                            //Checkbox braucht Sonderbehandlung, da bei Wert=N  kein Wert ï¿½bergeben wird!
+                            //Checkbox braucht Sonderbehandlung, da bei Wert=N  kein Wert übergeben wird!
                             $statement .= "" . $fieldName . " = 'N' ";
                         }
                     } else {
@@ -1081,7 +1081,7 @@ class DbTable extends Object {
                                     if (strpos(mysql_field_flags($result, $i), "enum") > 0) {
                                         $ev = $this->getEnumValues($fieldName);
                                         if (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
-                                            //Checkbox braucht Sonderbehandlung, da bei Wert=N  kein Wert ï¿½bergeben wird!
+                                            //Checkbox braucht Sonderbehandlung, da bei Wert=N  kein Wert übergeben wird!
                                             if (isset($fieldValue)) {
                                                 $statement .= "" . $fieldName . " = '" . $fieldValue . "' ";
                                             } else {
@@ -1122,8 +1122,8 @@ class DbTable extends Object {
     }
 
     /**
-     * Methode zum ï¿½berschreiben um nach Insert 
-     * weitere Logik auszufï¿½hren
+     * Methode zum überschreiben um nach Insert 
+     * weitere Logik auszuführen
      */
     function postInsert(){
     }
@@ -1135,7 +1135,7 @@ class DbTable extends Object {
     //----------------------------------------------------------------------
 
     function showDeleteMask() {
-        //Methode prï¿½ft selber ob gelï¿½scht werden muss
+        //Methode prüft selber ob gelöscht werden muss
         $this->doDelete();
 
         $tNames = $this->COLNAMES;
@@ -1485,7 +1485,7 @@ class DbTable extends Object {
             $btnUpd->setValidate(false);
             //$div->add($btnUpd);
 
-            // entfernen Link einfï¿½gen
+            // entfernen Link einfügen
             $frmDelBtn = new Form();
             $frmDelBtn->add($this->DEFAULT_HIDDEN_FIELDS);
             $frmDelBtn->add(new Button("delete" . $rowId . $this->TABLENAME, "entfernen"));
@@ -1555,7 +1555,7 @@ class DbTable extends Object {
         if ($this->isDeleteInUpdate()) {
             $deleteMask = !$this->doDeleteFromUpdatemask() ? null : $this->doDeleteFromUpdatemask();
             // Damit die Spalte mit dem Entfernen Button
-            // zur Verfï¿½gung steht, in Arrays einbinden.
+            // zur Verfügung steht, in Arrays einbinden.
             array_push($colNames, "entfernen");
             array_push($tNames, "entfernen");
         }
@@ -1727,7 +1727,7 @@ class DbTable extends Object {
                                 }
                             }
                             
-                            // Eingabe-Objekt in Zeile einfï¿½gen
+                            // Eingabe-Objekt in Zeile einfügen
                             $r->setAttribute($ia, $t);
                         } 
                     
@@ -1736,7 +1736,7 @@ class DbTable extends Object {
                 }
             }
 
-            // entfernen Button einfï¿½gen
+            // entfernen Button einfügen
             if ($this->ROWS[$ir]->isDeleteInUpdate()) {
                 $btnDel = new Button("delete" . $rowId . $this->TABLENAME, "entfernen");
                 $r->setAttribute(count($tNames) - 1, $btnDel);
@@ -1745,7 +1745,7 @@ class DbTable extends Object {
         }
 
 
-        // Speichern/Abbrechen Button einfï¿½gen
+        // Speichern/Abbrechen Button einfügen
         $btnOk = new Button("DbTableUpdate" . $this->TABLENAME, "Speichern");
         $btnOkFake = new Button("DbTableUpdate" . $this->TABLENAME, "Speichern");
         $btnOkFake->setStyle("display", "none");
@@ -1846,7 +1846,7 @@ class DbTable extends Object {
 
                 $o = "";
                 $lookups = getLookupWerte($_SESSION['config']->DBCONNECT, $this->TABLENAME, $fieldName);
-                // in der Datenbank fï¿½r dieses Datenbankfeld
+                // in der Datenbank für dieses Datenbankfeld
                 // definierte Combobox laden (wenn vorhanden)
                 $dbCombo = getDbComboArray($this->TABLENAME, $fieldName, $rowEdit);
 
@@ -2004,7 +2004,7 @@ class DbTable extends Object {
                         $chk++;
  
                     } elseif (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
-                        //Checkbox braucht Sonderbehandlung, da bei Wert=N  kein Wert ï¿½bergeben wird!
+                        //Checkbox braucht Sonderbehandlung, da bei Wert=N  kein Wert übergeben wird!
                         $sql .= $fieldName . " = 'N' ";
                         $chk++;
 
@@ -2081,7 +2081,7 @@ class DbTable extends Object {
                     $sql = "";
                     $row = $this->ROWS[$ir];
 
-                    // Wenn Zeile gelï¿½scht werden soll
+                    // Wenn Zeile gelöscht werden soll
                     $statement = "DELETE FROM " . $this->TABLENAME . " WHERE id = " . $rowId . " ";
                     $result = $this->DBCONNECT->executeQuery($statement);
 
@@ -2154,8 +2154,8 @@ class DbTable extends Object {
     }
 
     /**
-     * Funktion zum ï¿½berschreiben fï¿½r eventuell 
-     * nach lï¿½schen erforderlichen Ereignissen
+     * Funktion zum überschreiben für eventuell 
+     * nach löschen erforderlichen Ereignissen
      */
     function postDelete($id) {
 
@@ -2384,7 +2384,7 @@ class DbTable extends Object {
         }
 
         $e = new Error("Fehler in getEnumValues()",
-            "Fehler beim holen der Enum-Werte fï¿½r  Feld {$field} aus Tabelle {$this->TABLENAME}");
+            "Fehler beim holen der Enum-Werte für  Feld {$field} aus Tabelle {$this->TABLENAME}");
     }
 
 
@@ -2423,6 +2423,5 @@ class DbTable extends Object {
 
 
 }
-
 
 ?>

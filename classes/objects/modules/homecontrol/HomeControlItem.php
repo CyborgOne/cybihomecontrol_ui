@@ -23,7 +23,6 @@ class HomeControlItem extends Object {
     private $CONTROL_IMAGE_HEIGHT = 40;
 
     private $PARAMETER = array();    
-    private $ALL_PARAMETERS = array();    
 
     private $FREE_PARAMS_ARRAY=null;
 
@@ -61,18 +60,14 @@ class HomeControlItem extends Object {
     function loadParams(){
         $this->PARAMETER[self::$FIX_PARAMS_ARRAY_INDEX]=array();
         $this->PARAMETER[self::$CONTROL_PARAMS_ARRAY_INDEX]=array();
-        $this->ALL_PARAMETERS=array();
         
         foreach($this->SENDER->getTyp()->getParameterFixDbTbl()->ROWS as $fixRow){
             $p = new HomeControlSenderParameter($fixRow, $this);
             $this->PARAMETER[self::$FIX_PARAMS_ARRAY_INDEX][count($this->PARAMETER[self::$FIX_PARAMS_ARRAY_INDEX])] = $p;
-            $this->ALL_PARAMETERS[count($this->ALL_PARAMETERS)] = $p;
         }
         
         foreach($this->SENDER->getTyp()->getParameterControlDbTbl()->ROWS as $controlRow){
-            $p = new HomeControlSenderParameter($controlRow, $this);
-            $this->PARAMETER[self::$CONTROL_PARAMS_ARRAY_INDEX][count($this->PARAMETER[self::$CONTROL_PARAMS_ARRAY_INDEX])] = $p;
-            $this->ALL_PARAMETERS[count($this->ALL_PARAMETERS)] = $p;
+            $this->PARAMETER[self::$CONTROL_PARAMS_ARRAY_INDEX][count($this->PARAMETER[self::$CONTROL_PARAMS_ARRAY_INDEX])] = new HomeControlSenderParameter($controlRow, $this);
         }
     }
     
@@ -96,16 +91,8 @@ class HomeControlItem extends Object {
         return $this->PARAMETER[self::$CONTROL_PARAMS_ARRAY_INDEX];
     }
     
-    function getAllParameter(){
-        return $this->ALL_PARAMETERS;
-    }
-    
     function getArt(){
         return $this->ART;
-    }
-    
-    function getName(){
-        return $this->OBJNAME;
     }
     
 
@@ -280,8 +267,36 @@ class HomeControlItem extends Object {
         $rowTtl = $tbl->createRow();
         $rowTtl->setVAlign("middle");
 
-        $txtAn = new Text($this->getDefaultLogicAnText(), 7, true);
-        $txtAus = new Text($this->getDefaultLogicAusText(), 7, true);
+        $txtAn = new Text("AN", 7, true);
+        $txtAus = new Text("AUS", 7, true);
+
+
+        switch ($this->ART) {
+            case 1: // Steckdosen
+            case 3: // Glühbirne
+                $txtAn = new Text("AN", 7, true);
+                $txtAus = new Text("AUS", 7, true);
+
+                break;
+
+            case 2: // Jalousien
+                $txtAn = new Text("AUF", 7, true);
+                $txtAus = new Text("ZU", 7, true);
+
+                break;
+
+            case 4: // Heizung
+                $txtAn = new Text("WARM", 7, true);
+                $txtAus = new Text("KALT", 7, true);
+
+                break;
+
+            default:
+                $txtAn = new Text("AN", 7, true);
+                $txtAus = new Text("AUS", 7, true);
+
+        }
+
 
         $divAn = new Div();
         $divAn->add($txtAn);
@@ -323,47 +338,6 @@ class HomeControlItem extends Object {
 
         return $tbl;
     }
-
-  
-    function getDefaultLogicAnText(){
-        $txtAn = "AN";
-        switch ($this->ART) {
-            case 1: // Steckdosen
-            case 3: // Glühbirne
-                $txtAn = "AN";
-                break;
-            case 2: // Jalousien
-                $txtAn = "AUF";
-                break;
-            case 4: // Heizung
-                $txtAn = "WARM";
-                break;
-            default:
-                $txtAn = "AN";
-        }
-        return $txtAn;
-    }
-
-    
-    function getDefaultLogicAusText(){
-        $txtAus = "AUS";
-        switch ($this->ART) {
-            case 1: // Steckdosen
-            case 3: // Glühbirne
-                $txtAus = "AUS";
-                break;
-            case 2: // Jalousien
-                $txtAus = "ZU";
-                break;
-            case 4: // Heizung
-                $txtAus = "KALT";
-                break;
-            default:
-                $txtAus = "AUS";
-        }
-        return $txtAus;
-    }
-
 
     function getIconPath() {
         $dbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_art', array
@@ -426,24 +400,8 @@ class HomeControlItem extends Object {
         return $this->getSender()->getTyp()->getParameterValue($paramRow, $this->getRow());
     }
     
-    function getParameterValueForCron($paramRow, $cronId){
-        return $this->getSender()->getTyp()->getParameterValueForCron($paramRow, $this->getRow(), $cronId);
-    }
-        
-    function getParameterValueForShortcut($paramRow, $shortcutId){
-        return $this->getSender()->getTyp()->getParameterValueForShortcut($paramRow, $this->getRow(), $shortcutId);
-    }
-    
     function setParameterValue($paramRow, $configRow, $value){
         $this->getSender()->getTyp()->setParameterValue($paramRow, $this->getRow(), $value);
-    }
-    
-    function setParameterValueForCron($paramRow, $configRow, $cronId, $value){
-        $this->getSender()->getTyp()->setParameterValueForCron($paramRow, $this->getRow(), $cronId, $value);
-    }
-
-    function setParameterValueForShortcut($paramRow, $configRow, $shortcutId, $value){
-        $this->getSender()->getTyp()->setParameterValueForShortcut($paramRow, $this->getRow(), $shortcutId, $value);
     }
 
     function show() {

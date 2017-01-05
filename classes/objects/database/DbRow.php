@@ -197,7 +197,7 @@ class DbRow extends Object{
 	}	
 	
 	$sql .= ") ";
-
+//echo $sql;
 	$_SESSION['config']->DBCONNECT->executeQuery($sql);
   }
 
@@ -243,7 +243,7 @@ class DbRow extends Object{
 	}	
 	
 	$sql .= " WHERE id = ".$this->getNamedAttribute("rowid");
-
+//echo $sql;
 	$_SESSION['config']->DBCONNECT->executeQuery($sql);
   }
 

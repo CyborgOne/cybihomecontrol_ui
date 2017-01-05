@@ -8,7 +8,6 @@ class HomeControlSenderParameter {
     private $DEFAULT_LOGIC;
     private $CONFIG_ID;
     private $VALUE;
-    private $OPTIONAL;
         
     private $CONFIG_ITEM;
     private $ROW;
@@ -23,7 +22,6 @@ class HomeControlSenderParameter {
         $this->FIX  = $parameterRow->getNamedAttribute("fix");
         $this->DEFAULT_LOGIC = $parameterRow->getNamedAttribute("default_logic");
         $this->CONFIG_ID = $configRow->getNamedAttribute("id");
-        $this->OPTIONAL = $parameterRow->getNamedAttribute("optional");
 
         $this->ROW = $parameterRow;
         $this->CONFIG_ROW = $configRow;
@@ -43,10 +41,6 @@ class HomeControlSenderParameter {
     
     function getArtId(){
         return $this->ART_ID;
-    }
-    
-    function isOptional(){
-        return "J"==$this->OPTIONAL;
     }
     
     function isFix(){

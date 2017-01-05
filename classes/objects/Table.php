@@ -492,5 +492,3 @@ class TableBySql extends Table {
   }
 
 }
-
-?>

@@ -23,7 +23,7 @@ class ParameterDbTable extends DbTable {
     $dbTblEditoren = new ParameterDbTable($_SESSION['config']->DBCONNECT, 
                                 'homecontrol_editor_parameter', 
                                 array("name", "editor_id"), 
-                                "Name, Editor",
+                                "Name",
                                 "editor_id=".$_SESSION['selectedEditor'],
                                 "name",
                                 "editor_id=".$_SESSION['selectedEditor']);

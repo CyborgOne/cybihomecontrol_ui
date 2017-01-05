@@ -21,7 +21,6 @@ echo  > $filename
 
 mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName action_log                    			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump     --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName colors                        			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
-mysqldump     --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName chkActions                    			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump     --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName dbcombos                      			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump     --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName default_combo_values          			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump     --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName fixtexte                     			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
@@ -200,12 +199,12 @@ echo "WHERE r.id = i.regel_id;"                                                 
 
 # Shortcut View
 ########################################################
-#echo "drop view if exists homecontrol_shortcutview;"                                                                        >> $filename
+#echo "drop view if exists homecontrol_shortcutview;"                                                                         >> $filename
 echo "create view homecontrol_shortcutview as "                                                                              >> $filename
 echo "select concat(s.id,'-', c.id) id,"                                                                                     >> $filename
 echo "       s.id shortcut_id, s.name shortcut_name, s.beschreibung beschreibung,"                                           >> $filename
-echo "       i.id item_id, i.art_id art, c.zimmer, z.etage_id, i.funkwahl,"                                                  >> $filename
-echo "       c.id config_id, c.name name, c.x, c.y, a.pic, c.geaendert geaendert"                                            >> $filename
+echo "       i.id item_id, i.art_id art, c.zimmer, z.etage_id, i.funkwahl, i.on_off,"                                        >> $filename
+echo "       c.id config_id, c.name name, c.funk_id, c.funk_id2, c.x, c.y, a.pic, c.geaendert geaendert"                     >> $filename
 echo "from homecontrol_shortcut s, "                                                                                         >> $filename
 echo "     homecontrol_shortcut_items i, "                                                                                   >> $filename
 echo "     homecontrol_config c  LEFT JOIN "                                                                                 >> $filename
