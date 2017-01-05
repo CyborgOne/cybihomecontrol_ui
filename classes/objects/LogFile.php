@@ -5,7 +5,7 @@ class LogFile extends Object {
     private $CATEGORY     = "";
     private $DESCRIPTION  = "";
     
-    private $LINES_TO_SHOW    = 50;
+    private $LINES_TO_SHOW    = 250;
     private $SHOW_CATEGORY    = false;
     private $SHOW_DESCRIPTION = true;
     

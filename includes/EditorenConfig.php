@@ -19,17 +19,20 @@ class EditorDbTable extends DbTable {
 
     $dbTblEditorenParameter = new EditorDbTable($_SESSION['config']->DBCONNECT, 
                                             'homecontrol_editoren', 
-                                            array("name", "classname", "descr"), 
-                                            "Name, Klassenname, Beschreibung",
+                                            array("id", "name", "classname", "descr"), 
+                                            "Id, Name, Klassenname, Beschreibung",
                                             "",
                                             "name",
                                             "");
     $dbTblEditorenParameter->setColSizes(array(250,300,250));
+    $dbTblEditorenParameter->setNoInsertCols(array("id"));
+    $dbTblEditorenParameter->setNoUpdateCols(array("id"));
+    $dbTblEditorenParameter->setInvisibleCols(array("id"));
 
     if(!(isset($_SESSION['selectedEditor']) && strlen($_SESSION['selectedEditor'])>0) ){
-        $_SESSION['selectedEditor'] = $dbTblEditorenParameter->getRow(1)!=null && $dbTblEditorenParameter->getRow(1)->getNamedAttribute("id");  
+        $_SESSION['selectedEditor'] = $dbTblEditorenParameter->getRow(1)!=null?$dbTblEditorenParameter->getRow(1)->getNamedAttribute("id"):"";  
     }
-
+    
     $dbTblEditorenParameter->setWhere("id=".$_SESSION['selectedEditor']);
     $dbTblEditorenParameter->refresh();
         

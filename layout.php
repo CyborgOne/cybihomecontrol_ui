@@ -9,7 +9,7 @@ $detect = new Mobile_Detect();
 
 $bannerWidth = 780;
 $bannerHeight = 195;
-$mainSizeInternal = 620;
+$mainSizeInternal = 610;
 $_SESSION['additionalLayoutHeight'] = $bannerHeight;
 
 $mainHeight = 390;
@@ -210,7 +210,7 @@ if (isset($_SESSION['MENU_PARENT']) && strlen($_SESSION['MENU_PARENT']) > 0) {
 
 if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] == "Steuerung") {
     $cont2x = new DivByInclude("includes/ShortcutSidebar.php", false);
-    $cont2x->setWidth("150");
+    $cont2x->setWidth("160");
     $cont2x->setHeight($mainHeight);
     $cont2x->setStyle("padding-left", "4px");
     $cont2x->setStyle("padding-right", "6px");
@@ -221,7 +221,7 @@ if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] == "Steuerung") 
       
     
     $cont2 = new Div();
-    $cont2->setWidth("160");
+    $cont2->setWidth("170");
     $cont2->add($cont2x);
     $cont2->setStyle("overflow-x", "hidden");
     $cont2->setStyle("overflow-y", "auto");
