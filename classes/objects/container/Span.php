@@ -120,9 +120,9 @@ class Span extends Container {
         echo "<span id='" . $this->NAME . "_toggle' style='display:";
         echo "none;";
 
-        //if (strlen($this->getBackgroundColor()) > 0) {
-           echo "background-color:#e1e1e1;padding:5px;";
-        //}
+        if (strlen($this->getBackgroundColor()) > 0) {
+           echo "background-color:" .$this->getBackgroundColor() .";padding:5px;";
+        }
 
         echo "'>" . "<center>";
 
@@ -132,12 +132,12 @@ class Span extends Container {
             echo "<a href='#' onClick=\"makeVisible('" . $this->NAME . "');\" >
                 <div align='left'>";
 
-            $t = new Text($this->NAME, $this->getFontsize(), true);
+            $t = new Text($this->NAME, $this->getFontsize(), false);
             $t->show();
 
             echo "  </div>
                  <div align='right'>
-                   <font size='" .$this->getFontsize()."'>[schliessen]</font>
+                   <font size='" .($this->getFontsize()>1?$this->getFontsize()-1:1)."'>[schliessen]</font>
 			     </div>
                </a>
          ";

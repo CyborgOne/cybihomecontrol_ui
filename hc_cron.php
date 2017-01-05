@@ -4,8 +4,8 @@
  *  Script f?r Min?tigen Cron-Job um Zeitgesteuerte Schaltvorg?nge durchzuf?hren
  *
  *  (c) by Daniel Scheidler   -   September 2014
-*/
-include("init.php");
+ */
+include ("init.php");
 $arduinoUrl = "";
 
 // ------------------------------
@@ -39,67 +39,57 @@ switch ($currentDayNumber) {
         $currentDayName = "Freitag";
         break;
     case 6:
-        $currentDayName = "Samstag"; 
+        $currentDayName = "Samstag";
         break;
 }
 
-if(!checkAction("cron_" .$currentDayName ." " .date("d.M.Y") ." - " .$currentStd .":" .$currentMin)){
-    echo "cron_" .$currentDayName ." " .date("d.M.Y") .":" .$currentStd .":" .$currentMin. " --- bereits ausgef&uuml;hrt\n";
+if (!checkAction("cron_" . $currentDayName . " " . date("d.M.Y") . " - " . $currentStd . ":" . $currentMin)) {
+    echo "cron_" . $currentDayName . " " . date("d.M.Y") . ":" . $currentStd . ":" . $currentMin . " --- bereits ausgef&uuml;hrt\n";
     return;
 }
-echo "Check: cron_" .$currentDayName ." " .date("d.M.Y") .":" .$currentStd .":" .$currentMin ."\n";
+echo "Check: cron_" . $currentDayName . " " . date("d.M.Y") . ":" . $currentStd . ":" . $currentMin . "\n";
 
 // Aktueller Wochentag muss ?bereinstimmen
-$whereStmtCurrCron = strtolower($currentDayName)."='J'";
+$whereStmtCurrCron = strtolower($currentDayName) . "='J'";
 
 // Aktuelle Uhrzeit muss ?bereinstimmen
-$whereStmtCurrCron .= " and stunde=".$currentStd." and minute=".$currentMin;
+$whereStmtCurrCron .= " and stunde=" . $currentStd . " and minute=" . $currentMin;
 
 // Betroffene Cron-Eintr?ge selektieren
-$sql = "SELECT id, name, beschreibung FROM homecontrol_cron WHERE ".$whereStmtCurrCron;
-$result =  $_SESSION['config']->DBCONNECT->executeQuery($sql);
+//$sql = "SELECT * FROM homecontrol_cron WHERE ".$whereStmtCurrCron;
+//$result =  $_SESSION['config']->DBCONNECT->executeQuery($sql);
+
+$tblCrons = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_cron", array("*"), "", "", "", $whereStmtCurrCron);
 
 //echo "Aktuelle Cron Anzahl: ".mysqli_num_rows($result)."<br><br>";
-$ts = isset($_REQUEST['tmstmp'])?$_REQUEST['tmstmp']:"";
 $shortcutUrls = array();
-if (mysql_num_rows($result) > 0 ) {
-    echo "\nRUN HOMECONTROL-CRON: ".$currentDayName." ".$currentStd.":".$currentMin."-".time()."\n";
+if ($tblCrons->getRowCount() > 0) {
+    echo "\nRUN HOMECONTROL-CRON: " . $currentDayName . " " . $currentStd . ":" . $currentMin . " (" . time() . ")\n";
 
-    while ($row = mysql_fetch_array($result)) {
-        if (isCronPaused($_SESSION['config']->DBCONNECT, $row['id'])) {
-            deleteCronPause($_SESSION['config']->DBCONNECT, $row['id']);
+    foreach ($tblCrons->ROWS as $row) {
+        echo "</br>" . $row->getNamedAttribute("name");
+        if (isCronPaused($_SESSION['config']->DBCONNECT, $row->getNamedAttribute('id'))) {
+            deleteCronPause($_SESSION['config']->DBCONNECT, $row->getNamedAttribute('id'));
         } else {
-            $shortcutUrl = getShortcutSwitchKeyForCron($_SESSION['config']->DBCONNECT, $row['id']);
-            
-            $url =  parse_url(__FILE__);
-            $currPath = dirname($url['path']);
-            if(substr($currPath,strlen($currPath)-1) != "/" && strlen($currPath)>1){
-                $currPath .= "/";
-            }
-            $shortcutUrls[count($shortcutUrls)]=$shortcutUrl;
+            $cron = new HomeControlCron($row);
+            $cron->switchCron();
         }
     }
 }
 
 // ------------------------------
 
-foreach($shortcutUrls as $shortcutUrl){
-  echo "Switch: ".$shortcutUrl."\n\n";
-  switchShortcut($arduinoUrl, $shortcutUrl, $_SESSION['config']->DBCONNECT);
-}
-
-// ------------------------------
 
 
-function isCronPaused($con,$id) {
-    $sql = "SELECT 'X' FROM homecontrol_cron_pause WHERE cron_id = ".$id;
+function isCronPaused($con, $id) {
+    $sql = "SELECT 'X' FROM homecontrol_cron_pause WHERE cron_id = " . $id;
     $result = $con->executeQuery($sql);
     return mysql_num_rows($result) > 0;
 }
 
 
-function deleteCronPause($con,$id) {
-    $sql = "DELETE FROM homecontrol_cron_pause WHERE cron_id = ".$id;
+function deleteCronPause($con, $id) {
+    $sql = "DELETE FROM homecontrol_cron_pause WHERE cron_id = " . $id;
     $result = $con->executeQuery($sql);
 }
 
