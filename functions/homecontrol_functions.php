@@ -7,7 +7,6 @@
       checkEditorUrlParameter($dbConnect);
   }
   
-   
   /**
    * Prüfung für URL-Parameter der Standard-Steuerung 
    * (Kein besonderer Editor definiert)
@@ -22,13 +21,20 @@
               $fixParams = array();
               $defaultLogicParams = array();
               $switchParams = array();
-
               // Alle Parameter zur ConfigID holen
+/*              $sql = "SELECT id, senderTypId, name, optional, fix, default_logic FROM homecontrol_sender_typen_parameter WHERE senderTypId=(
+                        SELECT s.senderTypId 
+                          FROM homecontrol_sender s, homecontrol_config c 
+                         WHERE s.id = c.sender_id
+                           and c.id = " .$_REQUEST['switchConfigId'] ." 
+                     )";
+              $rslt = $dbConnect->executeQuery($sql);
+*/                    
               $paramTable = new DbTable($dbConnect, "homecontrol_sender_typen_parameter", array('*'), "", "", "", "senderTypId=(SELECT s.senderTypId FROM homecontrol_sender s, homecontrol_config c WHERE s.id = c.sender_id AND c.id = " .$_REQUEST['switchConfigId'] .")");      
               
               $lastSenderTyp = "";
               $switchUrl = "";
-             
+              
               $allParamsSet = true;
               foreach($paramTable->ROWS as $row){
                 $allParams[count($allParams)] = $row->getNamedAttribute('name');
@@ -37,7 +43,7 @@
                 $default_logic = false;
                 
                 $val = isset($_REQUEST[$row->getNamedAttribute('name')])?$_REQUEST[$row->getNamedAttribute('name')]:"";
-                //echo "Check ".$row->getNamedAttribute('name')." = " .$val ."</br>";
+                echo "Check ".$row->getNamedAttribute('name')." = " .$val ."</br>";
 
                 if($row->getNamedAttribute("optional")=="J"){
                     $optionalParams[count($optionalParams)] = $row->getNamedAttribute('name');
@@ -55,7 +61,6 @@
                 $value="";
                 if(isset($_REQUEST[$row->getNamedAttribute('name')]) && strlen($_REQUEST[$row->getNamedAttribute('name')])>0){
                     $value = $default_logic?$_REQUEST[$row->getNamedAttribute('name') .$_REQUEST[$row->getNamedAttribute('name')]]:$_REQUEST[$row->getNamedAttribute('name')];
-                    //echo "Wert: ".$value."</br>";
                     if(strlen($switchUrl)>0){
                         $switchUrl .= "&";
                     }
@@ -69,7 +74,7 @@
                     }
                 }
               }
-              //echo "Alle notwendigen Parameter gesetzt? ". ($allParamsSet?"Ja":"Nein")."</br>";
+              echo "Alle notwendigen Parameter gesetzt? ". ($allParamsSet?"Ja":"Nein")."</br>";
               
               if($allParamsSet){
                 $senderUrl = getArduinoUrlForDeviceId($_REQUEST['switchConfigId'], $dbConnect);
@@ -77,14 +82,14 @@
                 $urlArray = parse_url($useSenderUrl);
                 $host = $urlArray['host'];
                 $check = @fsockopen($host, 80); 
+                
+                echo $useSenderUrl."?".$switchUrl."</br>";
               
                 If ($check) { 
                     ob_implicit_flush(true);
-                //echo $useSenderUrl."?".$switchUrl."</br>";
                     try {
                         $retVal = file_get_contents( $useSenderUrl."?".$switchUrl );
                     } catch(Exception $e){
-                        echo "FEHLER BEIM SCHALTEN!";
                     }
                 } 
                 
@@ -92,9 +97,7 @@
                     $pRow = $p[0];
                     $pValue = $p[1];
                     //echo "refresh ".$pRow->getNamedAttribute("name") ." = ".$pValue."<br>";
-                    if($pRow->getNamedAttribute("fix")!="J" && $pRow->getNamedAttribute("default_logic")!="J"){
-                        $configItem->setParameterValue($pRow, $configItem->CONFIG_ROW, $pValue);
-                    }
+                    $configItem->setParameterValue($pRow, $configItem->CONFIG_ROW, $pValue);
                 }
                           
                 try {
@@ -404,8 +407,7 @@ function getShortcutSwitchKeyByName($shortcutName){
     $resultSubItems = mysql_query($sqlSubItems);
     $shortcutUrl = "";
     while($rowSub = mysql_fetch_array($resultSubItems)) {
-    // TODO:
-    //      $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
+      $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
     }      
     return $shortcutUrl;
 }
@@ -416,8 +418,7 @@ function getShortcutSwitchKeyById($con, $shortcutId){
     $resultSubItems = mysql_query($sqlSubItems);
     $shortcutUrl = "";
     while($rowSub = mysql_fetch_array($resultSubItems)) {
-    // TODO:
-    //     $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
+      $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
     }      
     return $shortcutUrl;
 }
@@ -489,7 +490,8 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN="J"){
                     $whereStmt = $whereStmt . " etage=" . $row["etagen_id"];
                 }
 
-                $sqlConfig = "SELECT id, funk_id, funk_id2 FROM homecontrol_config " . "WHERE " .$whereStmt;
+                $sqlConfig = "SELECT id, funk_id, funk_id2 FROM homecontrol_config " . "WHERE " .
+                    $whereStmt;
 
                 $resultConfig = $_SESSION['config']->DBCONNECT->executeQuery($sqlConfig);
                 while ($rowConfig = mysql_fetch_array($resultConfig)) {

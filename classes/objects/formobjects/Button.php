@@ -43,12 +43,11 @@ class Button extends Object {
     }  
        	
     echo " VALUE='" .$this->VALUE ."' ";
-    
     echo $this->getToolTipTag();
 
     $this->showStyles();
        
-    echo ">";
+    echo " \" >";
   }
 
   function showOnKlickButton(){

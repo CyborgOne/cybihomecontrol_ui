@@ -205,6 +205,7 @@ class DbTable extends Object {
 
             $stmnt .= " FROM " . $this->TABLENAME . " LIMIT 1 ";
 
+            //echo $stmnt;
             $result = $this->DBCONNECT->executeQuery($stmnt);
 
             for ($i = 0; $i < mysql_num_fields($result); $i++) {
@@ -1344,7 +1345,8 @@ class DbTable extends Object {
         if (isset($_REQUEST["showUpdateMask" . $this->TABLENAME]) && strlen($_REQUEST["showUpdateMask" .$this->TABLENAME]) > 0) {
             $r = $table->createRow();
             $r->setSpawnAll(true);
-            $r->setAttribute(0, $this->getSingleUpdateMask($_REQUEST["showUpdateMask" . $this->TABLENAME]));
+            $r->setAttribute(0, $this->getSingleUpdateMask($_REQUEST["showUpdateMask" . $this->
+                TABLENAME]));
             $rX = $table->getRow(0);
             $table->setRow(0, $r);
             $table->addRow($rX);
@@ -1355,7 +1357,7 @@ class DbTable extends Object {
         $table->setBackgroundColorChange(true);
 
         if ($this->isDeleteInUpdate()) {
-            $deleteMask = !$this->doDeleteFromUpdatemask() ? null : $this->doDeleteFromUpdatemask();
+            $this->doDeleteFromUpdatemask();
 
             for ($i = 0; $i < count($tNames); $i++) {
                 if ($i != count($tNames) - 1) {
@@ -1391,13 +1393,6 @@ class DbTable extends Object {
             $table->setYPos($this->YPOS);
         }
 
-        if($deleteMask!=null){
-            $r = $table->createRow();
-            $r->setSpawnAll(true);
-            $r->setAttribute(0, $deleteMask);
-            $table->addRow($r);
-        }
-
         //---------------------------------------------------
         // gesamte Tabelle einlesen um Feldtypen zu ermitteln
         //---------------------------------------------------
@@ -1405,7 +1400,7 @@ class DbTable extends Object {
             " LIMIT 1 ";
         $result = $this->DBCONNECT->executeQuery($stmnt);
 
-        
+
         //---------------------------------------------------
         // ROWS in Table aufnehmen
         //---------------------------------------------------
@@ -1553,7 +1548,8 @@ class DbTable extends Object {
 
         $deleteMask = null;
         if ($this->isDeleteInUpdate()) {
-            $deleteMask = !$this->doDeleteFromUpdatemask() ? null : $this->doDeleteFromUpdatemask();
+            $deleteMask = !$this->doDeleteFromUpdatemask() ? null : $this->
+                doDeleteFromUpdatemask();
             // Damit die Spalte mit dem Entfernen Button
             // zur Verfügung steht, in Arrays einbinden.
             array_push($colNames, "entfernen");
@@ -1991,7 +1987,6 @@ class DbTable extends Object {
                     if ($chk > 0 && ((isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) >= 0) || (count($ev) == 2 && in_array('J', $ev) && in_array('N', $ev)))  ) {
                         $sql .= ", ";
                     }
-
                     if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) > 0) {
                         $val = $_REQUEST[$x];
                         // echo "neuer Wert: "+$val;
@@ -2002,12 +1997,10 @@ class DbTable extends Object {
                         }
                         $sql .= $fieldName . " = '" . str_replace("'", "''", $val) . "' ";
                         $chk++;
- 
                     } elseif (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
                         //Checkbox braucht Sonderbehandlung, da bei Wert=N  kein Wert übergeben wird!
                         $sql .= $fieldName . " = 'N' ";
                         $chk++;
-
                     } else {
                         if (isset($_REQUEST[$x]) && strlen($_REQUEST[$x]) == 0) { // && strpos(" " . $this->DEFAULTS, $fieldName) <= 0
                             $sql .= $fieldName . " = null ";
@@ -2025,7 +2018,7 @@ class DbTable extends Object {
                     //   }
 
                     $sql = $sql . " WHERE id = " . $rowId;
-                    // echo $sql."<br>";
+                          //echo $sql."<br>";
                     $this->DBCONNECT->executeQuery($sql);
 
                     $updateDo = true;
@@ -2071,10 +2064,9 @@ class DbTable extends Object {
         for ($ir = 1; $ir <= count($this->ROWS); $ir++) {
             $rowId = $this->ROWS[$ir]->getAttribute(count($this->COLNAMES));
             $delName = "delete" . $rowId . $this->TABLENAME;
-            
             if (isset($_REQUEST[$delName])) {
-                
-                if (isset($_REQUEST['RowDeleteCommited']) && $_REQUEST['RowDeleteCommited'] == "Wirklich entfernen") {
+                if (isset($_REQUEST['RowDeleteCommited']) && $_REQUEST['RowDeleteCommited'] ==
+                    "Wirklich entfernen") {
 
                     $rowId = $this->ROWS[$ir]->getAttribute(count($this->COLNAMES));
                     $chk = 0;

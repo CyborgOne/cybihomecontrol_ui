@@ -1,37 +1,4 @@
 
-Version: 0.2.9
----------------------
-nachbesserung:
-Funk_id aus config-db-tbl
-
-Version: 0.2.8
----------------------
-sql nachbesserung
-
-Version: 0.2.7
----------------------
-sql nachbesserung
-
-Version: 0.2.6
----------------------
-sql update
-
-Version: 0.2.5
----------------------
-sql aktualisierung
-
-Version: 0.2.4
----------------------
-SQL incl neuen Tabellen für dynamische Parameter
-SQL-Export angepasst
-
-Version: 0.2.3
----------------------
-Neue Parameterlogik
-Parameter der Geräte können nun dynamisch konfiguriert werden.
-AUI bisher nur für Desktop angepasst.
-Einstellungen für Parameter-Konfiguration angepasst.
-
 Version: 0.2.2
 ---------------------
 Funksender IP Ermittlung nachgebessert

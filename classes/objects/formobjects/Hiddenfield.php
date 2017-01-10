@@ -2,7 +2,7 @@
 //FileNAME: Hiddenfield.php
 
 class Hiddenfield extends Object {
-  var $VALUE="";
+  var $VALUE;
 
   function Hiddenfield($n="Hiddenfield", $v="", $w=30, $m=100){
      $this->NAME = $n;

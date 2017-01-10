@@ -48,6 +48,49 @@ class HomeControlSenderTyp {
         return $this->PARAMETER_DBTABLE_CONTROL;
     }
     
+    
+    /**
+     * liefert die gesamte Maske zum bearbeiten der Parameter zurück
+     * incl. anlegen, bearbeiten und löschen
+     */
+    function getParameterEditMask($configItem) {
+        $ttl = new Title("Parameter");
+        $txt = new Text("Parameter sind abh&auml;ngig vom gew&auml;hlten Sender");
+        $txt->setFilter(false);
+        
+        $dv = new Div();
+        $dv->add($ttl);
+        $dv->add($txt);
+        
+        if(count($this->PARAMETER_DBTABLE_CONTROL->ROWS)+count($this->PARAMETER_DBTABLE->ROWS)>0){
+            $tbl = new Table(array("", ""));
+            $tbl->addSpacer(0,10);
+            
+            $rows = $this->PARAMETER_DBTABLE->ROWS;
+            foreach($rows as $row){
+                $r = $tbl->createRow();
+                $r->setAttribute(0, $row->getNamedAttribute("name"));
+                $r->setAttribute(1, $this->getEditParameterValueObject($row, $this->getParameterValue($row, $configItem->getRow())) );
+                $tbl->addRow($r);
+            }
+    
+            $rows = $this->PARAMETER_DBTABLE_CONTROL->ROWS;
+            foreach($rows as $row){
+                if($row->getNamedAttribute("optional")=="J"){
+                    $r = $tbl->createRow();
+                    $r->setAttribute(0, $row->getNamedAttribute("name") ." aktiv?");
+                    $r->setAttribute(1, new Checkbox($row->getNamedAttribute("name")."Optional", "","J",$configItem->isParameterOptionalActive($row->getNamedAttribute("id"))));
+                    $tbl->addRow($r);
+                }
+            }
+            
+            $dv->add($tbl);
+        }
+        
+        return $dv;
+    }
+    
+
     /**
      * liefert die gesamte Maske zum Einstellen der Werte 
      * für die Steuerung zurück
@@ -92,9 +135,7 @@ class HomeControlSenderTyp {
             
             $rowsFix = $this->PARAMETER_DBTABLE->ROWS;
             foreach($rowsFix as $row){
-              if($row->getNamedAttribute("default_logic")!="J"){
-                $frm->add(new Hiddenfield($row->getNamedAttribute("name"), $this->getParameterValue($row, $configItem->getRow()) ) );
-              }
+              $frm->add(new Hiddenfield($row->getNamedAttribute("name"), $this->getParameterValue($row, $configItem->getRow()) ) );
             }
             
             return count($rows)>0?$frm:new Div();
@@ -103,50 +144,6 @@ class HomeControlSenderTyp {
         return new Div();
     }
     
-    
-    
-    /**
-     * liefert die gesamte Maske zum bearbeiten der Parameter zurück
-     * incl. anlegen, bearbeiten und löschen
-     */
-    function getParameterEditMask($configItem) {
-        $ttl = new Title("Parameter");
-        $txt = new Text("Parameter sind abh&auml;ngig vom gew&auml;hlten Sender");
-        $txt->setFilter(false);
-        
-        $dv = new Div();
-        $dv->add($ttl);
-        $dv->add($txt);
-        
-        if(count($this->PARAMETER_DBTABLE_CONTROL->ROWS)+count($this->PARAMETER_DBTABLE->ROWS)>0){
-            $tbl = new Table(array("", ""));
-            $tbl->addSpacer(0,10);
-            
-            $rows = $this->PARAMETER_DBTABLE->ROWS;
-            foreach($rows as $row){
-                $r = $tbl->createRow();
-                $r->setAttribute(0, $row->getNamedAttribute("name"));
-                $r->setAttribute(1, $this->getEditParameterValueObject($row, $this->getParameterValue($row, $configItem->getRow())) );
-                $tbl->addRow($r);
-            }
-    
-            $rows = $this->PARAMETER_DBTABLE_CONTROL->ROWS;
-            foreach($rows as $row){
-                if($row->getNamedAttribute("optional")=="J"){
-                    $r = $tbl->createRow();
-                    $r->setAttribute(0, $row->getNamedAttribute("name") ." aktiv?");
-                    $r->setAttribute(1, new Checkbox($row->getNamedAttribute("name")."Optional", "","J",$configItem->isParameterOptionalActive($row->getNamedAttribute("id"))));
-                    $tbl->addRow($r);
-                }
-            }
-            
-            $dv->add($tbl);
-        }
-        
-        return $dv;
-    }
-    
-
     
     function getDefaultLogicSwitchButtons($configItem){
         if($this->HAS_DEFAULT_PARAM) {
@@ -171,8 +168,10 @@ class HomeControlSenderTyp {
                         default:
                             $tAn = "AN";
                             $tAus = "AUS";
+            
                     }
-                    
+                    $txtAn = new Text($tAn, 3, true);
+                    $txtAus = new Text($tAus, 3, true);
 
                     $hddnAn = new HiddenField($row->getNamedAttribute("name").$tAn, $this->getParameterValue($row, $configItem->CONFIG_ROW));
                     $hddnAus = new HiddenField($row->getNamedAttribute("name").$tAus, "-".$this->getParameterValue($row, $configItem->CONFIG_ROW));
@@ -185,7 +184,7 @@ class HomeControlSenderTyp {
                     $r->setAttribute(1, $lnkAus);
                     $tbl->addRow($r);
 
-                   $r1 = $tbl->createRow();
+                    $r1 = $tbl->createRow();
                     $r1->setAttribute(0, $hddnAn);
                     $r1->setAttribute(1, $hddnAus);
                     $tbl->addRow($r1);
@@ -252,6 +251,7 @@ class HomeControlSenderTyp {
 
             foreach($paramRows as $paramRow){
                 $paramName = $paramRow->getNamedAttribute("name");
+
                 $paramDbTbl = new DbTable(  $_SESSION['config']->DBCONNECT, 
                                             "homecontrol_sender_parameter_values", 
                                             array('*'),
@@ -261,7 +261,7 @@ class HomeControlSenderTyp {
                                             "config_id=".$configRow->getNamedAttribute("rowid")
                                             ." AND param_id=".$paramRow->getNamedAttribute("id") ." ");
                
-                $valueRow=null;
+               
 //              $paramName = $names[$valueRow->getNamedAttribute("param_id")];
                 if (isset($_REQUEST[$paramName])) {
                     if($paramDbTbl->getRow(1)==null){
@@ -275,51 +275,50 @@ class HomeControlSenderTyp {
                         $valueRow->setNamedAttribute("value", $_REQUEST[$paramName]);
                         $valueRow->updateDB();
                     }
+                }
+            
+                $rows = $this->PARAMETER_DBTABLE_CONTROL->ROWS;
+                $ids = "";
+                $names = array();
+                foreach($rows as $row){
+                    if(strlen($ids)>0){
+                        $ids .= ",";
+                    }
+                    $ids .= $row->getNamedAttribute('rowid');
+                    $names[$row->getNamedAttribute('rowid')] = $row->getNamedAttribute('name');
+                    $paramName = $names[$row->getNamedAttribute('rowid')];
                     
-                
-                    $rows = $this->PARAMETER_DBTABLE_CONTROL->ROWS;
-                    $ids = "";
-                    $names = array();
-                    foreach($rows as $row){
-                        if(strlen($ids)>0){
-                            $ids .= ",";
-                        }
-                        $ids .= $row->getNamedAttribute('rowid');
-                        $names[$row->getNamedAttribute('rowid')] = $row->getNamedAttribute('name');
-                        $paramName = $names[$row->getNamedAttribute('rowid')];
+                    if($row->getNamedAttribute('optional')=="J"){
+                        $sql = "SELECT 'X' FROM homecontrol_sender_typen_parameter_optional p "
+                              ."WHERE param_id = " .$row->getNamedAttribute('rowid') ." AND config_id=".$configItem->getId() ."";
+                        $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sql);
                         
-                        if($row->getNamedAttribute('optional')=="J"){
-                            $sql = "SELECT 'X' FROM homecontrol_sender_typen_parameter_optional p "
-                                  ."WHERE param_id = " .$row->getNamedAttribute('rowid') ." AND config_id=".$configItem->getId() ."";
-                            $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sql);
+                        if (isset($_REQUEST[$paramName."Optional"]) && $_REQUEST[$paramName."Optional"]=="J"){
                             
-                            if (isset($_REQUEST[$paramName."Optional"]) && $_REQUEST[$paramName."Optional"]=="J"){
-                                
-                                if(mysql_numrows($rslt)==0){
-                                    $sql = "INSERT INTO homecontrol_sender_typen_parameter_optional( config_id, param_id, active) VALUES ( " .$configItem->getId() .", " .$row->getNamedAttribute('rowid') .", 'J' ) ";
-                                    $_SESSION['config']->DBCONNECT->executeQuery($sql);
-                                } else {
-                                    if(!$configItem->isParameterOptionalActive($valueRow->getNamedAttribute("param_id"))){
-                                        $sql = "UPDATE homecontrol_sender_typen_parameter_optional SET active='J' WHERE config_id=".$configItem->getId() ." AND param_id=" .$row->getNamedAttribute('rowid');
-                                        $_SESSION['config']->DBCONNECT->executeQuery($sql);
-                                    }
-                                }
-                                
+                            if(mysql_numrows($rslt)==0){
+                                $sql = "INSERT INTO homecontrol_sender_typen_parameter_optional( config_id, param_id, active) VALUES ( " .$configItem->getId() .", " .$row->getNamedAttribute('rowid') .", 'J' ) ";
+                                $_SESSION['config']->DBCONNECT->executeQuery($sql);
                             } else {
-                                
-                                if(mysql_numrows($rslt)==0){
-                                    $sql = "INSERT INTO homecontrol_sender_typen_parameter_optional( config_id, param_id, active) VALUES ( " .$configItem->getId() .", " .$row->getNamedAttribute('rowid') .", 'N' ) ";
+                                if(!$configItem->isParameterOptionalActive($valueRow->getNamedAttribute("param_id"))){
+                                    $sql = "UPDATE homecontrol_sender_typen_parameter_optional SET active='J' WHERE config_id=".$configItem->getId() ." AND param_id=" .$row->getNamedAttribute('rowid');
                                     $_SESSION['config']->DBCONNECT->executeQuery($sql);
-                                } else {
-                                    if($configItem->isParameterOptionalActive($row->getNamedAttribute("rowid"))){
-                                        $sql = "UPDATE homecontrol_sender_typen_parameter_optional SET active='N' WHERE config_id=".$configItem->getId() ." AND param_id=" .$row->getNamedAttribute('rowid');
-                                        $_SESSION['config']->DBCONNECT->executeQuery($sql);
-                                    }
                                 }
-                                
                             }
+                            
+                        } else {
+                            
+                            if(mysql_numrows($rslt)==0){
+                                $sql = "INSERT INTO homecontrol_sender_typen_parameter_optional( config_id, param_id, active) VALUES ( " .$configItem->getId() .", " .$row->getNamedAttribute('rowid') .", 'N' ) ";
+                                $_SESSION['config']->DBCONNECT->executeQuery($sql);
+                            } else {
+                                if($configItem->isParameterOptionalActive($row->getNamedAttribute("rowid"))){
+                                    $sql = "UPDATE homecontrol_sender_typen_parameter_optional SET active='N' WHERE config_id=".$configItem->getId() ." AND param_id=" .$row->getNamedAttribute('rowid');
+                                    $_SESSION['config']->DBCONNECT->executeQuery($sql);
+                                }
+                            }
+                            
                         }
-                    }                    
+                    }
                 }
             }            
         }
@@ -335,7 +334,6 @@ class HomeControlSenderTyp {
 
         return $r!=null?$r->getNamedAttribute("value"):"";
     }
-    
     
     /**
      * Holt den Parameter-Wert des übergebenen Parameters zum übergebenen zu schaltenden Objekt.

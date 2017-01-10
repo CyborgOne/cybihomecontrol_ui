@@ -12,7 +12,7 @@ CREATE TABLE `action_log` (
   `request_dump` text,
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=8;
+)   AUTO_INCREMENT=20;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -153,7 +153,7 @@ CREATE TABLE `homecontrol_alarm` (
   `foto_senden_jn` enum('J','N') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-)  ;
+)   AUTO_INCREMENT=2;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -290,6 +290,8 @@ DROP TABLE IF EXISTS `homecontrol_config`;
 CREATE TABLE `homecontrol_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
+  `funk_id` int(3) NOT NULL,
+  `funk_id2` int(3) DEFAULT NULL,
   `beschreibung` text,
   `control_art` int(11) NOT NULL DEFAULT '1',
   `etage` int(3) NOT NULL DEFAULT '0',
@@ -300,7 +302,7 @@ CREATE TABLE `homecontrol_config` (
   `dimmer` set('J','N') NOT NULL DEFAULT 'N',
   `sender_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=2;
+)   AUTO_INCREMENT=32;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -365,7 +367,7 @@ CREATE TABLE `homecontrol_cron` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hc_cron_name_uk` (`name`)
-)  ;
+)   AUTO_INCREMENT=6;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -389,7 +391,7 @@ CREATE TABLE `homecontrol_cron_items` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cron_item_uk` (`cron_id`,`config_id`,`zimmer_id`,`etagen_id`)
-)  ;
+)   AUTO_INCREMENT=10;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -429,7 +431,7 @@ CREATE TABLE `homecontrol_editoren` (
 
 LOCK TABLES `homecontrol_editoren` WRITE;
 /*!40000 ALTER TABLE `homecontrol_editoren` DISABLE KEYS */;
-INSERT INTO `homecontrol_editoren` VALUES (1,'RGB Farbwahl','HomeControlRGBColorEditor','BenÃ¶tigt 3 Zahlen-Parameter (0 bis 255)','pics/transparentpixel.gif','2017-01-01 15:16:35'),(2,'Dimmer-Slider','HomeControlSliderVonBisEditor','BenÃ¶tigt einen Zahlen-Parameter (von/bis)','pics/transparentpixel.gif','2017-01-01 15:16:35'),(3,'Slider','HomeControlSliderVonBisEditor','','pics/transparentpixel.gif','2016-10-27 01:18:06'),(4,'Relais Funk-Switch','RelaisFunkSwitchEditor','','pics/transparentpixel.gif','2016-12-21 23:43:35');
+INSERT INTO `homecontrol_editoren` VALUES (1,'RGB Farbwahl','HomeControlRGBColorEditor','Benötigt 3 Zahlen-Parameter (0 bis 255)','pics/transparentpixel.gif','2016-10-27 01:15:52'),(2,'Dimmer-Slider','HomeControlSliderVonBisEditor','Benötigt einen Zahlen-Parameter (von/bis)','pics/transparentpixel.gif','2016-10-26 01:13:16'),(3,'Slider','HomeControlSliderVonBisEditor','','pics/transparentpixel.gif','2016-10-27 01:18:06'),(4,'Relais Funk-Switch','RelaisFunkSwitchEditor','','pics/transparentpixel.gif','2016-12-21 23:43:35');
 /*!40000 ALTER TABLE `homecontrol_editoren` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -500,7 +502,7 @@ CREATE TABLE `homecontrol_etagen` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_uk` (`name`)
-)   AUTO_INCREMENT=5;
+)   AUTO_INCREMENT=13;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -542,7 +544,7 @@ CREATE TABLE `homecontrol_noframe` (
   `ip` varchar(15) NOT NULL,
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)  ;
+)   AUTO_INCREMENT=5;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -562,7 +564,7 @@ CREATE TABLE `homecontrol_regeln` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-)  ;
+)   AUTO_INCREMENT=2;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -586,7 +588,7 @@ CREATE TABLE `homecontrol_regeln_items` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   KEY `regel_id` (`regel_id`)
-)  ;
+)   AUTO_INCREMENT=15;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -629,7 +631,7 @@ CREATE TABLE `homecontrol_sender_parameter_values` (
   `value` varchar(100) NOT NULL,
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=30;
+)   AUTO_INCREMENT=29;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -727,7 +729,7 @@ CREATE TABLE `homecontrol_sender_typen_parameter_optional` (
   `param_id` int(11) NOT NULL,
   `active` set('J','N') NOT NULL DEFAULT 'J',
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=8;
+)   AUTO_INCREMENT=7;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -752,7 +754,7 @@ CREATE TABLE `homecontrol_sensor` (
   `etage` int(11) DEFAULT NULL,
   `zimmer` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=1000000000;
+)   AUTO_INCREMENT=2147483648;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -815,7 +817,7 @@ CREATE TABLE `homecontrol_shortcut` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-)  ;
+)   AUTO_INCREMENT=4;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -840,7 +842,7 @@ CREATE TABLE `homecontrol_shortcut_items` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `shortcut_item_uk` (`shortcut_id`,`config_id`,`zimmer_id`,`etagen_id`),
   KEY `shortcut_id` (`shortcut_id`)
-)  ;
+)   AUTO_INCREMENT=9;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -879,7 +881,7 @@ CREATE TABLE `homecontrol_term` (
   `trigger_jn` set('J','N') NOT NULL DEFAULT 'J',
   PRIMARY KEY (`id`),
   KEY `trigger_id` (`trigger_id`)
-)  ;
+)   AUTO_INCREMENT=6;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -943,7 +945,7 @@ CREATE TABLE `homecontrol_zimmer` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_etage_uk` (`name`,`etage_id`)
-)  ;
+)   AUTO_INCREMENT=14;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1078,7 +1080,7 @@ CREATE TABLE `menu` (
 
 LOCK TABLES `menu` WRITE;
 /*!40000 ALTER TABLE `menu` DISABLE KEYS */;
-INSERT INTO `menu` VALUES (105,'Login','','?run=login',NULL,'_top','Hier k?nnen Sie sich an- oder abmelden',0,'Fussmenue','2014-07-20 20:26:34'),(115,'Geraete','Einstellungen','?menuParent=Einstellungen&run=homeconfig','admin','_top','Hier k?nnen die Ger?te konfiguriert werden.',20,'Hauptmenue','2016-10-25 21:14:20'),(116,'Shortcuts','Einstellungen','?menuParent=Einstellungen&run=shortcutConfig','admin','_top','Hier k?nnen die Schnellwahl Aktionen konfiguriert werden.',85,'Hauptmenue','2015-09-28 23:37:15'),(117,'Shortcuts','','?menuParent=Shortcuts&run=shortcuts','','_top','Konfigurierte Modi mit einem Klick',10,'Mobilmenue','2015-01-01 21:19:24'),(119,'Zeitplan','Einstellungen','?menuParent=Einstellungen&run=cronConfig','admin','_top','Hier k?nnen die automatischen Jobs konfiguriert werden.',50,'Hauptmenue','2015-09-28 23:35:34'),(120,'Sensoren','Einstellungenxx','?menuParent=Einstellungen&run=sensorConfig','xxxx','_top','Hier k?nnen die Aktionen f?r Sensoren konfiguriert werden.',30,'Hauptmenue','2016-08-17 01:52:27'),(121,'Einstellungen','','?menuParent=Einstellungen&run=mainSettings','admin','_top','Hier kann das gesamte System konfiguriert werden',200,'Kopfmenue','2015-08-27 23:37:34'),(122,'Steuerung','','?menuParent=Steuerung&run=start',NULL,'_top','',10,'Kopfmenue','2015-03-16 07:15:44'),(124,'Steuerung','','?menuParent=Steuerung&run=start','','_top','Steuerung',0,'Mobilmenue','2015-01-01 21:18:40'),(126,'Sensoren','','?menuParent=Sensoren&run=sensorList','','_top','Sensoren',5,'Mobilmenue','2015-01-05 09:09:19'),(127,'Sensorwerte','','?menuParent=Sensorwerte&run=sensorList','','_top','Sensoren',150,'Kopfmenue','2016-09-25 18:50:42'),(128,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Kopfmenue','2015-08-23 19:04:06'),(129,'Sensor-Log','','?menuParent=Sensor-Log&run=sensorlogView',NULL,'_top','Hier werden die Logdaten der Sensoren angezeigt',70,'Kopfmenue','2014-11-11 22:09:42'),(130,'Gebaeude','Einstellungen','?menuParent=Einstellungen&run=gebaeudeConfig','admin','_top','Hier werden die Etagen und Raeume konfiguriert',10,'Hauptmenue','2016-10-25 21:14:24'),(131,'Basis','Einstellungen','?menuParent=Einstellungen&run=mainSettings','admin','_top','Basis-Einstellungen',1,'Hauptmenue','2015-08-25 23:06:41'),(133,'Alarmanlage','Einstellungen','?menuParent=Einstellungen&run=alarmConfig','admin','_top','Hier k?nnen die Einstellungen f?r das Verhalten der Alarmanlage konfiguriert werden.',90,'Hauptmenue','2015-08-23 19:05:47'),(134,'Cam','','?menuParent=Cam&run=camPics','admin','_top','Bewegungserkennung - Bilder',9999,'Kopfmenue','2016-09-25 13:20:21'),(135,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Mobilmenue','2015-08-23 19:04:06'),(136,'Automatisierung','Einstellungen','?menuParent=Einstellungen&run=automationConfig','admin','_top','In diesem Bereich werden Automatisierungen in Abh?ngigkeit der Sensorwerte konfiguriert.',85,'Hauptmenue','2015-09-28 23:35:34'),(137,'Passwort vergessen','','?run=userRequestPw',NULL,'_top','',9999,'need','2015-10-15 22:34:29'),(138,'','','?run=changeMyProfile',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(139,'cc','','run=userpicUpload',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(141,'Parameter','Einstellungen','?menuParent=Einstellungen&run=parameterConfig','admin','_top','',190,'Hauptmenue','2016-10-25 23:43:29'),(142,'Editoren','Einstellungen','?menuParent=Einstellungen&run=editorConfig','admin','_top','',200,'Hauptmenue','2016-10-25 21:14:35');
+INSERT INTO `menu` VALUES (116,'Shortcuts','Einstellungen','?menuParent=Einstellungen&run=shortcutConfig','admin','_top','Hier k?nnen die Schnellwahl Aktionen konfiguriert werden.',85,'Hauptmenue','2015-09-28 23:37:15'),(105,'Login','','?run=login',NULL,'_top','Hier k?nnen Sie sich an- oder abmelden',0,'Fussmenue','2014-07-20 20:26:34'),(115,'Geraete','Einstellungen','?menuParent=Einstellungen&run=homeconfig','admin','_top','Hier k?nnen die Ger?te konfiguriert werden.',20,'Hauptmenue','2016-10-25 21:14:20'),(117,'Shortcuts','','?menuParent=Shortcuts&run=shortcuts','','_top','Konfigurierte Modi mit einem Klick',10,'Mobilmenue','2015-01-01 21:19:24'),(133,'Alarmanlage','Einstellungen','?menuParent=Einstellungen&run=alarmConfig','admin','_top','Hier k?nnen die Einstellungen f?r das Verhalten der Alarmanlage konfiguriert werden.',90,'Hauptmenue','2015-08-23 19:05:47'),(119,'Zeitplan','Einstellungen','?menuParent=Einstellungen&run=cronConfig','admin','_top','Hier k?nnen die automatischen Jobs konfiguriert werden.',50,'Hauptmenue','2015-09-28 23:35:34'),(120,'Sensoren','Einstellungenxx','?menuParent=Einstellungen&run=sensorConfig','xxxx','_top','Hier k?nnen die Aktionen f?r Sensoren konfiguriert werden.',30,'Hauptmenue','2016-08-17 01:52:27'),(121,'Einstellungen','','?menuParent=Einstellungen&run=mainSettings','admin','_top','Hier kann das gesamte System konfiguriert werden',200,'Kopfmenue','2015-08-27 23:37:34'),(122,'Steuerung','','?menuParent=Steuerung&run=start',NULL,'_top','',10,'Kopfmenue','2015-03-16 07:15:44'),(124,'Steuerung','','?menuParent=Steuerung&run=start','','_top','Steuerung',0,'Mobilmenue','2015-01-01 21:18:40'),(126,'Sensoren','','?menuParent=Sensoren&run=sensorList','','_top','Sensoren',5,'Mobilmenue','2015-01-05 09:09:19'),(127,'Sensorwerte','','?menuParent=Sensorwerte&run=sensorList','','_top','Sensoren',150,'Kopfmenue','2016-09-25 18:50:42'),(128,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Kopfmenue','2015-08-23 19:04:06'),(129,'Sensor-Log','','?menuParent=Sensor-Log&run=sensorlogView',NULL,'_top','Hier werden die Logdaten der Sensoren angezeigt',70,'Kopfmenue','2014-11-11 22:09:42'),(130,'Gebaeude','Einstellungen','?menuParent=Einstellungen&run=gebaeudeConfig','admin','_top','Hier werden die Etagen und Raeume konfiguriert',10,'Hauptmenue','2016-10-25 21:14:24'),(131,'Basis','Einstellungen','?menuParent=Einstellungen&run=mainSettings','admin','_top','Basis-Einstellungen',1,'Hauptmenue','2015-08-25 23:06:41'),(134,'Cam','','?menuParent=Cam&run=camPics','admin','_top','Bewegungserkennung - Bilder',9999,'Kopfmenue','2016-09-25 13:20:21'),(135,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Mobilmenue','2015-08-23 19:04:06'),(136,'Automatisierung','Einstellungen','?menuParent=Einstellungen&run=automationConfig','admin','_top','In diesem Bereich werden Automatisierungen in Abh?ngigkeit der Sensorwerte konfiguriert.',85,'Hauptmenue','2015-09-28 23:35:34'),(137,'Passwort vergessen','','?run=userRequestPw',NULL,'_top','',9999,'need','2015-10-15 22:34:29'),(138,'','','?run=changeMyProfile',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(139,'cc','','run=userpicUpload',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(141,'Parameter','Einstellungen','?menuParent=Einstellungen&run=parameterConfig','admin','_top','',190,'Hauptmenue','2016-10-25 23:43:29'),(142,'Editoren','Einstellungen','?menuParent=Einstellungen&run=editorConfig','admin','_top','',200,'Hauptmenue','2016-10-25 21:14:35');
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1102,7 +1104,7 @@ CREATE TABLE `pageconfig` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `page_id` (`page_id`)
-)   AUTO_INCREMENT=37;
+)   AUTO_INCREMENT=41;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1179,7 +1181,7 @@ CREATE TABLE `run_links` (
 
 LOCK TABLES `run_links` WRITE;
 /*!40000 ALTER TABLE `run_links` DISABLE KEYS */;
-INSERT INTO `run_links` VALUES (1,'start','includes/Startseite.php','mainpage','',0,'2010-02-20 15:16:00'),(2,'mobile_start','mobile_includes/Startseite.php','mainpage','',0,'2010-02-20 15:16:00'),(12,'impressum','includes/Impressum.php','mainpage','',0,'0000-00-00 00:00:00'),(19,'changeMyProfile','includes/user/user_change.php','mainpage','',6,'2008-09-11 21:49:04'),(20,'doUserpicUpload','includes/user/userpic_upload2.php','mainpage','',0,'0000-00-00 00:00:00'),(21,'userpicUpload','includes/user/userpic_upload.php','mainpage','',0,'0000-00-00 00:00:00'),(22,'userRequestPw','includes/user/user_request_pw.php','mainpage','',0,'0000-00-00 00:00:00'),(24,'showUserList','includes/user/user_liste.php','mainpage','',0,'2010-02-20 15:16:00'),(29,'showUserProfil','includes/user/show_userprofil.php','mainpage','',0,'0000-00-00 00:00:00'),(30,'userListe','includes/user/user_liste.php','mainpage','',0,'0000-00-00 00:00:00'),(36,'login','includes/Login.php','mainpage','',0,'2008-11-16 21:08:45'),(41,'redaktionsgruppe','includes/empty.php','mainpage','',1,'2010-02-20 15:16:00'),(50,'imageUploaderPopup','includes/ImageUploaderPopup.php','mainpage','',0,'2009-06-27 09:01:28'),(51,'homeconfig','includes/ControlConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(52,'shortcutConfig','includes/ShortcutConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(53,'shortcuts','includes/ShortcutSidebar.php','mainpage','',0,'2012-12-31 01:39:15'),(54,'cronConfig','includes/CronConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(55,'sensorConfig','includes/SensorConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(56,'sensoren','includes/SensorenEdit.php','mainpage','',0,'0000-00-00 00:00:00'),(57,'sensorList','includes/Sensoren.php','mainpage','',0,'0000-00-00 00:00:00'),(58,'cronView','includes/CronView.php','mainpage','',0,'0000-00-00 00:00:00'),(59,'sensorlogView','includes/SensorLogViewer.php','mainpage','',0,'0000-00-00 00:00:00'),(60,'gebaeudeConfig','includes/GebaeudeConfig.php','mainpage','',0,'2015-08-23 18:58:17'),(61,'mainSettings','includes/MainSettings.php','mainpage','',0,'0000-00-00 00:00:00'),(62,'network','includes/NetworkConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(63,'alarmConfig','includes/AlarmConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(64,'camPics','includes/CamPics.php','mainpage','',0,'0000-00-00 00:00:00'),(66,'automationConfig','includes/AutomationConfig.php','mainpage','',0,'2010-02-20 15:16:00'),(67,'alarmgeberConfig','includes/AlarmgeberConfig.php','mainpage','',0,'2010-02-20 15:16:00'),(68,'mobile_shortcuts','mobile_includes/ShortcutSidebar.php','mainpage','',0,'2010-02-20 15:16:00'),(69,'logView','includes/LogView.php','mainpage','',0,'0000-00-00 00:00:00'),(70,'parameterConfig','includes/ParameterConfig.php','mainpage','',0,'2016-10-25 21:11:56'),(71,'editorConfig','includes/EditorenConfig.php','mainpage','',0,'2016-10-25 23:21:00');
+INSERT INTO `run_links` VALUES (12,'impressum','includes/Impressum.php','mainpage','',0,'0000-00-00 00:00:00'),(1,'start','includes/Startseite.php','mainpage','',0,'2010-02-20 15:16:00'),(19,'changeMyProfile','includes/user/user_change.php','mainpage','',6,'2008-09-11 21:49:04'),(20,'doUserpicUpload','includes/user/userpic_upload2.php','mainpage','',0,'0000-00-00 00:00:00'),(21,'userpicUpload','includes/user/userpic_upload.php','mainpage','',0,'0000-00-00 00:00:00'),(22,'userRequestPw','includes/user/user_request_pw.php','mainpage','',0,'0000-00-00 00:00:00'),(24,'showUserList','includes/user/user_liste.php','mainpage','',0,'2010-02-20 15:16:00'),(29,'showUserProfil','includes/user/show_userprofil.php','mainpage','',0,'0000-00-00 00:00:00'),(30,'userListe','includes/user/user_liste.php','mainpage','',0,'0000-00-00 00:00:00'),(36,'login','includes/Login.php','mainpage','',0,'2008-11-16 21:08:45'),(41,'redaktionsgruppe','includes/empty.php','mainpage','',1,'2010-02-20 15:16:00'),(52,'shortcutConfig','includes/ShortcutConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(50,'imageUploaderPopup','includes/ImageUploaderPopup.php','mainpage','',0,'2009-06-27 09:01:28'),(51,'homeconfig','includes/ControlConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(53,'shortcuts','includes/ShortcutSidebar.php','mainpage','',0,'2012-12-31 01:39:15'),(2,'mobile_start','mobile_includes/Startseite.php','mainpage','',0,'2010-02-20 15:16:00'),(54,'cronConfig','includes/CronConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(55,'sensorConfig','includes/SensorConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(56,'sensoren','includes/SensorenEdit.php','mainpage','',0,'0000-00-00 00:00:00'),(57,'sensorList','includes/Sensoren.php','mainpage','',0,'0000-00-00 00:00:00'),(58,'cronView','includes/CronView.php','mainpage','',0,'0000-00-00 00:00:00'),(59,'sensorlogView','includes/SensorLogViewer.php','mainpage','',0,'0000-00-00 00:00:00'),(60,'gebaeudeConfig','includes/GebaeudeConfig.php','mainpage','',0,'2015-08-23 18:58:17'),(61,'mainSettings','includes/MainSettings.php','mainpage','',0,'0000-00-00 00:00:00'),(62,'network','includes/NetworkConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(63,'alarmConfig','includes/AlarmConfig.php','mainpage','',0,'0000-00-00 00:00:00'),(64,'camPics','includes/CamPics.php','mainpage','',0,'0000-00-00 00:00:00'),(66,'automationConfig','includes/AutomationConfig.php','mainpage','',0,'2010-02-20 15:16:00'),(67,'alarmgeberConfig','includes/AlarmgeberConfig.php','mainpage','',0,'2010-02-20 15:16:00'),(68,'mobile_shortcuts','mobile_includes/ShortcutSidebar.php','mainpage','',0,'2010-02-20 15:16:00'),(69,'logView','includes/LogView.php','mainpage','',0,'0000-00-00 00:00:00'),(70,'parameterConfig','includes/ParameterConfig.php','mainpage','',0,'2016-10-25 21:11:56'),(71,'editorConfig','includes/EditorenConfig.php','mainpage','',0,'2016-10-25 23:21:00');
 /*!40000 ALTER TABLE `run_links` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1274,7 +1276,7 @@ CREATE TABLE `update_log` (
   `descr` text NOT NULL,
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)  ;
+)   AUTO_INCREMENT=11;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1324,7 +1326,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `User` (`User`),
   KEY `Name` (`Name`(8))
-)   AUTO_INCREMENT=2;
+)   AUTO_INCREMENT=3;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1345,7 +1347,7 @@ CREATE TABLE `userstatus` (
 
 LOCK TABLES `userstatus` WRITE;
 /*!40000 ALTER TABLE `userstatus` DISABLE KEYS */;
-INSERT INTO `userstatus` VALUES ('admin','Administrator'),('gast','Gast'),('user','Hauptbenutzer');
+INSERT INTO `userstatus` VALUES ('gast','Gast'),('user','Hauptbenutzer'),('admin','Administrator');
 /*!40000 ALTER TABLE `userstatus` ENABLE KEYS */;
 UNLOCK TABLES;
 

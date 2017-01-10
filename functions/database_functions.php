@@ -3,7 +3,7 @@
 
 
 
-  function getDbValue($tab, $col, $where=""){
+  function getDbValue($tab, $col, $where){
     //Liefert die angeforderten Werte aus der public_vars - Tabelle als Array ($title=>$text)
     $sql    = "select " .$col ." from " .$tab .(strlen($where)>0?" where " .$where ." limit 1 ":"");
 
