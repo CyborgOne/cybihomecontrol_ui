@@ -1459,8 +1459,8 @@ INSERT INTO pageconfig VALUES
 (33, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Login nur von extern'),
 (34, 'switchButtonsOnIconActive', 'J', 0, '0000-00-00 00:00:00', 'Buttons in Steuerung sichtbar?'),
 (35, 'gmailAdress', '', 0, '0000-00-00 00:00:00', 'Email fur Gmail Abfragen'),
-(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen');
-(37, 'haBridgeActive', 'N', 0, '0000-00-00 00:00:00', 'Gibt an, ob die HA-Bridge installiert ist.');
+(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen'),
+(37, 'haBridgeActive', 'N', 0, '0000-00-00 00:00:00', 'Gibt an, ob die HA-Bridge installiert ist.'),
 (38, 'haBridgePath', '/services/haBridge/', 0, '0000-00-00 00:00:00', 'Pfad zur HA-Bridge Installation');
 ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;
 INSERT INTO homecontrol_sensor (id, name, beschreibung, geaendert, lastSignal, lastValue, sensor_art, x, y, etage, zimmer) VALUES 
