@@ -96,7 +96,14 @@ class DbTable extends Object {
     function setTexteditorEndabled($bool){
         $this->TEXTEDITOR_ENABLED = $bool;
     }
-
+    
+    /**
+     * Methode zum definieren Zusätzlicher Felder für die Update-Maske 
+     * 
+     * @param $formFieldArray  ist ein Array mit Werte-Paaren bestehend aus
+     *                         einem String der als Label verwendet wird, 
+     *                         und einem Form-Element wie einem Textfeld oä.
+     */
     function setAdditionalUpdateFields($formFieldArray){
         $this->ADDITIONAL_UPDATE_FIELDS = $formFieldArray;
     }
@@ -115,6 +122,11 @@ class DbTable extends Object {
      */
     function DbTable($con, $tbname = "", $cols = array("*"), $labels = "", $defaults =
         "", $o = "", $w = "", $delInUpdate=false) { //Konstruktor
+        
+        if($cols==""){
+            $cols = array("*");
+        }
+        
         $this->initialized = false;
         $this->ROWS = array();
         $this->DBCONNECT = $con;
@@ -596,7 +608,9 @@ class DbTable extends Object {
                 return;
             }
         } else {
-            //echo $stmt;
+            if($this->TABLENAME == "homecontrol_sender_typen_parameter"){
+              echo $stmt;
+            }
             return;
         }
 
@@ -958,6 +972,15 @@ class DbTable extends Object {
                 }
             } 
         }
+        
+                
+        foreach($this->ADDITIONAL_UPDATE_FIELDS as $label=>$field){
+                $r = $table->createRow();
+                $r->setAttribute(0, $label);
+                $r->setAttribute(1, $field);
+                $table->addRow($r);
+        }
+
 
         $okButton = new Button("InsertIntoDB" . $this->TABLENAME, "Speichern");
         $r = $table->createRow();
@@ -1020,7 +1043,7 @@ class DbTable extends Object {
 
             $fieldName = mysql_field_name($result, $i);
             $fieldValue = isset($_REQUEST[$fieldName]) ? $_REQUEST[$fieldName] : "";
-            if (strlen($fieldValue) == 0 && !((count($ev) == 2 && in_array('J', $ev) && in_array('N', $ev))) ) {
+            if (strlen($fieldValue) == 0 && !(isset($ev) && (count($ev) == 2 && in_array('J', $ev) && in_array('N', $ev))) ) {
                 $fieldValue = $this->getDefaultValue($this->DEFAULTS, $fieldName);
             }
 
@@ -1331,7 +1354,13 @@ class DbTable extends Object {
         $colNames = $this->COLNAMES;
         array_push($colNames, "Aktion");
         array_push($tNames, " ");
-
+        
+        for($i=0; $i<count($colNames); $i++){
+            if( $this->isNoUpdateCol($colNames[$i]) || $this->isInvisibleCol($colNames[$i])) {
+                unset($tNames[$i]);
+            }
+        }
+        
         $table = new Table($tNames);
 
         if (count($this->COLSIZES) > 0) {
@@ -1836,96 +1865,97 @@ class DbTable extends Object {
 
         $result = $this->DBCONNECT->executeQuery($stmnt);
         $rowEdit = mysql_fetch_array($result);
-
+    
         for ($i = 0; $i < mysql_num_fields($result) - 1; $i++) {
             $fieldName = mysql_field_name($result, $i);
-
-            $arrChk = array_search($fieldName, $this->NOUPDATECOLS);
-            if (strlen($arrChk) == 0) {
-                $r = $table->createRow();
-
-                $o = "";
-                $lookups = getLookupWerte($_SESSION['config']->DBCONNECT, $this->TABLENAME, $fieldName);
-                // in der Datenbank f�r dieses Datenbankfeld
-                // definierte Combobox laden (wenn vorhanden)
-                $dbCombo = getDbComboArray($this->TABLENAME, $fieldName, $rowEdit);
-
-                $val = "";
-                if (isset($rowEdit[$fieldName]) && strlen($rowEdit[$fieldName]) > 0) {
-                    $val = $rowEdit[$fieldName];
-                }
-
-                if (mysql_num_rows($lookups) == 0 && !$this->isDbComboSet($this->TABLENAME, $fieldName)) {
-
-                    /*if (strpos(" " . $this->DEFAULTS, $fieldName) > 0) {
-                    $tmpval = substr($this->DEFAULTS, strpos($this->DEFAULTS, "=") + 1);
-                    $o = new HiddenField($fieldName, $tmpval);
-
-                    } else*/
-                    if (strpos(mysql_field_flags($result, $i), "enum") > 0) {
-                        $ev = $this->getEnumValues($fieldName);
-
-                        if (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
-                            $o = new Checkbox($fieldName . $rowId, "", "J");
-
-                            if ($rowEdit[$fieldName] == "J") {
-                                $o->setSelected(true);
-                            }
-
-                        } else {
-                            $o = new ComboBox($fieldName . $rowId, $this->getComboboxEnumArray($fieldName));
-                        }
-
-                    } else
-                        if (mysql_field_type($result, $i) == "blob") {
-                            $o = new TextArea($fieldName . $rowId, $val, 80, 10);
-                            $o->setTextEditor($this->TEXTEDITOR_ENABLED);
-
-                        } else
-                            if (mysql_field_type($result, $i) == "date") {
-                                $o = new DateTextfield($fieldName . $rowId, $val);
-                                $o->setToolTip("Bitte im Format:  <b>YYYY-MM-TT</b>  angeben");
-
-                            } else
-                                if (mysql_field_type($result, $i) == "int") {
-                                    $o = new TextField($fieldName . $rowId, $val);
-
-                                } else
-                                    if (mysql_field_type($result, $i) == "timestamp") {
-                                        $o = new TextField($fieldName . $rowId, $val);
-
-                                    } else {
-                                        $o = new TextField($fieldName . $rowId, $val);
-                                    }
-
-                } else {
-                    if (mysql_num_rows($lookups) > 0) {
-                        $o = new LookupCombo($_SESSION['config']->DBCONNECT, $fieldName . $rowId, $this->
-                            TABLENAME, $fieldName, $rowEdit[$fieldName]);
-                    } else
-                        if (count($dbCombo) > 0) {
-                            if (!strpos(" " . $this->DEFAULTS, $fieldName) > 0) {
-                                $o = new ComboBox($fieldName . $rowId, $dbCombo, $val);
+            if(!($this->isInvisibleCol($fieldName) || $this->isNoUpdateCol($fieldName))){
+                $arrChk = array_search($fieldName, $this->NOUPDATECOLS);
+                if (strlen($arrChk) == 0) {
+                    $r = $table->createRow();
+    
+                    $o = "";
+                    $lookups = getLookupWerte($_SESSION['config']->DBCONNECT, $this->TABLENAME, $fieldName);
+                    // in der Datenbank f�r dieses Datenbankfeld
+                    // definierte Combobox laden (wenn vorhanden)
+                    $dbCombo = getDbComboArray($this->TABLENAME, $fieldName, $rowEdit);
+    
+                    $val = "";
+                    if (isset($rowEdit[$fieldName]) && strlen($rowEdit[$fieldName]) > 0) {
+                        $val = $rowEdit[$fieldName];
+                    }
+    
+                    if (mysql_num_rows($lookups) == 0 && !$this->isDbComboSet($this->TABLENAME, $fieldName)) {
+    
+                        /*if (strpos(" " . $this->DEFAULTS, $fieldName) > 0) {
+                        $tmpval = substr($this->DEFAULTS, strpos($this->DEFAULTS, "=") + 1);
+                        $o = new HiddenField($fieldName, $tmpval);
+    
+                        } else*/
+                        if (strpos(mysql_field_flags($result, $i), "enum") > 0) {
+                            $ev = $this->getEnumValues($fieldName);
+    
+                            if (count($ev) == 2 && (in_array('J', $ev) && in_array('N', $ev))) {
+                                $o = new Checkbox($fieldName . $rowId, "", "J");
+    
+                                if ($rowEdit[$fieldName] == "J") {
+                                    $o->setSelected(true);
+                                }
+    
                             } else {
-                                $o = new HiddenField($fieldName . $rowId, $val);
+                                $o = new ComboBox($fieldName . $rowId, $this->getComboboxEnumArray($fieldName));
                             }
-                        }
+    
+                        } else
+                            if (mysql_field_type($result, $i) == "blob") {
+                                $o = new TextArea($fieldName . $rowId, $val, 80, 10);
+                                $o->setTextEditor($this->TEXTEDITOR_ENABLED);
+    
+                            } else
+                                if (mysql_field_type($result, $i) == "date") {
+                                    $o = new DateTextfield($fieldName . $rowId, $val);
+                                    $o->setToolTip("Bitte im Format:  <b>YYYY-MM-TT</b>  angeben");
+    
+                                } else
+                                    if (mysql_field_type($result, $i) == "int") {
+                                        $o = new TextField($fieldName . $rowId, $val);
+    
+                                    } else
+                                        if (mysql_field_type($result, $i) == "timestamp") {
+                                            $o = new TextField($fieldName . $rowId, $val);
+    
+                                        } else {
+                                            $o = new TextField($fieldName . $rowId, $val);
+                                        }
+    
+                    } else {
+                        if (mysql_num_rows($lookups) > 0) {
+                            $o = new LookupCombo($_SESSION['config']->DBCONNECT, $fieldName . $rowId, $this->
+                                TABLENAME, $fieldName, $rowEdit[$fieldName]);
+                        } else
+                            if (count($dbCombo) > 0) {
+                                if (!strpos(" " . $this->DEFAULTS, $fieldName) > 0) {
+                                    $o = new ComboBox($fieldName . $rowId, $dbCombo, $val);
+                                } else {
+                                    $o = new HiddenField($fieldName . $rowId, $val);
+                                }
+                            }
+                    }
+    
+                    if ($i < count($this->LABELS) ) {
+                        $r->setAttribute(0, $this->LABELS[$i]);
+                    } else {
+                        $r->setAttribute(0, "");
+                    }
+    
+                    $arrChk = array_search($fieldName, $this->READONLYCOLS);
+                    if (strlen($arrChk) != 0) {
+                        $o->setReadOnly(true);
+                    }
+    
+                    $r->setAttribute(1, $o);
+    
+                    $table->addRow($r);
                 }
-
-                if ($i < count($this->LABELS) ) {
-                    $r->setAttribute(0, $this->LABELS[$i]);
-                } else {
-                    $r->setAttribute(0, "");
-                }
-
-                $arrChk = array_search($fieldName, $this->READONLYCOLS);
-                if (strlen($arrChk) != 0) {
-                    $o->setReadOnly(true);
-                }
-
-                $r->setAttribute(1, $o);
-
-                $table->addRow($r);
             }
         }
         
@@ -1935,7 +1965,7 @@ class DbTable extends Object {
                 $r->setAttribute(1, $field);
                 $table->addRow($r);
         }
-
+        
         $okButton = new Button("DbTableUpdate" . $this->TABLENAME, "Speichern");
         $r = $table->createRow();
         $r->setSpawnAll(true);
@@ -2053,7 +2083,7 @@ class DbTable extends Object {
         } else {
             if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
                 "OK")) {
-                $e = new Message("Speichern", "Nichts zu speichern");
+                //$e = new Message("Speichern", "Nichts zu speichern");
                 $_REQUEST['saveOK'] = "OK";
             }
             return false;

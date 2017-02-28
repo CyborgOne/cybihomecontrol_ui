@@ -40,15 +40,13 @@ class HomeControlItem extends Object {
         $this->ZIMMER = $currConfigRow->getNamedAttribute("zimmer");
         $this->DIMMER = $currConfigRow->getNamedAttribute("dimmer");
         $this->PIC = $this->getIconPath();
+        
         if (strlen($this->getIconPath()) <= 4){
             $this->PIC = "pics/homecontrol/steckdose_100.jpg";
         }
 
         $this->EDIT_MODE = $editModus;
-
-        $senderDbTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_sender", array('*'), "", "", "", "id=".$currConfigRow->getNamedAttribute("sender_id"));
-        $this->SENDER = new HomeControlSender($senderDbTbl->getRow(1));
-
+        $this->SENDER = $_SESSION['config']->getSenderById($currConfigRow->getNamedAttribute("sender_id"));
         $this->CONFIG_ROW = $currConfigRow;
         
         $this->loadParams();
@@ -75,8 +73,6 @@ class HomeControlItem extends Object {
             $this->ALL_PARAMETERS[count($this->ALL_PARAMETERS)] = $p;
         }
     }
-    
-    
     
     /**
      * liefert ein Array, welches alle Parameter 
@@ -107,7 +103,6 @@ class HomeControlItem extends Object {
     function getName(){
         return $this->OBJNAME;
     }
-    
 
     function getRow(){
         return $this->CONFIG_ROW;
@@ -120,7 +115,6 @@ class HomeControlItem extends Object {
     function getSender(){
         return $this->SENDER;
     }
- 
  
     function hasFreeParam(){
         return $this->getFreeParamCount() > 0;
@@ -135,7 +129,13 @@ class HomeControlItem extends Object {
     }
 
 
-
+    /**
+     * Die Methode prüft, ob der Optionale Parameter zur übergebenen 
+     * Parameter-ID als aktiv markiert ist. 
+     * 
+     * Wenn ja gibt die Methode true zurück. Ansonsten false. 
+     * Bei false wird der Parameter für das Objekt nicht weiter berücksichtigt.   
+     */
     function isParameterOptionalActive($paramId) {
         $sql = "SELECT 'X' FROM homecontrol_sender_typen_parameter_optional p "
               ."WHERE param_id = " .$paramId ." AND config_id=".$this->ID ." AND active='J' ";
@@ -144,14 +144,45 @@ class HomeControlItem extends Object {
         return mysql_numrows($rslt)>0;
     }
 
-
-    
+    /**
+     * Liefert ein Array mit den Sender-Parametern, 
+     * die bisher noch keinem alternativen Editor zugeordnet sind. 
+     * Dies ist primär für die Parameterzuordnung in der 
+     * Editor-Konfiguration zu den Geräten gedacht. 
+     */    
     function getFreeParamArray(){
         if($this->FREE_PARAMS_ARRAY==null){
-            $sql = "SELECT id, name FROM homecontrol_sender_typen_parameter p WHERE senderTypId=(SELECT senderTypId FROM homecontrol_sender s WHERE id = " .$this->SENDER->getId() .") AND NOT EXISTS ( SELECT 'X' FROM homecontrol_control_parameter_zu_editor z WHERE z.sender_param_id = p.id AND z.sendereditor_zuord_id IN (SELECT id FROM homecontrol_control_editor_zuordnung WHERE config_id= ".$this->ID."))";
-            $this->FREE_PARAMS_ARRAY = getComboArrayBySql($sql);
+            //$sql = "SELECT id, name FROM homecontrol_sender_typen_parameter p WHERE senderTypId=(SELECT senderTypId FROM homecontrol_sender s WHERE id = " .$this->SENDER->getId() .") AND NOT EXISTS ( SELECT 'X' FROM homecontrol_control_parameter_zu_editor z WHERE z.sender_param_id = p.id AND z.sendereditor_zuord_id IN (SELECT id FROM homecontrol_control_editor_zuordnung WHERE config_id= ".$this->ID."))";
+            //if($this->SENDER->getId()==2) {echo $sql;}
+            //$this->FREE_PARAMS_ARRAY = getComboArrayBySql($sql);            
+            
+            $dbTblFree =  new DbTable($_SESSION['config']->DBCONNECT,
+                                    "homecontrol_sender_typen_parameter",
+                                    array("*"),
+                                    "",
+                                    "",
+                                    "",
+                                    "senderTypId=(SELECT senderTypId FROM homecontrol_sender s WHERE id=" .$this->SENDER->getId() .") AND NOT EXISTS (SELECT 'X' FROM homecontrol_control_parameter_zu_editor z WHERE z.sender_param_id = homecontrol_sender_typen_parameter.id AND z.sendereditor_zuord_id IN (SELECT id FROM homecontrol_control_editor_zuordnung WHERE config_id=".$this->ID."))");
+
+            $this->FREE_PARAMS_ARRAY = array();
+            foreach($dbTblFree->ROWS as $freeRow){
+                $this->FREE_PARAMS_ARRAY[count($this->FREE_PARAMS_ARRAY)] = new HomeControlSenderParameter($freeRow, $this);
+            }
+
         }
         return $this->FREE_PARAMS_ARRAY;
+    }
+
+    function hasUnselectedEditorParam(){
+        $dbTblFree =  new DbTable($_SESSION['config']->DBCONNECT,
+                                "homecontrol_control_parameter_zu_editor",
+                                array("*"),
+                                "",
+                                "",
+                                "",
+                                "sendereditor_zuord_id IN ( SELECT id FROM homecontrol_control_editor_zuordnung WHERE config_id = " .$this->getId() ." ) AND sender_param_id IS NULL");
+
+        return $dbTblFree->getRowCount() > 0;
     }
 
     function getInsertEditorMask(){
@@ -186,59 +217,94 @@ class HomeControlItem extends Object {
      * 
      */
     function getEditorParamAssignMask(){
-        $ttl = new Title("Editoren zuordnen");
-        
-        $senderDbTbl = new DbTable( $_SESSION['config']->DBCONNECT, 
-                                    "homecontrol_control_parameter_zu_editor", 
-                                    array("editor_param_id", "sender_param_id", "sendereditor_zuord_id"), 
-                                    "Editor-Parameter, Sender-Parameter, Editor", 
-                                    "", 
-                                    "", 
-                                    "WHERE sendereditor_zuord_id IN (SELECT id FROM homecontrol_control_editor_zuordnung WHERE config_id=".$this->ID.")");
-        
-        $senderDbTbl->setNoUpdateCols(array("sendereditor_zuord_id", "editor_param_id"));
-        $senderDbTbl->setNoInsertCols(array("sendereditor_zuord_id"));
-        $senderDbTbl->setInvisibleCols(array("sendereditor_zuord_id"));
-                
-        if (isset($_REQUEST['DbTableUpdate' . $senderDbTbl->TABLENAME]) 
-            && $_REQUEST['DbTableUpdate' .$senderDbTbl->TABLENAME] == "Speichern" ) {
-            $senderDbTbl->doUpdate();
-        }         
-        
         $tbl = new Table(array("",""));
 
+        $ttl = new Title("Editoren zuordnen");
+    
         $rTtl = $tbl->createRow();
         $rTtl->setSpawnAll(true);
         $rTtl->setAttribute(0, $ttl);
         $tbl->addRow($rTtl);
+        $tbl->addSpacer(0,15);
         
         $this->handleInsertEditorMask();
-        $senderDbTbl->refresh();
-        
-        if($this->hasFreeParam()){
+
+        $editZuordDbTbl = new DbTable( $_SESSION['config']->DBCONNECT, 
+                            "homecontrol_control_editor_zuordnung", 
+                            array("id", "config_id", "editor_id"), 
+                            "ID, Item, Editor", 
+                            "", 
+                            "", 
+                            "config_id=".$this->ID);
+
+        foreach($editZuordDbTbl->ROWS as $zuordRow){
+            $editorZuordId = $zuordRow->getNamedAttribute("id");
+            if(isset($_REQUEST["delZuordEdit".$editorZuordId]) && $_REQUEST["delZuordEdit".$editorZuordId]=="Editor Entfernen"){
+                $sqlRemoveTerms = "DELETE FROM homecontrol_control_parameter_zu_editor WHERE sendereditor_zuord_id = " .$editorZuordId;
+                $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveTerms);
+
+                $zuordRow->deleteFromDb();
+            } else {
+                $senderDbTbl = new DbTable( $_SESSION['config']->DBCONNECT, 
+                                            "homecontrol_control_parameter_zu_editor", 
+                                            array("editor_param_id", "sender_param_id", "sendereditor_zuord_id"), 
+                                            "Editor-Parameter, Sender-Parameter, Editor", 
+                                            "", 
+                                            "", 
+                                            "WHERE sendereditor_zuord_id = ".$editorZuordId);
+                
+                $senderDbTbl->setNoUpdateCols(array("sendereditor_zuord_id", "editor_param_id"));
+                $senderDbTbl->setNoInsertCols(array("sendereditor_zuord_id"));
+                $senderDbTbl->setInvisibleCols(array("sendereditor_zuord_id"));
+                        
+                if (isset($_REQUEST['DbTableUpdate' . $senderDbTbl->TABLENAME]) 
+                    && $_REQUEST['DbTableUpdate' .$senderDbTbl->TABLENAME] == "Speichern" ) {
+                    $senderDbTbl->doUpdate();
+                }         
+                
+                $senderDbTbl->refresh();
+    
+                $updMask = $senderDbTbl->getUpdateAllMask();
+                $updMask->add(new Hiddenfield("editControl", $_REQUEST["editControl"]));
+                
+                $rUpdMskTtl = $tbl->createRow();
+                $rUpdMskTtl->setAttribute(0, new Title(getEditorName($zuordRow->getNamedAttribute("editor_id"))));
+                $rUpdMskTtl->setAttribute(1, new Button("delZuordEdit".$editorZuordId, "Editor Entfernen"));
+                $tbl->addRow($rUpdMskTtl);
+                
+                $rUpdMsk = $tbl->createRow();
+                $rUpdMsk->setSpawnAll(true);
+                $rUpdMsk->setAttribute(0, $updMask);
+                $tbl->addRow($rUpdMsk);
+                
+                $tbl->addSpacer(0,10);
+            }
+        }
+
+        // ----------------------------
+
+        if ($this->hasUnselectedEditorParam()){
+            $rTtl = $tbl->createRow();
+            $rTtl->setSpawnAll(true);
+            $rTtl->setAttribute(0, new Text("Erst alle Parameter zuordnen, bevor ein neuer Editor zugeordnet werden kann."));
+            $tbl->addRow($rTtl);            
+        } else if($this->hasFreeParam()){
             $newEditor = $this->getInsertEditorMask();
         
             $rTtl = $tbl->createRow();
             $rTtl->setSpawnAll(true);
             $rTtl->setAttribute(0, $newEditor);
             $tbl->addRow($rTtl);
-        }
-        
-        $tbl->addSpacer(0,10);
-
-        $updateParamZuordMask = $senderDbTbl->getUpdateAllMask();
-        $updateParamZuordMask->add(new Hiddenfield("editControl", $_REQUEST["editControl"]));
-
-        // ----------------------------
+        } 
                 
-        
         $frm = new Form();
-        
         $frm->add($tbl);
-        $frm->add($updateParamZuordMask);
+        
         
         return $frm;
     }
+ 
+ 
  
  
     function getIconTooltip($configButtons = true) {
@@ -252,19 +318,13 @@ class HomeControlItem extends Object {
 
 
     function getSwitchButtons() {
-        $tbl = new Table(array("","",""));
-        $tbl->setStyle("position", "relative");
-        $tbl->setStyle("left", "-17px");
-        $tbl->setStyle("top", "-20px");
-        $tbl->setAlignments(array("left", "right"));
-        $tbl->setColSizes(array(40, 5, 40));
+        $tbl = new Table(array(""));
+        $tbl->setAlignments(array("center"));
         $tbl->setBorder(0);
 
         $senderParams = $this->SENDER->getSenderParameterControlMask($this);
-        
         if($senderParams!=null){
             $rS = $tbl->createRow();
-            $rS->setSpawnAll(true);
             $rS->setAttribute(0, $senderParams);
             $tbl->addRow($rS);
         }
@@ -272,53 +332,23 @@ class HomeControlItem extends Object {
         return $tbl;
     }
    
+   
     function getMobileSwitch() {
-        $tbl = new Table(array("", "", "", ""));
-        $tbl->setAlignments(array("center", "left", "left", "right"));
-        $tbl->setColSizes(array(60, "", 160, 150));
+        $tbl = new Table(array("", "", ""));
+        $tbl->setAlignments(array("center", "left", "right"));
+        $tbl->setColSizes(array(60, null, 250));
         $tbl->setBorder(0);
-        $rowTtl = $tbl->createRow();
-        $rowTtl->setVAlign("middle");
-
-        $txtAn = new Text($this->getDefaultLogicAnText(), 7, true);
-        $txtAus = new Text($this->getDefaultLogicAusText(), 7, true);
-
-        $divAn = new Div();
-        $divAn->add($txtAn);
-        $divAn->setWidth(150);
-        $divAn->setHeight(50);
-        $divAn->setAlign("center");
-        $divAn->setVAlign("middle");
-        $divAn->setStyle("line-height", "50px");
-        $divAn->setBorder(1);
-        $divAn->setBackgroundColor("green");
-        $divAn->setOverflow("hidden");
-
-        $divAus = new Div();
-        $divAus->setWidth(150);
-        $divAus->setHeight(50);
-        $divAus->setAlign("center");
-        $divAus->setVAlign("middle");
-        $divAus->setStyle("line-height", "50px");
-        $divAus->add($txtAus);
-        $divAus->setBorder(1);
-        $divAus->setBackgroundColor("red");
-        $divAus->setOverflow("hidden");
-
-
-        $txtName = new Text($this->OBJNAME, 6, true);
 
         $img = $this->getControlArtIcon(false);
 
-// TODO:
-        $lnkAn = new Link("?switchShortcut=0-on", $divAn, false, "arduinoSwitch");
-        $lnkAus = new Link("?switchShortcut=0-off", $divAus, false, "arduinoSwitch");
-        
+        $txtName = new Text($this->OBJNAME, 7, true);
+
+        $switchForm = $this->getSwitchButtons();
+
+        $rowTtl = $tbl->createRow();
         $rowTtl->setAttribute(0, $img);
         $rowTtl->setAttribute(1, $txtName);
-        $rowTtl->setAttribute(2, $lnkAn);
-        $rowTtl->setAttribute(3, $lnkAus);
-        
+        $rowTtl->setAttribute(2, $switchForm);
         $tbl->addRow($rowTtl);
 
         return $tbl;
@@ -434,18 +464,367 @@ class HomeControlItem extends Object {
         return $this->getSender()->getTyp()->getParameterValueForShortcut($paramRow, $this->getRow(), $shortcutId);
     }
     
-    function setParameterValue($paramRow, $configRow, $value){
+    function setParameterValue($paramRow, $value){
         $this->getSender()->getTyp()->setParameterValue($paramRow, $this->getRow(), $value);
     }
     
-    function setParameterValueForCron($paramRow, $configRow, $cronId, $value){
+    function setParameterValueForCron($paramRow, $cronId, $value){
         $this->getSender()->getTyp()->setParameterValueForCron($paramRow, $this->getRow(), $cronId, $value);
     }
 
-    function setParameterValueForShortcut($paramRow, $configRow, $shortcutId, $value){
+    function setParameterValueForShortcut($paramRow, $shortcutId, $value){
         $this->getSender()->getTyp()->setParameterValueForShortcut($paramRow, $this->getRow(), $shortcutId, $value);
     }
+    
+    function isEditorActivated($editorRow){
+        if($editorRow!=null && $editorRow->getNamedAttribute("id")!=null){
+            $sql = "SELECT * FROM homecontrol_control_editor_zuordnung WHERE config_id=".$this->getId()." AND editor_id=".$editorRow->getNamedAttribute("id");
+            $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sql);
+            if($rslt && mysql_numrows($rslt)>0){
+                return true;
+            }            
+        }
+        
+        return false;
+    }
+    
 
+    /**
+     * Schaltet das Objekt anhand der übergebenen Parameter.
+     * 
+     * Als Parameter wird ein Array übergeben zu jedem Parameter 
+     * die Parameter-Row und dem Sender zu übermittelnden Wert enthält.
+     * 
+     * @param  $paramsRowValArray      
+     *         Aufbau:  
+     *          ARRAY[PARAM_ID][0] = PARAMETER_ROW
+     *          ARRAY[PARAM_ID][1] = PARAMETER_NEW_VALUE
+     */
+    function switchDevice($paramsRowValArray){
+        $command = $this->getSwitchCommand($paramsRowValArray, true);
+        
+        if($command != ""){
+            try {
+                exec("wget '".$command."' > /dev/null 2>/dev/null &");
+            } catch (exception $e) {
+                echo "FEHLER BEIM SCHALTEN!";
+            }
+            
+            // Logging
+            try {
+                $myfile = fopen("/var/www/switch.log", "a+");
+                fwrite($myfile, "(" . date("d.M.Y - H:i:s") . "): " . $command . "\n");
+                fclose($myfile);
+            }
+            catch (exception $e) {
+            }
+        } else {
+            echo "Es wurden nicht alle notwendigen Parameter angegeben!";
+        }
+    }
+    
+    
+    /**
+     * Die Methode liefert ein Parameter-Array zurück,
+     * welches zum schalten des Objekts benötigt wird.
+     * 
+     * Die Methode geht alle Parameter des Objekts durch, 
+     * prüft ob ein passender $_REQUEST-Parameter existiert
+     * und trägt falls vorhanden den Wert in das Parameter-Array ein.
+     * 
+     * Dieses Array enthält nur Werte für Parameter, bei denen auch der 
+     * $_REQUEST-Parameter gesetzt ist. Die Prüfung, ob alle notwendigen
+     * Werte gesetzt sind, erfolgt beim schalten mit switchDevice($paramArray).
+     */
+    function checkUrlParams(){
+        $allParams = array();
+        $optionalParams = array();
+        $fixParams = array();
+        $defaultLogicParams = array();
+        $switchParams = array();
+
+        $paramTable = new DbTable($_SESSION['config']->DBCONNECT, 
+                                  "homecontrol_sender_typen_parameter", array('*'), "", "", "",
+                                  "senderTypId=(SELECT s.senderTypId FROM homecontrol_sender s, homecontrol_config c WHERE s.id = c.sender_id AND c.id = " . $_REQUEST['switchConfigId'] .
+                                  ")" 
+                                 );
+                                 
+        $lastSenderTyp = "";
+        $switchUrl = "";
+        $switchParamArray = array();
+        $allParamsSet = true;
+        foreach ($paramTable->ROWS as $row) {
+            $optional = false;
+            $fix = false;
+            $default_logic = false;
+            $mandatory = false;
+
+            if ($row->getNamedAttribute("optional") == "J") {
+                $optionalParams[count($optionalParams)] = $row->getNamedAttribute('name');
+                $optional = true;
+            }
+            if ($row->getNamedAttribute("mandatory") == "J") {
+                $mandatory = true;
+            }
+            if ($row->getNamedAttribute("fix") == "J") {
+                $fixParams[count($fixParams)] = $row->getNamedAttribute('name');
+                $fix = true;
+            }
+            if ($row->getNamedAttribute("default_logic") == "J") {
+                $defaultLogicParams[count($defaultLogicParams)] = $row->getNamedAttribute('name');
+                $default_logic = true;
+            }
+
+            $value = "";
+            if (isset($_REQUEST[$row->getNamedAttribute('name')]) && strlen($_REQUEST[$row->getNamedAttribute('name')]) > 0) {
+                $value = $default_logic ? $_REQUEST[$row->getNamedAttribute('name') . $_REQUEST[$row->getNamedAttribute('name')]] : $_REQUEST[$row->getNamedAttribute('name')];
+            }
+
+            $switchParamArray[$row->getNamedAttribute("id")][0] = $row;
+            $switchParamArray[$row->getNamedAttribute("id")][1] = $value;
+        }
+        
+        return $switchParamArray;            
+    }
+    
+    
+    /**
+     * Die Methode liefert für Objekte mit einem "Default-Logic" Parameter
+     * das Parameter-Array fürs ein- oder ausschalten je nach gesetztem
+     * $switchOn Parameter. 
+     * Hat das Objekt keinen Parameter mit "Default-Logic", so gibt die 
+     * Methode null zurück.
+     */
+    function getDefaultSwitchParams($switchOn=true){
+        $allParams = array();
+        $optionalParams = array();
+        $fixParams = array();
+        $defaultLogicParams = array();
+        $switchParams = array();
+
+        $paramTable = new DbTable($_SESSION['config']->DBCONNECT, 
+                                  "homecontrol_sender_typen_parameter", array('*'), "", "", "",
+                                  "senderTypId=(SELECT s.senderTypId FROM homecontrol_sender s, homecontrol_config c WHERE s.id = c.sender_id AND c.id = " . $this->getId() .
+                                  ")" 
+                                 );
+        $lastSenderTyp = "";
+        $switchUrl = "";
+        $switchParamArray = array();
+        $allParamsSet = true;
+        $hasDefaultLogicParam = false;
+        foreach ($paramTable->ROWS as $row) {
+            $optional = false;
+            $fix = false;
+            $default_logic = false;
+            $mandatory = false;
+
+            if ($row->getNamedAttribute("optional") == "J") {
+                $optionalParams[count($optionalParams)] = $row->getNamedAttribute('name');
+                $optional = true;
+            }
+            if ($row->getNamedAttribute("mandatory") == "J") {
+                $mandatory = true;
+            }
+            if ($row->getNamedAttribute("fix") == "J") {
+                $fixParams[count($fixParams)] = $row->getNamedAttribute('name');
+                $fix = true;
+            }
+            if ($row->getNamedAttribute("default_logic") == "J") {
+                $defaultLogicParams[count($defaultLogicParams)] = $row->getNamedAttribute('name');
+                $default_logic = true;
+                $hasDefaultLogicParam = true;
+            }
+
+            $value = $this->getParameterValue($row);
+            if($default_logic && !$switchOn){
+                $value = "-".$value;
+            }
+            
+            $lfdnr = count($switchParamArray);
+            $switchParamArray[$row->getNamedAttribute("id")][0] = $row;
+            $switchParamArray[$row->getNamedAttribute("id")][1] = $value;
+        }
+        
+        return $hasDefaultLogicParam?$switchParamArray:null;
+    }
+
+    /**
+     * Die Methode liefert den String für das Objekt, 
+     * der in der Datenbank für die HA-Bridge-Devices eingetragen werden muss
+     * um eine Schaltung per Sprachsteuerung zu ermöglichen. 
+     * 
+     * Diese Logik funktioniert nur bei Geräten mit mindestens einem Parameter.
+     * der "Default_Logik" aktiviert hat. 
+     * Sonst liefert die Methode einen Leer-String zurück.
+     */
+    function getHaBridgeDbString($id, $mainUid="00:17:88:5E:D3" ){
+        $uidTmp = $id;
+        $uid1=0;
+        $uid2=0;
+        
+        while($uidTmp>99){
+            $uid1++;
+        }
+        $uid2 = $uidTmp;
+        
+        $uid = str_pad($id, 2, "0", STR_PAD_LEFT);
+        $switchOnUrl = $this->getSwitchCommand($this->getDefaultSwitchParams(true));
+        $switchOffUrl = $this->getSwitchCommand($this->getDefaultSwitchParams(false));
+        
+        $ret = "{"
+              ."\"id\":\"" .$id ."\","
+              ."\"uniqueid\":\"" .$mainUid .":" .$uid1 ."-" .$uid2 ."\","
+              ."\"name\":\"" .$this->getName() ."\","
+              ."\"mapId\":\"100\","
+              ."\"mapType\":\"httpDevice\","
+              ."\"deviceType\":\"custom\","
+              ."\"targetDevice\":\"Encapsulated\","
+              ."\"offUrl\":\"[{\\\"item\\\":\\\"" .str_replace("=", "\\u003d", $switchOffUrl) ."\\\",\\\"httpVerb\\\":\\\"GET\\\",\\\"contentType\\\":\\\"text/html\\\"}]\","
+              ."\"onUrl\":\"[{\\\"item\\\":\\\"" .str_replace("=", "\\u003d", $switchOnUrl) ."\\\",\\\"httpVerb\\\":\\\"GET\\\",\\\"contentType\\\":\\\"text/html\\\"}]\","
+              ."\"httpVerb\":\"GET\","
+              ."\"contentType\":\"text/html\","
+              ."\"inactive\":false,"
+              ."\"noState\":false"
+              ."}";
+              
+        return $this->getDefaultSwitchParams()!=null ? $ret : "";
+    }
+
+
+    /**
+     * Liefert entsprechend des übergebenen Parameter-Arrays 
+     * den URL-String zurück, der zum schalten des Objektes
+     * ausgeführt werden muss. 
+     * 
+     * @param $paramsRowValArray  Zweidimensionales Array aller Parameter.
+     *                            zu jedem Parameter-Eintrag im Array ist 
+     *                            der erste Wert die Parameter-Row und 
+     *                            der zweite Wert der Wert der verwendet werden soll. 
+     *  
+     * @param $saveParamValues    gibt an, ob die Werte aus dem 
+     *                            Array als letzter Wert des Parameters
+     *                            gespeichert werden sollen. 
+     */
+    function getSwitchCommand($paramsRowValArray, $saveParamValues=false){
+        $command = "";
+        $switchParams = array();
+
+        $lastSenderTyp = "";
+        $switchUrl = "";
+        $switchParamArray = array();
+        $allParamsSet = true;
+        
+        foreach ($paramsRowValArray as $paramArray) {
+            $row = $paramArray[0];
+            $newValue = $paramArray[1];
+            
+            $optional = false;
+            $fix = false;
+            $default_logic = false;
+            $mandatory = false;
+
+            if ($row->getNamedAttribute("optional") == "J") {
+                $optional = true;
+            }
+            if ($row->getNamedAttribute("mandatory") == "J") {
+                $mandatory = true;
+            }
+            if ($row->getNamedAttribute("fix") == "J") {
+                $fix = true;
+            }
+            if ($row->getNamedAttribute("default_logic") == "J") {
+                $default_logic = true;
+            }
+
+            if (strlen($newValue) > 0) {
+                if (strlen($switchUrl) > 0) {
+                    $switchUrl .= "&";
+                }
+                $switchUrl .= $row->getNamedAttribute('name') . "=" . $newValue;
+                $switchParams[count($switchParams)] = array($row, $newValue);
+            } else {
+                if(!$mandatory){
+                    if($saveParamValues){
+                        $this->setParameterValue($row, null);
+                    }
+                }
+            }
+
+            if (strlen($newValue) <= 0) {
+                if ($mandatory){
+                    if (!$optional || ($optional && $itm->isParameterOptionalActive($row['id']))) {
+                        $allParamsSet = false;
+                    }
+                } 
+            }
+        }
+        
+        //echo "Alle notwendigen Parameter gesetzt? ". ($allParamsSet?"Ja":"Nein")."</br>";
+        // Schalten wenn alle Parameter gesetzt wurden 
+        if ($allParamsSet) {
+            $senderUrl = getArduinoUrlForDeviceId($this->getId(), $_SESSION['config']->DBCONNECT);
+            $useSenderUrl = strlen($senderUrl) > 0 ? $senderUrl : $arduinoUrl;
+            $urlArray = parse_url($useSenderUrl);
+            $host = $urlArray['host'];
+
+            $command = $useSenderUrl . "?" . $switchUrl;
+        }
+        
+        if($saveParamValues){
+            echo "saveParams<br/>";
+            // Neue Parameter-Werte merken
+            foreach ($switchParams as $p) {
+                $pRow = $p[0];
+                $pValue = $p[1];
+
+                if ($pRow->getNamedAttribute("fix") != "J" && $pRow->getNamedAttribute("default_logic") != "J") {
+                    echo $pRow->getNamedAttribute("name") ."=" .$pValue ."<br/>";
+                    $this->setParameterValue($pRow, $pValue);
+                }
+            }
+        }
+        
+        return $command;
+    }
+    
+    /**
+     * Die Methode löscht das Objekt inklusive aller abhängigen Einträge in der Datenbank. 
+     */
+    function deleteItem(){
+        $sqlRemoveEditorZuordnung = "DELETE FROM homecontrol_control_editor_zuordnung WHERE config_id = " .$this->getId();
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveEditorZuordnung);
+
+        $sqlRemoveCronItems = "DELETE FROM homecontrol_cron_items WHERE config_id = " .$this->getId();
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveCronItems);
+
+        $sqlRemoveCronParamItems = "DELETE FROM homecontrol_cron_parameter_values WHERE config_id = " .$this->getId();
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveCronParamItems);
+
+        $sqlRemoveAlarmItems = "DELETE FROM homecontrol_alarm_items WHERE config_id = " .$this->getId();
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveAlarmItems);
+
+        $sqlRemoveRegelItems = "DELETE FROM homecontrol_regeln_items WHERE config_id = " .$this->getId();
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveRegelItems);
+
+        $sqlRemoveSenderTypenParamOptional = "DELETE FROM homecontrol_sender_typen_parameter_optional WHERE config_id = " .$this->getId();
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveSenderTypenParamOptional);
+
+        $sqlRemoveShortcutItems = "DELETE FROM homecontrol_shortcut_items WHERE config_id = " .$this->getId();
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveShortcutItems);
+
+        $sqlRemoveShortcutParamValues = "DELETE FROM homecontrol_shortcut_parameter_values WHERE config_id = " .$this->getId();
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveShortcutParamValues);
+
+
+        $this->CONFIG_ROW->deleteFromDb();
+        refreshEchoDb($_SESSION['config']->DBCONNECT);
+    }
+    
+    
+    
+    /**
+     * Standard-Anzeige Methode
+     */
     function show() {
         if ($this->EDIT_MODE) {
             echo "<a href=\"?editControl=" . $this->ID . "\" style=\"position:absolute; left:" .
@@ -459,17 +838,20 @@ class HomeControlItem extends Object {
             echo "<div style=\"position:absolute; left:" . $this->X . "px; top:" . ($this->
                 Y + $_SESSION['additionalLayoutHeight']) . "px; width:" . $this->
                 CONTROL_IMAGE_WIDTH . "px; height:" . $this->CONTROL_IMAGE_HEIGHT . "px;\">";
+                
             echo $this->getControlArtIconSrc();
             
             if($_SESSION['config']->PUBLICVARS['switchButtonsOnIconActive']=="J"){
-                $this->getSwitchButtons()->show(); 
+                $btns = $this->getSwitchButtons();
+                $btns->setStyle("position", "relative");
+                $btns->setStyle("left", "-17px");
+                $btns->setStyle("top", "-20px");
+                $btns->show();
             }
             echo "</div>";
-            
         }
     }
 
-    
 
 }
 

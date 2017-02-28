@@ -12,14 +12,10 @@ class HomeControlMap extends Object {
     public $LAYOUTART_TABLET = "TABLET";
     public $LAYOUTART_MOBILE = "MOBILE";
 
-
-
     function HomeControlMap($editModus = false, $layoutArt = "DESKTOP") {
         $this->EDITMODE = $editModus;
         $this->LAYOUT_ART = $layoutArt;
     }
-
-
 
 
     function getInsertSensorMask($x, $y) {
@@ -81,8 +77,7 @@ class HomeControlMap extends Object {
 
         return $frm;
     }
-
-
+    
 
     function getInsertMask($x, $y) {
         $txfName = new TextField("Name", "", 30, 20);
@@ -577,7 +572,7 @@ class HomeControlMap extends Object {
 
                 if (isset($_REQUEST['sender_id']) && $_REQUEST['sender_id'] > 0) {
                     if($newRow->getNamedAttribute('sender_id')!=$_REQUEST['sender_id']){
-                        echo "Zuordnung gelöscht";
+                        echo "Sender-Editor-Zuordnungen entfernt";
                         $sqlDelZuordnung = "DELETE FROM homecontrol_control_parameter_zu_editor WHERE sendereditor_zuord_id in (SELECT id FROM homecontrol_control_editor_zuordnung WHERE config_id = ".$_REQUEST['editControl'].") ";
                         $_SESSION['config']->DBCONNECT->executeQuery($sqlDelZuordnung);
                         
@@ -609,8 +604,10 @@ class HomeControlMap extends Object {
         if (isset($_REQUEST['removeId']) && isset($_REQUEST['DelControl' . $_REQUEST['removeId']]) &&
             $_REQUEST['DelControl' . $_REQUEST['removeId']] == "Entfernen") {
             $newRow = $dbTable->getRowById($_REQUEST['removeId']);
-            $newRow->deleteFromDb();
-            
+
+            $itm = $_SESSION['config']->getItemById($_REQUEST['removeId']);
+            $itm->deleteItem();
+
             return true;
         }
 
@@ -679,7 +676,7 @@ class HomeControlMap extends Object {
             $_REQUEST['DelControl' . $_REQUEST['removeSensorId']] == "Entfernen") {
 	    
             if($_REQUEST['removeSensorId'] == 999999999 ){
-		return new Text("Sensor-ID 999999999 ist ung&uuml;ltig, da es eine Systemkomponente ist!");
+		        return new Text("Sensor-ID 999999999 ist ung&uuml;ltig, da es eine Systemkomponente ist!");
             }
             $newRow = $dbTable->getRowById($_REQUEST['removeSensorId']);
             $newRow->deleteFromDb();
@@ -779,6 +776,7 @@ class HomeControlMap extends Object {
     function showMap($dbTable, $dbSensorTable) {
         $sMap = $this->getSensorMap($dbSensorTable);
         $sMap->show();
+
         $map = $this->getMap($dbTable);
         $map->show();
     }
@@ -874,7 +872,6 @@ class HomeControlMap extends Object {
         $rChooser->setAttribute(0, $frmChooser);
         $layoutTable->addRow($rChooser);
         
-                
         $layoutTable->addSpacer(0,15);
 
         $layoutRow = $layoutTable->createRow();
@@ -890,9 +887,8 @@ class HomeControlMap extends Object {
             foreach ($dbTable->ROWS as $row) {
                 if ($currCol >= $columnCount) {
                     $currCol = 0;
-                    $layoutTable->addSpacer(0, 7);
                     $layoutTable->addSpacer(1, 2);
-                    $layoutTable->addSpacer(0, 7);
+                    $layoutTable->addSpacer(0, 20);
                     $layoutRow = $layoutTable->createRow();
                     $layoutTable->addRow($layoutRow);
                 }
@@ -911,14 +907,14 @@ class HomeControlMap extends Object {
                     $iTFt->setColor("#7babdb");
                     $iT->setFonttype($iTFt);
                     $layoutRow->setAttribute(0, $iT);
-                    $layoutTable->addSpacer(0, 15);
+                    
                     $layoutTable->addSpacer(1, 2);
-                    $layoutTable->addSpacer(0, 15);
+                    $layoutTable->addSpacer(0, 20);
                     $layoutRow = $layoutTable->createRow();
                     $layoutTable->addRow($layoutRow);
                 }
     
-                $hcItem = new HomeControlItem($row, false);
+                $hcItem =  $_SESSION['config']->getItemById($row->getNamedAttribute("id"));  //new HomeControlItem($row, false);
                 $switchComp = $hcItem->getMobileSwitch();
                 $layoutRow->setAttribute($currCol, $switchComp);
     
@@ -952,7 +948,6 @@ class HomeControlMap extends Object {
         $letzteEtage = "";
 
         foreach ($dbTable->ROWS as $row) {
-
             if ($letzteEtage != $row->getNamedAttribute("etage")) {
                 $letzteEtage = $row->getNamedAttribute("etage");
 
@@ -985,46 +980,6 @@ class HomeControlMap extends Object {
     }
 
 
-    function checkSwitch(){
-      if(isset($_REQUEST['switchConfigId']) && strlen($_REQUEST['switchConfigId'])>0){
-        if(isset($_REQUEST['schalte']) && $_REQUEST['schalte']!=0){
-            $dbActionLog = new DbTable($_SESSION['config']->DBCONNECT, 
-                                       "action_log", 
-                                       array("sessionid", "userid", "zeit"),
-                                       "Session, Benutzer, Timestamp",
-                                       "",
-                                       "geaendert desc",
-                                       "sessionid='?schalte=".$_REQUEST['schalte']."'".(isset($_REQUEST['dimmer'])&&strlen($_REQUEST['dimmer'])>0?"-".$_REQUEST['dimmer']:"")
-                                        .(isset($_REQUEST['tmstmp'])&&strlen($_REQUEST['tmstmp'])>0?" AND zeit=".$_REQUEST['tmstmp']:"") );
-
-            
-            if(count($dbActionLog->ROWS)==0){
-                if(!isset($_REQUEST['tmstmp']) || strlen($_REQUEST['tmstmp'])<=0){
-                    $_REQUEST['tmstmp'] = time();
-                }
-                $actionLogRow = $dbActionLog->createRow();
-                $actionLogRow->setNamedAttribute("sessionid", "?schalte=".$_REQUEST['schalte']);
-                $actionLogRow->setNamedAttribute("userid", $_SESSION['config']->CURRENTUSER->USERID);
-                $actionLogRow->setNamedAttribute("zeit", $_REQUEST['tmstmp']);
-                $actionLogRow->insertIntoDB();
-   
-                //echo "Dimmer: ".$_REQUEST['dimmer'];
-                
-                $dayInMillis = 86400000;
-                $dbActionLog->setWhere("zeit is null or zeit < " .($_REQUEST['tmstmp']-$dayInMillis) );
-                $dbActionLog->refresh();
-                foreach($dbActionLog->ROWS as $r){
-                    $r->deleteFromDb();
-                }
-                if(isset($_REQUEST['schalte'])&&$_REQUEST['schalte']>0){
-                    $this->switchObject(isset($_REQUEST['schalte'])&&$_REQUEST['schalte']>0?$_REQUEST['schalte']:-$_REQUEST['schalte'], $_REQUEST['schalte']>0?"on":"off", isset($_REQUEST['dimmer'])?$_REQUEST['dimmer']:0);
-                }            
-            }
-        }
-      }
-    }
-
-
     /*
     * Standard Anzeige
     *
@@ -1039,9 +994,7 @@ class HomeControlMap extends Object {
             $this->checkSensorOrControlSwitch();
             
             $this->handleEtage();
-            
-            $this->checkSwitch();
-            
+                        
             if ($this->LAYOUT_ART == $this->LAYOUTART_MOBILE) {
                 $this->showMobileView();
                 return;
@@ -1122,12 +1075,6 @@ class HomeControlMap extends Object {
         }
     }
 
-    
-    function switchObject($id, $onOff, $dimm=0){
-        if($id>0 && strlen($onOff)>0){
-            switchShortcut("http://" . $_SESSION['config']->PUBLICVARS['arduino_url'],$id."-".$onOff.($dimm>0&&$dimm<17?"-".$dimm:""), $_SESSION['config']->DBCONNECT);
-        }
-    }
 }
 
 ?>

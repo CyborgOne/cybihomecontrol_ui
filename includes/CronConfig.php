@@ -104,8 +104,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $table->addSpacer(0, 20);
 
     $form = new Form();
-
-
+    $cron = null;
+    
     // Zuordnung ausgewählt
     if (isset($_SESSION['SelectedCronToEdit']) && strlen($_SESSION['SelectedCronToEdit']) > 0) {
         $cron = new HomeControlCron($scDbTable->getRowById($_SESSION['SelectedCronToEdit']));
@@ -170,78 +170,76 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $form->add(new Spacer());
     $form->show();
     
+    if($cron!=null){
+        // --------------------------------------------------
+        //  Parameter
+        // --------------------------------------------------
+        $tblItems = new Table(array(""));
+        $tblItems->setAlign("left");
+                  
+        $ttlZuord = new Title("Parameter festlegen");
+        $ttlZuord->setAlign("left");
     
+        $rTitle = $tblItems->createRow();
+        $rTitle->setAttribute(0, $ttlZuord);
+        $rTitle->setSpawnAll(true);
+        $tblItems->addRow($rTitle);
     
-
-    // --------------------------------------------------
-    //  Parameter
-    // --------------------------------------------------
-    $tblItems = new Table(array(""));
-    $tblItems->setAlign("left");
-              
-    $ttlZuord = new Title("Parameter festlegen");
-    $ttlZuord->setAlign("left");
-
-    $rTitle = $tblItems->createRow();
-    $rTitle->setAttribute(0, $ttlZuord);
-    $rTitle->setSpawnAll(true);
-    $tblItems->addRow($rTitle);
-
-    $tblItems->addSpacer(0, 10);
-    
-    
-    $cronItemRows = $cron->getItemRowsForCron();
-    foreach($cronItemRows as $cronItemRow){
-        $rItem = $tblItems->createRow();
-        $ttl = new Title($cronItemRow->getNamedAttribute("name"));
-        $ttl->setAlign("left");
-        $rItem->setAttribute(0, $ttl);
-        $tblItems->addRow($rItem);
-
-        $itm = new HomeControlItem($cronItemRow);
-        $itmParams = $itm->getAllParameter();
-
-        $paramTbl = new Table(array("", ""));
-        $paramTbl->setColSizes(array("50%", "50%"));
-        foreach($itmParams as $itmParam){
-            if((!$itmParam->isFix()||$itmParam->isDefaultLogic()) && (!$itmParam->isOptional() || $itm->isParameterOptionalActive($itmParam->getId()))){
-                $paramPrefix = "c".$cron->getId()."_".$itmParam->getId()."_".$itm->getId()."_";
-                if (isset($_REQUEST["saveParameters"]) && $_REQUEST["saveParameters"] == "Parameter speichern" &&
-                    isset($_REQUEST[$paramPrefix.$itmParam->getName()]) && strlen($_REQUEST[$paramPrefix.$itmParam->getName()])>0 ){
-                        $itm->setParameterValueForCron($itmParam->getRow(), $itm->getRow(), $cron->getId(), $_REQUEST[$paramPrefix.$itmParam->getName()]);
-                }
-
-                $val = $itm->getParameterValueForCron($itmParam->getRow(), $cron->getId());
-
-                $valueEditObject="";
-                if($itmParam->isDefaultLogic()){
-                    $tAn=$itm->getDefaultLogicAnText();
-                    $tAus=$itm->getDefaultLogicAusText();
-
-                    $valueEditObject = new Combobox($paramPrefix.$itmParam->getName(), array($tAn=>$tAn,$tAus=>$tAus) , $val);
-                } else {
-                    $valueEditObject = $itm->getSender()->getTyp()->getEditParameterValueObject($itmParam->getRow(), $val, $paramPrefix, $val);
-                }
-    
-                $rParam = $paramTbl->createRow();
-                $rParam->setAttribute(0, new Text($itmParam->getName(), 3));
-                $rParam->setAttribute(1, $valueEditObject);
-                $paramTbl->addRow($rParam);
-            }
-        }
-
-        $rItem = $tblItems->createRow();
-        $rItem->setAttribute(0, $paramTbl);
-        $tblItems->addRow($rItem);
-
         $tblItems->addSpacer(0, 10);
+        
+        $cronItemRows = $cron->getItemRowsForCron();
+        foreach($cronItemRows as $cronItemRow){
+            $rItem = $tblItems->createRow();
+            $ttl = new Title($cronItemRow->getNamedAttribute("name"));
+            $ttl->setAlign("left");
+            $rItem->setAttribute(0, $ttl);
+            $tblItems->addRow($rItem);
+    
+            $itm = $_SESSION['config']->getItemById($cronItemRow->getNamedAttribute("id")); //new HomeControlItem($cronItemRow);
+            $itmParams = $itm->getAllParameter();
+    
+            $paramTbl = new Table(array("", ""));
+            $paramTbl->setColSizes(array("50%", "50%"));
+            foreach($itmParams as $itmParam){
+                if((!$itmParam->isFix()||$itmParam->isDefaultLogic()) && (!$itmParam->isOptional() || $itm->isParameterOptionalActive($itmParam->getId()))){
+                    $paramPrefix = "c".$cron->getId()."_".$itmParam->getId()."_".$itm->getId()."_";
+                    if (isset($_REQUEST["saveParameters"]) && $_REQUEST["saveParameters"] == "Parameter speichern" &&
+                        (isset($_REQUEST[$paramPrefix.$itmParam->getName()]) && strlen($_REQUEST[$paramPrefix.$itmParam->getName()])>0 || !$itmParam->isMandatory())){
+                            $itm->setParameterValueForCron($itmParam->getRow(), $cron->getId(), $_REQUEST[$paramPrefix.$itmParam->getName()]);
+                    }
+    
+                    $val = $itm->getParameterValueForCron($itmParam->getRow(), $cron->getId());
+    
+                    $valueEditObject="";
+                    if($itmParam->isDefaultLogic()){
+                        $tAn=$itm->getDefaultLogicAnText();
+                        $tAus=$itm->getDefaultLogicAusText();
+    
+                        $valueEditObject = new Combobox($paramPrefix.$itmParam->getName(), array($tAn=>$tAn,$tAus=>$tAus) , $val);
+                    } else {
+                        $valueEditObject = $itm->getSender()->getTyp()->getEditParameterValueObject($itmParam->getRow(), $val, $paramPrefix, $val);
+                    }
+        
+                    $rParam = $paramTbl->createRow();
+                    $rParam->setAttribute(0, new Text($itmParam->getName(), 3));
+                    $rParam->setAttribute(1, $valueEditObject);
+                    $paramTbl->addRow($rParam);
+                }
+            }
+    
+            $rItem = $tblItems->createRow();
+            $rItem->setAttribute(0, $paramTbl);
+            $tblItems->addRow($rItem);
+    
+            $tblItems->addSpacer(0, 10);
+        }
+    
+        $frmParams = new Form();
+        $frmParams->add($tblItems);
+        $frmParams->add(new Button("saveParameters", "Parameter speichern"));
+        $frmParams->add(new Spacer());
+        $frmParams->show();
     }
-
-    $frmParams = new Form();
-    $frmParams->add($tblItems);
-    $frmParams->add(new Button("saveParameters", "Parameter speichern"));
-    $frmParams->add(new Spacer());
-    $frmParams->show();
 }
 
 

@@ -192,7 +192,7 @@ class Object extends Style {
   
   function checkPos(){
     if(strlen($this->XPOS)>0 && strlen($this->YPOS)>0){
-         $this->setStyle("position", "absolute; top:" .$this->YPOS ."px; left:" .$this->XPOS ."px; ");
+         $this->setStyle("position", "absolute; top:" .$this->YPOS ."px; left:" .$this->XPOS ."px");
     }
   }
 
@@ -336,7 +336,7 @@ class Style {
 	
 	  foreach($this->STYLEATTRS as $name=>$style){
 	  	if(strlen($name)>0 &&  strlen($style)>0){
-		  $ret = $ret . $name.": " .$style ."; ";
+		  $ret = $ret .$name.": " .$style ."; ";
 		}		  		
 	  }	
 	

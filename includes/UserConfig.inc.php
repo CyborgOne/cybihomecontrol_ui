@@ -1,5 +1,6 @@
  <?PHP
  
+    
     $tblMain = new Table(array("", ""));
 
     $t2 = new Title("Benutzer-Einstellungen");
@@ -16,17 +17,27 @@
                                 "",
                                 "Nachname, Vorname");
     
+    $insertMaskActive = (isset($_REQUEST["dbTableNew" . $dbTblBenutzer->TABLENAME]) && strlen($_REQUEST["dbTableNew" . $dbTblBenutzer->TABLENAME])>0);
+    $updateMaskActive = (isset($_REQUEST["showUpdateMask" . $dbTblBenutzer->TABLENAME]) && strlen($_REQUEST["showUpdateMask" . $dbTblBenutzer->TABLENAME])>0);
+    
     $dbTblBenutzer->setHeaderEnabled(true);
     $dbTblBenutzer->setDeleteInUpdate(true);
     $dbTblBenutzer->setInvisibleCols(array("Pw"));
     $dbTblBenutzer->setNoUpdateCols(array("Pw"));
     $dbTblBenutzer->setColSizes(array("200", "40", "60", "90", "50", "50"));
 
+    if( $updateMaskActive || $insertMaskActive ){
+        $pwFieldName = "Pw".($updateMaskActive?($_REQUEST[("showUpdateMask").$dbTblBenutzer->TABLENAME]):"");
+        $pwField = $insertMaskActive?$pwField = new TextField($pwFieldName):new PasswordField($pwFieldName);
+        
+        $dbTblBenutzer->setAdditionalUpdateFields(array("Passwort"=>$pwField));
+    }
     
     $deleteMask=null;
     if ($dbTblBenutzer->isDeleteInUpdate()) {
         $deleteMask = !$dbTblBenutzer->doDeleteFromUpdatemask() ? null : $dbTblBenutzer->doDeleteFromUpdatemask();
     }
+    
     if ($deleteMask != null) {
         $rDel = $tblMain->createRow();
         $rDel->setAttribute(0, $deleteMask);
@@ -36,30 +47,34 @@
     
     $newBenutzerBtn = new Text("");
     
+
     // Neuer Eintrag
-    if (isset($_REQUEST['InsertIntoDBuser']) && $_REQUEST['InsertIntoDBuser'] == "Speichern") {
+    if (isset($_REQUEST['InsertIntoDB'.$dbTblBenutzer->TABLENAME]) && $_REQUEST['InsertIntoDB'.$dbTblBenutzer->TABLENAME] == "Speichern") {
         if(isset($_REQUEST['Pw']) && strlen($_REQUEST['Pw'])>0){
             $_REQUEST['Pw'] = md5($_REQUEST['Pw']);
         }
+        
         $dbTblBenutzer->doInsert();
         $dbTblBenutzer->refresh();
 
     } else if (isset($_REQUEST[$dbTblBenutzer->getNewEntryButtonName()])) {
-            $dbTblBenutzer->setBorder(0);
-            $insMsk = $dbTblBenutzer->getInsertMask();
-            $hdnFld = $insMsk->getAttribute(1);
-            if ($hdnFld instanceof Hiddenfield) {
-                $insMsk->setAttribute(1, new Hiddenfield($dbTblBenutzer->getNewEntryButtonName(), "-"));
-            }
+        $dbTblBenutzer->setBorder(0);
+        $insMsk = $dbTblBenutzer->getInsertMask();
+        $hdnFld = $insMsk->getAttribute(1);
+        
+        if ($hdnFld instanceof Hiddenfield) {
+            $insMsk->setAttribute(1, new Hiddenfield($dbTblBenutzer->getNewEntryButtonName(), "-"));
+        }
 
-            $rNew = $tblMain->createRow();
-            $rNew->setAttribute(0, $insMsk);
-            $rNew->setSpawnAll(true);
-            $tblMain->addRow($rNew);
-            $tblMain->addSpacer(0,10);
+        $rNew = $tblMain->createRow();
+        $rNew->setAttribute(0, $insMsk);
+        $rNew->setSpawnAll(true);
+        $tblMain->addRow($rNew);
+        $tblMain->addSpacer(0,10);
     } else {
         $newBenutzerBtn = $dbTblBenutzer->getNewEntryButton("Neuen Benutzer anlegen");    
     }
+    
     if (isset($_REQUEST["DbTableUpdate" . $dbTblBenutzer->TABLENAME])) {
         if(isset($_REQUEST["Pw".$_REQUEST["SingleUpdateRowId"]]) && strlen($_REQUEST["Pw".$_REQUEST["SingleUpdateRowId"]])>0){
             $_REQUEST["Pw".$_REQUEST["SingleUpdateRowId"]] = md5($_REQUEST["Pw".$_REQUEST["SingleUpdateRowId"]]);
@@ -76,10 +91,6 @@
             $lS->setAttribute(0, $deleteMask);
             $tblMain->addRow($lS);
         }            
-    }
-
-    if(isset($_REQUEST["showUpdateMask" . $dbTblBenutzer->TABLENAME]) && strlen($_REQUEST["showUpdateMask" . $dbTblBenutzer->TABLENAME])>0){
-        $dbTblBenutzer->setAdditionalUpdateFields(array("Passwort"=>new PasswordField("Pw".$_REQUEST["showUpdateMask" . $dbTblBenutzer->TABLENAME])));
     }
 
     $tblArduinoBenutzeres = $dbTblBenutzer->getUpdateMask();

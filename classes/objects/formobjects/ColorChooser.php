@@ -3,37 +3,42 @@
 
 class ColorChooser extends Object {
   private $VALUE;
+  private $FORM_NAME;
   
   private $RED;
   private $GREEN;
   private $BLUE;
 
-  function ColorChooser( $n="ColorChooser", $v="#000000"){
+  function ColorChooser( $n="ColorChooser", $v="#000000", $formName="ColorChooserForm"){
     $this->NAME  = $n;
     $this->VALUE = $v;
+    
+    $this->FORM_NAME = $formName;
   }
 
-
+  function getFormName(){
+    return $this->FORM_NAME;
+  }
 
   function  show(){
-    echo  "<div";
+    $dv = new Div();
+    $dv->setAlign("center");
+    $dv->getStyleString();
+    $dv->getToolTipTag();
+    $dv->setOverflow("visible");
     
-    echo $this->getStyleString();
-    echo "><center>";
-
+    $t = new Text("<input id=\"choosen_" .$this->NAME ."\" name=\"choosen_" .$this->NAME ."\" type=\"color\" value=\"" 
+            .$this->VALUE 
+            ."\" onchange=\"document.getElementById('" .$this->NAME ."').value = document.getElementById('choosen_" .$this->NAME ."').value;"
+            //."document.getElementById('" .$this->FORM_NAME ."').submit();" 
+            ."\"/>"          
+          ."<input id=\"" .$this->NAME ."\" name=\"" .$this->NAME ."\" type=\"text\" size=\"4\" value=\"" 
+            .$this->VALUE
+            ."\" />");
+    $t->setFilter(false);
     
-    echo  "<input id=\"background-color\" type=\"color\" value=\"" 
-          .$this->VALUE 
-          ."\" onchange=\"document.getElementById('" .$this->NAME ."').value = document.getElementById('background-color').value;document.getElementById('" .$this->NAME ."Form').submit();\">"
-          
-          ."<input id=\"" .$this->NAME ."\" type=\"text\" size=\"4\" value=\"" 
-          .$this->VALUE 
-          ."\" readonly=\"\" ></center></div>";
-    
-    
-    echo $this->getToolTipTag();
-    
-	echo ">";
+    $dv->add($t);
+    $dv->show();
   }
 
 

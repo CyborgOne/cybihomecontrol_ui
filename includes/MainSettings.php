@@ -79,6 +79,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $timelineDurationRow = getRowByName($configDb->ROWS, "timelineDuration");
     $btSwitchActiveRow = getRowByName($configDb->ROWS, "btSwitchActive");
     $switchButtonsOnIconActiveRow = getRowByName($configDb->ROWS, "switchButtonsOnIconActive");
+    $haBridgeActiveRow = getRowByName($configDb->ROWS, "haBridgeActive");
+    $haBridgePathRow = getRowByName($configDb->ROWS, "haBridgePath");
 
     $loginForSwitchNeedName = 'value' . $loginForSwitchNeedRow->getNamedAttribute('id');
     $loginForTimelinePauseNeedName = 'value' . $loginForTimelinePauseNeedRow->getNamedAttribute('id');
@@ -94,7 +96,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $timelineDurationName = 'value' . $timelineDurationRow->getNamedAttribute('id');
     $btSwitchActiveName = 'value' . $btSwitchActiveRow->getNamedAttribute('id');
     $switchButtonsOnIconActiveName = 'value' . $switchButtonsOnIconActiveRow->getNamedAttribute('id');
-
+    $haBridgeActiveName = 'value' . $haBridgeActiveRow->getNamedAttribute('id');
+    $haBridgePathName = 'value' . $haBridgePathRow->getNamedAttribute('id');
 
     // Checkboxen brauchen Sonderbehandlung da bei fehlender Auswahl kein Wert mitgegeben wird
     if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$loginForSwitchNeedName])) {
@@ -121,6 +124,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$switchButtonsOnIconActiveName])) {
         $_REQUEST[$switchButtonsOnIconActiveName] = 'N';
     }
+    if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$haBridgeActiveName])) {
+        $_REQUEST[$haBridgeActiveName] = 'N';
+    }
 
 
     if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && $_REQUEST['DbTableUpdate' .
@@ -143,6 +149,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $timelineDurationRow = getRowByName($configDb->ROWS, "timelineDuration");
         $btSwitchActiveRow = getRowByName($configDb->ROWS, "btSwitchActive");
         $switchButtonsOnIconActiveRow = getRowByName($configDb->ROWS, "switchButtonsOnIconActive");
+        $haBridgeActiveRow = getRowByName($configDb->ROWS, "haBridgeActive");
+        $haBridgePathRow = getRowByName($configDb->ROWS, "haBridgePath");
     }
 
 
@@ -152,8 +160,9 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $abwesendAlarm = $abwesendAlarmRow->getNamedAttribute('value') == "J" ? "J" : "N";
     $abwesendSimulation = $abwesendSimulationRow->getNamedAttribute('value') == "J" ? "J" : "N";
     $abwesendMotion = $abwesendMotionRow->getNamedAttribute('value') == "J" ? "J" : "N";
-    $btSwitchActive = $btSwitchActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";        
+    $btSwitchActive = $btSwitchActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";
     $switchButtonsOnIconActive = $switchButtonsOnIconActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";        
+    $haBridgeActive = $haBridgeActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";
         
     $sensorlogDauer = $sensorlogDauerRow->getNamedAttribute('value');
     $motionDauer = $motionDauerRow->getNamedAttribute('value');
@@ -161,6 +170,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $notifyTargetMail = $notifyTargetMailRow->getNamedAttribute('value');
     $pagetitel = $pagetitelRow->getNamedAttribute('value');
     $timelineDuration = $timelineDurationRow->getNamedAttribute('value');
+    $haBridgePath = $haBridgePathRow->getNamedAttribute('value');
 
 
     $sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '" . $_SERVER['REMOTE_ADDR'] .
@@ -190,6 +200,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $chbBtSwitchActive = new Checkbox($btSwitchActiveName, "Intertechno BT-Switch aktiv?","J", $btSwitchActive);
 
     $chbSwitchButtonsOnIconActive = new Checkbox($switchButtonsOnIconActiveName, "Schalt-Buttons in Steuerung direkt sichtbar?","J", $switchButtonsOnIconActive);
+
+    $chbHaBridgeActive = new Checkbox($haBridgeActiveName, "HA-Bridge Aktiv? (Notwendig f&uuml;r Amazon-Echo)","J", $haBridgeActive);
 
 
     $cobTimelineDuration = new Combobox($timelineDurationName, array(1 => "1", 2 =>
@@ -223,11 +235,14 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $txtPageTitel = new Text("Seiten-Titel");
     $txfPageTitel = new Textfield($pagetitelName, $pagetitel, 30, 50);
 
-
     $txtNotifyTargetMail = new Text("Emailempfangs-Adresse");
-    $txfNotifyTargetMail = new Textfield($notifyTargetMailName, $notifyTargetMail,
-        30, 50);
+    $txfNotifyTargetMail = new Textfield($notifyTargetMailName, $notifyTargetMail, 30, 50);
 
+    $txtHaBridgePath = new Text("Pfad zur HA-Bridge Installation");
+    $txfHaBridgePath = new Textfield($haBridgePathName, $haBridgePath, 30, 50);
+    $txfHaBridgePath->setToolTip("Pfad zum Verzeichnis, in dem die HA-Bridge installiert wurde.<br/>Darin sollte die Jar-Datei liegen und ein Unterordner data existieren der eine .db und .conf Datei beinhaltet. ");
+    
+    
     $rightDiv = new Div();
     $rightDiv->add($chbLoginSwitchNeed);
     $rightDiv->add(new Spacer(5));
@@ -253,23 +268,37 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $lN->setAttribute(1, $txfNotifyTargetMail);
     $leftTab->addRow($lN);
     
-    $leftTab->addSpacer(0,20);
-    
-    $lB = $leftTab->createRow();
-    $lB->setSpawnAll(true);
-    $lB->setAttribute(0, $chbBtSwitchActive);
-    $leftTab->addRow($lB);
+    $leftTab->addSpacer(0,10);
     
     $lS = $leftTab->createRow();
     $lS->setSpawnAll(true);
     $lS->setAttribute(0, $chbSwitchButtonsOnIconActive);
     $leftTab->addRow($lS);
+
+    $lB = $leftTab->createRow();
+    $lB->setSpawnAll(true);
+    $lB->setAttribute(0, $chbBtSwitchActive);
+    $leftTab->addRow($lB);
+    
+    $leftTab->addSpacer(0,10);
+
+    $lS = $leftTab->createRow();
+    $lS->setSpawnAll(true);
+    $lS->setVAlign("middle");
+    $lS->setAttribute(0, $chbHaBridgeActive);
+    $leftTab->addRow($lS);
+    
+    $haT = $leftTab->createRow();
+    $haT->setAttribute(0, $txtHaBridgePath);
+    $haT->setAttribute(1, $txfHaBridgePath);
+    $leftTab->addRow($haT);
     
     $leftTab->addSpacer(0,20);
     
 
 
     $tblMain = new Table(array("", ""));
+    $tblMain->setVAlign("middle");
     $rMainT0 = $tblMain->createRow();
     $t1 = new Title("Generelle-Einstellungen");
     $t1->setAlign("left");

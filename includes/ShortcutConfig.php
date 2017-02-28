@@ -28,7 +28,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $spc = new Spacer(20); 
     $ln  = new Line();
 
-    $scDbTable  = new DbTable($_SESSION['config']->DBCONNECT,
+    $scDbTable  = new ShortcutTable($_SESSION['config']->DBCONNECT,
                             'homecontrol_shortcut',
                             array( "id", "name", "beschreibung", "show_shortcut" ) , 
                             "Id, Name, Beschreibung, Shortcut anzeigen",
@@ -116,7 +116,7 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
 
 
 // Zuordnung ausgewählt
-
+    $shortcut = null;
     if( isset($_SESSION['SelectedShortcutToEdit']) && strlen($_SESSION['SelectedShortcutToEdit'])>0 ){
         $shortcut = new HomeControlShortcut($scDbTable->getRowById($_SESSION['SelectedShortcutToEdit']));
         
@@ -187,79 +187,95 @@ if ( $_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']-
     $form->show();
     
     
+    if($shortcut!=null){    
+        // --------------------------------------------------
+        //  Parameter
+        // --------------------------------------------------
+        $tblItems = new Table(array(""));
+        $tblItems->setAlign("left");
+                  
+        $ttlZuord = new Title("Parameter festlegen");
+        $ttlZuord->setAlign("left");
     
-
-    // --------------------------------------------------
-    //  Parameter
-    // --------------------------------------------------
-    $tblItems = new Table(array(""));
-    $tblItems->setAlign("left");
-              
-    $ttlZuord = new Title("Parameter festlegen");
-    $ttlZuord->setAlign("left");
-
-    $rTitle = $tblItems->createRow();
-    $rTitle->setAttribute(0, $ttlZuord);
-    $rTitle->setSpawnAll(true);
-    $tblItems->addRow($rTitle);
-
-    $tblItems->addSpacer(0, 10);
+        $rTitle = $tblItems->createRow();
+        $rTitle->setAttribute(0, $ttlZuord);
+        $rTitle->setSpawnAll(true);
+        $tblItems->addRow($rTitle);
     
-    
-    $shortcutItemRows = $shortcut->getItemRowsForShortcut();
-    foreach($shortcutItemRows as $shortcutItemRow){
-        $rItem = $tblItems->createRow();
-        $ttl = new Title($shortcutItemRow->getNamedAttribute("name"));
-        $ttl->setAlign("left");
-        $rItem->setAttribute(0, $ttl);
-        $tblItems->addRow($rItem);
-
-        $itm = new HomeControlItem($shortcutItemRow);
-        $itmParams = $itm->getAllParameter();
-
-        $paramTbl = new Table(array("", ""));
-        $paramTbl->setColSizes(array("50%", "50%"));
-        foreach($itmParams as $itmParam){
-            if((!$itmParam->isFix()||$itmParam->isDefaultLogic()) && (!$itmParam->isOptional() || $itm->isParameterOptionalActive($itmParam->getId()))){
-                $paramPrefix = "s".$shortcut->getId()."_".$itmParam->getId()."_".$itm->getId()."_";
-                if (isset($_REQUEST["saveParameters"]) && $_REQUEST["saveParameters"] == "Parameter speichern" &&
-                    isset($_REQUEST[$paramPrefix.$itmParam->getName()]) && strlen($_REQUEST[$paramPrefix.$itmParam->getName()])>0 ){
-                        $itm->setParameterValueForShortcut($itmParam->getRow(), $itm->getRow(), $shortcut->getId(), $_REQUEST[$paramPrefix.$itmParam->getName()]);
-                }
-
-                $val = $itm->getParameterValueForShortcut($itmParam->getRow(), $shortcut->getId());
-
-                $valueEditObject="";
-                if($itmParam->isDefaultLogic()){
-                    $tAn=$itm->getDefaultLogicAnText();
-                    $tAus=$itm->getDefaultLogicAusText();
-
-                    $valueEditObject = new Combobox($paramPrefix.$itmParam->getName(), array($tAn=>$tAn,$tAus=>$tAus) , $val);
-                } else {
-                    $valueEditObject = $itm->getSender()->getTyp()->getEditParameterValueObject($itmParam->getRow(), $val, $paramPrefix, $val);
-                }
-    
-                $rParam = $paramTbl->createRow();
-                $rParam->setAttribute(0, new Text($itmParam->getName(), 3));
-                $rParam->setAttribute(1, $valueEditObject);
-                $paramTbl->addRow($rParam);
-            }
-        }
-
-        $rItem = $tblItems->createRow();
-        $rItem->setAttribute(0, $paramTbl);
-        $tblItems->addRow($rItem);
-
         $tblItems->addSpacer(0, 10);
+        
+        
+        $shortcutItemRows = $shortcut->getItemRowsForShortcut();
+        foreach($shortcutItemRows as $shortcutItemRow){
+            $rItem = $tblItems->createRow();
+            $ttl = new Title($shortcutItemRow->getNamedAttribute("name"));
+            $ttl->setAlign("left");
+            $rItem->setAttribute(0, $ttl);
+            $tblItems->addRow($rItem);
+    
+            $itm = new HomeControlItem($shortcutItemRow);
+            $itmParams = $itm->getAllParameter();
+    
+            $paramTbl = new Table(array("", ""));
+            $paramTbl->setColSizes(array("50%", "50%"));
+            foreach($itmParams as $itmParam){
+                if((!$itmParam->isFix()||$itmParam->isDefaultLogic()) && (!$itmParam->isOptional() || $itm->isParameterOptionalActive($itmParam->getId()))){
+                    $paramPrefix = "s".$shortcut->getId()."_".$itmParam->getId()."_".$itm->getId()."_";
+                    if (isset($_REQUEST["saveParameters"]) && $_REQUEST["saveParameters"] == "Parameter speichern" &&
+                        isset($_REQUEST[$paramPrefix.$itmParam->getName()]) && strlen($_REQUEST[$paramPrefix.$itmParam->getName()])>0 ){
+                            $itm->setParameterValueForShortcut($itmParam->getRow(), $shortcut->getId(), $_REQUEST[$paramPrefix.$itmParam->getName()]);
+                    }
+    
+                    $val = $itm->getParameterValueForShortcut($itmParam->getRow(), $shortcut->getId());
+    
+                    $valueEditObject="";
+                    if($itmParam->isDefaultLogic()){
+                        $tAn=$itm->getDefaultLogicAnText();
+                        $tAus=$itm->getDefaultLogicAusText();
+    
+                        $valueEditObject = new Combobox($paramPrefix.$itmParam->getName(), array($tAn=>$tAn,$tAus=>$tAus) , $val);
+                    } else {
+                        $valueEditObject = $itm->getSender()->getTyp()->getEditParameterValueObject($itmParam->getRow(), $val, $paramPrefix, $val);
+                    }
+        
+                    $rParam = $paramTbl->createRow();
+                    $rParam->setAttribute(0, new Text($itmParam->getName(), 3));
+                    $rParam->setAttribute(1, $valueEditObject);
+                    $paramTbl->addRow($rParam);
+                }
+            }
+    
+            $rItem = $tblItems->createRow();
+            $rItem->setAttribute(0, $paramTbl);
+            $tblItems->addRow($rItem);
+    
+            $tblItems->addSpacer(0, 10);
+        }
+    
+        $frmParams = new Form();
+        $frmParams->add($tblItems);
+        $frmParams->add(new Button("saveParameters", "Parameter speichern"));
+        $frmParams->add(new Spacer());
+        $frmParams->show();
     }
-
-    $frmParams = new Form();
-    $frmParams->add($tblItems);
-    $frmParams->add(new Button("saveParameters", "Parameter speichern"));
-    $frmParams->add(new Spacer());
-    $frmParams->show();
+}
 
 
+
+class ShortcutTable extends DbTable {
+    function postDelete($id) {
+        refreshEchoDb($_SESSION['config']->DBCONNECT);
+    }
+    
+    function doInsert(){
+        parent::doInsert();
+        refreshEchoDb($_SESSION['config']->DBCONNECT);
+    }
+    
+    function doUpdate(){
+        parent::doUpdate();
+        refreshEchoDb($_SESSION['config']->DBCONNECT);
+    }
 }
 
 

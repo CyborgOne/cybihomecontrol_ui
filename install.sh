@@ -109,6 +109,7 @@ sudo chmod 775 /etc/network/interfaces -R
 
 sudo chmod 775 /var/www/pics/raumplan -R
 sudo chmod 775 /var/www/cam_pics
+sudo chmod 775 /var/www/shortcuts -R
 
 sudo chmod 755 /etc/cron.manual/* -R
 sudo chmod +x  /etc/cron.manual/* -R

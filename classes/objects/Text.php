@@ -43,6 +43,7 @@ class Text extends Object {
          $t = htmlspecialchars( $t, ENT_QUOTES );   // Sonderzeichen austauschen
          $t = strip_tags($t);                       //html & php-Tags entfernen
          $t = stripslashes ($t);                    //ZeichenschÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼tzende slashes entfernen
+         $t = str_ireplace(" ", "&nbsp;" ,$t);
      }
    
      $t = $this->replaceTags($t);
@@ -141,10 +142,10 @@ class Text extends Object {
     }
 
 
-    if( ( $this->getFontsize() > 0 ||  strlen($this->getFonttype()->getColor())>0)){
+    if( ( strlen($this->getFontsize()) > 0 ||  strlen($this->getFonttype()->getColor())>0)){
       echo "<font ";
 	  
-	  if( $this->getFontsize() > 0){
+	  if( strlen($this->getFontsize()) > 0){
 	    echo " size='" .$this->getFontsize() ."' " ;
 	  }
 	  

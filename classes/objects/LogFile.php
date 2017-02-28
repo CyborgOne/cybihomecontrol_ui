@@ -5,7 +5,7 @@ class LogFile extends Object {
     private $CATEGORY     = "";
     private $DESCRIPTION  = "";
     
-    private $LINES_TO_SHOW    = 250;
+    private $LINES_TO_SHOW    = 2500;
     private $SHOW_CATEGORY    = false;
     private $SHOW_DESCRIPTION = true;
     
@@ -20,7 +20,7 @@ class LogFile extends Object {
     }    
     function setLinesToShow($showLinesCount){
         $this->LINES_TO_SHOW = $showLinesCount;
-    }    
+    }     
     
     function getPath(){
         return $this->FULLPATH;

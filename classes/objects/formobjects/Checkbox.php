@@ -126,16 +126,25 @@ class Checkbox extends Object {
     if($this->isSelected()){
 		$x .= " checked ";
 	}
-	
     $x .=  $this->getStyleString();
-    
 	$x .=  $this->getToolTipTag();
-    
-	$x .= "> " .$this->TEXT." ";
+	$x .= ">";
 	
-	$text = new Text($x);
-	$text->setFilter(false);
-	$text->show();
+	$cb = new Text($x);
+	$cb->setFilter(false);
+	
+    $txt = new Text($this->TEXT);
+    $txt->setFilter(false);
+    
+    $tbl = new Table(array("",""));
+    $r = $tbl->createRow();
+    $r->setVAlign("middle");
+    $r->setAlignments(array("left", "left"));
+    $r->setColSizes(array("25"));
+    $r->setAttribute(0, $cb);
+    $r->setAttribute(1, $txt);
+    $tbl->addRow($r);
+    $tbl->show();
   }
 
 

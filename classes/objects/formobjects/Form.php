@@ -10,7 +10,7 @@ class Form  extends Object{
   var $OBJECTS;
 
 
-  function Form ($action="", $target='', $param='', $name='Form'){
+  function Form ($action="", $target="", $param="", $name='Form'){
      $this->NAME = $name;
      
      if( strlen($this->ACTION)<=0 ){
@@ -35,7 +35,6 @@ class Form  extends Object{
   function setParam($p){
      $this->PARAMS = $p;	
   }
-
 
   function setDefaultObject($v){
     $this->DEFAULTOBJECT = $v;
@@ -85,8 +84,12 @@ class Form  extends Object{
 
 
   function  show(){
-    echo "<form action='" .$this->ACTION  ."' method='post' defaultbutton='" .$this->DEFAULTOBJECT ."' " ;
-
+    echo "<form action='" .$this->ACTION  ."' method='post' ";
+    
+    if(strlen($this->DEFAULTOBJECT)>0){
+      echo " defaultbutton='" .$this->DEFAULTOBJECT ."' " ;
+    }
+    
     if(strlen($this->TARGET)>0){
        echo " target='" .$this->TARGET  ."' ";    
     }

@@ -6,6 +6,11 @@
  * @copyright November 2012
  */
 $_SESSION['additionalLayoutHeight'] = 215;
+$_SESSION['currentView'] = 'mobile';
+
+include("header_index.php");
+
+
 
 $layoutTable = new Table(array(""));
 $layoutTable->setWidth("100%");

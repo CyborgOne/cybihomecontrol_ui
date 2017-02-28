@@ -92,85 +92,131 @@ class HomeControlShortcut {
      *  Schaltet alle vollständig konfigurierten Geräte
      */
     function switchShortcut() {
-        ob_end_flush();
-        ob_implicit_flush();
+        $command = "";
         
         foreach ($this->getItemRowsForShortcut() as $itemRow) {
-            $itm = new HomeControlItem($itemRow);
-            echo "</br>Item: " . $itm->getName();
-
-            $params = $itm->getAllParameter();
-            $urlParams = "";
-
-            $allParams=array();
-            $allParamsSet = true;
-            foreach ($params as $param) {
-                $allParams[count($allParams)] = $param->getName();
-                //echo "</br> Param: ".$allParams[count($allParams)-1];
-                $optional = false;
-                $fix = false;
-                $default_logic = false;
-
-                if ($param->isOptional()) {
-                    $optional = true;
-                    echo " optional ";
-                }
-                if ($param->isFix()) {
-                    $fix = true;
-                    echo " fix ";
-                }
-                if ($param->isDefaultLogic()) {
-                    $default_logic = true;
-                    echo " default_logic ";
-                }
-
-                // Hinterlegten Wert für Parameter zum entsprechenden Shortcut-Job ermitteln
-                $prefix = "";
-                if($default_logic){
-                    $prefix = $itm->getParameterValueForShortcut($param->getRow(), $this->ID)==$itm->getDefaultLogicAnText()?"":"-";
-                }
-                
-                $value = $fix?($prefix.$itm->getParameterValue($param->getRow())):$itm->getParameterValueForShortcut($param->getRow(), $this->ID);
-
-                if (isset($value) && strlen($value) > 0) {
-                    //echo " = Wert: " . $value . "</br>";
-                    if (strlen($urlParams) > 0) {
-                        $urlParams = $urlParams . "&";
-                    }
-                    $urlParams = $urlParams . $param->getName() . "=" .$value;
-                } else {
-                    if ($optional){
-                        if($itm->isParameterOptionalActive($param->getId())) {
-                            echo " FEHLENDER WERT FUER: ".$param->getName();
-                            $allParamsSet = false;
-                        }
-                    }
-                }
-            }
-
-            if ($allParamsSet) {
-                $senderUrl = getArduinoUrlForDeviceId($itm->getId(), $_SESSION['config']->DBCONNECT);
-                $useSenderUrl = strlen($senderUrl) > 0 ? $senderUrl : $arduinoUrl;
-                $urlArray = parse_url($useSenderUrl);
-                $host = $urlArray['host'];
-                $check = @fsockopen($host, 80);
-
-                echo " - Schalte Shortcut: " . $useSenderUrl . "?" . $urlParams;
-                
-                if ($check) {
-                    try {
-                        $retVal = file_get_contents($useSenderUrl . "?" . $urlParams);
-                    }
-                    catch (exception $e) {
-                        echo "FEHLER BEIM SCHALTEN!";
-                    }
-                }
-            }
+            $configItem = $_SESSION['config']->getItemById($itemRow->getNamedAttribute("id"));
+            //echo "</br>Item: " . $configItem->getName();
             
+            if($configItem != null){
+                $allParams = array();
+                $optionalParams = array();
+                $fixParams = array();
+                $defaultLogicParams = array();
+                $switchParams = array();
+    
+                $paramTable = new DbTable($_SESSION['config']->DBCONNECT, 
+                                          "homecontrol_sender_typen_parameter", array('*'), "", "", "",
+                                          "senderTypId=(SELECT s.senderTypId FROM homecontrol_sender s, homecontrol_config c WHERE s.id = c.sender_id AND c.id = " .$configItem->getId() .")" 
+                                         );
+                $lastSenderTyp = "";
+                $switchUrl = "";
+                $switchParamArray = array();
+                $allParamsSet = true;
+                foreach ($paramTable->ROWS as $row) {
+                    $optional = false;
+                    $fix = false;
+                    $default_logic = false;
+                    $mandatory = false;
+    
+                    if ($row->getNamedAttribute("optional") == "J") {
+                        $optionalParams[count($optionalParams)] = $row->getNamedAttribute('name');
+                        $optional = true;
+                    }
+                    if ($row->getNamedAttribute("mandatory") == "J") {
+                        $mandatory = true;
+                    }
+                    if ($row->getNamedAttribute("fix") == "J") {
+                        $fixParams[count($fixParams)] = $row->getNamedAttribute('name');
+                        $fix = true;
+                    }
+                    if ($row->getNamedAttribute("default_logic") == "J") {
+                        $defaultLogicParams[count($defaultLogicParams)] = $row->getNamedAttribute('name');
+                        $default_logic = true;
+                    }
+                    $prefix = "";
+                    if($default_logic){
+                        $prefix = $configItem->getParameterValueForShortcut($row, $this->ID)==$configItem->getDefaultLogicAnText()?"":"-";
+                    }
+
+                    $value = $fix?($prefix.$configItem->getParameterValue($row)):$configItem->getParameterValueForShortcut($row, $this->ID);
+
+                    $lfdnr = count($switchParamArray);
+                    $switchParamArray[$row->getNamedAttribute("id")][0] = $row;
+                    $switchParamArray[$row->getNamedAttribute("id")][1] = $value;
+                }
+                
+                $command .= "curl '".$configItem->getSwitchCommand($switchParamArray)."' > /dev/null 2>&1\nsleep 1\n";
+            }
         }
-        ob_start();
+        
+        // Temporäres Bash-Script erstellen
+        $executePath = "/shortcuts/";
+        $shortcutPath = "/var/www/".$executePath;
+        $fileName = "s".time().".sh";
+        $callerFileName = "do_".time().".sh";
+        
+        try {
+            // Schalt-Befehle des Shortcuts
+            $myfile = fopen($shortcutPath.$fileName, "w");
+            fwrite($myfile, $command);
+            fclose($myfile);
+            
+            // Shortcut-Script als Job-Aufruf
+            $myfile = fopen($shortcutPath.$callerFileName, "w");
+            fwrite($myfile, "cd " .$shortcutPath ."\n");
+            fwrite($myfile, "./".$fileName ." > /dev/null 2>/dev/null &");
+            fclose($myfile);
+            
+            // Rechte setzen 
+            exec("chmod +x ".$shortcutPath.$fileName);
+            exec("chmod +x ".$shortcutPath.$callerFileName);
+            
+            // Shortcut starten
+            exec(".".$executePath.$callerFileName);
+            
+            // Alte Scripts vom Vortag entfernen
+            exec("find " .$shortcutPath ." -mtime +1 -exec rm -f {} \;");
+        } catch (exception $e) {
+            echo $e;
+        }
+        
+        
     }
 
+
+
+    function getHaBridgeDbString($id, $mainUid="00:17:88:5E:D3"){
+        $uidTmp = $id;
+        $uid1=0;
+        $uid2=0;
+        
+        while($uidTmp>99){
+            $uid1++;
+        }
+        $uid2 = $uidTmp;
+        
+        $uid = str_pad($id, 2, "0", STR_PAD_LEFT);
+        $switchOnUrl = "http://".$_SERVER['SERVER_ADDR']."/api.php?switch=shortcut&shortcutId=".$this->getId();
+        
+        $ret = "{"
+              ."\"id\":\"" .$id ."\","
+              ."\"uniqueid\":\"" .$mainUid .":" .$uid1 ."-" .$uid2 ."\","
+              ."\"name\":\"" ."Shortcut " .$this->getName() ."\","
+              ."\"mapId\":\"100\","
+              ."\"mapType\":\"httpDevice\","
+              ."\"deviceType\":\"custom\","
+              ."\"targetDevice\":\"Encapsulated\","
+              //."\"offUrl\":\"[{\\\"item\\\":\\\"" .str_replace("=", "\\u003d", $switchOffUrl) ."\\\",\\\"httpVerb\\\":\\\"GET\\\",\\\"contentType\\\":\\\"text/html\\\"}]\","
+              ."\"onUrl\":\"[{\\\"item\\\":\\\"" .str_replace("=", "\\u003d", $switchOnUrl) ."\\\",\\\"httpVerb\\\":\\\"GET\\\",\\\"contentType\\\":\\\"text/html\\\"}]\","
+              ."\"httpVerb\":\"GET\","
+              ."\"contentType\":\"text/html\","
+              ."\"inactive\":false,"
+              ."\"noState\":false"
+              ."}";
+              
+        return $ret;
+    }
 
     
 }

@@ -30,6 +30,8 @@
         $this->SENDERTYP = $this->SENDER->getTyp();
         $this->PARAMS    = $this->getControl()->getControlParameter();
         
+        $this->FORM_NAME = $formName;
+        
         $this->PARAM_NAME_RELAIS_ID = $this->getSenderParameterName("relaisId");
         $this->PARAM_NAME_RELAIS_STATUS = $this->getSenderParameterName("relaisStatus");
         
@@ -79,11 +81,10 @@
    }
 
    
+   // TODO: Editor Maske
    function getEditMask(){
      $dv = new Div();
-          
-     $ret = new Form("","","",$this->PARAM_URL_NAME."Form");
-     $ret->add($dv);
+               
      return $ret; 
    }
    

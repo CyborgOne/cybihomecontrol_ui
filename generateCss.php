@@ -13,10 +13,10 @@
   padding-right: 0;
   padding-bottom: 0;
   padding-top: 0;
-
 */
-echo "
 
+
+echo "
 <style type='text/css'>
 
 *
@@ -30,7 +30,7 @@ textarea
 {
   font-style:normal;
   font-weight:normal;  
-  font-size: 12px;
+  font-size: " .($_SESSION['currentView']=="mobile"?"24px":"12px").";
 }
 
 iframe
@@ -50,7 +50,13 @@ input
 {
   font-style:normal;
   font-weight:normal;  
-  font-size: 12px;
+  font-size: " .($_SESSION['currentView']=="mobile"?"36px":"12px").";
+  height: " .($_SESSION['currentView']=="mobile"?"50px":"18px").";
+  line-height: " .($_SESSION['currentView']=="mobile"?"50px":"18px").";
+}
+
+input[type=\"submit\"], button, .button {
+  min-width: " .($_SESSION['currentView']=="mobile"?"100px":"30px").";
 }
 
 
@@ -58,7 +64,9 @@ select
 {
   font-style:normal;
   font-weight:normal;  
-  font-size: 12px;	
+  font-size: " .($_SESSION['currentView']=="mobile"?"36px":"12px").";	
+  height: " .($_SESSION['currentView']=="mobile"?"50px":"18px").";
+  line-height: " .($_SESSION['currentView']=="mobile"?"50px":"18px").";
 }
 
   
@@ -105,7 +113,6 @@ tr
   margin-right: 0;
   margin-bottom: 0;
   margin-top: 0;
-  
 }
 
 
@@ -116,7 +123,7 @@ th
   font-style:normal;
   font-weight:bolder;  
   image-size:100%;
-  font-size: 14px;
+  font-size: " .($_SESSION['currentView']=="mobile"?"36px":"14px").";
   horizontal-align:left;
   vertical-align:top;
 }
@@ -133,7 +140,7 @@ td.panelBody
 
 td
 {
-  font-size: 11px;
+  font-size: " .($_SESSION['currentView']=="mobile"?"36px":"11px").";
   font-weight:normal; 
   margin-left: 0px;
   margin-right: 0px;
@@ -173,7 +180,6 @@ div
 a
 {
   text-decoration:none;
-  
 }
 
 a:link 

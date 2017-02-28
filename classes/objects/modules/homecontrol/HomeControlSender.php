@@ -40,6 +40,10 @@ class HomeControlSender{
     
     function getTyp(){
         return $this->TYP;
+    }    
+    
+    function getName(){
+        return $this->NAME;
     }
     
     function isDefault(){

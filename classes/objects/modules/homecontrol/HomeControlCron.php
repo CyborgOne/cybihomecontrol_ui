@@ -165,7 +165,7 @@ class HomeControlCron {
 
 
     /**
-     * Liefert ein Array aller IDs 
+     * Liefert ein Array aller homecontrol_config Rows 
      * die dem Cron zugeordnet sind.
      */
     function getItemRowsForCron() {
@@ -219,38 +219,39 @@ class HomeControlCron {
     /**
      *  Schaltet alle vollständig konfigurierten Geräte
      */
-    function switchCron() {
+    function switchCron($noWait=true) {
         ob_end_flush();
         ob_implicit_flush();
         
         foreach ($this->getItemRowsForCron() as $itemRow) {
-            $itm = new HomeControlItem($itemRow);
-            echo "</br>Item: " . $itm->getName();
-
-            $params = $itm->getAllParameter();
             $urlParams = "";
-
             $allParams=array();
             $allParamsSet = true;
+            
+            $itm = $_SESSION['config']->getItemById($itemRow->getNamedAttribute("id"));
+            //echo "</br>Item: " . $itm->getName();
+
+            $params = $itm->getAllParameter();
+
             foreach ($params as $param) {
-                $allParams[count($allParams)] = $param->getName();
-                //echo "</br> Param: ".$allParams[count($allParams)-1];
+                //echo "</br> Param: '".$param->getName()."' (";
                 $optional = false;
                 $fix = false;
                 $default_logic = false;
 
                 if ($param->isOptional()) {
                     $optional = true;
-                    echo " optional ";
+                    //echo " optional ";
                 }
                 if ($param->isFix()) {
                     $fix = true;
-                    echo " fix ";
+                    //echo " fix ";
                 }
                 if ($param->isDefaultLogic()) {
                     $default_logic = true;
-                    echo " default_logic ";
+                    //echo " default_logic ";
                 }
+                //echo ") ";
 
                 // Hinterlegten Wert für Parameter zum entsprechenden Cron-Job ermitteln
                 $prefix = "";
@@ -261,19 +262,20 @@ class HomeControlCron {
                 $value = $fix?($prefix.$itm->getParameterValue($param->getRow())):$itm->getParameterValueForCron($param->getRow(), $this->ID);
 
                 if (isset($value) && strlen($value) > 0) {
-                    //echo " = Wert: " . $value . "</br>";
+                    //echo " = Wert: " . $value;
                     if (strlen($urlParams) > 0) {
                         $urlParams = $urlParams . "&";
                     }
                     $urlParams = $urlParams . $param->getName() . "=" .$value;
                 } else {
-                    if ($optional){
-                        if($itm->isParameterOptionalActive($param->getId())) {
-                            echo " FEHLENDER WERT FUER: ".$param->getName();
+                    if ($param->isMandatory()){
+                        if (!$param->isOptional() || ($param->isOptional() && $itm->isParameterOptionalActive($param->getId()))) {
+                            echo " FEHLENDER WERT FUER: ".$param->getName()."</br>";
                             $allParamsSet = false;
                         }
-                    }
+                    } 
                 }
+                //echo  "</br>";
             }
 
             if ($allParamsSet) {
@@ -282,17 +284,23 @@ class HomeControlCron {
                 $urlArray = parse_url($useSenderUrl);
                 $host = $urlArray['host'];
                 $check = @fsockopen($host, 80);
-
-                echo " - Schalte Cron: " . $useSenderUrl . "?" . $urlParams;
                 
                 if ($check) {
                     try {
-                        $retVal = file_get_contents($useSenderUrl . "?" . $urlParams);
+                        $command = "wget '" .$useSenderUrl ."?" .$urlParams ."' > /dev/null 2>/dev/null &";
+                        echo " - Schalte Cron: " .$command."<br/>";
+                        
+                        if($noWait){
+                            exec($command);
+                        } else {
+                            $retVal = file_get_contents($useSenderUrl . "?" . $urlParams);
+                        }
                     }
                     catch (exception $e) {
-                        echo "FEHLER BEIM SCHALTEN!";
+                        echo "FEHLER BEIM SCHALTEN!<br/>";
                     }
                 }
+                usleep(300);
             }
             
         }

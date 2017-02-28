@@ -49,6 +49,30 @@ UNLOCK TABLES;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL40' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `chkActions`;
+CREATE TABLE `chkActions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `chkval` text NOT NULL,
+  `geaendert` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+)   AUTO_INCREMENT=75;
+
+LOCK TABLES `chkActions` WRITE;
+/*!40000 ALTER TABLE `chkActions` DISABLE KEYS */;
+INSERT INTO `chkActions` VALUES (1,1,'','2017-01-02 23:47:46'),(2,1,'','2017-01-02 23:51:13'),(3,1,'','2017-01-02 23:52:26'),(4,1,'','2017-01-02 23:53:22'),(5,1,'','2017-01-02 23:54:44'),(6,1,'','2017-01-02 23:56:45'),(7,1,'','2017-01-02 23:58:29'),(8,1,'','2017-01-02 23:58:54'),(9,1,'','2017-01-03 00:03:10'),(10,1,'','2017-01-03 00:06:03'),(11,1,'','2017-01-03 00:06:05'),(12,1,'','2017-01-03 00:06:07'),(13,1,'','2017-01-03 00:06:19'),(14,1,'','2017-01-03 00:07:07'),(15,1,'','2017-01-03 00:10:24'),(16,1,'','2017-01-03 00:13:52'),(17,1,'','2017-01-03 00:14:51'),(18,1,'','2017-01-03 00:16:30'),(19,1,'','2017-01-03 00:26:14'),(20,1,'','2017-01-03 00:32:31'),(21,1,'','2017-01-03 00:34:10'),(22,1,'','2017-01-03 00:36:40'),(23,1,'','2017-01-03 00:38:53'),(24,1,'','2017-01-03 00:40:52'),(25,1,'','2017-01-03 00:42:21'),(26,1,'','2017-01-03 00:43:36'),(27,1,'','2017-01-03 00:47:45'),(28,1,'','2017-01-03 00:49:04'),(29,1,'','2017-01-03 00:49:14'),(30,1,'','2017-01-03 00:49:29'),(31,1,'','2017-01-03 00:50:12'),(32,1,'','2017-01-03 00:51:55'),(33,1,'','2017-01-03 00:51:58'),(34,1,'','2017-01-03 00:52:11'),(35,1,'','2017-01-03 00:54:18'),(36,1,'','2017-01-03 00:54:59'),(37,1,'','2017-01-03 01:03:43'),(38,1,'','2017-01-03 01:03:58'),(39,1,'','2017-01-03 01:06:27'),(40,1,'','2017-01-03 01:08:42'),(41,1,'','2017-01-03 01:08:56'),(42,1,'','2017-01-03 01:10:15'),(43,1,'','2017-01-03 01:11:04'),(44,1,'','2017-01-03 01:12:31'),(45,1,'','2017-01-03 01:13:14'),(46,1,'','2017-01-03 01:14:05'),(47,1,'','2017-01-03 01:14:08'),(48,1,'','2017-01-03 01:14:53'),(49,1,'','2017-01-03 01:18:03'),(50,1,'','2017-01-03 01:19:39'),(51,1,'','2017-01-03 01:20:12'),(52,1,'','2017-01-03 01:20:28'),(53,1,'','2017-01-03 01:21:43'),(54,1,'','2017-01-03 01:22:07'),(55,1,'','2017-01-03 01:23:53'),(56,1,'','2017-01-03 01:24:21'),(57,1,'','2017-01-03 01:24:28'),(58,1,'','2017-01-03 01:24:39'),(59,1,'','2017-01-03 01:25:24'),(60,1,'','2017-01-03 01:27:16'),(61,1,'','2017-01-03 01:27:22'),(62,1,'','2017-01-03 01:27:24'),(63,1,'','2017-01-03 01:29:55'),(64,1,'','2017-01-03 01:35:52'),(65,1,'','2017-01-03 01:36:26'),(66,1,'','2017-01-03 01:49:56'),(67,1,'','2017-01-04 01:59:57'),(68,1,'','2017-01-04 02:04:08'),(69,1,'','2017-01-04 02:05:14'),(70,1,'','2017-01-04 02:06:12'),(71,1,'','2017-01-04 02:08:52'),(72,1,'','2017-01-04 02:10:39'),(73,1,'','2017-01-04 02:11:52'),(74,1,'','2017-01-04 02:14:55');
+/*!40000 ALTER TABLE `chkActions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL40' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 DROP TABLE IF EXISTS `dbcombos`;
 CREATE TABLE `dbcombos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -66,7 +90,7 @@ CREATE TABLE `dbcombos` (
 
 LOCK TABLES `dbcombos` WRITE;
 /*!40000 ALTER TABLE `dbcombos` DISABLE KEYS */;
-INSERT INTO `dbcombos` VALUES (1,'geplant','status','geplant_status','tag','name','true','','name','J'),(3,'koordinatenzuordnung','str_id','strassenschluessel','id','name','true','','name','J'),(4,'stadt_angebot','ansprech','adressen','id','concat(name, \' \', strasse) as adr','true','ansprechpartner=\'J\'','','J'),(6,'stadt_institution','adresse','adressen','id','CONCAT(name, \' - \', plz, \' \', strasse, \' \', hausnummer) as adresse','true','ansprechpartner=\'N\'','','J'),(7,'links','topic','links','topic','topic','true','link is not null and descr is not null and link != \'-\' and descr != \'-\'','topic','J'),(9,'menu','parent','menu','text','text','true','','text','J'),(10,'stadt_kategorien','symbol','stadt_symbole','id','tooltip','true','','tooltip','J'),(11,'stadt_institution','kategorie','stadt_kategorien','id','name','true','','name','J'),(12,'user','status','userstatus','id','title','false','','title','J'),(13,'testbericht','institution_id','stadt_institution i, adressen a','i.id','CONCAT(i.name, \' - \', a.strasse, \' \', a.hausnummer) AS adresse','false','i.adresse = a.id order by i.name','','J'),(14,'stadt_angebot','institutionid','stadt_institution i, adressen a','i.id','CONCAT(i.name, \' - \', a.strasse, \' \', a.hausnummer) AS adresse','false','i.adresse = a.id ','','J'),(15,'menu','status','userstatus','id','title','false','','title','J'),(16,'stadt_angebot','kategorie','stadt_angebot_kategorie','id','name','false','','name','J'),(17,'run_links','parent','menu','text','text','false','','text','J'),(18,'run_links','prog_grp_id','programm_gruppen','id','name','false','','name','J'),(19,'berechtigung','user_id','user','id','concat(Vorname, \' \',Nachname) as nme','false','Vorname != \'Developer\' and \r\nVorname != \'Superuser\'','','J'),(20,'berechtigung','user_grp_id','user_groups','id','name','false','','name','J'),(21,'berechtigung','run_link_id','run_links','id','name','false','','name','J'),(22,'berechtigung','prog_grp_id','programm_gruppen','id','name','false','','name','J'),(23,'terminserie','monat','default_combo_values','code','value','false','combo_name = \'Monate\'','value','J'),(24,'terminserie','jaehrlichwochentag','default_combo_values','code','value','false','combo_name = \'tage\'','value','J'),(25,'user','user_group_id','user_groups','id','name','false','','name','J'),(26,'adressen','ortsteil','ortsteile','id','name','false','plz in (select plz from adressen where id=#id#)','name','J'),(27,'kopftexte','runlink','run_links','name','name','false','','name','J'),(28,'kopftexte','parent','run_links','parent','parent','false','','parent','J'),(29,'adressen','strasse','strassenschluessel','name','name','false','plz = #plz#','','J'),(30,'homecontrol_shortcut_items','shortcut_id','homecontrol_shortcut','id','name','false','','name','J'),(31,'homecontrol_shortcut_items','config_id','homecontrol_config','id','name','false','','name','J'),(32,'homecontrol_shortcut_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(33,'homecontrol_shortcut_items','etagen_id',' homecontrol_etagen','id','name','false','','name','J'),(34,'homecontrol_zimmer','etagen_id','homecontrol_etagen','id','name','false','','name','J'),(35,'homecontrol_config','control_art','homecontrol_art','id','name','false','','name','J'),(36,'homecontrol_config','etage','homecontrol_etagen','id','name','false','','name','J'),(37,'homecontrol_config','zimmer','homecontrol_zimmer','id','name','false','','name','J'),(38,'homecontrol_shortcut_items','art_id','homecontrol_art','id','name','false','','name','J'),(39,'homecontrol_cron_items','shortcut_id','homecontrol_shortcut','id','name','false','','name','J'),(40,'homecontrol_cron_items','config_id','homecontrol_config','id','name','false','','name','J'),(41,'homecontrol_cron_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(42,'homecontrol_cron_items','etagen_id','homecontrol_etagen','id','name','false','','name','J'),(43,'homecontrol_cron_items','art_id','homecontrol_art','id','name','false','','name','J'),(44,'homecontrol_sensor_items','sensor_id','homecontrol_sensor','id','name','false','','name','J'),(45,'homecontrol_sensor_items','config_id','homecontrol_config','id','name','false','','name','J'),(46,'homecontrol_sensor_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(47,'homecontrol_sensor_items','etagen_id',' homecontrol_etagen','id','name','false','','name','J'),(48,'homecontrol_sensor_items','art_id','homecontrol_art','id','name','false','','name','J'),(49,'homecontrol_zimmer','etage_id','homecontrol_etagen','id','name','false','','name','J'),(50,'homecontrol_alarm_items','shortcut_id','homecontrol_alarm','id','name','false','','name','J'),(51,'homecontrol_alarm_items','config_id','homecontrol_config','id','name','false','','name','J'),(52,'homecontrol_alarm_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(53,'homecontrol_alarm_items','etagen_id','homecontrol_etagen','id','name','false','','name','J'),(54,'homecontrol_alarm_items','art_id','homecontrol_art','id','name','false','','name','J'),(55,'homecontrol_regeln_items','shortcut_id','homecontrol_alarm','id','name','false','','name','J'),(56,'homecontrol_regeln_items','config_id','homecontrol_config','id','name','false','','name','J'),(57,'homecontrol_regeln_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(58,'homecontrol_regeln_items','etagen_id','homecontrol_etagen','id','name','false','','name','J'),(59,'homecontrol_regeln_items','art_id','homecontrol_art','id','name','false','','name','J'),(60,'homecontrol_sender','etage','homecontrol_etagen','id','name','false','','name','J'),(61,'homecontrol_sender','zimmer','homecontrol_zimmer','id','concat(name, \" - \", (select name from homecontrol_etagen where homecontrol_zimmer.etage_id = homecontrol_etagen.id))','false','','etage_id, name','J'),(62,'homecontrol_sender_typen_parameter','senderTypId','homecontrol_sender_typen','id','name','false','','name','J'),(63,'homecontrol_sender_typen_parameter','parameterArtId','homecontrol_sender_typen_parameter_arten','id','name','false','','name','J'),(64,'homecontrol_sender','senderTypId','homecontrol_sender_typen','id','name','false','','name','J'),(65,'homecontrol_editor_parameter_possible','param_art_id','homecontrol_sender_typen_parameter_arten','id','name','false','','name','J'),(66,'homecontrol_editor_parameter_possible','editor_parameter_id','homecontrol_editor_parameter','id','name','false','editor_id = $selectedEditor$','name','J'),(67,'homecontrol_control_parameter_zu_editor','editor_param_id','homecontrol_editor_parameter','id','name','false','','name','J'),(68,'homecontrol_control_parameter_zu_editor','sender_param_id','homecontrol_sender_typen_parameter','id','name','false','senderTypId = (SELECT senderTypId FROM homecontrol_sender WHERE id = (SELECT sender_id from homecontrol_config WHERE id =#config_id#))','name','J');
+INSERT INTO `dbcombos` VALUES (1,'geplant','status','geplant_status','tag','name','true','','name','J'),(3,'koordinatenzuordnung','str_id','strassenschluessel','id','name','true','','name','J'),(4,'stadt_angebot','ansprech','adressen','id','concat(name, \' \', strasse) as adr','true','ansprechpartner=\'J\'','','J'),(6,'stadt_institution','adresse','adressen','id','CONCAT(name, \' - \', plz, \' \', strasse, \' \', hausnummer) as adresse','true','ansprechpartner=\'N\'','','J'),(7,'links','topic','links','topic','topic','true','link is not null and descr is not null and link != \'-\' and descr != \'-\'','topic','J'),(9,'menu','parent','menu','text','text','true','','text','J'),(10,'stadt_kategorien','symbol','stadt_symbole','id','tooltip','true','','tooltip','J'),(11,'stadt_institution','kategorie','stadt_kategorien','id','name','true','','name','J'),(12,'user','status','userstatus','id','title','false','','title','J'),(13,'testbericht','institution_id','stadt_institution i, adressen a','i.id','CONCAT(i.name, \' - \', a.strasse, \' \', a.hausnummer) AS adresse','false','i.adresse = a.id order by i.name','','J'),(14,'stadt_angebot','institutionid','stadt_institution i, adressen a','i.id','CONCAT(i.name, \' - \', a.strasse, \' \', a.hausnummer) AS adresse','false','i.adresse = a.id ','','J'),(15,'menu','status','userstatus','id','title','false','','title','J'),(16,'stadt_angebot','kategorie','stadt_angebot_kategorie','id','name','false','','name','J'),(17,'run_links','parent','menu','text','text','false','','text','J'),(18,'run_links','prog_grp_id','programm_gruppen','id','name','false','','name','J'),(19,'berechtigung','user_id','user','id','concat(Vorname, \' \',Nachname) as nme','false','Vorname != \'Developer\' and \r\nVorname != \'Superuser\'','','J'),(20,'berechtigung','user_grp_id','user_groups','id','name','false','','name','J'),(21,'berechtigung','run_link_id','run_links','id','name','false','','name','J'),(22,'berechtigung','prog_grp_id','programm_gruppen','id','name','false','','name','J'),(23,'terminserie','monat','default_combo_values','code','value','false','combo_name = \'Monate\'','value','J'),(24,'terminserie','jaehrlichwochentag','default_combo_values','code','value','false','combo_name = \'tage\'','value','J'),(25,'user','user_group_id','user_groups','id','name','false','','name','J'),(26,'adressen','ortsteil','ortsteile','id','name','false','plz in (select plz from adressen where id=#id#)','name','J'),(27,'kopftexte','runlink','run_links','name','name','false','','name','J'),(28,'kopftexte','parent','run_links','parent','parent','false','','parent','J'),(29,'adressen','strasse','strassenschluessel','name','name','false','plz = #plz#','','J'),(30,'homecontrol_shortcut_items','shortcut_id','homecontrol_shortcut','id','name','false','','name','J'),(31,'homecontrol_shortcut_items','config_id','homecontrol_config','id','name','false','','name','J'),(32,'homecontrol_shortcut_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(33,'homecontrol_shortcut_items','etagen_id',' homecontrol_etagen','id','name','false','','name','J'),(34,'homecontrol_zimmer','etagen_id','homecontrol_etagen','id','name','false','','name','J'),(35,'homecontrol_config','control_art','homecontrol_art','id','name','false','','name','J'),(36,'homecontrol_config','etage','homecontrol_etagen','id','name','false','','name','J'),(37,'homecontrol_config','zimmer','homecontrol_zimmer','id','name','false','','name','J'),(38,'homecontrol_shortcut_items','art_id','homecontrol_art','id','name','false','','name','J'),(39,'homecontrol_cron_items','shortcut_id','homecontrol_shortcut','id','name','false','','name','J'),(40,'homecontrol_cron_items','config_id','homecontrol_config','id','name','false','','name','J'),(41,'homecontrol_cron_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(42,'homecontrol_cron_items','etagen_id','homecontrol_etagen','id','name','false','','name','J'),(43,'homecontrol_cron_items','art_id','homecontrol_art','id','name','false','','name','J'),(44,'homecontrol_sensor_items','sensor_id','homecontrol_sensor','id','name','false','','name','J'),(45,'homecontrol_sensor_items','config_id','homecontrol_config','id','name','false','','name','J'),(46,'homecontrol_sensor_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(47,'homecontrol_sensor_items','etagen_id',' homecontrol_etagen','id','name','false','','name','J'),(48,'homecontrol_sensor_items','art_id','homecontrol_art','id','name','false','','name','J'),(49,'homecontrol_zimmer','etage_id','homecontrol_etagen','id','name','false','','name','J'),(50,'homecontrol_alarm_items','shortcut_id','homecontrol_alarm','id','name','false','','name','J'),(51,'homecontrol_alarm_items','config_id','homecontrol_config','id','name','false','','name','J'),(52,'homecontrol_alarm_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(53,'homecontrol_alarm_items','etagen_id','homecontrol_etagen','id','name','false','','name','J'),(54,'homecontrol_alarm_items','art_id','homecontrol_art','id','name','false','','name','J'),(55,'homecontrol_regeln_items','shortcut_id','homecontrol_alarm','id','name','false','','name','J'),(56,'homecontrol_regeln_items','config_id','homecontrol_config','id','name','false','','name','J'),(57,'homecontrol_regeln_items','zimmer_id','homecontrol_zimmer','id','name','false','','name','J'),(58,'homecontrol_regeln_items','etagen_id','homecontrol_etagen','id','name','false','','name','J'),(59,'homecontrol_regeln_items','art_id','homecontrol_art','id','name','false','','name','J'),(60,'homecontrol_sender','etage','homecontrol_etagen','id','name','false','','name','J'),(61,'homecontrol_sender','zimmer','homecontrol_zimmer','id','concat(name, \" - \", (select name from homecontrol_etagen where homecontrol_zimmer.etage_id = homecontrol_etagen.id))','false','','etage_id, name','J'),(62,'homecontrol_sender_typen_parameter','senderTypId','homecontrol_sender_typen','id','name','false','','name','J'),(63,'homecontrol_sender_typen_parameter','parameterArtId','homecontrol_sender_typen_parameter_arten','id','name','false','','name','J'),(64,'homecontrol_sender','senderTypId','homecontrol_sender_typen','id','name','false','','name','J'),(65,'homecontrol_editor_parameter_possible','param_art_id','homecontrol_sender_typen_parameter_arten','id','name','false','','name','J'),(66,'homecontrol_editor_parameter_possible','editor_parameter_id','homecontrol_editor_parameter','id','name','false','editor_id = $selectedEditor$','name','J'),(67,'homecontrol_control_parameter_zu_editor','editor_param_id','homecontrol_editor_parameter','id','name','false','','name','J'),(68,'homecontrol_control_parameter_zu_editor','sender_param_id','homecontrol_sender_typen_parameter','id','name','false','senderTypId = (SELECT senderTypId FROM homecontrol_sender WHERE id = (SELECT sender_id FROM homecontrol_config WHERE id = ( SELECT config_id FROM homecontrol_control_editor_zuordnung WHERE id = #sendereditor_zuord_id#)))','name','J');
 /*!40000 ALTER TABLE `dbcombos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,7 +324,7 @@ CREATE TABLE `homecontrol_config` (
   `dimmer` set('J','N') NOT NULL DEFAULT 'N',
   `sender_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=2;
+)   AUTO_INCREMENT=19;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -316,8 +340,9 @@ CREATE TABLE `homecontrol_control_editor_zuordnung` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `config_id` int(11) NOT NULL,
   `editor_id` int(11) NOT NULL,
+  `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=10;
+)   AUTO_INCREMENT=17;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -337,7 +362,7 @@ CREATE TABLE `homecontrol_control_parameter_zu_editor` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `editor_param_id` (`editor_param_id`,`sender_param_id`,`sendereditor_zuord_id`)
-)   AUTO_INCREMENT=38;
+)   AUTO_INCREMENT=54;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -365,7 +390,7 @@ CREATE TABLE `homecontrol_cron` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hc_cron_name_uk` (`name`)
-)  ;
+)   AUTO_INCREMENT=11;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -385,11 +410,10 @@ CREATE TABLE `homecontrol_cron_items` (
   `zimmer_id` int(11) DEFAULT NULL,
   `etagen_id` int(11) DEFAULT NULL,
   `funkwahl` set('1','2') NOT NULL DEFAULT '1',
-  `on_off` set('on','off') NOT NULL DEFAULT 'on',
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cron_item_uk` (`cron_id`,`config_id`,`zimmer_id`,`etagen_id`)
-)  ;
+)   AUTO_INCREMENT=12;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -562,7 +586,7 @@ CREATE TABLE `homecontrol_regeln` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-)  ;
+)   AUTO_INCREMENT=2;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -626,10 +650,10 @@ CREATE TABLE `homecontrol_sender_parameter_values` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `config_id` int(11) NOT NULL,
   `param_id` int(11) NOT NULL,
-  `value` varchar(100) NOT NULL,
+  `value` varchar(100) DEFAULT NULL,
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=30;
+)   AUTO_INCREMENT=66;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -673,13 +697,14 @@ CREATE TABLE `homecontrol_sender_typen_parameter` (
   `fix` enum('J','N') NOT NULL DEFAULT 'J' COMMENT 'Gibt an, ob der Wert bezogen aufs Ger?t statisch ist oder in der Steuerung ?nderbar sein soll',
   `default_logic` enum('J','N') NOT NULL DEFAULT 'N' COMMENT 'Wenn J wird zum ausschalten der Wert mit -1 multipliziert. Es sollte sich also um einen Zahlenwert handeln',
   `optional` enum('J','N') NOT NULL DEFAULT 'N',
+  `mandatory` enum('J','N') NOT NULL DEFAULT 'J',
   PRIMARY KEY (`id`),
   UNIQUE KEY `senderTypId` (`senderTypId`,`name`)
-)   AUTO_INCREMENT=11;
+)   AUTO_INCREMENT=12;
 
 LOCK TABLES `homecontrol_sender_typen_parameter` WRITE;
 /*!40000 ALTER TABLE `homecontrol_sender_typen_parameter` DISABLE KEYS */;
-INSERT INTO `homecontrol_sender_typen_parameter` VALUES (1,1,'schalte',7,'2016-10-12 01:36:33','J','J','N'),(2,1,'dimm',9,'2016-10-24 23:41:20','N','N','J'),(3,3,'schalte',8,'2016-10-25 22:55:27','J','J','N'),(4,2,'red',1,'2016-10-12 00:52:44','N','N','N'),(5,2,'green',1,'2016-10-12 00:52:44','N','N','N'),(6,2,'blue',1,'2016-10-12 00:52:44','N','N','N'),(8,6,'relaisId',10,'2016-12-21 23:35:00','J','N','N'),(10,6,'relaisStatus',12,'2016-12-27 01:47:25','N','N','J');
+INSERT INTO `homecontrol_sender_typen_parameter` VALUES (1,1,'schalte',7,'2017-02-07 21:48:30','J','J','N','J'),(2,1,'dimm',9,'2017-02-07 21:50:02','N','N','J','N'),(3,3,'schalte',8,'2017-02-07 21:48:30','J','J','N','J'),(4,2,'red',1,'2017-02-07 21:48:30','N','N','N','J'),(5,2,'green',1,'2017-02-07 21:48:30','N','N','N','J'),(6,2,'blue',1,'2017-02-07 21:48:30','N','N','N','J'),(8,6,'relaisId',10,'2017-02-07 21:48:30','J','N','N','J'),(10,6,'relaisStatus',12,'2017-02-07 21:50:10','N','N','J','N'),(11,2,'xxx',1,'2017-02-07 21:49:46','N','N','N','N');
 /*!40000 ALTER TABLE `homecontrol_sender_typen_parameter` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -727,7 +752,7 @@ CREATE TABLE `homecontrol_sender_typen_parameter_optional` (
   `param_id` int(11) NOT NULL,
   `active` set('J','N') NOT NULL DEFAULT 'J',
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=8;
+)   AUTO_INCREMENT=22;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -745,7 +770,7 @@ CREATE TABLE `homecontrol_sensor` (
   `beschreibung` text,
   `geaendert` timestamp NOT NULL,
   `lastSignal` int(30) DEFAULT NULL,
-  `lastValue` int(9) DEFAULT NULL,
+  `lastValue` float DEFAULT NULL,
   `sensor_art` int(11) NOT NULL,
   `x` int(11) DEFAULT NULL,
   `y` int(11) DEFAULT NULL,
@@ -815,7 +840,7 @@ CREATE TABLE `homecontrol_shortcut` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-)  ;
+)   AUTO_INCREMENT=15;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -834,13 +859,11 @@ CREATE TABLE `homecontrol_shortcut_items` (
   `art_id` int(11) DEFAULT NULL,
   `zimmer_id` int(11) DEFAULT NULL,
   `etagen_id` int(11) DEFAULT NULL,
-  `funkwahl` set('1','2') NOT NULL DEFAULT '1',
-  `on_off` set('on','off') NOT NULL DEFAULT 'on',
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `shortcut_item_uk` (`shortcut_id`,`config_id`,`zimmer_id`,`etagen_id`),
   KEY `shortcut_id` (`shortcut_id`)
-)  ;
+)   AUTO_INCREMENT=10;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -943,7 +966,7 @@ CREATE TABLE `homecontrol_zimmer` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_etage_uk` (`name`,`etage_id`)
-)  ;
+)   AUTO_INCREMENT=15;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -963,7 +986,7 @@ CREATE TABLE `kopftexte` (
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `runlink_name` (`runlink`)
-)   AUTO_INCREMENT=16;
+)   AUTO_INCREMENT=10;
 
 LOCK TABLES `kopftexte` WRITE;
 /*!40000 ALTER TABLE `kopftexte` DISABLE KEYS */;
@@ -1013,7 +1036,7 @@ CREATE TABLE `log` (
   `Ip` varchar(20) DEFAULT NULL,
   `Action` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=1507;
+)  ;
 
 LOCK TABLES `log` WRITE;
 /*!40000 ALTER TABLE `log` DISABLE KEYS */;
@@ -1078,7 +1101,7 @@ CREATE TABLE `menu` (
 
 LOCK TABLES `menu` WRITE;
 /*!40000 ALTER TABLE `menu` DISABLE KEYS */;
-INSERT INTO `menu` VALUES (105,'Login','','?run=login',NULL,'_top','Hier k?nnen Sie sich an- oder abmelden',0,'Fussmenue','2014-07-20 20:26:34'),(115,'Geraete','Einstellungen','?menuParent=Einstellungen&run=homeconfig','admin','_top','Hier k?nnen die Ger?te konfiguriert werden.',20,'Hauptmenue','2016-10-25 21:14:20'),(116,'Shortcuts','Einstellungen','?menuParent=Einstellungen&run=shortcutConfig','admin','_top','Hier k?nnen die Schnellwahl Aktionen konfiguriert werden.',85,'Hauptmenue','2015-09-28 23:37:15'),(117,'Shortcuts','','?menuParent=Shortcuts&run=shortcuts','','_top','Konfigurierte Modi mit einem Klick',10,'Mobilmenue','2015-01-01 21:19:24'),(119,'Zeitplan','Einstellungen','?menuParent=Einstellungen&run=cronConfig','admin','_top','Hier k?nnen die automatischen Jobs konfiguriert werden.',50,'Hauptmenue','2015-09-28 23:35:34'),(120,'Sensoren','Einstellungenxx','?menuParent=Einstellungen&run=sensorConfig','xxxx','_top','Hier k?nnen die Aktionen f?r Sensoren konfiguriert werden.',30,'Hauptmenue','2016-08-17 01:52:27'),(121,'Einstellungen','','?menuParent=Einstellungen&run=mainSettings','admin','_top','Hier kann das gesamte System konfiguriert werden',200,'Kopfmenue','2015-08-27 23:37:34'),(122,'Steuerung','','?menuParent=Steuerung&run=start',NULL,'_top','',10,'Kopfmenue','2015-03-16 07:15:44'),(124,'Steuerung','','?menuParent=Steuerung&run=start','','_top','Steuerung',0,'Mobilmenue','2015-01-01 21:18:40'),(126,'Sensoren','','?menuParent=Sensoren&run=sensorList','','_top','Sensoren',5,'Mobilmenue','2015-01-05 09:09:19'),(127,'Sensorwerte','','?menuParent=Sensorwerte&run=sensorList','','_top','Sensoren',150,'Kopfmenue','2016-09-25 18:50:42'),(128,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Kopfmenue','2015-08-23 19:04:06'),(129,'Sensor-Log','','?menuParent=Sensor-Log&run=sensorlogView',NULL,'_top','Hier werden die Logdaten der Sensoren angezeigt',70,'Kopfmenue','2014-11-11 22:09:42'),(130,'Gebaeude','Einstellungen','?menuParent=Einstellungen&run=gebaeudeConfig','admin','_top','Hier werden die Etagen und Raeume konfiguriert',10,'Hauptmenue','2016-10-25 21:14:24'),(131,'Basis','Einstellungen','?menuParent=Einstellungen&run=mainSettings','admin','_top','Basis-Einstellungen',1,'Hauptmenue','2015-08-25 23:06:41'),(133,'Alarmanlage','Einstellungen','?menuParent=Einstellungen&run=alarmConfig','admin','_top','Hier k?nnen die Einstellungen f?r das Verhalten der Alarmanlage konfiguriert werden.',90,'Hauptmenue','2015-08-23 19:05:47'),(134,'Cam','','?menuParent=Cam&run=camPics','admin','_top','Bewegungserkennung - Bilder',9999,'Kopfmenue','2016-09-25 13:20:21'),(135,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Mobilmenue','2015-08-23 19:04:06'),(136,'Automatisierung','Einstellungen','?menuParent=Einstellungen&run=automationConfig','admin','_top','In diesem Bereich werden Automatisierungen in Abh?ngigkeit der Sensorwerte konfiguriert.',85,'Hauptmenue','2015-09-28 23:35:34'),(137,'Passwort vergessen','','?run=userRequestPw',NULL,'_top','',9999,'need','2015-10-15 22:34:29'),(138,'','','?run=changeMyProfile',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(139,'cc','','run=userpicUpload',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(141,'Parameter','Einstellungen','?menuParent=Einstellungen&run=parameterConfig','admin','_top','',190,'Hauptmenue','2016-10-25 23:43:29'),(142,'Editoren','Einstellungen','?menuParent=Einstellungen&run=editorConfig','admin','_top','',200,'Hauptmenue','2016-10-25 21:14:35');
+INSERT INTO `menu` VALUES (105,'Login','','?run=login',NULL,'_top','Hier k?nnen Sie sich an- oder abmelden',0,'Fussmenue','2014-07-20 20:26:34'),(115,'Geraete','Einstellungen','?menuParent=Einstellungen&run=homeconfig','admin','_top','Hier k?nnen die Ger?te konfiguriert werden.',20,'Hauptmenue','2016-10-25 21:14:20'),(116,'Shortcuts','Einstellungen','?menuParent=Einstellungen&run=shortcutConfig','admin','_top','Hier k?nnen die Schnellwahl Aktionen konfiguriert werden.',85,'Hauptmenue','2015-09-28 23:37:15'),(117,'Shortcuts','','?menuParent=Shortcuts&run=shortcuts','','_top','Konfigurierte Modi mit einem Klick',10,'Mobilmenue','2015-01-01 21:19:24'),(119,'Zeitplan','Einstellungen','?menuParent=Einstellungen&run=cronConfig','admin','_top','Hier k?nnen die automatischen Jobs konfiguriert werden.',50,'Hauptmenue','2015-09-28 23:35:34'),(120,'Sensoren','Einstellungenxx','?menuParent=Einstellungen&run=sensorConfig','xxxx','_top','Hier k?nnen die Aktionen f?r Sensoren konfiguriert werden.',30,'Hauptmenue','2016-08-17 01:52:27'),(121,'Einstellungen','','?menuParent=Einstellungen&run=mainSettings','admin','_top','Hier kann das gesamte System konfiguriert werden',200,'Kopfmenue','2015-08-27 23:37:34'),(122,'Steuerung','','?menuParent=Steuerung&run=start',NULL,'_top','',10,'Kopfmenue','2015-03-16 07:15:44'),(124,'Steuerung','','?menuParent=Steuerung&run=start','','_top','Steuerung',0,'Mobilmenue','2015-01-01 21:18:40'),(126,'Sensoren','','?menuParent=Sensoren&run=sensorList','','_top','Sensoren',5,'MobilmenueXX','2015-01-05 09:09:19'),(127,'Sensorwerte','','?menuParent=Sensorwerte&run=sensorList','','_top','Sensoren',150,'Kopfmenue','2016-09-25 18:50:42'),(128,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Kopfmenue','2015-08-23 19:04:06'),(129,'Sensor-Log','','?menuParent=Sensor-Log&run=sensorlogView',NULL,'_top','Hier werden die Logdaten der Sensoren angezeigt',70,'Kopfmenue','2014-11-11 22:09:42'),(130,'Gebaeude','Einstellungen','?menuParent=Einstellungen&run=gebaeudeConfig','admin','_top','Hier werden die Etagen und Raeume konfiguriert',10,'Hauptmenue','2016-10-25 21:14:24'),(131,'Basis','Einstellungen','?menuParent=Einstellungen&run=mainSettings','admin','_top','Basis-Einstellungen',1,'Hauptmenue','2015-08-25 23:06:41'),(133,'Alarmanlage','Einstellungen','?menuParent=Einstellungen&run=alarmConfig','admin','_top','Hier k?nnen die Einstellungen f?r das Verhalten der Alarmanlage konfiguriert werden.',90,'Hauptmenue','2015-08-23 19:05:47'),(134,'Cam','','?menuParent=Cam&run=camPics','admin','_top','Bewegungserkennung - Bilder',9999,'Kopfmenue','2016-09-25 13:20:21'),(135,'Timeline','','?menuParent=Einstellungen&menuParent=Timeline&run=cronView',NULL,'_top','Hier werden die Events der n?chsten 24 Stunden angezeigt und k?nnen f?r die n?chste Ausf?hrung pausiert werden.',50,'Mobilmenue','2015-08-23 19:04:06'),(136,'Automatisierung','Einstellungen','?menuParent=Einstellungen&run=automationConfig','admin','_top','In diesem Bereich werden Automatisierungen in Abh?ngigkeit der Sensorwerte konfiguriert.',85,'Hauptmenue','2015-09-28 23:35:34'),(137,'Passwort vergessen','','?run=userRequestPw',NULL,'_top','',9999,'need','2015-10-15 22:34:29'),(138,'','','?run=changeMyProfile',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(139,'cc','','run=userpicUpload',NULL,'_top','',9999,'need','0000-00-00 00:00:00'),(141,'Parameter','Einstellungen','?menuParent=Einstellungen&run=parameterConfig','admin','_top','',190,'Hauptmenue','2016-10-25 23:43:29'),(142,'Editoren','Einstellungen','?menuParent=Einstellungen&run=editorConfig','admin','_top','',200,'Hauptmenue','2016-10-25 21:14:35');
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1102,7 +1125,7 @@ CREATE TABLE `pageconfig` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `page_id` (`page_id`)
-)   AUTO_INCREMENT=37;
+)   AUTO_INCREMENT=39;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1224,7 +1247,7 @@ CREATE TABLE `smileys` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `Title` (`title`),
   UNIQUE KEY `Link` (`link`)
-)   AUTO_INCREMENT=28;
+)   AUTO_INCREMENT=27;
 
 LOCK TABLES `smileys` WRITE;
 /*!40000 ALTER TABLE `smileys` DISABLE KEYS */;
@@ -1303,7 +1326,7 @@ CREATE TABLE `user` (
   `Aim` varchar(25) DEFAULT NULL,
   `Homepage` varchar(50) DEFAULT NULL,
   `User` varchar(20) NOT NULL DEFAULT '',
-  `Pw` varchar(255) NOT NULL,
+  `Pw` varchar(255) NOT NULL DEFAULT '-',
   `Nation` char(1) DEFAULT NULL,
   `Status` varchar(20) NOT NULL DEFAULT 'waitForActivate',
   `user_group_id` int(11) NOT NULL DEFAULT '1',
@@ -1367,7 +1390,7 @@ CREATE TABLE `user_groups` (
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `Name` (`name`)
-)   AUTO_INCREMENT=5;
+)  ;
 
 LOCK TABLES `user_groups` WRITE;
 /*!40000 ALTER TABLE `user_groups` DISABLE KEYS */;
@@ -1449,14 +1472,14 @@ union SELECT 'Freitag', 5, hc4.* FROM homecontrol_cron hc4 WHERE freitag = 'J'
 union SELECT 'Samstag', 6, hc5.* FROM homecontrol_cron hc5 WHERE samstag = 'J'
 union SELECT 'Sonntag', 0, hc6.* FROM homecontrol_cron hc6 WHERE sonntag = 'J';
 create view homecontrol_regel_item_view as
-SELECT CONCAT( r.id,  '-', i.id ) id, r.id regel_id, r.name name, r.beschreibung beschreibung, i.config_id config_id, i.art_id art_id, i.zimmer_id zimmer_id, i.etagen_id etagen_id
+SELECT CONCAT( r.id,  '-', i.id ) id, r.id regel_id, r.name name, r.beschreibung beschreibung, i.config_id config_id, i.art_id art_id, i.zimmer_id zimmer_id, i.etagen_id etagen_id, i.on_off on_off
 FROM homecontrol_regeln r, homecontrol_regeln_items i
 WHERE r.id = i.regel_id;
 create view homecontrol_shortcutview as 
 select concat(s.id,'-', c.id) id,
        s.id shortcut_id, s.name shortcut_name, s.beschreibung beschreibung,
-       i.id item_id, i.art_id art, c.zimmer, z.etage_id, i.funkwahl, 
-       c.id config_id, c.name name, c.funk_id, c.funk_id2, c.x, c.y, a.pic, c.geaendert geaendert
+       i.id item_id, i.art_id art, c.zimmer, z.etage_id, 
+       c.id config_id, c.name name, c.x, c.y, a.pic, c.geaendert geaendert
 from homecontrol_shortcut s, 
      homecontrol_shortcut_items i, 
      homecontrol_config c  LEFT JOIN 

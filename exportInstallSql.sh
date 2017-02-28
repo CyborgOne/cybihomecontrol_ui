@@ -204,7 +204,7 @@ echo "WHERE r.id = i.regel_id;"                                                 
 echo "create view homecontrol_shortcutview as "                                                                              >> $filename
 echo "select concat(s.id,'-', c.id) id,"                                                                                     >> $filename
 echo "       s.id shortcut_id, s.name shortcut_name, s.beschreibung beschreibung,"                                           >> $filename
-echo "       i.id item_id, i.art_id art, c.zimmer, z.etage_id, i.funkwahl,"                                                  >> $filename
+echo "       i.id item_id, i.art_id art, c.zimmer, z.etage_id, "                                                             >> $filename
 echo "       c.id config_id, c.name name, c.x, c.y, a.pic, c.geaendert geaendert"                                            >> $filename
 echo "from homecontrol_shortcut s, "                                                                                         >> $filename
 echo "     homecontrol_shortcut_items i, "                                                                                   >> $filename

@@ -1,4 +1,13 @@
 
+Version: 1.0.1
+---------------------
+V1.0 initial Commit
+– Dynamische Parameter in Abhängigkeit zum Sender-Typ
+– Neue Editoren Individuell je Gerät definierbar (Bisher nur ein RGB-Color-Chooser. Slider und Checkbox sind in Arbeit. Wer weitere Ideen hat, immer her damit.)
+– Shortcuts, Schaltung, Zeitsteuerung in Desktop- so wie Mobile-View an neue Parameter-Logik angepasst.
+– bessere Performance
+– API vorbereitet und ersten Basis-Aufrufe/Abfragen implementiert (Bisher nur im Code dokumentiert)
+
 Version: 0.2.10
 ---------------------
 Shortcuts auf neues Parameter-System umgestellt

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @filename layout.php
  * @author  Daniel Scheidler
@@ -38,6 +37,10 @@ if ($detect->isMobile()) {
     include ("layout_mobile.php");
     exit();
 }
+
+$_SESSION['currentView'] = 'desktop';
+include("header_index.php");
+
 
 $sqlNoFrame = "SELECT * FROM homecontrol_noframe WHERE ip = '".$_SERVER['REMOTE_ADDR']."'"; //$_SERVER['HTTP_X_FORWARDED_FOR']
 $rslt = $_SESSION['config']->DBCONNECT->executeQuery($sqlNoFrame);
@@ -286,14 +289,10 @@ $fussLayoutRow->setAttribute(0, $footMenuDiv);
 $layoutTable->addRow($fussLayoutRow);
 
 /* --------------------------------- */
-
-
 $layoutTable->show();
-    
+
 $arduinoFrame = new IFrame($_SESSION['config'], "arduinoSwitch", -1, -1, 1, 1, 0);
 $arduinoFrame->show();
-
-
 
 // MailSensor
 $dbSensorTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_sensor',

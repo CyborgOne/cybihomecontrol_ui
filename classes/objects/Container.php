@@ -70,10 +70,10 @@ class Container extends Object {
     foreach ($this->OBJECTS as $o){ 
        $x++;
 
-	if (method_exists($o, $functName)){
-	  $ret[$aCount] = $o;
-	  $aCount++;
-	}
+    	if (method_exists($o, $functName)){
+    	  $ret[$aCount] = $o;
+    	  $aCount++;
+    	}
     }
     return $ret;
   }

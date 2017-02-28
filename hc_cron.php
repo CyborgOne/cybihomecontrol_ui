@@ -56,23 +56,18 @@ $whereStmtCurrCron = strtolower($currentDayName) . "='J'";
 $whereStmtCurrCron .= " and stunde=" . $currentStd . " and minute=" . $currentMin;
 
 // Betroffene Cron-Eintr?ge selektieren
-//$sql = "SELECT * FROM homecontrol_cron WHERE ".$whereStmtCurrCron;
-//$result =  $_SESSION['config']->DBCONNECT->executeQuery($sql);
-
 $tblCrons = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_cron", array("*"), "", "", "", $whereStmtCurrCron);
 
-//echo "Aktuelle Cron Anzahl: ".mysqli_num_rows($result)."<br><br>";
 $shortcutUrls = array();
 if ($tblCrons->getRowCount() > 0) {
     echo "\nRUN HOMECONTROL-CRON: " . $currentDayName . " " . $currentStd . ":" . $currentMin . " (" . time() . ")\n";
-
     foreach ($tblCrons->ROWS as $row) {
         echo "</br>" . $row->getNamedAttribute("name");
         if (isCronPaused($_SESSION['config']->DBCONNECT, $row->getNamedAttribute('id'))) {
             deleteCronPause($_SESSION['config']->DBCONNECT, $row->getNamedAttribute('id'));
         } else {
             $cron = new HomeControlCron($row);
-            $cron->switchCron();
+            $cron->switchCron(false);
         }
     }
 }

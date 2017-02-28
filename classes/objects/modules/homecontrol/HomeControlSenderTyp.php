@@ -55,14 +55,20 @@ class HomeControlSenderTyp {
      * für die Steuerung zurück
      */
     function getParameterControlMask($configItem) {
-        $obj = $this->getAlternativeParameterEditorObject($configItem);
+        $formName = "ControlForm".$configItem->getId();
+        $frm = new Form("", "", "", $formName);
+        
+        $obj = $this->getAlternativeParameterEditorObject($configItem, $formName);
 
         if ($obj != null && method_exists($obj, "show")) {
-            return $obj;
+            $frm->add($obj);
+            return $frm;
         } else {
-            $frm = new Form();
             $frm->add(new Hiddenfield("switchConfigId", $configItem->getId()));
             $tbl = new Table(array("", ""));
+            $tbl->setAlignments(array("left", "left"));
+            $tbl->setColSizes(array("120"));
+            
             $rows = $this->PARAMETER_DBTABLE_CONTROL->ROWS;
             foreach ($rows as $row) {
                 if ($row->getNamedAttribute("optional") != "J" || $configItem->isParameterOptionalActive($row->getNamedAttribute("id"))) {
@@ -154,7 +160,7 @@ class HomeControlSenderTyp {
     function getDefaultLogicSwitchButtons($configItem) {
         if ($this->HAS_DEFAULT_PARAM) {
             $tbl = new Table(array("", ""));
-
+            $tbl->setColSizes(array("120"));
             $rows = $this->PARAMETER_DBTABLE->ROWS;
             foreach ($rows as $row) {
                 if ($row->getNamedAttribute("default_logic") == "J") {
@@ -202,31 +208,57 @@ class HomeControlSenderTyp {
 
 
     /**
-     * prüft ob zu den Parametern ein alternativer Editor 
+     * prüft ob zu den Parametern mindestens ein alternativer Editor 
      * vorhanden ist und gibt diesen ggf zurueck. 
      * Ansonsten wird null zurueckgeliefert. 
+     * 
+     * Alle nicht zu einem alternativen Editor zugeordneten Parameter
+     * werden als Standard-Parameter-Control in der Form integriert.
      */
-    function getAlternativeParameterEditorObject($configItem) {
+    function getAlternativeParameterEditorObject($configItem, $formName) {
         $alternative = false;
-        $editorTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_editoren");
+        $editorTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_editoren", array("*"), "", "", "", "id IN (SELECT editor_id FROM homecontrol_control_editor_zuordnung WHERE config_id=".$configItem->getId().")");
         $dv = new Div();
-
+        $dv->setAlign("center");
+        $dv->setOverflow("visible");
+        
         foreach ($editorTbl->ROWS as $editorRow) {
             $classname = $editorRow->getNamedAttribute("classname");
-
-            $editor = new $classname($editorRow, $configItem);
+            
+//          if($configItem->isEditorActivated($editorRow)){
+            $editor = new $classname($editorRow, $configItem, $formName);
 
             if ($editor->isActivated()) {
-                $editor->setXPos(10);
-                $editor->setYPos(-25);
                 $dv->add($editor->getEditMask());
                 $alternative = true;
             }
+//          }
         }
-
+        
+        $freeParamArray = $configItem->getFreeParamArray();
+        foreach($freeParamArray as $freeParam){
+            $obj = $this->getEditParameterValueObject($freeParam->getRow(), $configItem->getParameterValue($freeParam->getRow()), $prefix="", $default="");
+            $dv->add($obj);
+        }
+        $dv->add(new Button("Ok", "Ok"));
         return $alternative ? $dv : null;
     }
 
+
+    function getSenderParameterIdByName($name){
+        foreach($this->PARAMETER_DBTABLE->ROWS as $paramRow){
+            if($paramRow->getNamedAttribute("name")==$name){
+                return $paramRow->getNamedAttribute("id");
+            }
+        }
+        
+        foreach($this->PARAMETER_DBTABLE_CONTROL->ROWS as $paramRow){
+            if($paramRow->getNamedAttribute("name")==$name){
+                return $paramRow->getNamedAttribute("id");
+            }
+        }
+        return null;
+    }
 
 
     function doParameterUpdate($configRow) {
@@ -319,6 +351,7 @@ class HomeControlSenderTyp {
                 }
             }
         }
+        refreshEchoDb($_SESSION['config']->DBCONNECT);        
     }
 
 
@@ -362,6 +395,10 @@ class HomeControlSenderTyp {
             $r = $paramDbTbl->createRow();
             $r->setNamedAttribute("config_id", $configRow->getNamedAttribute("id"));
             $r->setNamedAttribute("param_id", $paramRow->getNamedAttribute("id"));
+            $r->insertIntoDB();
+            
+            $paramDbTbl->refresh();
+            $r = $paramDbTbl->getRow(1);
         }
 
         $r->setNamedAttribute("value", $value);
@@ -438,18 +475,43 @@ class HomeControlSenderTyp {
 
             if (isset($defaultValueTag) && strlen($defaultValueTag) > 0) {
                 $obj = new Combobox($prefix.$parameterRow->getNamedAttribute("name"), getDefaultComboArray($defaultValueTag), $default!=""?$default:($optional ? "" : $value), " ");
-            } else
-                if (isset($von) && isset($bis) && strlen($von) > 0 && strlen($bis) > 0) {
-                    $obj = new Combobox($prefix.$parameterRow->getNamedAttribute("name"), getNumberComboArray($von, $bis), $default!=""?$default:($optional?"":$value), " ");
-                } else
-                    if (isset($minLen) && isset($maxLen) && strlen($minLen) > 0 && strlen($maxLen) > 0) {
-                        $obj = new Textfield($prefix.$parameterRow->getNamedAttribute("name"), $default!=""?$default:($optional?"":$value), 20, $maxLen);
-                    }
+            } else if (isset($von) && isset($bis) && strlen($von) > 0 && strlen($bis) > 0) {
+                $obj = new Combobox($prefix.$parameterRow->getNamedAttribute("name"), getNumberComboArray($von, $bis), $default!=""?$default:($optional?"":$value), " ");
+            } else if (isset($minLen) && isset($maxLen) && strlen($minLen) > 0 && strlen($maxLen) > 0) {
+                $obj = new Textfield($prefix.$parameterRow->getNamedAttribute("name"), $default!=""?$default:($optional?"":$value), 20, $maxLen);
+            }
         }
 
         return $obj;
     }
 
+
+    function getPossibleParameterValues($parameterRow) {
+        $obj = array();
+
+        $artDbTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_sender_typen_parameter_arten", array('*'), "", "", "", "id=" .$parameterRow->getNamedAttribute("parameterArtId"));
+        $artRow = $artDbTbl->getRow(1);
+
+        if ($artRow != null && $parameterRow != null) {
+            $von = $artRow->getNamedAttribute("von");
+            $bis = $artRow->getNamedAttribute("bis");
+
+            $minLen = $artRow->getNamedAttribute("minLen");
+            $maxLen = $artRow->getNamedAttribute("maxLen");
+
+            $defaultValueTag = $artRow->getNamedAttribute("defaultValueTag");
+
+            $optional = $parameterRow->getNamedAttribute("optional") == "J";
+
+            if (isset($defaultValueTag) && strlen($defaultValueTag) > 0) {
+                $obj = getDefaultComboArray($defaultValueTag);
+            } else if (isset($von) && isset($bis) && strlen($von) > 0 && strlen($bis) > 0) {
+                $obj = getNumberComboArray($von, $bis);
+            } 
+        }
+
+        return $obj;
+    }
 }
 
 ?>

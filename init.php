@@ -23,21 +23,19 @@
   //include($currentInitPath."functions/global.php");
   $FUNCTLOADER = new ClassLoader($currentInitPath."functions", false);
   $FUNCTLOADER->loadAllClasses();
+  
 //-------------------------  
 // GRUNDKONFIGURATION LADEN
 //-------------------------
   include($currentInitPath."config/public_vars.php");
 
-  include($currentInitPath."config/gb.php");
-  include($currentInitPath."config/news.php");
-
+  //include($currentInitPath."config/gb.php");
+  //include($currentInitPath."config/news.php");
   
 //-------------------------  
 // TEMPLATES LADEN
 //-------------------------  
   include($currentInitPath."templates/Templates.php");
-
-
 
 //-------------------------  
 // KLASSEN LADEN /ERSTELLEN
@@ -49,12 +47,13 @@
   if(!isset($_SESSION)){
     session_start();
   } 
-    // Letzte Aktion ist mehr als X Sekunden her.
-    if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $_SESSION['config']->PUBLICVARS['sessionDauer'])) {
-      session_unset();     // unset $_SESSION variable for the run-time 
-      session_destroy();   // destroy session data in storage
-      session_start();
-    }
+
+  // Letzte Aktion ist mehr als X Sekunden her.
+  if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $_SESSION['config']->PUBLICVARS['sessionDauer'])) {
+    session_unset();     // unset $_SESSION variable for the run-time 
+    session_destroy();   // destroy session data in storage
+    session_start();
+  }
   
 
   $_SESSION['LAST_ACTIVITY'] = time(); 
@@ -74,6 +73,7 @@
     $CONFIG = null;
     $CONFIG = new Config();
     $_SESSION['mainpanelwidth'] = 800;
+    $_SESSION['currentView'] = 'default';
     $_SESSION['config'] =& $CONFIG;
 
     $CONFIG->CLASSPATH =& $currentInitPath."classes/";
@@ -88,12 +88,11 @@
     $CONFIG->LOG = new Log($CONFIG->DBCONNECT);
     $_SESSION['log'] = $CONFIG->LOG;
 
-
     include($currentInitPath."config/colors.php");
 
     $CONFIG->COLORS = $COLORS;
-    $CONFIG->GB_CONFIG = $GB_CONFIG;
-    $CONFIG->News_CONFIG = $News_CONFIG;
+//    $CONFIG->GB_CONFIG = $GB_CONFIG;
+//    $CONFIG->News_CONFIG = $News_CONFIG;
     $CONFIG->PUBLICVARS = $PUBLICVARS;
     $CONFIG->MAINPATH = $currentInitPath;
     
@@ -115,4 +114,17 @@
   }
   
   $_SESSION['letzteAenderung'] = $CLASSLOADER->getLastChange();
+
+    
+/*  $senderDbTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_sender",array('*'));
+  foreach($senderDbTbl->ROWS as $rowSender){
+      $sender = new HomeControlSender($rowSender);
+      $_SESSION['config']->SENDER[$rowSender->getNamedAttribute("id")] = $sender;
+  }
+  
+  $itemsDbTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_config",array('*'));
+  foreach($itemsDbTbl->ROWS as $rowItem){
+      $item = new HomeControlItem($rowItem);
+      $_SESSION['config']->ITEMS[$rowItem->getNamedAttribute("id")] = $item;
+  }*/
 ?>
