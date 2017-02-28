@@ -1,5 +1,5 @@
 <?php
-echo "START ".microtime(true)."<br>";
+//echo "START ".microtime(true)."<br>";
 
 /**
 * 
@@ -114,5 +114,5 @@ echo "START ".microtime(true)."<br>";
 
    include("foot.php");
    
-echo "END ".microtime(true)."<br>";   
+//echo "END ".microtime(true)."<br>";   
 ?>
