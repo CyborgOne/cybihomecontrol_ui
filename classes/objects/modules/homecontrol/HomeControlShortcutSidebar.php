@@ -134,7 +134,7 @@ class ShortcutSidebar extends Object {
         $dvSc = new Div();
         $dvSc->setWidth("100%");
 
-        $title = new Title("Shortcuts");
+        $title = new Title("Shortcuts",0,7);
 
         $spc = new Line();
 
@@ -143,7 +143,7 @@ class ShortcutSidebar extends Object {
         
         $tblItems = new Table(array("", ""));
         $tblItems->setBackgroundColorChange(true);
-        $tblItems->setColSizes(array("30"));
+        $tblItems->setColSizes(array("130"));
         $tblItems->addRow($tblItems->createRow());
         $tblItems->addSpacer(0,15);
         $tblItems->addRow($tblItems->createRow());
@@ -154,7 +154,7 @@ class ShortcutSidebar extends Object {
             $shortcut = new HomeControlShortcut($shortcutRow);
 
             $s = new Span($shortcut->getName(), $shortcut->getName());
-            $s->setFontsize(3);
+            $s->setFontsize(7);
             
             $itemRows = $shortcut->getItemRowsForShortcut();
 
@@ -166,7 +166,7 @@ class ShortcutSidebar extends Object {
                     $tblParams = new Table(array("", ""));
                     $rParam = $tblParams->createRow();
                     $rParam->setSpawnAll(true);
-                    $rParam->setAttribute(0, new Text($itm->getName(), 2, true));
+                    $rParam->setAttribute(0, new Text($itm->getName(), 5, true));
                     $tblParams->addRow($rParam);
 
                     $params = $itm->getAllParameter();
@@ -184,25 +184,27 @@ class ShortcutSidebar extends Object {
                             } 
                 
                             $rParam = $tblParams->createRow();
-                            $rParam->setAttribute(0, $param->getName());
-                            $rParam->setAttribute(1, $value);
+                            $rParam->setColSizes(array("400"));
+                            $rParam->setAttribute(0, new Text($param->getName(), 5));
+                            $rParam->setAttribute(1, new Text($value, 5));
                             $tblParams->addRow($rParam);
                         }
                     }
 
-                    $tblParams->addSpacer(0,6);
+                    $tblParams->addSpacer(0,20);
 
                     $s->add($tblParams);
                 }
 
                 $frmRun = new Form();
                 $frmRun->add(new Button("switchShortcut", " "));
-                $frmRun->add(new Hiddenfield("doShortcutId", $shortcut->getId()));
+                $frmRun->add(new Hiddenfield("doShortcutId", $shortcut->getId(),0,0));
 
                 $rCron = $tblItems->createRow();
-                $rCron->setHeight(30);
+                $rCron->setHeight(50);
                 $rCron->setVAlign("middle");
                 $rCron->setStyle("padding-left", "3px");
+                $rCron->setStyle("padding-top", "15px");
                 $rCron->setAttribute(0, $frmRun);
                 $rCron->setAttribute(1, $s);
                 $tblItems->addRow($rCron);

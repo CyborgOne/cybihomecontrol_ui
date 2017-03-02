@@ -15,7 +15,7 @@ class Hiddenfield extends Object {
 
 
   function  show(){
-    echo "<input id=\"" .$this->NAME ."\" type=\"hidden\" NAME=\"" .$this->NAME ."\" value=\"" .$this->VALUE ."\"  size=\"" .$this->WIDTH  ."\" maxlength=\"" .$this->MAX ."\">";
+    echo "<input id=\"" .$this->NAME ."\" type=\"hidden\" NAME=\"" .$this->NAME ."\" value=\"" .$this->VALUE ."\" >"; // size=\"" .$this->WIDTH  ."\" maxlength=\"" .$this->MAX ."\"
   }
 
 

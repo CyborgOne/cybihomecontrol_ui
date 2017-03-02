@@ -140,7 +140,7 @@ td.panelBody
 
 td
 {
-  font-size: " .($_SESSION['currentView']=="mobile"?"36px":"11px").";
+  " .($_SESSION['currentView']=="mobile"?"":"font-size: 11px").";
   font-weight:normal; 
   margin-left: 0px;
   margin-right: 0px;

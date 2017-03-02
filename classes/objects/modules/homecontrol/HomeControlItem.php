@@ -341,7 +341,7 @@ class HomeControlItem extends Object {
 
         $img = $this->getControlArtIcon(false);
 
-        $txtName = new Text($this->OBJNAME, 7, true);
+        $txtName = new Text($this->OBJNAME, 6, true);
 
         $switchForm = $this->getSwitchButtons();
 
