@@ -34,6 +34,7 @@ mysqldump     --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-
 mysqldump     --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_condition         			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_config            			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_control_editor_zuordnung		| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
+mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_cron_parameter_values   		| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_control_parameter_zu_editor		| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_cron              			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 # mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_cronview        			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
@@ -60,6 +61,7 @@ mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-
 mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_shortcut          			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 #mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_shortcutview     			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_shortcut_items    			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
+mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_shortcut_parameter_values		| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump -d  --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_term              			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump     --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_term_trigger_type 			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
 mysqldump     --compatible=mysql40 --skip-comments --skip-set-charset --skip-tz-utc -u root -p$databasePasswd -h $databaseHost $databaseName homecontrol_term_type         			| sed -e 's/TYPE=MyISAM/ /g' | sed -e 's/TYPE=InnoDB/ /g' >> $filename
@@ -156,7 +158,9 @@ echo "(32, 'btSwitchActive', 'J', 0, '2016-09-02 22:37:16', 'BT-Switch im Einsat
 echo "(33, 'loginExternOnly', 'J', 0, '0000-00-00 00:00:00', 'Login nur von extern')," >> $filename
 echo "(34, 'switchButtonsOnIconActive', 'J', 0, '0000-00-00 00:00:00', 'Buttons in Steuerung sichtbar?')," >> $filename
 echo "(35, 'gmailAdress', '', 0, '0000-00-00 00:00:00', 'Email fur Gmail Abfragen')," >> $filename
-echo "(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen');" >> $filename 
+echo "(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen')," >> $filename 
+echo "(37, 'haBridgeActive', 'N', 0, '0000-00-00 00:00:00', 'Gibt an, ob die HA-Bridge installiert ist.')," >> $filename 
+echo "(38, 'haBridgePath', '/services/haBridge/', 0, '0000-00-00 00:00:00', 'Pfad zur HA-Bridge Installation');" >> $filename 
 #(https://security.google.com/settings/security/apppasswords)
 
 echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;" >> $filename

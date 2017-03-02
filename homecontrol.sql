@@ -324,7 +324,7 @@ CREATE TABLE `homecontrol_config` (
   `dimmer` set('J','N') NOT NULL DEFAULT 'N',
   `sender_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=19;
+)   AUTO_INCREMENT=20;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -342,7 +342,27 @@ CREATE TABLE `homecontrol_control_editor_zuordnung` (
   `editor_id` int(11) NOT NULL,
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-)   AUTO_INCREMENT=17;
+)   AUTO_INCREMENT=18;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL40' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `homecontrol_cron_parameter_values`;
+CREATE TABLE `homecontrol_cron_parameter_values` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cron_id` int(11) NOT NULL,
+  `config_id` int(11) NOT NULL,
+  `param_id` int(11) NOT NULL,
+  `value` varchar(100) NOT NULL,
+  `geaendert` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+)   AUTO_INCREMENT=51;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -362,7 +382,7 @@ CREATE TABLE `homecontrol_control_parameter_zu_editor` (
   `geaendert` timestamp NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `editor_param_id` (`editor_param_id`,`sender_param_id`,`sendereditor_zuord_id`)
-)   AUTO_INCREMENT=54;
+)   AUTO_INCREMENT=57;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -704,7 +724,7 @@ CREATE TABLE `homecontrol_sender_typen_parameter` (
 
 LOCK TABLES `homecontrol_sender_typen_parameter` WRITE;
 /*!40000 ALTER TABLE `homecontrol_sender_typen_parameter` DISABLE KEYS */;
-INSERT INTO `homecontrol_sender_typen_parameter` VALUES (1,1,'schalte',7,'2017-02-07 21:48:30','J','J','N','J'),(2,1,'dimm',9,'2017-02-07 21:50:02','N','N','J','N'),(3,3,'schalte',8,'2017-02-07 21:48:30','J','J','N','J'),(4,2,'red',1,'2017-02-07 21:48:30','N','N','N','J'),(5,2,'green',1,'2017-02-07 21:48:30','N','N','N','J'),(6,2,'blue',1,'2017-02-07 21:48:30','N','N','N','J'),(8,6,'relaisId',10,'2017-02-07 21:48:30','J','N','N','J'),(10,6,'relaisStatus',12,'2017-02-07 21:50:10','N','N','J','N'),(11,2,'xxx',1,'2017-02-07 21:49:46','N','N','N','N');
+INSERT INTO `homecontrol_sender_typen_parameter` VALUES (1,1,'schalte',7,'2017-02-07 21:48:30','J','J','N','J'),(2,1,'dimm',9,'2017-02-07 21:50:02','N','N','J','N'),(3,3,'schalte',8,'2017-02-07 21:48:30','J','J','N','J'),(4,2,'red',1,'2017-02-07 21:48:30','N','N','N','J'),(5,2,'green',1,'2017-02-07 21:48:30','N','N','N','J'),(6,2,'blue',1,'2017-02-07 21:48:30','N','N','N','J'),(8,6,'relaisId',10,'2017-02-07 21:48:30','J','N','N','J'),(10,6,'relaisStatus',12,'2017-02-07 21:50:10','N','N','J','N');
 /*!40000 ALTER TABLE `homecontrol_sender_typen_parameter` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -864,6 +884,26 @@ CREATE TABLE `homecontrol_shortcut_items` (
   UNIQUE KEY `shortcut_item_uk` (`shortcut_id`,`config_id`,`zimmer_id`,`etagen_id`),
   KEY `shortcut_id` (`shortcut_id`)
 )   AUTO_INCREMENT=10;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL40' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `homecontrol_shortcut_parameter_values`;
+CREATE TABLE `homecontrol_shortcut_parameter_values` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `shortcut_id` int(11) NOT NULL,
+  `config_id` int(11) NOT NULL,
+  `param_id` int(11) NOT NULL,
+  `value` varchar(100) NOT NULL,
+  `geaendert` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+)   AUTO_INCREMENT=34;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -1118,7 +1158,7 @@ DROP TABLE IF EXISTS `pageconfig`;
 CREATE TABLE `pageconfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
-  `value` text NOT NULL,
+  `value` text,
   `page_id` int(11) NOT NULL DEFAULT '0',
   `geaendert` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `label` varchar(50) DEFAULT NULL,

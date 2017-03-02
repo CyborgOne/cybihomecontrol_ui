@@ -14,7 +14,7 @@ class TypParamDbTable extends DbTable {
     $dbTblTypenParameter = new TypParamDbTable($_SESSION['config']->DBCONNECT, 
                                 'homecontrol_sender_typen_parameter', 
                                 array("name", "parameterArtId", "fix", "default_logic", "optional", "senderTypId", "id"), 
-                                "Name, Art, Fix je Control, Standard (An/Aus), Optional",
+                                "Name, Art, Fix je\nControl, Standard\n(An/Aus), Optional",
                                 "senderTypId=".$_SESSION['selectedType'],
                                 "senderTypId, fix, name",
                                 "");
