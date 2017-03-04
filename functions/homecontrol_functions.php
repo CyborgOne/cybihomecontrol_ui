@@ -369,18 +369,18 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN = "J")
 
     // Alle Regel-Bedingungen pr?fen
     foreach ($dbRegelTerms->ROWS as $rowRegelTerm) {
-        echo "</br>";
+        //echo "</br>";
         $validator = new HomeControlTermValidator($rowRegelTerm);
         if (!$validator->isValid()) {
-            echo "<br/>" . $rowRegelTerm->getNamedAttribute("id") . ": Fail<br/>";
-            echo "TriggerJN: " . $rowRegelTerm->getNamedAttribute("trigger_jn") . "</br>";
+            //echo "<br/>" . $rowRegelTerm->getNamedAttribute("id") . ": Fail<br/>";
+            //echo "TriggerJN: " . $rowRegelTerm->getNamedAttribute("trigger_jn") . "</br>";
             if ($rowRegelTerm->getNamedAttribute("trigger_jn") == "J") {
                 $allTriggerTermsValid = false;
             }
 
             $isValid = false;
         } else {
-            echo "</br>" . $rowRegelTerm->getNamedAttribute("id") . ": OK<br/>";
+            //echo "</br>" . $rowRegelTerm->getNamedAttribute("id") . ": OK<br/>";
         }
     }
 
@@ -513,7 +513,7 @@ function refreshEchoDb($dbCon){
     
     $haBridgePath = getHaBridgePath($dbCon);
     $path = $haBridgePath ."data/device.db";
-    echo $path;
+    //echo $path;
     
     $where = "WHERE EXISTS "
             ."(SELECT 'X' From homecontrol_sender_typen_parameter p WHERE p.senderTypId = "
@@ -553,7 +553,7 @@ function refreshEchoDb($dbCon){
     
     fclose($dbFile);
     
-    echo "restart";
+    //echo "restart";
     exec("sudo systemctl restart habridge.service");
     
 }

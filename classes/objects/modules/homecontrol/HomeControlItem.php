@@ -771,14 +771,14 @@ class HomeControlItem extends Object {
         }
         
         if($saveParamValues){
-            echo "saveParams<br/>";
+            //echo "saveParams<br/>";
             // Neue Parameter-Werte merken
             foreach ($switchParams as $p) {
                 $pRow = $p[0];
                 $pValue = $p[1];
 
                 if ($pRow->getNamedAttribute("fix") != "J" && $pRow->getNamedAttribute("default_logic") != "J") {
-                    echo $pRow->getNamedAttribute("name") ."=" .$pValue ."<br/>";
+                    //echo $pRow->getNamedAttribute("name") ."=" .$pValue ."<br/>";
                     $this->setParameterValue($pRow, $pValue);
                 }
             }
