@@ -15,7 +15,7 @@ class TypParamDbTable extends DbTable {
                                 'homecontrol_sender_typen_parameter', 
                                 array("name", "parameterArtId", "fix", "default_logic", "optional", "senderTypId", "id"), 
                                 "Name, Art, Fix je\nControl, Standard\n(An/Aus), Optional",
-                                "senderTypId=".$_SESSION['selectedType'],
+                                "",
                                 "senderTypId, fix, name",
                                 "");
     $dbTblTypenParameter->setColSizes(array(250,250,100,100,100));
@@ -61,6 +61,7 @@ class TypParamDbTable extends DbTable {
     
     // Neuer Eintrag
     if (isset($_REQUEST["InsertIntoDB" .$dbTblTypenParameter->TABLENAME]) && $_REQUEST["InsertIntoDB" .$dbTblTypenParameter->TABLENAME] == "Speichern") {
+        $_REQUEST['senderTypId'] = $_SESSION['selectedType'];
         $dbTblTypenParameter->doInsert();
         $dbTblTypenParameter->refresh();
 

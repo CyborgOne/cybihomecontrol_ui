@@ -1040,11 +1040,11 @@ class DbTable extends Object {
         $chkLen = strlen($statement);
 
         for ($i = 0; $i < mysql_num_fields($result); $i++) {
-
             $fieldName = mysql_field_name($result, $i);
             $fieldValue = isset($_REQUEST[$fieldName]) ? $_REQUEST[$fieldName] : "";
             if (strlen($fieldValue) == 0 && !(isset($ev) && (count($ev) == 2 && in_array('J', $ev) && in_array('N', $ev))) ) {
                 $fieldValue = $this->getDefaultValue($this->DEFAULTS, $fieldName);
+                echo "Default Value: ". $fieldValue."<br/>";
             }
 
             $ev = $this->getEnumValues($fieldName);
@@ -1129,7 +1129,7 @@ class DbTable extends Object {
             //Damit kein nicht versehentlich ein 2. Insert erfolgen kann, hier die Werte leeren
             $fieldValue = "";
         }
-        
+
         $result = $this->DBCONNECT->executeQuery($statement);
 
         if ((!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=

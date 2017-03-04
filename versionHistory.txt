@@ -1,6 +1,13 @@
 
 Version: 1.0.1
 ---------------------
+Nachbesserungen der Einstellungen:
+- doppelte Nachfrage nach entfernen von Datensetzen entfernt
+- caching nachgebessert
+- anlegen von sender-parametern korrigiert
+
+Version: 1.0.1
+---------------------
 V1.0 initial Commit
 – Dynamische Parameter in Abhängigkeit zum Sender-Typ
 – Neue Editoren Individuell je Gerät definierbar (Bisher nur ein RGB-Color-Chooser. Slider und Checkbox sind in Arbeit. Wer weitere Ideen hat, immer her damit.)

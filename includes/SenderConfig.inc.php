@@ -19,18 +19,7 @@
     $dbTblSender->setHeaderEnabled(true);
     $dbTblSender->setDeleteInUpdate(true);
     $dbTblSender->setColSizes(array("200", "40", "60", "90", "50", "50", "50"));
-    
-    $deleteMask=null;
-    if ($dbTblSender->isDeleteInUpdate()) {
-        $deleteMask = !$dbTblSender->doDeleteFromUpdatemask() ? null : $dbTblSender->doDeleteFromUpdatemask();
-    }
-    if ($deleteMask != null) {
-        $rDel = $tblMain->createRow();
-        $rDel->setAttribute(0, $deleteMask);
-        $rDel->setSpawnAll(true);
-        $tblMain->addRow($rDel);
-    }
-    
+
     $newSwitchBtn = new Text("");
     
     // Neuer Eintrag
@@ -62,17 +51,6 @@
         checkDefaultSender($dbTblSender->ROWS);
         
         $dbTblSender->doUpdate();
-    }
-    
-        
-    if ($dbTblSender->isDeleteInUpdate()) {
-        $deleteMask = $dbTblSender->doDeleteFromUpdatemask() ? null : $dbTblSender->doDeleteFromUpdatemask();
-        if ($deleteMask != null) {
-            $lS = $tblMain->createRow();
-            $lS->setSpawnAll(true);
-            $lS->setAttribute(0, $deleteMask);
-            $tblMain->addRow($lS);
-        }            
     }
 
     

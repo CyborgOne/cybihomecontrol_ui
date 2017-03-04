@@ -6,7 +6,7 @@
 # Sicherstellen dass automatisches commit-handling nur auf Master-Branche erfolgt. 
 # Andere Branches muessen gemerged werden!
 
-git checkout master
+#git checkout master
 #-----------------------------------------------------------------
 #  GIT - Dateien adden und commiten
 #-----------------------------------------------------------------

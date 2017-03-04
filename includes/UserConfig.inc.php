@@ -33,18 +33,6 @@
         $dbTblBenutzer->setAdditionalUpdateFields(array("Passwort"=>$pwField));
     }
     
-    $deleteMask=null;
-    if ($dbTblBenutzer->isDeleteInUpdate()) {
-        $deleteMask = !$dbTblBenutzer->doDeleteFromUpdatemask() ? null : $dbTblBenutzer->doDeleteFromUpdatemask();
-    }
-    
-    if ($deleteMask != null) {
-        $rDel = $tblMain->createRow();
-        $rDel->setAttribute(0, $deleteMask);
-        $rDel->setSpawnAll(true);
-        $tblMain->addRow($rDel);
-    }
-    
     $newBenutzerBtn = new Text("");
     
 

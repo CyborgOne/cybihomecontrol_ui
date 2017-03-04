@@ -115,7 +115,9 @@
   
   $_SESSION['letzteAenderung'] = $CLASSLOADER->getLastChange();
 
-    
+  $_SESSION['config']->SENDER = array();
+  $_SESSION['config']->ITEMS = array();
+  
 /*  $senderDbTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_sender",array('*'));
   foreach($senderDbTbl->ROWS as $rowSender){
       $sender = new HomeControlSender($rowSender);
