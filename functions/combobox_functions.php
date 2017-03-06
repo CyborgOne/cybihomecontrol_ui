@@ -52,8 +52,6 @@ function getDbComboArray($tab, $col, $currentRow = null) {
     $codeCol = mysql_field_name($resDbCobInit, 0);
     $textCol = mysql_field_name($resDbCobInit, 1);
 
-echo "<br>".$sqlComboData;
-
     $resComboData = $_SESSION['config']->DBCONNECT->executeQuery($sqlComboData);
     while ($rowComboData = mysql_fetch_array($resComboData)) {
         $code = $rowComboData[$codeCol];
