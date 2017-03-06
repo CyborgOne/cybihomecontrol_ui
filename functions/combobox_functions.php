@@ -44,7 +44,6 @@ function getDbComboArray($tab, $col, $currentRow = null) {
         $sqlComboData .= " ORDER BY 2";
     }
 
-    // echo $sqlComboData;
 
     //wird nun nachträglich erledigt wegen Filter auf null in getdbcombovalue//    $sqlComboData    .=  " UNION SELECT ' ', ' ' FROM dual";
     //Combobox-Daten laden
@@ -53,6 +52,7 @@ function getDbComboArray($tab, $col, $currentRow = null) {
     $codeCol = mysql_field_name($resDbCobInit, 0);
     $textCol = mysql_field_name($resDbCobInit, 1);
 
+echo "<br>".$sqlComboData;
 
     $resComboData = $_SESSION['config']->DBCONNECT->executeQuery($sqlComboData);
     while ($rowComboData = mysql_fetch_array($resComboData)) {
@@ -71,7 +71,7 @@ function getDbComboArray($tab, $col, $currentRow = null) {
 
 function getDbComboWhereStatement($rowDbCombo, $currentRow = null) {
     $ret = "";
-
+    // Werte aus der Aufrufenden Zeile ermitteln und ins WHERE Statement übernehmen
     $tmp = split('#', $rowDbCombo['combo_where']);
     $chkVal = 0; // 0 = WhereClause    1 = Param
     foreach ($tmp as $wherePart) {
@@ -80,7 +80,7 @@ function getDbComboWhereStatement($rowDbCombo, $currentRow = null) {
             $currRowFieldName = $wherePart;
             $whereValue = "";
             if ($currentRow != null) {
-                $tmpTbl = new DbTable($_SESSION['config']->DBCONNECT, $rowDbCombo['tab_name'], array("*"), "", "", "id=" . $currentRow->getNamedAttribute("rowid"));
+                $tmpTbl = new DbTable($_SESSION['config']->DBCONNECT, $rowDbCombo['tab_name'], array("*"), "", "", "", "id=" . $currentRow->getNamedAttribute("rowid"));
                 $tmpRow = $tmpTbl->getRow(1);
 
                 $whereValue = $tmpRow->getNamedAttribute($currRowFieldName);
@@ -92,6 +92,7 @@ function getDbComboWhereStatement($rowDbCombo, $currentRow = null) {
         $chkVal = $chkVal == 0 ? 1 : 0;
     }
 
+    // Werte aus der Session ermitteln und ins WHERE Statement übernehmen
     $tmpSess = split('\$', $ret);
     if (sizeof($tmpSess) > 1) {
         $sessFieldName = $tmpSess[1];

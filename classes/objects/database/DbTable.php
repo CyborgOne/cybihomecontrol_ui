@@ -1693,12 +1693,11 @@ class DbTable extends Object {
                             if ($this->isDbComboSet($this->TABLENAME, $fieldName)) {
                                 // Wenn DbCombo definiert wurde wird die Combobox zur Spalte angezeigt
                                 //Wenn die Combobox noch nicht erzeugt wurde, erzeugen.
-                                if (!(isset($dbComboArrays[$this->TABLENAME . $colNames[$ia]]))) {
-                                    $dbComboArrays[$this->TABLENAME . $colNames[$ia]] = getDbComboArray($this->
-                                        TABLENAME, $colNames[$ia], $this->ROWS[$ir]);
+                                if (!(isset($dbComboArrays[$this->TABLENAME . $colNames[$ia] .$rowId]))) {
+                                    $dbComboArrays[$this->TABLENAME .$colNames[$ia] .$rowId ] = getDbComboArray($this->TABLENAME, $colNames[$ia], $this->ROWS[$ir]);
                                 }
         
-                                $dbCombo = $dbComboArrays[$this->TABLENAME . $colNames[$ia]];
+                                $dbCombo = $dbComboArrays[$this->TABLENAME . $colNames[$ia] .$rowId];
         
                                 if (count($dbCombo) > 0) {
                                     $default = $row->getAttribute($ia);
