@@ -6,6 +6,7 @@ function checkUrlParameter($dbConnect) {
     checkShortcutUrlParameter($dbConnect);
 }
 
+
 /**
  * Prüfung für URL-Parameter der Standard-Steuerung 
  * (Kein besonderer Editor definiert)
@@ -75,17 +76,12 @@ function checkShortcutUrlParameter($dbConnect) {
 }
 
 
-
-
-
-
 function getEditorName($id) {
     $sql = "SELECT name FROM homecontrol_editoren WHERE id = " . $id;
     $result = mysql_query($sql);
     $row = mysql_fetch_array($result);
     return $row['name'];
 }
-
 
 
 function getSensorName($id) {
@@ -119,246 +115,79 @@ function getArduinoUrlForDeviceId($hcConfigId, $dbConnect) {
 }
 
 
+function getHaBridgePath($dbCon){
+    $haBridgePath = getPageConfigParam($dbCon, 'haBridgePath');  // "/services/haBridge";
+    $haBridgePath = str_replace('\\','/',trim($haBridgePath));
+    $haBridgePath = (substr($haBridgePath,-1)!='/') ? $haBridgePath.='/' : $haBridgePath;
+    
+    return $haBridgePath;
+}
 
 
-/*
-// TODO: $arduinoUrl wird eigtl nicht mehr ben?tigt da eh f?r jedes Device
-//       die ArduinoURL ermittelt werden muss, seit mehrere Sender m?glich sind.
-function switchShortcut($arduinoUrl, $shortcutUrl, $dbConnect) {
-    //echo "switchShortcut: ".$arduinoUrl." > ".$shortcutUrl."\n";
-    $loginNeed = true;
-    $loginExternOnly = false;
-    $loginOK = false;
-
-    try {
-        $loginNeed = getPageConfigParam($dbConnect, "loginForSwitchNeed") == "J";
-        //    echo "Login needed: ".$loginNeed."\n";
-        $loginExternOnly = getPageConfigParam($dbConnect, "loginExternOnly") == "J";
-        //    echo "Login extern only: ".$loginExternOnly."\n";
-        $loginOK = isset($_SESSION['config']) && isset($_SESSION['config']->CURRENTUSER) && ($_SESSION['config']->CURRENTUSER->STATUS == "admin" || $_SESSION['config']->
-            CURRENTUSER->STATUS == "user");
-        //    echo "Login OK: ".$loginOK."\n";
-
-        $clientIP = explode(".", $_SERVER['REMOTE_ADDR']);
-        $serverIP = explode(".", $_SERVER['SERVER_ADDR']);
+function refreshEchoDb($dbCon){
+    if(getPageConfigParam($dbCon, 'haBridgeActive')!="J"){
+        return;
     }
-    catch (exception $ex) {
-        echo $ex->getMessage() . "\n";
-    }
-    //    echo "client: ".$_SERVER['REMOTE_ADDR']."\n";
-    //    echo "server: ".$_SERVER['SERVER_ADDR']."\n";
+    
+    $haBridgePath = getHaBridgePath($dbCon);
+    $path = $haBridgePath ."data/device.db";
+    //echo $path;
+    
+    $where = "WHERE EXISTS "
+            ."(SELECT 'X' From homecontrol_sender_typen_parameter p WHERE p.senderTypId = "
+            ."(SELECT s.senderTypId FROM homecontrol_sender s WHERE s.id = sender_id)"
+            ."AND default_logic='J')";
+    
+    $dbItmTbl = new DbTable($dbCon, "homecontrol_config", array("*"), "", "", "", $where);
+    
+    $dbShortcutTbl = new DbTable($dbCon, "homecontrol_shortcut");
+    
+    $dbFile = fopen($path, "w");
+    
+    $lfdNr = 1;
+    fwrite($dbFile, "[");
 
-    if (!$loginNeed || $loginOK || ($loginExternOnly && ($serverIP[0] == $clientIP[0] && $serverIP[1] == $clientIP[1] && $serverIP[2] == $clientIP[2]))) {
-        $switchStatusCheck = true;
-
-
-        ob_implicit_flush(true);
-
-        // Nach Semikolon trennen,
-        // um die einzelnen zu schaltenden Elemente zu erhalten
-        $fullConfigArray = explode(";", $shortcutUrl);
-
-        foreach ($fullConfigArray as $cfg) {
-            // Nach Minus trennen um ID und STATUS zu erhalten.
-            $tmp = explode("-", $cfg);
-
-            if (count($tmp) >= 2) {
-                $id = $tmp[0];
-                $status = $tmp[1];
-                $deviceId = $id;
-                $dimmer = 0;
-                if (count($tmp) == 3) {
-                    $dimmer = $tmp[2];
-                }
-                if (strlen($id) > 0 && $id > 0) {
-                    $status = $status == "on" ? "on" : "off";
-                    //echo $id."->".$status."<br>\n";
-                    // Wenn ausgeschaltet werden soll,
-                    // negative ID ?bergeben
-                    if ($status == "off") {
-                        $id = $id * (-1);
-                    }
-
-                    //echo "\n<br>Switch-URL: " .$arduinoUrl."?schalte&" .$id;
-
-                    $senderUrl = getArduinoUrlForDeviceId($deviceId, $dbConnect);
-                    $useSenderUrl = strlen($senderUrl) > 0 ? $senderUrl : $arduinoUrl;
-                    $urlArray = parse_url($useSenderUrl);
-                    $host = $urlArray['host'];
-
-                    $check = @fsockopen($host, 80);
-
-
-                    if ($check) {
-                        $retVal = file_get_contents($useSenderUrl . "?schalte=" . $id . "&dimm=" . $dimmer);
-
-                        try {
-                            $myfile = fopen("/var/www/switch.log", "a+");
-                            fwrite($myfile, "(" . date("d.M.Y - H:i:s") . "): " . $useSenderUrl . "?schalte=" . $id . "&dimm=" . $dimmer . "\n");
-                            fclose($myfile);
-                        }
-                        catch (exception $e) {
-                        }
-
-                        if (strpos(substr($retVal, 0, 50), "Warning") > 0) {
-                            $switchStatusCheck = false;
-                            echo "<b>Vorgang auf Grund eines unerwarteten Fehlers abgebrochen!</b><br><br>" . $retVal;
-                            break;
-                        } else {
-                            //echo "<br><font color='green'><b>schalte ".$id>=0?$id:($id*-1)." ".($status=="on"?"ein":"aus")."</b></font>";
-                        }
-                    } else {
-                        echo "<br><font color='red'>KEINE VERBINDUNG zu: " . $host . "<br><b>Vorgang abgebrochen!</b></font>";
-                        break;
-                    }
-
-                }
-                //echo "<br>";
-            }
-            ob_flush();
-            sleep(1);
+    foreach($dbItmTbl->ROWS as $itmRow){
+        if($lfdNr>1){
+            fwrite($dbFile, ",");
         }
+        $itm = new HomeControlItem($itmRow);
+        $haString = $itm->getHaBridgeDbString($lfdNr);
+        fwrite($dbFile, $haString);
+        $lfdNr++;
     }
-}
-
-
-
-function isFunk2Need($art) {
-    //$configDb  = new DbTable($_SESSION['config']->DBCONNECT,
-    //'homecontrol_art', 
-    //array("zweite_funkid_jn") , 
-    //"",
-    //"",
-    //"",
-    //"id=".$art);
-    //$row = $configDb->getRow(1);
-    //if($row != null){
-    //  return $row->getNamedAttribute("zweite_funk_id") == "J";    
-    //}
-
-    return false;
-}
-
-
- // **
- //* Liefert den URL-String zum schalten aller Items  
- //* 
- //* Beispiel:
- //* ?10-off;100-off;101-off;104-off;91-off;103-off;2-off;110-off;111-off;112-off;113-off;114-off;3-off;120-off;121-off;  
- //* /
-function getShortcutSwitchKeyForCron($con, $cronId) {
-    $sqlItems = "SELECT id, config_id, art_id, zimmer_id, etagen_id, funkwahl, on_off FROM homecontrol_cron_items WHERE cron_id=" . $cronId;
-    $resultItems = $con->executeQuery($sqlItems);
-    $shortcutUrl = ""; //" "?switchShortcut=";
-
-    while ($row = mysql_fetch_array($resultItems)) {
-        // Wenn ConfigId angegeben ist, diese hinzuf?gen
-        $whereStmt = "";
-        if (strlen($row['config_id']) > 0) {
-            $whereStmt .= "id=" . $row['config_id'];
-        } else {
-            // Ansonsten die entsprechenden Ger?te ausw?hlen und alle hinzuf?gen
-            if (strlen($row['art_id']) > 0) {
-                if ($whereStmt != "") {
-                    $whereStmt .= " AND ";
-                }
-                $whereStmt .= "control_art=" . $row['art_id'];
-            }
-
-            if (strlen($row['zimmer_id']) > 0) {
-                if ($whereStmt != "") {
-                    $whereStmt .= " AND ";
-                }
-                $whereStmt .= "zimmer=" . $row['zimmer_id'];
-            }
-
-            if (strlen($row['etagen_id']) > 0) {
-                if ($whereStmt != "") {
-                    $whereStmt .= " AND ";
-                }
-                $whereStmt .= "etage=" . $row['etagen_id'];
-            }
+    
+    foreach($dbShortcutTbl->ROWS as $scRow){
+        if($lfdNr>1){
+            fwrite($dbFile, ",");
         }
-
-        $sqlSubItems = "SELECT id, funk_id, funk_id2 FROM homecontrol_config WHERE " . $whereStmt;
-        $resultSubItems = $con->executeQuery($sqlSubItems);
-        while ($rowSub = mysql_fetch_array($resultSubItems)) {
-            $shortcutUrl .= $rowSub['funk_id'] . "-" . (strlen($row['on_off']) > 0 ? $row['on_off'] : "off") . ";";
-        }
+        $sc = new HomeControlShortcut($scRow);
+        $haString = $sc->getHaBridgeDbString($lfdNr);
+        fwrite($dbFile, $haString);
+        $lfdNr++;
     }
-
-    return $shortcutUrl;
-}
-
-function getShortcutSwitchKeyByName($shortcutName) {
-    $sqlSubItems = "SELECT * FROM homecontrol_shortcutview WHERE lower(shortcut_name)='" . strtolower($shortcutName) . "' ORDER BY on_off";
-    $resultSubItems = mysql_query($sqlSubItems);
-    $shortcutUrl = "";
-    while ($rowSub = mysql_fetch_array($resultSubItems)) {
-        // TODO:
-        //      $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
-    }
-    return $shortcutUrl;
-}
-
-function getShortcutSwitchKeyById($con, $shortcutId) {
-    $sqlSubItems = "SELECT * FROM homecontrol_shortcutview WHERE shortcut_id=" . $shortcutId . " ORDER BY on_off";
-    $resultSubItems = mysql_query($sqlSubItems);
-    $shortcutUrl = "";
-    while ($rowSub = mysql_fetch_array($resultSubItems)) {
-        // TODO:
-        //     $shortcutUrl .= $rowSub['funk_id'] ."-" . (strlen($rowSub['on_off'])>0?$rowSub['on_off']:"off") .";";
-    }
-    return $shortcutUrl;
-}
-*/
-
-
-/* *
- * Wenn ID nicht schon enthalten ist, Einstellungs-Werte ?bernehmen
- * /
-function addShortcutCommandItem($funkId, $status, $command) {
-    if (!strpos($command, $funkId . "-") && strlen($funkId) > 0 && strlen($status) > 1) {
-        $command .= $funkId . "-" . $status . ";";
-    }
-    return $command;
+    
+    fwrite($dbFile, "]");
+    
+    fclose($dbFile);
+    
+    exec("sudo systemctl restart habridge.service");
 }
 
 
 
-function getConfigFunkId($id, $status) {
-    $sqlConfig = "SELECT id, funk_id, funk_id2, control_art FROM homecontrol_config WHERE id=" . $id;
 
-    $resultConfig = mysql_query($sqlConfig);
-    if ($rowConfig = mysql_fetch_array($resultConfig)) {
-        if ($status == "off" && isFunk2Need($rowConfig["control_art"])) {
-            return $rowConfig["funk_id2"];
-        } else {
-            return $rowConfig["funk_id"];
-        }
 
-        return "";
-    }
-}
 
-function prepareSensorSwitchLink($sensorId) {
-    // Zuerst alle Config-IDs, Dann alle Zimmer und zum Schluss die Etagen bearbeiten.
-    // Durch die Methode addShortcutCommandItem($id, $status) wird gewaehrleistet dass jede ID nur einmal pro Vorgang geschaltet wird.
-    $SHORTCUTS_URL_COMMAND = "";
 
-    // Alle Automatisierungs-Regeln die von der Sensor-?nderung betroffen sind holen
-    $dbRegeln = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_regeln", array("id", "name", "reverse_switch", "beschreibung"),
-        "Id, Name, Reverse-Switch, Beschreibung", "", "",
-        "id IN (SELECT trigger_id FROM homecontrol_term WHERE  trigger_type = 1 and term_type IN (1,2) and sensor_id = " . $sensorId . " AND trigger_jn='J')");
 
-    foreach ($dbRegeln->ROWS as $regelRow) {
-        $regelId = $regelRow->getNamedAttribute("id");
-        $SHORTCUTS_URL_COMMAND = checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $regelRow->getNamedAttribute("reverse_switch"));
-    }
 
-    return $SHORTCUTS_URL_COMMAND;
-}
-*/
+
+
+
+
+
+
 
 
 function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN = "J") {
@@ -497,65 +326,5 @@ function checkSensorInputMissingValues() {
     return true;
 }
 
-function getHaBridgePath($dbCon){
-    $haBridgePath = getPageConfigParam($dbCon, 'haBridgePath');  // "/services/haBridge";
-    $haBridgePath = str_replace('\\','/',trim($haBridgePath));
-    $haBridgePath = (substr($haBridgePath,-1)!='/') ? $haBridgePath.='/' : $haBridgePath;
-    
-    return $haBridgePath;
-}
-
-
-function refreshEchoDb($dbCon){
-    if(getPageConfigParam($dbCon, 'haBridgeActive')!="J"){
-        return;
-    }
-    
-    $haBridgePath = getHaBridgePath($dbCon);
-    $path = $haBridgePath ."data/device.db";
-    //echo $path;
-    
-    $where = "WHERE EXISTS "
-            ."(SELECT 'X' From homecontrol_sender_typen_parameter p WHERE p.senderTypId = "
-            ."(SELECT s.senderTypId FROM homecontrol_sender s WHERE s.id = sender_id)"
-            ."AND default_logic='J')";
-    
-    $dbItmTbl = new DbTable($dbCon, "homecontrol_config", array("*"), "", "", "", $where);
-    
-    $dbShortcutTbl = new DbTable($dbCon, "homecontrol_shortcut");
-    
-    $dbFile = fopen($path, "w");
-    
-    $lfdNr = 1;
-    fwrite($dbFile, "[");
-
-    foreach($dbItmTbl->ROWS as $itmRow){
-        if($lfdNr>1){
-            fwrite($dbFile, ",");
-        }
-        $itm = new HomeControlItem($itmRow);
-        $haString = $itm->getHaBridgeDbString($lfdNr);
-        fwrite($dbFile, $haString);
-        $lfdNr++;
-    }
-    
-    foreach($dbShortcutTbl->ROWS as $scRow){
-        if($lfdNr>1){
-            fwrite($dbFile, ",");
-        }
-        $sc = new HomeControlShortcut($scRow);
-        $haString = $sc->getHaBridgeDbString($lfdNr);
-        fwrite($dbFile, $haString);
-        $lfdNr++;
-    }
-    
-    fwrite($dbFile, "]");
-    
-    fclose($dbFile);
-    
-    //echo "restart";
-    exec("sudo systemctl restart habridge.service");
-    
-}
 
 ?>

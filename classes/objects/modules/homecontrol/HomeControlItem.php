@@ -51,7 +51,7 @@ class HomeControlItem extends Object {
         
         $this->loadParams();
     }
-    
+        
     function getId(){
         return $this->ID;
     }
@@ -74,6 +74,7 @@ class HomeControlItem extends Object {
         }
     }
     
+    
     /**
      * liefert ein Array, welches alle Parameter 
      * die als fix markiert sind.
@@ -82,6 +83,7 @@ class HomeControlItem extends Object {
     function getFixParameter(){
         return $this->PARAMETER[self::$FIX_PARAMS_ARRAY_INDEX];
     }
+    
     
     /**
      * liefert ein Array, welches alle Parameter 
@@ -92,37 +94,46 @@ class HomeControlItem extends Object {
         return $this->PARAMETER[self::$CONTROL_PARAMS_ARRAY_INDEX];
     }
     
+    
     function getAllParameter(){
         return $this->ALL_PARAMETERS;
     }
+    
     
     function getArt(){
         return $this->ART;
     }
     
+    
     function getName(){
         return $this->OBJNAME;
     }
+    
 
     function getRow(){
         return $this->CONFIG_ROW;
     }
+    
 
     function isDimmable(){
         return $this->DIMMER=="J";
     }
  
+ 
     function getSender(){
         return $this->SENDER;
     }
+ 
  
     function hasFreeParam(){
         return $this->getFreeParamCount() > 0;
     }
     
+    
     function getFreeParamCount(){
         return count($this->getFreeParamArray());
     }
+    
     
     function refreshFreeParamArray(){
         $this->FREE_PARAMS_ARRAY=null;
@@ -143,6 +154,7 @@ class HomeControlItem extends Object {
         
         return mysql_numrows($rslt)>0;
     }
+    
 
     /**
      * Liefert ein Array mit den Sender-Parametern, 
@@ -173,6 +185,7 @@ class HomeControlItem extends Object {
         return $this->FREE_PARAMS_ARRAY;
     }
 
+
     function hasUnselectedEditorParam(){
         $dbTblFree =  new DbTable($_SESSION['config']->DBCONNECT,
                                 "homecontrol_control_parameter_zu_editor",
@@ -184,6 +197,7 @@ class HomeControlItem extends Object {
 
         return $dbTblFree->getRowCount() > 0;
     }
+    
 
     function getInsertEditorMask(){
         $sql = "SELECT id, name FROM homecontrol_editoren e WHERE (SELECT count('X') FROM homecontrol_editor_parameter p WHERE p.editor_id = e.id) <= ".$this->getFreeParamCount();
@@ -197,6 +211,7 @@ class HomeControlItem extends Object {
     
         return $editorAddPanel;
     }
+    
     
     function handleInsertEditorMask(){
         if(isset($_REQUEST["editControl"]) && isset($_REQUEST["chooseEditorToAdd"]) && isset($_REQUEST["editorChoosenToAdd"]) && strlen($_REQUEST["editorChoosenToAdd"])>0 && $_REQUEST["editControl"]==$this->ID ){
@@ -300,13 +315,10 @@ class HomeControlItem extends Object {
         $frm = new Form();
         $frm->add($tbl);
         
-        
         return $frm;
     }
  
- 
- 
- 
+  
     function getIconTooltip($configButtons = true) {
         $ttt = "<table cellspacing='10'><tr><td>" .$this->getControlArtIconSrc(false,80) ."</td><td><center><b>" . $this->OBJNAME .
             "</b></center><hr></td></tr>";

@@ -57,6 +57,7 @@ class HomeControlSenderTyp {
     function getParameterControlMask($configItem) {
         $formName = "ControlForm".$configItem->getId();
         $frm = new Form("", "", "", $formName);
+        $formEmpty = true;
         
         $obj = $this->getAlternativeParameterEditorObject($configItem, $formName);
 
@@ -77,16 +78,18 @@ class HomeControlSenderTyp {
                     $r->setAttribute(0, $row->getNamedAttribute("name"));
                     $r->setAttribute(1, $this->getEditParameterValueObject($row, $this->getParameterValue($row, $configItem->getRow())));
                     $tbl->addRow($r);
+                    $formEmpty = false;
                 }
             }
 
-            if (!$this->HAS_DEFAULT_PARAM) {
+            if (!$this->hasDefaultParam()) {
                 $r = $tbl->createRow();
                 $r->setBackgroundColor("#ffffff");
                 $r->setSpawnAll(true);
                 $r->setAttribute(0, new Button("sendParamsToSender", "OK"));
                 $r->setAlign("center");
                 $tbl->addRow($r);
+                $formEmpty = false;
             } else {
                 $r = $tbl->createRow();
                 $r->setBackgroundColor("#ffffff");
@@ -94,6 +97,7 @@ class HomeControlSenderTyp {
                 $r->setAttribute(0, $this->getDefaultLogicSwitchButtons($configItem));
                 $r->setAlign("center");
                 $tbl->addRow($r);
+                $formEmpty = false;
             }
 
             $frm->add($tbl);
@@ -105,7 +109,7 @@ class HomeControlSenderTyp {
                 }
             }
 
-            return count($rows) > 0 ? $frm : new Div();
+            return !$formEmpty ? $frm : new Div();
         }
 
         return new Div();
@@ -158,7 +162,7 @@ class HomeControlSenderTyp {
 
 
     function getDefaultLogicSwitchButtons($configItem) {
-        if ($this->HAS_DEFAULT_PARAM) {
+        if ($this->hasDefaultParam()) {
             $tbl = new Table(array("", ""));
             $tbl->setColSizes(array("120"));
             $rows = $this->PARAMETER_DBTABLE->ROWS;
