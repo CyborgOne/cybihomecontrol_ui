@@ -21,7 +21,9 @@
     $updateMaskActive = (isset($_REQUEST["showUpdateMask" . $dbTblBenutzer->TABLENAME]) && strlen($_REQUEST["showUpdateMask" . $dbTblBenutzer->TABLENAME])>0);
     
     $dbTblBenutzer->setHeaderEnabled(true);
-    $dbTblBenutzer->setDeleteInUpdate(true);
+    if($dbTblBenutzer->getRowCount()>1){
+        $dbTblBenutzer->setDeleteInUpdate(true);
+    }
     $dbTblBenutzer->setInvisibleCols(array("Pw"));
     $dbTblBenutzer->setNoUpdateCols(array("Pw"));
     $dbTblBenutzer->setColSizes(array("200", "40", "60", "90", "50", "50"));
