@@ -2104,6 +2104,7 @@ class DbTable extends Object {
             if (isset($_REQUEST[$delName])) {
                 
                 if (isset($_REQUEST['RowDeleteCommited']) && $_REQUEST['RowDeleteCommited'] == "Wirklich entfernen") {
+                    $this->preDelete($rowId);
 
                     $rowId = $this->ROWS[$ir]->getAttribute(count($this->COLNAMES));
                     $chk = 0;
@@ -2171,7 +2172,7 @@ class DbTable extends Object {
                     $hiddenOk = new Hiddenfield($delName, $_REQUEST[$delName]);
 
                     //$frm = new Form($_SERVER['SCRIPT_NAME']);
-                    $frm = new Div();
+                    $frm = new Form();
                     $frm->add($tbl);
                     $frm->add($hiddenOk);
                     $frm->add($this->DEFAULT_HIDDEN_FIELDS);
@@ -2182,6 +2183,15 @@ class DbTable extends Object {
         return $ret;
     }
 
+
+    /**
+     * Funktion zum �berschreiben f�r eventuell 
+     * vor l�schen erforderlichen Ereignissen
+     */
+    function preDelete($id){
+        
+    }
+    
     /**
      * Funktion zum �berschreiben f�r eventuell 
      * nach l�schen erforderlichen Ereignissen

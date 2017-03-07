@@ -551,6 +551,12 @@ class HomeControlMap extends Object {
                 }
                 
                 $newRow->insertIntoDB();
+                
+                $newID = getDbValue("homecontrol_config", "max(id)", "");
+                
+                $_REQUEST['editControl'] = $newID;
+                $_REQUEST['InsertNewControl']=null;
+                
                 return true;
             }
 
@@ -640,6 +646,12 @@ class HomeControlMap extends Object {
                 }
     
                 $newRow->insertIntoDB();
+                
+                                
+                $newID = getDbValue("homecontrol_sensor", "max(id)", "");
+                
+                $_REQUEST['editSensor'] = $newID;
+                $_REQUEST['InsertNewSensorControl']=null;
                 return true;
             }
     

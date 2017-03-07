@@ -1,5 +1,18 @@
 <?PHP
 
+class EtagenDbTable extends DbTable{
+    function preDelete($id) {
+        $_SESSION['config']->getEtageById($id)->deleteEtageDetails();
+    }
+}
+
+class ZimmerDbTable extends DbTable{
+    function preDelete($id) {
+        $_SESSION['config']->getZimmerById($id)->deleteZimmerDetails();
+    }
+}
+
+
 if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     CURRENTUSER->STATUS != "user") {
 
@@ -19,7 +32,6 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $tbl->show();
     /* --------------------------------- */
 
-
 } else {
 
     // -----------------------------------
@@ -32,7 +44,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $spc = new Spacer(20);
     $ln = new Line();
 
-    $scDbTable = new DbTable($_SESSION['config']->DBCONNECT, 'homecontrol_etagen',
+    $scDbTable = new EtagenDbTable($_SESSION['config']->DBCONNECT, 'homecontrol_etagen',
         array("name", "pic"), "Name, Raumplan", "pic = 'pics/default_etage.jpg'", "name", "");
     $scDbTable->setDeleteInUpdate(true);
     $scDbTable->setHeaderEnabled(true);
@@ -198,7 +210,7 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     if (isset($_SESSION['SelectedEtageToEdit']) && strlen($_SESSION['SelectedEtageToEdit']) >
         0) {
 
-        $scItemsDbTable = new DbTable($_SESSION['config']->DBCONNECT,
+        $scItemsDbTable = new ZimmerDbTable($_SESSION['config']->DBCONNECT,
             'homecontrol_zimmer', array("name", "etage_id"), "Name, Etage", "etage_id=" . $_SESSION['SelectedEtageToEdit'],
             "name", "etage_id=" . $_SESSION['SelectedEtageToEdit']);
 

@@ -25,7 +25,10 @@ class Config
     var $IMAGECACHE;
     var $CACHED_IMAGES = array();
     var $SENDER = array();
-    var $ITEMS = array();
+    var $SENSOR = array();
+    var $ITEMS  = array();    
+    var $ETAGEN = array();
+    var $ZIMMER = array();
 //-------------------------
 
     function Config(){
@@ -41,8 +44,17 @@ class Config
         }
         
         $this->ITEMS[$id]->loadParams();
-        
         return $this->ITEMS[$id];
+    }
+
+    function getItemByRow($row){
+        if(!isset($this->ITEMS[$row->getNamedAttribute("id")]) || $this->ITEMS[$row->getNamedAttribute("id")]==null){
+             $item = new HomeControlItem($row);
+             $this->ITEMS[$row->getNamedAttribute("id")] = $item;
+        }
+        
+        $this->ITEMS[$row->getNamedAttribute("id")]->loadParams();
+        return $this->ITEMS[$row->getNamedAttribute("id")];
     }
 
     function getSenderById($id){
@@ -55,6 +67,75 @@ class Config
         }  
         return $this->SENDER[$id];
     }
+
+    function getSenderByRow($row){
+        if(!isset($this->SENDER[$row->getNamedAttribute("id")]) || $this->SENDER[$row->getNamedAttribute("id")]==null){
+            $sender = new HomeControlSender($row);
+            $this->SENDER[$row->getNamedAttribute("id")] = $sender;
+        }  
+        return $this->SENDER[$row->getNamedAttribute("id")];
+    }
+
+
+    function getSensorById($id){
+        if(!isset($this->SENSOR[$id]) || $this->SENSOR[$id]==null){
+            $sensorDbTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_sensor",array('*'),"","","","id=".$id);
+            foreach($sensorDbTbl->ROWS as $rowSensor){
+                $sensor = new HomeControlSensor($rowSensor);
+                $this->SENSOR[$rowSensor->getNamedAttribute("id")] = $sensor;
+            }
+        }  
+        return $this->SENSOR[$id];
+    }
+
+    function getSensorByRow($row){
+        if(!isset($this->SENSOR[$row->getNamedAttribute("id")]) || $this->SENSOR[$row->getNamedAttribute("id")]==null){
+            $sensor = new HomeControlSensor($row);
+            $this->SENSOR[$row->getNamedAttribute("id")] = $sensor;
+        }  
+        return $this->SENSOR[$row->getNamedAttribute("id")];
+    }
+
+    function getEtageById($id){
+        if(!isset($this->ETAGEN[$id]) || $this->ETAGEN[$id]==null){
+            $etagenDbTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_etagen",array('*'),"","","","id=".$id);
+            foreach($etagenDbTbl->ROWS as $rowEtage){
+                $etage = new HomeControlEtage($rowEtage);
+                $this->ETAGEN[$rowEtage->getNamedAttribute("id")] = $etage;
+            }
+        }  
+        return $this->ETAGEN[$id];
+    }
+
+    function getEtageByRow($row){
+        if(!isset($this->ETAGEN[$row->getNamedAttribute("id")]) || $this->ETAGEN[$row->getNamedAttribute("id")]==null){
+            $etage = new HomeControlEtage($row);
+            $this->ETAGEN[$row->getNamedAttribute("id")] = $etage;
+        }  
+        return $this->ETAGEN[$row->getNamedAttribute("id")];
+    }
+
+    function getZimmerById($id){
+        if(!isset($this->ZIMMER[$id]) || $this->ZIMMER[$id]==null){
+            $zimmerDbTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_zimmer",array('*'),"","","","id=".$id);
+            foreach($zimmerDbTbl->ROWS as $rowZimmer){
+                $zimmer = new HomeControlZimmer($rowZimmer);
+                $this->ZIMMER[$rowZimmer->getNamedAttribute("id")] = $zimmer;
+            }
+        }  
+        return $this->ZIMMER[$id];
+    }
+
+
+    function getZimmerByRow($row){
+        if(!isset($this->ZIMMER[$row->getNamedAttribute("id")]) || $this->ZIMMER[$row->getNamedAttribute("id")]==null){
+            $zimmer = new HomeControlZimmer($row);
+            $this->ZIMMER[$row->getNamedAttribute("id")] = $zimmer;
+        }  
+        return $this->ZIMMER[$row->getNamedAttribute("id")];
+    }
+
+
 
     function getImageFromCache($imagePath){
         if(!isset($this->IMAGECACHE)){

@@ -803,6 +803,10 @@ class HomeControlItem extends Object {
      * Die Methode löscht das Objekt inklusive aller abhängigen Einträge in der Datenbank. 
      */
     function deleteItem(){
+        $sqlRemoveEditorParameterZuordnung = "DELETE FROM homecontrol_control_parameter_zu_editor WHERE sendereditor_zuord_id = "
+                                   ."(SELECT id FROM homecontrol_control_editor_zuordnung WHERE config_id = " .$this->getId().")";
+        $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveEditorParameterZuordnung);
+        
         $sqlRemoveEditorZuordnung = "DELETE FROM homecontrol_control_editor_zuordnung WHERE config_id = " .$this->getId();
         $_SESSION['config']->DBCONNECT->executeQuery($sqlRemoveEditorZuordnung);
 

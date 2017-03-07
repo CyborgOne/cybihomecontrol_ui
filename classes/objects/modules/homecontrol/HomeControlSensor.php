@@ -26,8 +26,11 @@ class HomeControlSensor extends Object{
    
    private $ICON_VIEW_ACTIVE = false;
     
+   private $SENSOR_ROW;
 
    function HomeControlSensor($currConfigRow, $editModus=false) {
+      $this->SENSOR_ROW = $currConfigRow;
+      
       $this->ID = $currConfigRow->getNamedAttribute("id");
       $this->NAME = $currConfigRow->getNamedAttribute("name");
       $this->X = $currConfigRow->getNamedAttribute("x");
@@ -195,6 +198,9 @@ class HomeControlSensor extends Object{
      return $this->ICON_VIEW_ACTIVE;
    }
    
+   function deleteSensor(){
+     $this->SENSOR_ROW->deleteFromDb();
+   }
    
    
    function show(){

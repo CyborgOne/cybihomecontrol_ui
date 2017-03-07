@@ -117,6 +117,8 @@
 
   $_SESSION['config']->SENDER = array();
   $_SESSION['config']->ITEMS = array();
+  $_SESSION['config']->ETAGEN = array();
+  $_SESSION['config']->ZIMMER = array();
   
 /*  $senderDbTbl = new DbTable($_SESSION['config']->DBCONNECT, "homecontrol_sender",array('*'));
   foreach($senderDbTbl->ROWS as $rowSender){
