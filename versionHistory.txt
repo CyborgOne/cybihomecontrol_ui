@@ -6,7 +6,7 @@ Nachbesserungen der Einstellungen:
 - caching nachgebessert
 - anlegen von sender-parametern korrigiert
 
-Version: 1.0.1
+Version: 1.0.0
 ---------------------
 V1.0 initial Commit
 – Dynamische Parameter in Abhängigkeit zum Sender-Typ
