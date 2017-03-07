@@ -61,11 +61,7 @@
     } else {
         $newBenutzerBtn = $dbTblBenutzer->getNewEntryButton("Neuen Benutzer anlegen");    
     }
-    
-    if($dbTblBenutzer->getRowCount()>1){
-        $dbTblBenutzer->setDeleteInUpdate(true);
-    }
-    
+
     if (isset($_REQUEST["DbTableUpdate" . $dbTblBenutzer->TABLENAME])) {
         if(isset($_REQUEST["Pw".$_REQUEST["SingleUpdateRowId"]]) && strlen($_REQUEST["Pw".$_REQUEST["SingleUpdateRowId"]])>0){
             $_REQUEST["Pw".$_REQUEST["SingleUpdateRowId"]] = md5($_REQUEST["Pw".$_REQUEST["SingleUpdateRowId"]]);
@@ -83,7 +79,11 @@
             $tblMain->addRow($lS);
         }            
     }
-
+    
+    if($dbTblBenutzer->getRowCount()>1){
+        $dbTblBenutzer->setDeleteInUpdate(true);
+    }
+    
     $tblArduinoBenutzeres = $dbTblBenutzer->getUpdateMask();
 
     $tblMain->addSpacer(0,20);
