@@ -287,7 +287,7 @@ function refreshSensorValue($con, $sensorId, $sensorWert) {
     }
 
 
-
+/*
     // URL-Aufruf ermitteln
     // Wenn keine Schaltvorgaenge notwendig sind (nur Status-Update)
     // wird ein Leerstring zurueckgeliefert
@@ -312,6 +312,7 @@ function refreshSensorValue($con, $sensorId, $sensorWert) {
         catch (exception $e) {
         }
     }
+    */
 }
 
 

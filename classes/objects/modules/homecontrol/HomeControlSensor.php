@@ -58,6 +58,7 @@ class HomeControlSensor extends Object{
      return $ret;
    }
    
+   
    function setWithHeader($b){
       $this->WITHHEADER = $b;
    }
@@ -115,11 +116,11 @@ class HomeControlSensor extends Object{
       return $this->Y;
    }
    
-    /**
-     *  Liefert das Grafik-Symbol zurück (Image),
-     *  welches zur Sensor-Art passt.
-     */
-    function getSensorArtIconSrc($tooltip=true,$width=0) {
+  /**
+   *  Liefert das Grafik-Symbol zurück (Image),
+   *  welches zur Sensor-Art passt.
+   */
+   function getSensorArtIconSrc($tooltip=true,$width=0) {
         $lnkImg = new Image($this->PIC);
         $lnkImg->setWidth($width==0?$this->CONTROL_IMAGE_WIDTH:$width);
 
@@ -131,7 +132,7 @@ class HomeControlSensor extends Object{
         $lnkImgSrc = $lnkImg->getImgSrc($this->PIC);
 
         return $lnkImgSrc;
-    }
+   }
 
 
    function showAsIcon(){
@@ -163,7 +164,7 @@ class HomeControlSensor extends Object{
    }
    
    
-    function getIconTooltip() {
+   function getIconTooltip() {
         $ttt = "<table cellspacing='10'><tr><td>" .$this->getSensorArtIconSrc(false,80) ."</td><td><center><b>" . $this->NAME ."</b></center><hr></br>";
         
         if(strlen($this->ID)>0 ){
@@ -188,7 +189,8 @@ class HomeControlSensor extends Object{
         $ttt .= "</table>";
 
         return $ttt;
-    }
+   }
+   
    
    function setIconViewActive($active){
      $this->ICON_VIEW_ACTIVE = $active===true;
