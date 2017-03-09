@@ -21,12 +21,7 @@ if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] !=
 }
 
 if ($detect->isMobile()) {
-    if ($detect->is('iOS')) {
-        // iOS
-        include ("layout_apple.php");
-        exit();
-    }
-
+    
     if ($detect->isTablet()) {
         // Tablet
         include ("layout_tablet.php");
