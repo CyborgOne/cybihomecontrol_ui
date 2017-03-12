@@ -108,7 +108,7 @@ function getArduinoUrlForDeviceId($hcConfigId, $dbConnect) {
         if (isset($r['ip']) && strlen($r['ip']) > 0) {
             return "http://" . $r['ip'] . "/rawCmd";
         }
-    }
+    } 
 
     // wird keine IP gefunden: FallBack auf altes Vorgehen
     return "http://" . getPageConfigParam($dbConnect, 'arduino_url');

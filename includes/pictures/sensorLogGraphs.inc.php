@@ -84,7 +84,7 @@ $timeOffset = 60*60; //get_timezone_offset('UTC')*
             $i++;
         }
     }
-    
+     
     mysql_close($link);
     
     if(count($data)>0){
