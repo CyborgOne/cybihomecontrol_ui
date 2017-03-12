@@ -1,7 +1,7 @@
 <?PHP
 
 $ttl = new Title("Sensor Logs");
-
+ 
 $cboSensorSelect = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, concat(name ,' (', id  ,')') descr FROM homecontrol_sensor", "sensorSelectCob", isset($_REQUEST['sensorSelectCob'])?$_REQUEST['sensorSelectCob']:"" );
 $cboSensorSelect->setDirectSelect(true);
 $cboSensorSelect->setNullValue(" ");
@@ -20,6 +20,8 @@ $cobEndTime->setNullValue(" ");
 
 $txtSelect = new Text("Sensor Auswahl:");
 
+$btnDeleteData = new Button("deleteSensorData", "Sensordaten entfernen");
+
 $frmSelect = new Form();
 
 $timeSelect = new Table(array("","", "",""));
@@ -37,7 +39,7 @@ $timeSelect->addRow($rT);
 // Show
 // -------------------------
 
-$tbl = new Table(array("", ""));
+$tbl = new Table(array("", "", ""));
 $tbl->setColSizes(array(130));
 
 $rTtl = $tbl->createRow();
@@ -50,6 +52,7 @@ $tbl->addSpacer(0,30);
 $rSelect = $tbl->createRow();
 $rSelect->setAttribute(0, $txtSelect);
 $rSelect->setAttribute(1, $cboSensorSelect);
+$rSelect->setAttribute(2, $btnDeleteData);
 $tbl->addRow($rSelect);
 
 $tbl->addSpacer(0,10);
@@ -62,6 +65,11 @@ $tbl->addRow($rTimeSelect);
 $tbl->addSpacer(0,30);
 
 
+if( isset($_REQUEST['deleteSensorData']) && $_REQUEST['deleteSensorData']=="Sensordaten entfernen" && isset($_REQUEST['sensorSelectCob']) && strlen($_REQUEST['sensorSelectCob'])>0 ){
+    echo "Sensor-Daten entfernt!<br/>";
+    $delSql = "DELETE FROM homecontrol_sensor_log WHERE sensor_id = " .$_REQUEST['sensorSelectCob'];
+    $_SESSION['config']->DBCONNECT->executeQuery($delSql);
+} 
 
 if(isset($_REQUEST['sensorSelectCob']) && strlen($_REQUEST['sensorSelectCob'])>0 && isset($_REQUEST['startTimeCob']) && isset($_REQUEST['endTimeCob'])){
   $imgTxt = new Text("<img src='includes/pictures/sensorLogGraphs.inc.php?width=800&height=350&sensorId=".$_REQUEST['sensorSelectCob'] 

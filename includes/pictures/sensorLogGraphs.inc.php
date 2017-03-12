@@ -65,28 +65,33 @@ $timeOffset = 60*60; //get_timezone_offset('UTC')*
     $val = 0;
     $lastDay = "";
     $index = "";
-
-// Geforderte Daten einlesen und in Array aufbereiten
-    while($row = mysql_fetch_array($result)){
-        $val = averageValue($val, $row['value']);
-        if($i%$chkNr==0){
-            if($lastDay!=$row['tag']){
-                $lastDay=$row['tag'];
-                $index = $row['tag']." ".$row['zeit'];
-            } else {
-                $index = $row['zeit'];            
-            }
-
-            $data[$index] = $val;
-        }
-        $i++;
-    }
     
+    if($chkNr>0){
+        // Geforderte Daten einlesen und in Array aufbereiten
+        while($row = mysql_fetch_array($result)){
+            $val = averageValue($val, $row['value']);
+            
+            if($i%$chkNr==0){
+                if($lastDay!=$row['tag']){
+                    $lastDay=$row['tag'];
+                    $index = $row['tag']." ".$row['zeit'];
+                } else {
+                    $index = $row['zeit'];            
+                }
+    
+                $data[$index] = $val;
+            }
+            $i++;
+        }
+    }
+     
     mysql_close($link);
-
-// Create phpMyGraph instance
-    $graph = new phpMyGraph();
-    $graph->parseVerticalLineGraph($data, $cfg);
+    
+    if(count($data)>0){
+        // Create phpMyGraph instance
+        $graph = new phpMyGraph();
+        $graph->parseVerticalLineGraph($data, $cfg);
+    }
 
 
 } else {
