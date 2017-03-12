@@ -1,7 +1,7 @@
 <?PHP
 
 $ttl = new Title("Sensor Logs");
-
+ 
 $cboSensorSelect = new ComboBoxBySql($_SESSION['config']->DBCONNECT, "SELECT id, concat(name ,' (', id  ,')') descr FROM homecontrol_sensor", "sensorSelectCob", isset($_REQUEST['sensorSelectCob'])?$_REQUEST['sensorSelectCob']:"" );
 $cboSensorSelect->setDirectSelect(true);
 $cboSensorSelect->setNullValue(" ");

@@ -108,7 +108,7 @@ function getArduinoUrlForDeviceId($hcConfigId, $dbConnect) {
         if (isset($r['ip']) && strlen($r['ip']) > 0) {
             return "http://" . $r['ip'] . "/rawCmd";
         }
-    }
+    } 
 
     // wird keine IP gefunden: FallBack auf altes Vorgehen
     return "http://" . getPageConfigParam($dbConnect, 'arduino_url');
@@ -260,7 +260,6 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN = "J")
 
     return $SHORTCUTS_URL_COMMAND;
 }
-
 
 
 function refreshSensorValue($con, $sensorId, $sensorWert) {
