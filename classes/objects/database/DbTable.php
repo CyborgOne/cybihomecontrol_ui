@@ -1044,7 +1044,6 @@ class DbTable extends Object {
             $fieldValue = isset($_REQUEST[$fieldName]) ? $_REQUEST[$fieldName] : "";
             if (strlen($fieldValue) == 0 && !(isset($ev) && (count($ev) == 2 && in_array('J', $ev) && in_array('N', $ev))) ) {
                 $fieldValue = $this->getDefaultValue($this->DEFAULTS, $fieldName);
-                echo "Default Value: ". $fieldValue."<br/>";
             }
 
             $ev = $this->getEnumValues($fieldName);
