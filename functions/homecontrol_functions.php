@@ -285,34 +285,6 @@ function refreshSensorValue($con, $sensorId, $sensorWert) {
     }
     catch (exception $e) {
     }
-
-
-/*
-    // URL-Aufruf ermitteln
-    // Wenn keine Schaltvorgaenge notwendig sind (nur Status-Update)
-    // wird ein Leerstring zurueckgeliefert
-    $SENSOR_URL_COMMAND = prepareSensorSwitchLink($sensorId);
-
-    // HTML-Daten an Browser senden,
-    // bevor Schaltvorgaenge ausgeloest werden.
-    ob_implicit_flush();
-    ob_end_flush();
-    flush();
-
-
-    // Wenn auszufuehrendes Kommando gefunden wurde, ausfuehren
-    if (strlen($SENSOR_URL_COMMAND) > 0) {
-        switchShortcut("", $SENSOR_URL_COMMAND, $con);
-
-        try {
-            $myfile = fopen("signalIn.log", "a+");
-            fwrite($myfile, "SCHALTUNG -> " . $SENSOR_URL_COMMAND . "\n");
-            fclose($myfile);
-        }
-        catch (exception $e) {
-        }
-    }
-    */
 }
 
 
