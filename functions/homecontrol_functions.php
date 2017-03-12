@@ -262,7 +262,6 @@ function checkAndSwitchRegel($regelId, $SHORTCUTS_URL_COMMAND, $reverseJN = "J")
 }
 
 
-
 function refreshSensorValue($con, $sensorId, $sensorWert) {
     $SHORTCUTS_URL_COMMAND = "";
 
