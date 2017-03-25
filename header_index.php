@@ -57,6 +57,13 @@ if (!$detect->isMobile()) {
   ";
 }
 
+if($_SESSION['runLink']=="start" || $_SESSION['runLink']=="sensorList" || $_SESSION['runLink']=="sensorlogView"){
+    $autoRefreshTime = getPageConfigParam($_SESSION['config']->DBCONNECT, "autoRefreshTime");
+    if(strlen($autoRefreshTime)>0 && $autoRefreshTime>0){
+       echo "<meta http-equiv='refresh' content='" .$autoRefreshTime ."'>\n"; 
+    }
+}
+
 echo "
       </head>
     

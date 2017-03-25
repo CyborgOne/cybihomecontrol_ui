@@ -329,10 +329,25 @@ class HomeControlItem extends Object {
     }
 
 
+    /**
+     * Liefert die Steuerungs-Maske für das Control
+     * in Abhängigkeit zur hinterlegten Konfiguration.
+     */
     function getSwitchButtons() {
         $tbl = new Table(array(""));
+        $tbl->setStyle("table-layout","fixed");
+        $tbl->setStyle("white-space","normal");
+        $tbl->setStyle("word-wrap", "break-word");
+        $tbl->setWidth(100);
         $tbl->setAlignments(array("center"));
         $tbl->setBorder(0);
+
+        if(getPageConfigParam($_SESSION['config']->DBCONNECT, "showNamesInUi")=="J"){
+            $rS = $tbl->createRow();
+            $txtName = new Text($this->getName(), 2, true);
+            $rS->setAttribute(0, $txtName);
+            $tbl->addRow($rS);
+        }
 
         $senderParams = $this->SENDER->getSenderParameterControlMask($this);
         if($senderParams!=null){

@@ -160,10 +160,15 @@ echo "(34, 'switchButtonsOnIconActive', 'J', 0, '0000-00-00 00:00:00', 'Buttons 
 echo "(35, 'gmailAdress', '', 0, '0000-00-00 00:00:00', 'Email fur Gmail Abfragen')," >> $filename
 echo "(36, 'gmailAppPassword', '', 0, '0000-00-00 00:00:00', 'App-Passwort fur Gmail Abfragen')," >> $filename 
 echo "(37, 'haBridgeActive', 'N', 0, '0000-00-00 00:00:00', 'Gibt an, ob die HA-Bridge installiert ist.')," >> $filename 
-echo "(38, 'haBridgePath', '/services/haBridge/', 0, '0000-00-00 00:00:00', 'Pfad zur HA-Bridge Installation');" >> $filename 
+echo "(38, 'haBridgePath', '/services/haBridge/', 0, '0000-00-00 00:00:00', 'Pfad zur HA-Bridge Installation')," >> $filename 
+echo "(39, 'showNamesInUi', 'N', 0, '0000-00-00 00:00:00', 'Gibt an ob Namen in der Steuerung angezeigt werden')," >> $filename 
+echo "(40, 'autoRefreshTime', '20', 0, '0000-00-00 00:00:00', 'Automatischer PageReload in Sek. (0=aus)');" >> $filename 
+
+
+
 #(https://security.google.com/settings/security/apppasswords)
 
-echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;" >> $filename
+echo "ALTER TABLE pageconfig MODIFY id int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=41;" >> $filename
 
 
 echo "INSERT INTO homecontrol_sensor (id, name, beschreibung, geaendert, lastSignal, lastValue, sensor_art, x, y, etage, zimmer) VALUES " >> $filename

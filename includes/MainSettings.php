@@ -81,6 +81,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $switchButtonsOnIconActiveRow = getRowByName($configDb->ROWS, "switchButtonsOnIconActive");
     $haBridgeActiveRow = getRowByName($configDb->ROWS, "haBridgeActive");
     $haBridgePathRow = getRowByName($configDb->ROWS, "haBridgePath");
+    $showNamesInUiRow = getRowByName($configDb->ROWS, "showNamesInUi");
+    
 
     $loginForSwitchNeedName = 'value' . $loginForSwitchNeedRow->getNamedAttribute('id');
     $loginForTimelinePauseNeedName = 'value' . $loginForTimelinePauseNeedRow->getNamedAttribute('id');
@@ -98,6 +100,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $switchButtonsOnIconActiveName = 'value' . $switchButtonsOnIconActiveRow->getNamedAttribute('id');
     $haBridgeActiveName = 'value' . $haBridgeActiveRow->getNamedAttribute('id');
     $haBridgePathName = 'value' . $haBridgePathRow->getNamedAttribute('id');
+    $showNamesInUiName = 'value' . $showNamesInUiRow->getNamedAttribute('id');
+    
 
     // Checkboxen brauchen Sonderbehandlung da bei fehlender Auswahl kein Wert mitgegeben wird
     if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$loginForSwitchNeedName])) {
@@ -127,10 +131,12 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$haBridgeActiveName])) {
         $_REQUEST[$haBridgeActiveName] = 'N';
     }
+    if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && !isset($_REQUEST[$showNamesInUiName])) {
+        $_REQUEST[$showNamesInUiName] = 'N';
+    }
 
 
-    if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && $_REQUEST['DbTableUpdate' .
-        $configDb->TABLENAME] == "Speichern") {
+    if (isset($_REQUEST['DbTableUpdate' . $configDb->TABLENAME]) && $_REQUEST['DbTableUpdate' .$configDb->TABLENAME] == "Speichern") {
         $configDb->doUpdate();
 
         $configDb->refresh();
@@ -151,6 +157,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
         $switchButtonsOnIconActiveRow = getRowByName($configDb->ROWS, "switchButtonsOnIconActive");
         $haBridgeActiveRow = getRowByName($configDb->ROWS, "haBridgeActive");
         $haBridgePathRow = getRowByName($configDb->ROWS, "haBridgePath");
+        $showNamesInUiRow = getRowByName($configDb->ROWS, "showNamesInUi");
+        
     }
 
 
@@ -163,7 +171,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     $btSwitchActive = $btSwitchActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";
     $switchButtonsOnIconActive = $switchButtonsOnIconActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";        
     $haBridgeActive = $haBridgeActiveRow->getNamedAttribute('value') == "J" ? "J" : "N";
-        
+    $showNamesInUiActive = $showNamesInUiRow->getNamedAttribute('value') == "J" ? "J" : "N";
+    
     $sensorlogDauer = $sensorlogDauerRow->getNamedAttribute('value');
     $motionDauer = $motionDauerRow->getNamedAttribute('value');
     $sessionDauer = $sessionDauerRow->getNamedAttribute('value');
@@ -203,6 +212,8 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
 
     $chbHaBridgeActive = new Checkbox($haBridgeActiveName, "HA-Bridge Aktiv? (Notwendig f&uuml;r Amazon-Echo)","J", $haBridgeActive);
 
+    $chbShowNamesInUi = new Checkbox($showNamesInUiName, "Name in Steuerung?","J", $showNamesInUiActive);
+    $chbShowNamesInUi->setToolTip("Gibt an, ob der Name des Ger&auml;tes in der Steuerung angezeigt werden soll.");
 
     $cobTimelineDuration = new Combobox($timelineDurationName, array(1 => "1", 2 =>
         "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6"), $timelineDuration);
@@ -270,6 +281,11 @@ if ($_SESSION['config']->CURRENTUSER->STATUS != "admin" && $_SESSION['config']->
     
     $leftTab->addSpacer(0,10);
     
+    $lS = $leftTab->createRow();
+    $lS->setSpawnAll(true);
+    $lS->setAttribute(0, $chbShowNamesInUi);
+    $leftTab->addRow($lS);
+
     $lS = $leftTab->createRow();
     $lS->setSpawnAll(true);
     $lS->setAttribute(0, $chbSwitchButtonsOnIconActive);

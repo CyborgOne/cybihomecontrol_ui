@@ -162,14 +162,15 @@ if (isset($_SESSION['SelectedRegelToEdit']) && strlen($_SESSION['SelectedRegelTo
     
     
     
+    
     // -------------------------------------------
     //                 Schaltgruppen
     // -------------------------------------------
     
     $regelItemsDbTable = new DbTable($_SESSION['config']->DBCONNECT,
                                     'homecontrol_regeln_items', 
-                                    array("config_id", "art_id", "zimmer_id", "etagen_id", "on_off", "regel_id", "id"),
-                                    "Objekt, Objekt-Art, Zimmer, Etage, An/Aus", 
+                                    array("config_id", "art_id", "zimmer_id", "etagen_id", "regel_id", "id"),
+                                    "Objekt, Objekt-Art, Zimmer, Etage", 
                                     "regel_id=" . $_SESSION['SelectedRegelToEdit'],
                                     "config_id DESC, zimmer_id DESC, etagen_id DESC", 
                                     "regel_id=" . $_SESSION['SelectedRegelToEdit']);
@@ -179,11 +180,10 @@ if (isset($_SESSION['SelectedRegelToEdit']) && strlen($_SESSION['SelectedRegelTo
     $regelItemsDbTable->setDeleteInUpdate(true);
     $regelItemsDbTable->setHeaderEnabled(true);
     
-    
     $itemsTable = new Table(array("", ""));
     //$itemsTable->setColSizes(array(150));
     $itemsTable->setBorder(0);
-    
+     
     $ttlItems = new Title("Zu schaltende Objekte");
     $ttlItems->setAlign("left");
     $itemsTable->addSpacer(0,15);
