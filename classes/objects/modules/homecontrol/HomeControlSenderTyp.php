@@ -164,7 +164,8 @@ class HomeControlSenderTyp {
     function getDefaultLogicSwitchButtons($configItem) {
         if ($this->hasDefaultParam()) {
             $tbl = new Table(array("", ""));
-            $tbl->setColSizes(array("120"));
+            $tbl->setWidth(80);
+            //$tbl->setColSizes(array("120"));
             $rows = $this->PARAMETER_DBTABLE->ROWS;
             foreach ($rows as $row) {
                 if ($row->getNamedAttribute("default_logic") == "J") {

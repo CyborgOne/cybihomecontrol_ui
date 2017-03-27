@@ -83,7 +83,7 @@ exit();
 
 else 
 {
-  $e = new Message("Eingabe unvollständig!", "Es wurden nicht alle Werte angegeben!");
+  $e = new Message("Es wurden nicht alle Werte angegeben!");
 }
 }
 

@@ -10,8 +10,11 @@
     //Liefert den angeforderten Wert aus der Page-Konfiguration zu der entsprechenden Page-ID
       $sql = "select * from pageconfig where name = '" .$ident ."' ";
       $res = $dbConnect->executeQuery($sql);
-      $row = mysql_fetch_array($res);
-      return $row['value'];    
+      if($row = mysql_fetch_array($res)){
+        return $row['value'];
+      } else {
+        return null;
+      }    
   }
 
   function getPageConfigParamRow($dbConnect, $ident, $id=0){
@@ -19,7 +22,7 @@
       $sql    = "select *, id rowid from pageconfig where name = '" .$ident ."' ";
       $res = $dbConnect->executeQuery($sql);
       $row = mysql_fetch_array($res);
-       return $row;    
+      return $row;    
   }
 
   function getRunlinkParam($dbConnect, $runlinkName, $paramName){

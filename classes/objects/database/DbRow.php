@@ -214,7 +214,7 @@ class DbRow extends Object{
     if( strlen($this->getNamedAttribute("rowid"))>0 ){
 	   $_SESSION['config']->DBCONNECT->executeQuery($sql);
     } else {
-        new Message("LÃÂÃÂÃÂÃÂ¶schen nicht mÃÂÃÂÃÂÃÂ¶glich", "Keine Id vorhanden. LÃÂÃÂÃÂÃÂ¶schen nicht mÃÂÃÂÃÂÃÂ¶glich");
+        new Message("Datensatz zum entfernen nicht gefunden.");
         
         if($_SESSION['config']->CURRENTUSER->STATUS=="admin"){
             print_r($this);

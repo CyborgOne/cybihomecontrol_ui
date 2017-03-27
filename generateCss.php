@@ -237,6 +237,22 @@ hr
   color:" .$COLORS['text'] .";
 }
 
+
+div.messageText {
+	position:fixed;
+	display:none;
+	top:50%;
+	left:190;
+	width:400px;
+	color:red;
+	font-size:16px;
+    font-weight:bolder;
+    background-color:white;
+    border-size:1px;
+    vertical-align: middle;
+    text-align: center;
+	margin: auto;
+}
 </style>
 ";
 

@@ -50,9 +50,9 @@ if ( isset($_REQUEST['Submit'])) {
       $HTTP_SESSION_VARS['pw']=$_REQUEST['Pw'];
     }
 
-    $m = new Message("Änderung gespeichert", "Ihr Profil wurde aktualisiert!");
+    $m = new Message("Ihr Profil wurde aktualisiert!");
   }else {
-    $e = new Message("Eingabe unvollständig!", "Es wurden nicht alle Werte angegeben!");
+    $e = new Message("Es wurden nicht alle Werte angegeben!");
   }
 }
 

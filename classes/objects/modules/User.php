@@ -181,7 +181,7 @@ class User  extends Object {
 
 
   //MELDUNG AUSGEBEN 
-     $m = new Message("Passwort erstellt", "Ihnen wurde soeben ein neues Passwort per Email zugesendet.");
+     $m = new Message("Ihnen wurde soeben ein neues Passwort per Email zugesendet.");
      $m->show();
  
 
@@ -533,7 +533,7 @@ class UserStatus extends Object{
         $upd = "UPDATE user SET aktiv = 'J', status = 'user' WHERE id = ".$userId;
         $_SESSION['config']->DBCONNECT->executeQuery($upd);
 
-        $err = new Message("Aktivierungs-Code OK", "Aktivierung abgeschlossen. Sie kÃÂÃÂÃÂÃÂ¶nnen sich nun anmelden");
+        $err = new Message("Aktivierung abgeschlossen.");
 
      } else {
         
