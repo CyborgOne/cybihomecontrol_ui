@@ -1012,7 +1012,7 @@ class DbTable extends Object {
         $stmnt = "SELECT  ";
         foreach ($this->COLNAMES as $cn) {
             $this->COLNAMEIDS[$cn] = count($this->COLNAMEIDS);
-
+//
             if ($chk > 0) {
                 $stmnt .= ", ";
             }
@@ -1025,17 +1025,16 @@ class DbTable extends Object {
 
         // Pr�fung der Pflichtfelder
         if (!$this->checkInsertValue()) {
-            $e = new Message("Fehlende Eingabe", "Es wurden nicht alle Werte eingegeben!", $backLink =
-                '');
+            $e = new Message("Es wurden nicht alle Werte eingegeben!");
             $form = $this->getInsertMask();
             $form->add($this->DEFAULT_HIDDEN_FIELDS);
             $form->show();
             return false;
         }
+        
         /*
         TODO:  sollte umgebaut werden dass ab hier die lokale Methode: insertRowByArray($array) genutzt wird 
         */
-
         $statement = "INSERT INTO " . $this->TABLENAME . " SET ";
         $chkLen = strlen($statement);
 
@@ -1133,7 +1132,7 @@ class DbTable extends Object {
 
         if ((!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
             "OK")) && $showOutput) {
-            $e = new Message("Speichern", "Speichern erfolgreich");
+            $e = new Message("Speichern erfolgreich");
             $_REQUEST['saveOK'] = "OK";
             
             $newId = getDbValue($this->TABLENAME, "max(id)");
@@ -1229,7 +1228,7 @@ class DbTable extends Object {
                         getNamedAttribute("id");
                     $result = $this->DBCONNECT->executeQuery($statement);
 
-                    $e = new Message("entfernen", "entfernen erfolgreich");
+                    $e = new Message("entfernen erfolgreich");
 
                     $this->refresh();
                     $ret = true;
@@ -2060,7 +2059,7 @@ class DbTable extends Object {
                     if (!isset($_REQUEST['UpdateAllMaskIsActive'])) {
                         if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
                             "OK")) {
-                            $e = new Message("Speichern", "Erfolgreich gespeichert");
+                            $e = new Message("Erfolgreich gespeichert");
                             $_REQUEST['saveOK'] = "OK";
                         }
                         $this->refresh();
@@ -2073,7 +2072,7 @@ class DbTable extends Object {
         if ($updateDo) {
             if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
                 "OK")) {
-                $e = new Message("Speichern", "Erfolgreich gespeichert");
+                $e = new Message("Erfolgreich gespeichert");
                 $_REQUEST['saveOK'] = "OK";
             }
             $this->refresh();
@@ -2081,7 +2080,7 @@ class DbTable extends Object {
         } else {
             if (!isset($_REQUEST['saveOK']) || (isset($_REQUEST['saveOK']) && $_REQUEST['saveOK'] !=
                 "OK")) {
-                //$e = new Message("Speichern", "Nichts zu speichern");
+                $e = new Message("Nichts zu speichern");
                 $_REQUEST['saveOK'] = "OK";
             }
             return false;
@@ -2114,7 +2113,7 @@ class DbTable extends Object {
                     $statement = "DELETE FROM " . $this->TABLENAME . " WHERE id = " . $rowId . " ";
                     $result = $this->DBCONNECT->executeQuery($statement);
 
-                    $e = new Message("entfernen", "Entfernen erfolgreich ");
+                    $e = new Message("Entfernen erfolgreich ");
                     $this->refresh();
                     $ret = true;
 

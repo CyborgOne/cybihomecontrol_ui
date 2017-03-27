@@ -1,4 +1,11 @@
 
+Version: 1.1.2
+---------------------
+SHYS-153
+Meldungen wie Speichern OK etc werden nicht mehr als normale Ausgabe in der Webseite angezeigt.
+Infos werden nun als Einblendung (3Sek.) angezeigt.
+Wenn mehrere Meldungen notwendig sind, werden diese nacheinander eingeblendet.
+
 Version: 1.1.1
 ---------------------
 SHYS-154: Auto-Reload der Seiten wenn Steuerung oder Sensor-Daten in Anzeige sind um diese aktuell zu halten

@@ -110,7 +110,7 @@ function getKoordsForAdress($addressId){
       $res = $_SESSION['config']->DBCONNECT->executeQuery($sql);
   
 	  if(mysql_num_rows($res)>0){
-	      new Message("Ungenaue Koordinaten", "Leider ist für diesen Eintrag nur eine Strassen-Genaue Anzeige möglich!");
+	      new Message("Leider ist für diesen Eintrag nur eine Strassen-Genaue Anzeige möglich!");
 		  $korRow = mysql_fetch_array($res);
 		  
 		  $rw = $korRow['rechts'];
@@ -120,7 +120,7 @@ function getKoordsForAdress($addressId){
 	      return $k;
 
 	  } else {
-	      new Message("Keine Koordinaten", "Für diese Adresse sind leider keine Koordinaten hinterlegt.\n Es ist daher keine Positionierung der Karte möglich!");
+	      new Message("Für diese Adresse sind leider keine Koordinaten hinterlegt.\n Es ist daher keine Positionierung der Karte möglich!");
 		  return null; 	
 	  }
   }

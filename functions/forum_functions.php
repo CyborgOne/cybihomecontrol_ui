@@ -243,7 +243,7 @@
      $statement = "DELETE FROM forum_posts WHERE id = ".$rowId;
      $result = $_SESSION['config']->DBCONNECT->executeQuery($statement);  
 
-     $e = new Message("Löschen", "Löschen erfolgreich");
+     $e = new Message("Löschen erfolgreich");
   }
   
 ?>

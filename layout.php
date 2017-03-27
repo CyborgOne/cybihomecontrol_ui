@@ -66,7 +66,9 @@ if(isset($_REQUEST['changeMode']) && strlen($_REQUEST['changeMode'])>0 && $_SESS
   $_SESSION['config']->PUBLICVARS['currentMode'] = $_REQUEST['changeMode'];
 } 
 
-
+echo "<div id=\"messageText\" class=\"messageText\">";
+echo "TEST";
+echo "</div>";
 
 $topSpaceTable = new Table(array(""));
 $topSpaceTable->show();
@@ -79,7 +81,6 @@ $layoutTable->setBackgroundColor($_SESSION['config']->COLORS['panel_background']
 
 $layoutTable->setSpacing(0);
 $layoutTable->setPadding(0);
-
 
 
 /* ------------------------------------
@@ -285,6 +286,9 @@ $layoutTable->addRow($fussLayoutRow);
 
 /* --------------------------------- */
 $layoutTable->show();
+
+
+
 
 $arduinoFrame = new IFrame($_SESSION['config'], "arduinoSwitch", -1, -1, 1, 1, 0);
 $arduinoFrame->show();

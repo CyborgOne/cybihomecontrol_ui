@@ -112,6 +112,8 @@
   if(!isset($_SESSION['tmp'])){
      $_SESSION['tmp'] = array();
   }
+
+  $_SESSION['msgCount']=0;
   
   $_SESSION['letzteAenderung'] = $CLASSLOADER->getLastChange();
 

@@ -5,7 +5,7 @@
 
 	 	<head>
   ";
-
+ 
 //          <script language='javascript'>AC_FL_RunContent = 0;</script>
 //          <script src='AC_RunActiveContent.js' language='javascript'></script>
 //          <script type='text/javascript' src='scripts/swfobject.js'></script>
@@ -65,11 +65,13 @@ if($_SESSION['runLink']=="start" || $_SESSION['runLink']=="sensorList" || $_SESS
 }
 
 echo "
+         <script src=\"https://code.jquery.com/jquery-1.10.2.js\"></script>
+
       </head>
     
     
     <body class='indexbody'  onload='uhrzeit('jetzt'); setInterval('uhrzeit()', 1000); initialize()' onunload='GUnload()'>
-    
+     
 	
 	<!-- Tooltips -->
 	  <script type='text/javascript' src='scripts/calendar_popup.js'></script>
