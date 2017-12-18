@@ -22,11 +22,11 @@ if (isset($_SESSION['MENU_PARENT']) && $_SESSION['MENU_PARENT'] !=
 
 if ($detect->isMobile()) {
     
-    if ($detect->isTablet()) {
+//    if ($detect->isTablet()) {
         // Tablet
-        include ("layout_tablet.php");
-        exit();
-    }
+//        include ("layout_tablet.php");
+//        exit();
+//    }
 
     // Any other mobile device.
     include ("layout_mobile.php");
@@ -67,7 +67,6 @@ if(isset($_REQUEST['changeMode']) && strlen($_REQUEST['changeMode'])>0 && $_SESS
 } 
 
 echo "<div id=\"messageText\" class=\"messageText\">";
-echo "TEST";
 echo "</div>";
 
 $topSpaceTable = new Table(array(""));
